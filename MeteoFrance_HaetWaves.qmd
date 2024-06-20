@@ -1,0 +1,39 @@
+---
+title: "MeteoFrance Heatwaves Records"
+format: html
+editor: source
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r libraries}
+library(tidyverse)
+library(heatwaveR)
+```
+
+
+```{r data opening}
+
+list <- list.files("Data/MeteoFrance", pattern=".csv", full.names = T) %>% 
+  as.data.frame() %>% 
+  rename(path = ".") %>% 
+  filter(!str_detect(path, "champs")) %>% 
+  mutate(name = gsub(".*/","",path),
+         date_start = substr(name,6,9),
+         date_end = substr(name,11,14))
+
+for(i in 1:nrow(list)){
+  a <- read_delim(list$path[i], 
+    delim = ";", escape_double = FALSE, trim_ws = TRUE)
+  if(i == 1){
+    df <- a
+  }else{
+    df <- rbind(df,a)
+  }
+  
+}
+
+saveRDS(df,"Data/MeteoFrance/Data_Weather.rds")
+
+```
+
