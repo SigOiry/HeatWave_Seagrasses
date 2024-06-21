@@ -34,6 +34,18 @@ for(i in 1:nrow(list)){
 }
 
 saveRDS(df,"Data/MeteoFrance/Data_Weather.rds")
+```
+
+```{r first process}
+
+df_sub <- df %>% 
+  dplyr::filter(NOM_USUEL == "NANTES-BOUGUENAIS") %>% 
+  dplyr::select(NOM_USUEL, LAT,LON,,AAAAMMJJHH,`T`, TN, TX, T10, T20, T50,T100) %>% 
+  mutate(date = as.POSIXct(strptime(AAAAMMJJHH, format = "%Y%m%d%H")))
+
+
+ggplot(df_sub) +
+  geom_line(aes(x= date, y = `T`))
 
 ```
 
