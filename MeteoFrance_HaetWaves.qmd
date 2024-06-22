@@ -34,18 +34,44 @@ for(i in 1:nrow(list)){
 }
 
 saveRDS(df,"Data/MeteoFrance/Data_Weather.rds")
+df <- readRDS("Data/MeteoFrance/Data_Weather.rds")
 ```
 
 ```{r first process}
+
+df_date <- df  %>% 
+  mutate(date = as.POSIXct(strptime(AAAAMMJJHH, format = "%Y%m%d%H"))) %>% 
+  group_by(NOM_USUEL) %>% 
+  reframe(min_date = min(date,na.rm = T),
+          max_date = max(date,na.rm = T),
+          n = n())
 
 df_sub <- df %>% 
   dplyr::filter(NOM_USUEL == "NANTES-BOUGUENAIS") %>% 
   dplyr::select(NOM_USUEL, LAT,LON,,AAAAMMJJHH,`T`, TN, TX, T10, T20, T50,T100) %>% 
   mutate(date = as.POSIXct(strptime(AAAAMMJJHH, format = "%Y%m%d%H")))
 
+df_heatwaveR <- df_sub %>% 
+  rename(t = date,
+         temp = `T`) %>% 
+  dplyr::select(t,temp) %>% 
+  mutate(t = as.Date(t)) %>% 
+  group_by(t) %>% 
+  reframe(temp = max(temp,na.rm = T)) %>% 
+  filter(t > as.Date("1979-12-31"))
 
-ggplot(df_sub) +
-  geom_line(aes(x= date, y = `T`))
-
+  clim <- ts2clm(df_heatwaveR, climatologyPeriod = c("1980-01-01", "2024-06-19"))
+  
+  event <- detect_event(clim,categories = T)
+  
+  res <- detect_event(clim)
+  mhw <- res$clim
+  
+  mhw %>% 
+    filter(t> as.Date("2022-01-01")) %>% 
+ggplot(aes(x = t, y = temp))+
+    geom_line() +
+  geom_flame(aes(y2 = thresh))
+  
 ```
 
