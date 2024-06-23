@@ -9,12 +9,13 @@ editor_options:
 ```{r libraries}
 library(tidyverse)
 library(heatwaveR)
+library(Utilities.Package)
 ```
 
 
 ```{r data opening}
 
-list <- list.files("Data/MeteoFrance", pattern=".csv", full.names = T) %>% 
+list <- list.files("Data/MeteoFrance/85", pattern=".csv", full.names = T) %>% 
   as.data.frame() %>% 
   rename(path = ".") %>% 
   filter(!str_detect(path, "champs")) %>% 
@@ -33,8 +34,8 @@ for(i in 1:nrow(list)){
   
 }
 
-saveRDS(df,"Data/MeteoFrance/Data_Weather.rds")
-df <- readRDS("Data/MeteoFrance/Data_Weather.rds")
+saveRDS(df,"Data/MeteoFrance/Data_Weather_85.rds")
+df <- readRDS("Data/MeteoFrance/Data_Weather_85.rds")
 ```
 
 ```{r first process}
@@ -46,10 +47,27 @@ df_date <- df  %>%
           max_date = max(date,na.rm = T),
           n = n())
 
+selected_site <- df_date %>% 
+  filter(n ==max(n)) %>% 
+  pull(NOM_USUEL)
+
 df_sub <- df %>% 
-  dplyr::filter(NOM_USUEL == "NANTES-BOUGUENAIS") %>% 
+  dplyr::filter(NOM_USUEL == selected_site,
+                !is.na(`T`)) %>% 
   dplyr::select(NOM_USUEL, LAT,LON,,AAAAMMJJHH,`T`, TN, TX, T10, T20, T50,T100) %>% 
-  mutate(date = as.POSIXct(strptime(AAAAMMJJHH, format = "%Y%m%d%H")))
+  mutate(date = as.POSIXct(as.character(AAAAMMJJHH), format = "%Y%m%d%H",tz = "UTC"))
+
+
+ggplot(df_sub)+
+  # geom_hex(aes(x = date, y = `T`), bins = 10)+
+  geom_line(aes(x = date, y = `T`))+
+  ylab("Temperature (°C)")+
+  xlab("Date")+
+  theme_Bede()+
+  theme(axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        axis.title.x = element_text(size = 20),
+        axis.title.y = element_text(size = 20))
 
 df_heatwaveR <- df_sub %>% 
   rename(t = date,
@@ -58,13 +76,15 @@ df_heatwaveR <- df_sub %>%
   mutate(t = as.Date(t)) %>% 
   group_by(t) %>% 
   reframe(temp = max(temp,na.rm = T)) %>% 
-  filter(t > as.Date("1979-12-31"))
+  dplyr::filter(t > as.Date("1948-12-31"))
 
-  clim <- ts2clm(df_heatwaveR, climatologyPeriod = c("1980-01-01", "2024-06-19"))
   
-  event <- detect_event(clim,categories = T)
+
+  clim <- ts2clm(df_heatwaveR, climatologyPeriod = c("1949-01-01", "2024-06-23"))
   
-  res <- detect_event(clim)
+  event <- detect_event(clim,categories = T,minDuration = 3)
+  
+  res <- detect_event(clim, minDuration = 3)
   mhw <- res$clim
   
   mhw %>% 
@@ -74,4 +94,27 @@ ggplot(aes(x = t, y = temp))+
   geom_flame(aes(y2 = thresh))
   
 ```
+
+```{r frequency of heatwaves as define in Perkins and Alexander (2013)}
+
+freq_heatwave <- event %>% 
+  mutate(year = substr(as.character(date_start),1,4)) %>% 
+  group_by(year) %>% 
+  reframe(n = n())
+
+intensity_heatwave <- event %>% 
+  mutate(year = substr(as.character(date_start),1,4)) %>% 
+  group_by(year) %>% 
+  reframe(intensity = sum(intensity_cumulative))
+
+ggplot(freq_heatwave, aes(x = as.numeric(year), y = n))+
+  geom_line()+
+  geom_smooth(method = "gam")
+
+ggplot(intensity_heatwave, aes(x = as.numeric(year), y = intensity))+
+  geom_line()+
+  geom_smooth(method = "gam")
+
+```
+
 
