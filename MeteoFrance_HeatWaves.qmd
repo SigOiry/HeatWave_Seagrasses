@@ -1,0 +1,229 @@
+---
+title: "MeteoFrance Heatwaves Records"
+format: html
+editor: source
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r libraries}
+library(tidyverse)
+library(heatwaveR)
+library(Utilities.Package)
+```
+
+
+```{r data opening}
+
+list <- list.files("Data/MeteoFrance/85", pattern=".csv", full.names = T) %>% 
+  as.data.frame() %>% 
+  rename(path = ".") %>% 
+  filter(!str_detect(path, "champs")) %>% 
+  mutate(name = gsub(".*/","",path),
+         date_start = substr(name,6,9),
+         date_end = substr(name,11,14))
+
+for(i in 1:nrow(list)){
+  a <- read_delim(list$path[i], 
+    delim = ";", escape_double = FALSE, trim_ws = TRUE)
+  if(i == 1){
+    df <- a
+  }else{
+    df <- rbind(df,a)
+  }
+  
+}
+
+saveRDS(df,"Data/MeteoFrance/Data_Weather_85.rds")
+df <- readRDS("Data/MeteoFrance/Data_Weather_85.rds")
+```
+
+```{r first process}
+
+df_date <- df  %>% 
+  mutate(date = as.POSIXct(strptime(AAAAMMJJHH, format = "%Y%m%d%H"))) %>% 
+  group_by(NOM_USUEL) %>% 
+  reframe(min_date = min(date,na.rm = T),
+          max_date = max(date,na.rm = T),
+          n = n())
+
+selected_site <- df_date %>% 
+  filter(n ==max(n)) %>% 
+  pull(NOM_USUEL)
+
+df_sub <- df %>% 
+  dplyr::filter(NOM_USUEL == selected_site,
+                !is.na(`T`)) %>% 
+  dplyr::select(NOM_USUEL, LAT,LON,,AAAAMMJJHH,`T`, TN, TX, T10, T20, T50,T100) %>% 
+  mutate(date = as.POSIXct(as.character(AAAAMMJJHH), format = "%Y%m%d%H",tz = "UTC"))
+
+
+ggplot(df_sub)+
+  # geom_hex(aes(x = date, y = `T`), bins = 10)+
+  geom_line(aes(x = date, y = `T`))+
+  ylab("Temperature (°C)")+
+  xlab("Date")+
+  theme_Bede()+
+  theme(axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        axis.title.x = element_text(size = 20),
+        axis.title.y = element_text(size = 20))
+
+df_heatwaveR <- df_sub %>% 
+  rename(t = date,
+         temp = `T`) %>% 
+  dplyr::select(t,temp) %>% 
+  mutate(t = as.Date(t)) %>% 
+  group_by(t) %>% 
+  reframe(temp = max(temp,na.rm = T)) %>% 
+  dplyr::filter(t > as.Date("1948-12-31"))
+
+  
+
+  clim <- ts2clm(df_heatwaveR, climatologyPeriod = c("1949-01-01", "2024-06-23"))
+  
+  event <- detect_event(clim,categories = T,minDuration = 3)
+  
+  res <- detect_event(clim, minDuration = 3)
+  mhw <- res$clim
+  
+#   mhw %>% 
+#     filter(t> as.Date("2022-01-01")) %>% 
+# ggplot(aes(x = t, y = temp))+
+#     geom_line() +
+#   geom_flame(aes(y2 = thresh))
+  
+```
+
+```{r frequency of heatwaves as define in Perkins and Alexander (2013)}
+
+freq_heatwave <- event %>% 
+  mutate(year = substr(as.character(date_start),1,4)) %>% 
+  group_by(year) %>% 
+  reframe(value = n()) %>% 
+  mutate(data = "Frequency")
+
+intensity_heatwave <- event %>% 
+  mutate(year = substr(as.character(date_start),1,4)) %>% 
+  group_by(year) %>% 
+  reframe(value = sum(intensity_cumulative)) %>% 
+  mutate(data = "Intensity") %>% 
+  mutate(value = sqrt(value*value))
+
+
+df_heatwaves <- rbind(freq_heatwave,intensity_heatwave) %>% 
+  pivot_wider(names_from = data, values_from = value)
+
+coeff=30
+ggplot(df_heatwaves, aes(x=as.numeric(year))) +
+  geom_point( aes(y=Frequency), color = "blue") +
+  geom_smooth( aes(y=Frequency), color = "blue",method = "gam")+
+  geom_point( aes(y=Intensity / coeff), color = "red") +
+  geom_smooth( aes(y=Intensity / coeff), color = "red",method = "gam")+
+  scale_y_continuous(
+    
+    # Features of the first axis
+    name = "Frequency",
+    
+    # Add a second axis and specify its features
+    sec.axis = sec_axis(~.*coeff, name="Intensity")
+  )+
+  theme_Bede()
+
+```
+
+
+```{r cold spells}
+
+cold_clim <- ts2clm(df_heatwaveR, climatologyPeriod = c("1949-01-01", "2024-06-23"),
+                   pctile = 10)
+  res_cold <- detect_event(cold_clim, coldSpells = T)
+  event_cold <- detect_event(cold_clim,categories = T) %>% 
+    filter(intensity_cumulative < 0)
+  coldspell_clim <- res_cold$clim
+  
+  coldspell_clim %>% 
+    filter(t> as.Date("2022-01-01")) %>%
+ggplot(aes(x = t, y = temp))+
+    geom_line() +
+  geom_flame(aes(y = thresh ,y2 = temp))
+
+    
+freq_coldspells <- event_cold %>% 
+  mutate(year = substr(as.character(date_start),1,4)) %>% 
+  group_by(year) %>% 
+  reframe(value = n()) %>% 
+  mutate(data = "Frequency")
+
+intensity_coldspells <- event_cold %>% 
+  mutate(year = substr(as.character(date_start),1,4)) %>% 
+  group_by(year) %>% 
+  reframe(value = sum(intensity_cumulative)) %>% 
+  mutate(data = "Intensity") %>% 
+  mutate(value = sqrt(value*value))
+
+df_coldspells <- rbind(freq_coldspells,intensity_coldspells) %>% 
+  pivot_wider(names_from = data, values_from = value)
+
+coeff=15
+ggplot(df_coldspells, aes(x=as.numeric(year))) +
+  geom_point( aes(y=Frequency), color = "blue") +
+  geom_smooth( aes(y=Frequency), color = "blue",method = "gam")+
+  geom_point( aes(y=Intensity / coeff), color = "red") +
+  geom_smooth( aes(y=Intensity / coeff), color = "red",method = "gam")+
+  scale_y_continuous(
+    
+    # Features of the first axis
+    name = "Frequency",
+    
+    # Add a second axis and specify its features
+    sec.axis = sec_axis(~.*coeff, name="Intensity")
+  )
+
+
+
+ggplot(freq_coldspells, aes(x = as.numeric(year), y = n))+
+  geom_point()+
+  geom_smooth(method = "gam")+
+  theme_Bede()
+
+ggplot(intensity_coldspells, aes(x = as.numeric(year), y = intensity))+
+  geom_point()+
+  geom_smooth(method = "gam")+
+  scale_y_reverse()+
+  theme_Bede()
+
+
+
+```
+
+```{r}
+
+  
+event_cold <- event_cold %>% 
+  mutate(datatype = "Cold")
+
+event_hot <- event %>% 
+  mutate(datatype = "Hot")
+
+df_Bede <- event_cold  %>% 
+  bind_rows(event_hot) %>% 
+  mutate(intensity_cumulative = sqrt(abs(intensity_cumulative)))
+  
+
+ggplot(df_Bede,aes(x = date_peak, y = abs(intensity_cumulative), color = datatype))+
+  geom_point(alpha = 0.5)+
+  geom_smooth(method = "gam")
+
+df_Bede2 <- df_Bede%>% 
+  mutate(year = substr(as.character(date_peak),1,4)) %>% 
+  group_by(year, datatype) %>% 
+  reframe(value = n(),
+          cumul = sum(abs(intensity_cumulative))) 
+
+ggplot(df_Bede2, aes(x = as.numeric(year), y = value, color = datatype ))+
+  geom_point()+
+  geom_smooth(method = "loess")
+```
+
+
