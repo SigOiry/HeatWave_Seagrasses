@@ -109,11 +109,53 @@ intensity_heatwave <- event %>%
 
 ggplot(freq_heatwave, aes(x = as.numeric(year), y = n))+
   geom_line()+
-  geom_smooth(method = "gam")
+  geom_smooth(method = "gam")+
+  theme_Bede()
 
 ggplot(intensity_heatwave, aes(x = as.numeric(year), y = intensity))+
   geom_line()+
-  geom_smooth(method = "gam")
+  geom_smooth(method = "gam")+
+  theme_Bede()
+
+```
+
+
+```{r cold spells}
+
+cold_clim <- ts2clm(df_heatwaveR, climatologyPeriod = c("1949-01-01", "2024-06-23"),
+                   pctile = 10)
+  res_cold <- detect_event(cold_clim, coldSpells = T)
+  event_cold <- detect_event(cold_clim,categories = T) %>% 
+    filter(intensity_cumulative < 0)
+  coldspell_clim <- res_cold$clim
+  
+  coldspell_clim %>% 
+    filter(t> as.Date("2022-01-01")) %>%
+ggplot(aes(x = t, y = temp))+
+    geom_line() +
+  geom_flame(aes(y = thresh ,y2 = temp))
+
+    
+freq_coldspells <- event_cold %>% 
+  mutate(year = substr(as.character(date_start),1,4)) %>% 
+  group_by(year) %>% 
+  reframe(n = n())
+
+intensity_coldspells <- event_cold %>% 
+  mutate(year = substr(as.character(date_start),1,4)) %>% 
+  group_by(year) %>% 
+  reframe(intensity = sum(intensity_cumulative))
+
+ggplot(freq_coldspells, aes(x = as.numeric(year), y = n))+
+  geom_point()+
+  geom_smooth(method = "gam")+
+  theme_Bede()
+
+ggplot(intensity_coldspells, aes(x = as.numeric(year), y = intensity))+
+  geom_point()+
+  geom_smooth(method = "gam")+
+  scale_y_reverse()+
+  theme_Bede()
 
 ```
 
