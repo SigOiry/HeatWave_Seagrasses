@@ -71,7 +71,10 @@ Date_Start <- "2024-07-03 09:00"%>%
 Date_end <- "2024-07-04 18:00" %>% 
   as.POSIXct(format = "%Y-%m-%d %H:%M")
 
-low_tide_Time <- "15:00"
+low_tide_Time <- "2024-07-03 15:00" %>%
+  as.POSIXct(format = "%Y-%m-%d %H:%M")
+
+low_tide_min <- low_tide_Time - 
 
 df_profile <- data.frame(Time = Date_Start)
 
