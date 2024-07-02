@@ -11,92 +11,269 @@ library(heatwaveR)
 library(Utilities.Package)
 ```
 
-```{r curve of temparature experiment}
+```{r Profil Function}
 
-max = 35.8
-min = 20
+Make_Profile <- function(max_Air_Temp_control, 
+                         min_Air_Temp_control, 
+                         max_Air_Temp_test, 
+                         min_Air_Temp_test, 
+                         max_Water_Temp_control, 
+                         min_Water_Temp_control, 
+                         max_Water_Temp_test, 
+                         min_Water_Temp_test, 
+                         date_start, 
+                         date_end, 
+                         low_tide_time,
+                         sunrise,
+                         sunset,
+                         max_light_intensity){
+  
+  
+  
+  
+  calculate_tide <- function(initial_tide_time, start_time, end_time, tide_duration_hours = 6) {
+  initial_tide_time <- as.POSIXct(initial_tide_time, format = "%Y-%m-%d %H:%M:%S")
+  start_time <- as.POSIXct(start_time, format = "%Y-%m-%d %H:%M:%S")
+  end_time <- as.POSIXct(end_time, format = "%Y-%m-%d %H:%M:%S")
+  
+  tide_times <- data.frame(
+    Start_Time = as.POSIXct(character()),
+    Mid_Time = as.POSIXct(character()),
+    End_Time = as.POSIXct(character()),
+    Type = character(),
+    stringsAsFactors = FALSE
+  )
+  
+  time <- initial_tide_time
+  is_low_tide <- TRUE
+  while (time >= start_time) {
+    start_time_tide <- time - (tide_duration_hours / 2) * 3600
+    end_time_tide <- time + (tide_duration_hours / 2) * 3600
+    tide_times <- rbind(tide_times, data.frame(
+      Start_Time = start_time_tide,
+      Mid_Time = time,
+      End_Time = end_time_tide,
+      Type = ifelse(is_low_tide, "Low_Tide", "High_Tide")
+    ))
+    time <- time - tide_duration_hours * 3600 # 12.42 heures en secondes
+    is_low_tide <- !is_low_tide
+  }
+  
+  time <- initial_tide_time + tide_duration_hours * 3600
+  is_low_tide <- FALSE
+  while (time <= end_time) {
+    start_time_tide <- time - (tide_duration_hours / 2) * 3600
+    end_time_tide <- time + (tide_duration_hours / 2) * 3600
+    tide_times <- rbind(tide_times, data.frame(
+      Start_Time = start_time_tide,
+      Mid_Time = time,
+      End_Time = end_time_tide,
+      Type = ifelse(is_low_tide, "Low_Tide", "High_Tide")
+    ))
+    time <- time + tide_duration_hours * 3600
+    is_low_tide <- !is_low_tide
+  }
+  
+  tide_times <- tide_times[order(tide_times$Start_Time), ]
+  
+  return(tide_times)
+}
+  
+  suppressWarnings({
+  max_Air_Temp <- c(max_Air_Temp_control,max_Air_Temp_test)
+  min_Air_Temp <- c(min_Air_Temp_control,min_Air_Temp_test)
+  
+  max_Water_Temp <- c(max_Water_Temp_control,max_Water_Temp_test)
+  min_Water_Temp <- c(min_Water_Temp_control,min_Water_Temp_test)
+  
+  Date_Start <- date_start%>% 
+  as.POSIXct(format = "%Y-%m-%d %H:%M")
+  Date_end <- date_end %>% 
+  as.POSIXct(format = "%Y-%m-%d %H:%M")
 
-df_temp_experiment <- data.frame(Time_num = seq(0,23.99, by = 0.25)) %>% 
-  mutate(id = (Time_num-min(Time_num))/(max(Time_num)-min(Time_num))*2*pi,
-        Temp = (((max-min)/2)*sin( id+4))+(max+min)/2,
+low_tide_Time <- low_tide_time %>%
+  as.POSIXct(format = "%Y-%m-%d %H:%M")
+
+Intensity_Max = max_light_intensity
+
+
+
+  for (i in 1:2) {
+      max_Air = max_Air_Temp[i]
+      min_Air = min_Air_Temp[i]
+      
+      ##### Air Temperature
+      df_Air_temp <- data.frame(Time_num = seq(0,24, by = 0.25)) %>%
+        mutate(id = (Time_num-min(Time_num))/(max(Time_num)-min(Time_num))*2*pi,
+        Temp = (((max_Air-min_Air)/2)*sin( id+4))+(max_Air+min_Air)/2,
         Hour = paste(floor(Time_num), round((Time_num-floor(Time_num))*60), sep=":"),
                Hour = paste(floor(Time_num), round((Time_num-floor(Time_num))*60), sep=":"),
                Hour = case_when(nchar(Hour) == 3 ~ paste0("0",Hour,"0"),
                                 as.numeric(substr(Hour,1,2))>=10 & nchar(Hour) == 4 ~ paste0(Hour,"0"),
                                 nchar(Hour) == 4 ~ paste0("0",Hour),
                                 TRUE ~ Hour))
+      
+      
+      #### Water Temperature
+      
+      max_Water = max_Water_Temp[i]
+      min_Water = min_Water_Temp[i]
+      
 
-plot_Temp <- ggplot(df_temp_experiment)+
-  geom_line(aes(x = Time_num, y = Temp))+
-  xlab("Time")+
-  ylab("Temperature (°C)")+
-  theme_Bede()
-```
-
-```{r curve of Light Intensity experiment}
-
-Intensity_Max = 120
-sunrise = 6.25
-sunset = 22
-Duration_of_the_Day = sunset - sunrise
-
-
-
-df_light_experiment <- data.frame(Time_num = seq(0,23.99, by = 0.25)) %>% 
-  # mutate(id = (Hour-min(Hour))/(max(Hour)-min(Hour))*pi,
-        mutate(light_intensity = Intensity_Max*sin((pi/Duration_of_the_Day)*(Time_num-sunrise)),
-               light_intensity = case_when(light_intensity<0 ~ 0,
-                                           light_intensity>100 ~ 100,
-                                           TRUE ~ light_intensity),
+      df_Water_temp <- data.frame(Time_num = seq(0,24, by = 0.25)) %>%
+        mutate(id = (Time_num-min(Time_num))/(max(Time_num)-min(Time_num))*2*pi,
+        Temp = (((max_Water-min_Water)/2)*sin( id+4))+(max_Water+min_Water)/2,
+        Hour = paste(floor(Time_num), round((Time_num-floor(Time_num))*60), sep=":"),
                Hour = paste(floor(Time_num), round((Time_num-floor(Time_num))*60), sep=":"),
                Hour = case_when(nchar(Hour) == 3 ~ paste0("0",Hour,"0"),
                                 as.numeric(substr(Hour,1,2))>=10 & nchar(Hour) == 4 ~ paste0(Hour,"0"),
                                 nchar(Hour) == 4 ~ paste0("0",Hour),
                                 TRUE ~ Hour))
+      
+      #### Light Intensity 
+      
+      Duration_of_the_Day = sunset - sunrise
+      
+      df_light <- data.frame(Time_num = seq(0,23.99, by = 0.25)) %>% 
+        # mutate(id = (Hour-min(Hour))/(max(Hour)-min(Hour))*pi,
+              mutate(light_intensity = Intensity_Max*sin((pi/Duration_of_the_Day)*(Time_num-sunrise)),
+                     light_intensity = case_when(light_intensity<0 ~ 0,
+                                                 light_intensity>100 ~ 100,
+                                                 TRUE ~ light_intensity),
+                     Hour = paste(floor(Time_num), round((Time_num-floor(Time_num))*60), sep=":"),
+                     Hour = case_when(nchar(Hour) == 3 ~ paste0("0",Hour,"0"),
+                                      as.numeric(substr(Hour,1,2))>=10 & nchar(Hour) == 4 ~ paste0(Hour,"0"),
+                                      nchar(Hour) == 4 ~ paste0("0",Hour),
+                                      TRUE ~ Hour))      ### Tide 
+      
+      tide_table <- calculate_tide(low_tide_Time,Date_Start,Date_end)
+      
+      
+      ### Profile 
+      df_profile <- data.frame(Time = Date_Start)
+      while(df_profile[nrow(df_profile),1] != Date_end){
+        df_profile[nrow(df_profile)+1,1] <- df_profile[nrow(df_profile),1] + (15*60)
+      }
+      
+      
+      df_profile <- df_profile %>% 
+        mutate(Hour = substr(as.character(Time), 12, 16),
+               Hour = case_when(Hour == "" ~ "00:00",
+                                TRUE ~ Hour)) %>% 
+        left_join(df_Air_temp, by = "Hour") %>% 
+        select(-c(Time_num,id)) %>% 
+        rename(Temp_Air = Temp) %>% 
+        left_join(df_Water_temp, by = "Hour") %>% 
+        select(-c(Time_num,id)) %>%
+        rename(Temp_Water = Temp) %>%
+        left_join(df_light, by = "Hour") %>% 
+        select(-c(Time_num))
+      
+      data <- df_profile %>%
+        rowwise() %>%
+        mutate(Tide_Status = {
+          tide_row <- tide_table %>%
+            filter(Time >= Start_Time & Time <= End_Time)
+          if (nrow(tide_row) > 0) tide_row$Type[1] else NA
+        }) %>%
+        ungroup() %>% 
+        mutate(Temp = case_when(Tide_Status == "High_Tide" ~ Temp_Water,
+                                TRUE ~ Temp_Air))
+      data$tide_ID=NA
+      for (ii in 1:nrow(data)) {
+        if (ii == 1) {
+          count = 1
+          data$tide_ID[ii] = count 
+        }else{
+          if (data$Tide_Status[ii] != data$Tide_Status[ii-1]) {
+            count = count+ 1
+          }
+          data$tide_ID[ii] = count
+        }
+        
+      }
+      
+      
+      Profil <- data %>% 
+        mutate(UNIX = as.numeric(Time) %>% as.character(),
+               T_prof = as.character(round(Temp,1)*10), 
+               bin_tide = case_when(Tide_Status == "High_Tide" ~ 1, 
+                                    TRUE ~ 0),
+               light_prof = case_when(nchar(as.character(round(light_intensity))) == 3 ~ as.character(light_intensity),
+                                      nchar(as.character(round(light_intensity))) == 1 ~ paste0("00",as.character(round(light_intensity))),
+                                      TRUE ~ paste0("0",as.character(round(light_intensity)))),
+               prof = paste0(UNIX,"-",T_prof,bin_tide,light_prof,"0")) %>% 
+        pull(prof)
+               
+      
+      if(i == 1){
+        Control_df = data
+        Control_Profil = Profil
+      }else{
+        Test_df = data
+        Test_Profil = Profil
+      }
+  } ### End For loop
+  }) ### SuppressWarings
+  
+  
+polygon_table <-   Test_df %>% 
+  group_by(tide_ID) %>% 
+  reframe(Tide_Status = unique(Tide_Status), 
+          xmin = min(Time),
+          xmax = max(Time),
+          ymin = min(min_Air_Temp,min_Water_Temp),
+          ymax = max(max_Air_Temp,max_Water_Temp)) %>% 
+  rename(Tide = Tide_Status) %>% 
+  mutate(Tide = case_when(Tide == "High_Tide" ~ "High",
+                          TRUE ~ "Low"))
+  
+plot_test <- ggplot()+
+  geom_rect(data = polygon_table , aes(ymin = ymin, ymax = ymax, xmin = xmin, xmax =xmax, fill = Tide, group = tide_ID),alpha = 0.1) +
+  geom_line(data = Test_df,aes(x = Time, y = Temp))+
+  ylab("Expermental Temperature (°C)")+
+  theme_Bede()+
+  theme(axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        axis.title.y = element_text(size = 18),
+        axis.title.x = element_text(size = 18))
 
-plot_light <- ggplot(df_light_experiment)+
-  geom_line(aes(x = Time_num, y = light_intensity))+
-  xlab("Time")+
-  ylab("Light Intensity (%)")+
-  theme_Bede()
+plot_control <- ggplot()+
+  geom_rect(data = polygon_table , aes(ymin = ymin, ymax = ymax, xmin = xmin, xmax =xmax, fill = Tide, group = tide_ID),alpha = 0.1) +
+  geom_line(data = Control_df,aes(x = Time, y = Temp))+
+  ylab("Expermental Temperature (°C)")+
+  theme_Bede()+
+  theme(axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        axis.title.y = element_text(size = 18),
+        axis.title.x = element_text(size = 18))
+
+  
+return(list(Control_df = Control_df,Test_df = Test_df, Control_Profil = Control_Profil, Test_Profil = Test_Profil, plot_test = plot_test, plot_control = plot_control))
+} #### End of the function
 
 
-plot_Temp+plot_light
 ```
 
-```{r Profile Making}
+```{r}
 
-Date_Start <- "2024-07-03 09:00"%>% 
-  as.POSIXct(format = "%Y-%m-%d %H:%M")
-Date_end <- "2024-07-04 18:00" %>% 
-  as.POSIXct(format = "%Y-%m-%d %H:%M")
-
-low_tide_Time <- "2024-07-03 15:00" %>%
-  as.POSIXct(format = "%Y-%m-%d %H:%M")
-
-low_tide_min <- low_tide_Time - 
-
-df_profile <- data.frame(Time = Date_Start)
-
-while(df_profile[nrow(df_profile),1] != Date_end){
-  df_profile[nrow(df_profile)+1,1] <- df_profile[nrow(df_profile),1] + (15*60)
-}
-
-df_profile <- df_profile %>% 
-  mutate(Hour = substr(as.character(Time), 12, 16),
-         Hour = case_when(Hour == "" ~ "00:00",
-                          TRUE ~ Hour)) %>% 
-  left_join(df_temp_experiment, by = "Hour") %>% 
-  select(-c(Time_num,id)) %>% 
-  left_join(df_light_experiment, by = "Hour") %>% 
-  select(-c(Time_num))
+test <- Make_Profile(min_Air_Temp_control = 10,
+                     max_Air_Temp_control = 20,
+                    min_Air_Temp_test = 20,
+                    max_Air_Temp_test = 35.8,
+                    min_Water_Temp_control= 17, 
+                    max_Water_Temp_control = 17,
+                    min_Water_Temp_test = 17,
+                    max_Water_Temp_test = 17,
+                    date_start = "2024-07-03 09:00",
+                    date_end = "2024-07-04 18:00",
+                    low_tide_time = "2024-07-03 15:00",
+                    sunrise = 6.25,
+                    sunset = 22,
+                    max_light_intensity = 120)
 
 
-ggplot(data = df_profile, aes(x = Time))+
-  geom_line(aes(y = Temp), color = "red")+
-  geom_line(aes(y = (light_intensity)))+
-  theme_Bede()
-  
+test$plot_control
 
 ```
 
