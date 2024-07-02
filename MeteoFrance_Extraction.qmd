@@ -59,7 +59,7 @@ if (!length(list.files("Data/MeteoFrance/RAW"))) {
 
 # parsing problems with readr::read_delim
 # we use read.delim instead
-meteo <- list.files("Data/MeteoFrance/RAW", full.names = TRUE)[1:10] %>% 
+meteo <- list.files("Data/MeteoFrance/RAW", full.names = TRUE) %>% 
   map(read.delim,
       sep = ";",
       .progress = TRUE) %>%
@@ -67,8 +67,5 @@ meteo <- list.files("Data/MeteoFrance/RAW", full.names = TRUE)[1:10] %>%
   dplyr::select(NOM_USUEL, LAT,LON,,AAAAMMJJHH,`T`, TN, TX, T10, T20, T50,T100) %>% 
   dplyr::filter(!is.na(`T`))
 
+```
 
-# Map data
-# See https://r.iresmi.net/posts/2021/simplifying_polygons_layers/
-dep_sig <- read_sf(/adminexpress/adminexpress_cog_simpl_000_2022.gpkg",
-   

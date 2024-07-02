@@ -1,0 +1,100 @@
+---
+title: "Benthic_Changer_profile_Generator"
+author: "Simon Oiry"
+format: html
+editor: source
+---
+
+```{r libraries}
+library(tidyverse)
+library(heatwaveR)
+library(Utilities.Package)
+```
+
+```{r curve of temparature experiment}
+
+max = 35.8
+min = 20
+
+df_temp_experiment <- data.frame(Time_num = seq(0,23.99, by = 0.25)) %>% 
+  mutate(id = (Time_num-min(Time_num))/(max(Time_num)-min(Time_num))*2*pi,
+        Temp = (((max-min)/2)*sin( id+4))+(max+min)/2,
+        Hour = paste(floor(Time_num), round((Time_num-floor(Time_num))*60), sep=":"),
+               Hour = paste(floor(Time_num), round((Time_num-floor(Time_num))*60), sep=":"),
+               Hour = case_when(nchar(Hour) == 3 ~ paste0("0",Hour,"0"),
+                                as.numeric(substr(Hour,1,2))>=10 & nchar(Hour) == 4 ~ paste0(Hour,"0"),
+                                nchar(Hour) == 4 ~ paste0("0",Hour),
+                                TRUE ~ Hour))
+
+plot_Temp <- ggplot(df_temp_experiment)+
+  geom_line(aes(x = Time_num, y = Temp))+
+  xlab("Time")+
+  ylab("Temperature (°C)")+
+  theme_Bede()
+```
+
+```{r curve of Light Intensity experiment}
+
+Intensity_Max = 120
+sunrise = 6.25
+sunset = 22
+Duration_of_the_Day = sunset - sunrise
+
+
+
+df_light_experiment <- data.frame(Time_num = seq(0,23.99, by = 0.25)) %>% 
+  # mutate(id = (Hour-min(Hour))/(max(Hour)-min(Hour))*pi,
+        mutate(light_intensity = Intensity_Max*sin((pi/Duration_of_the_Day)*(Time_num-sunrise)),
+               light_intensity = case_when(light_intensity<0 ~ 0,
+                                           light_intensity>100 ~ 100,
+                                           TRUE ~ light_intensity),
+               Hour = paste(floor(Time_num), round((Time_num-floor(Time_num))*60), sep=":"),
+               Hour = case_when(nchar(Hour) == 3 ~ paste0("0",Hour,"0"),
+                                as.numeric(substr(Hour,1,2))>=10 & nchar(Hour) == 4 ~ paste0(Hour,"0"),
+                                nchar(Hour) == 4 ~ paste0("0",Hour),
+                                TRUE ~ Hour))
+
+plot_light <- ggplot(df_light_experiment)+
+  geom_line(aes(x = Time_num, y = light_intensity))+
+  xlab("Time")+
+  ylab("Light Intensity (%)")+
+  theme_Bede()
+
+
+plot_Temp+plot_light
+```
+
+```{r Profile Making}
+
+Date_Start <- "2024-07-03 09:00"%>% 
+  as.POSIXct(format = "%Y-%m-%d %H:%M")
+Date_end <- "2024-07-04 18:00" %>% 
+  as.POSIXct(format = "%Y-%m-%d %H:%M")
+
+low_tide_Time <- "15:00"
+
+df_profile <- data.frame(Time = Date_Start)
+
+while(df_profile[nrow(df_profile),1] != Date_end){
+  df_profile[nrow(df_profile)+1,1] <- df_profile[nrow(df_profile),1] + (15*60)
+}
+
+df_profile <- df_profile %>% 
+  mutate(Hour = substr(as.character(Time), 12, 16),
+         Hour = case_when(Hour == "" ~ "00:00",
+                          TRUE ~ Hour)) %>% 
+  left_join(df_temp_experiment, by = "Hour") %>% 
+  select(-c(Time_num,id)) %>% 
+  left_join(df_light_experiment, by = "Hour") %>% 
+  select(-c(Time_num))
+
+
+ggplot(data = df_profile, aes(x = Time))+
+  geom_line(aes(y = Temp), color = "red")+
+  geom_line(aes(y = (light_intensity)))+
+  theme_Bede()
+  
+
+```
+
+

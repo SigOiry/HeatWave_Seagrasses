@@ -15,27 +15,13 @@ library(Utilities.Package)
 
 ```{r data opening}
 
-list <- list.files("Data/MeteoFrance/85", pattern=".csv", full.names = T) %>% 
-  as.data.frame() %>% 
-  rename(path = ".") %>% 
-  filter(!str_detect(path, "champs")) %>% 
-  mutate(name = gsub(".*/","",path),
-         date_start = substr(name,6,9),
-         date_end = substr(name,11,14))
-
-for(i in 1:nrow(list)){
-  a <- read_delim(list$path[i], 
-    delim = ";", escape_double = FALSE, trim_ws = TRUE)
-  if(i == 1){
-    df <- a
-  }else{
-    df <- rbind(df,a)
-  }
-  
-}
-
-saveRDS(df,"Data/MeteoFrance/Data_Weather_85.rds")
-df <- readRDS("Data/MeteoFrance/Data_Weather_85.rds")
+df <- list.files("Data/MeteoFrance/RAW/",pattern = "HOR_departement_85_*", full.names = TRUE) %>% 
+  map(read.delim,
+      sep = ";",
+      .progress = TRUE) %>%
+  list_rbind() %>% 
+  dplyr::select(NOM_USUEL, LAT,LON,,AAAAMMJJHH,`T`, TN, TX, T10, T20, T50,T100) %>% 
+  dplyr::filter(!is.na(`T`))
 ```
 
 ```{r first process}
@@ -87,12 +73,11 @@ df_heatwaveR <- df_sub %>%
   res <- detect_event(clim, minDuration = 3)
   mhw <- res$clim
   
-#   mhw %>% 
-#     filter(t> as.Date("2022-01-01")) %>% 
-# ggplot(aes(x = t, y = temp))+
-#     geom_line() +
-#   geom_flame(aes(y2 = thresh))
-  
+  mhw %>%
+    filter(t> as.Date("2022-01-01") ) %>%
+ggplot(aes(x = t, y = temp))+
+    geom_line() +
+  geom_flame(aes(y2 = thresh))
 ```
 
 ```{r frequency of heatwaves as define in Perkins and Alexander (2013)}
@@ -226,4 +211,29 @@ ggplot(df_Bede2, aes(x = as.numeric(year), y = value, color = datatype ))+
   geom_smooth(method = "loess")
 ```
 
+```{r exemple of event for the exeriment}
+    
+ev1 <- event %>% 
+    filter(event_no == 261)
 
+mhw_event <- mhw %>%
+    filter(t> as.Date("2022-07-05") & t< as.Date("2022-07-20"))
+# ggplot(aes(x = t, y = temp))+
+#     geom_line() +
+#   geom_flame(aes(y2 = thresh))
+
+df_sub %>% 
+    filter(date> as.Date("2022-07-05") & date< as.Date("2022-07-20")) %>%
+  ggplot()+
+  # geom_hex(aes(x = date, y = `T`), bins = 10)+
+  geom_line(aes(x = date, y = `T`))+
+  geom_line(data = mhw_event, aes(x = as.POSIXct(t+0.65), y = temp))+
+  geom_flame(data = mhw_event, aes(x = as.POSIXct(t+0.65), y = temp, y2 = thresh), alpha = 0.2)+
+  ylab("Temperature (°C)")+
+  xlab("Date")+
+  theme_Bede()+
+  theme(axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        axis.title.x = element_text(size = 20),
+        axis.title.y = element_text(size = 20))
+```
