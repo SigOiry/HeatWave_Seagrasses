@@ -8,16 +8,13 @@
 
 <meta name="author" content="Simon Oiry">
 <meta name="author" content="Bede Ffinian Rowe Davies">
-<meta name="author" content="Ana I. Sousa">
 <meta name="author" content="Philippe Rosa">
-<meta name="author" content="Maria Laura Zoffoli">
-<meta name="author" content="Guillaume Brunier">
 <meta name="author" content="Pierre Gernez">
 <meta name="author" content="Laurent Barillé">
 <meta name="dcterms.date" content="2024-07-03">
 <meta name="keywords" content="Drone, Remote Sensing, Seagrass, Coastal Ecosystems, Neural Network">
 
-<title>Draft – Discriminating Seagrasses From Green Macroalgae in European Intertidal areas using high resolution multispectral drone imagery – Draft</title>
+<title>Draft – Assesing the Effect of Atmospheric HeatWaves on Reflectance and Pigment Composition of the Intertidal Seagrass Nanozostera noltei – Draft</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -51,16 +48,13 @@ ul.task-list li input[type="checkbox"] {
 </script>
 
 
-<meta name="citation_title" content="Draft -- Discriminating Seagrasses From Green Macroalgae in European Intertidal areas using high resolution multispectral drone imagery -- Draft">
-<meta name="citation_abstract" content="Coastal areas support seagrass meadows, which offer crucial ecosystem services including erosion control and carbon sequestration. However, these areas are increasingly impacted by human activities, leading to habitat fragmentation and seagrass decline. In situ surveys, traditionally performed to monitor these ecosystems face limitations on temporal and spatial coverage, particularly in intertidal zones, prompting the addition of satellite data within monitoring programs. Yet, satellite remote sensing struggles with spatial and spectral resolution, making it difficult to discriminate seagrass from other macrophytes in highly heterogenous meadows. Drone (unmanned aerial vehicles – UAV) images at a very high spatial resolution offer a promising solution to address challenges related to spatial heterogeneity and intrapixel mixture. This study focuses on using drone acquisitions with a ten spectral band sensor mirroring those of Sentinel-2, for mapping intertidal macrophytes and effectively discriminating between seagrass and green macroalgae. Nine drone flights were conducted at two different altitudes (12 m and 120 m) across heterogeneous intertidal European habitats in France and Portugal. Low altitude flights were used to train a Deep Learning classifier based on Neural Networks to discrimintate among five taxonomic classes of intertidal vegetation: Magnoliopsida (Seagrass), Chlorophyceae (Green macroalgae), Phaeophyceae (Brown algae), Rhodophyceae (Red macroalgae) and benthic Bacillariophyceae (Diatoms). Classification of drone imagery resulted in an overall accuracy of 94% across all the sites and images, covering a total area of 467 000 m². The model exhibited an accuracy of 96.4% in identifying seagrass. Importantly, seagrass and green algae can be discriminated, although they share the same pigment composition. As the algorithm was developed for a multispectral camera with ten spectral bands in the visible and near-infrared, it could be adapted to the Multi-Spectral Instrument (MSI) onboard Sentinel-2 thus offering promising perspectives for satellite remote sensing of intertidal biodiversity over lager scales.
+<meta name="citation_title" content="Draft -- Assesing the Effect of Atmospheric HeatWaves on Reflectance and Pigment Composition of the Intertidal Seagrass *Nanozostera noltei*  -- Draft">
+<meta name="citation_abstract" content="To be written
 ">
 <meta name="citation_keywords" content="Drone,Remote Sensing,Seagrass,Coastal Ecosystems,Neural Network">
 <meta name="citation_author" content="Simon Oiry">
 <meta name="citation_author" content="Bede Ffinian Rowe Davies">
-<meta name="citation_author" content="Ana I. Sousa">
 <meta name="citation_author" content="Philippe Rosa">
-<meta name="citation_author" content="Maria Laura Zoffoli">
-<meta name="citation_author" content="Guillaume Brunier">
 <meta name="citation_author" content="Pierre Gernez">
 <meta name="citation_author" content="Laurent Barillé">
 <meta name="citation_publication_date" content="2024-07-03">
@@ -159,7 +153,7 @@ ul.task-list li input[type="checkbox"] {
 <header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Draft – Discriminating Seagrasses From Green Macroalgae in European Intertidal areas using high resolution multispectral drone imagery – Draft</h1>
+      <h1 class="title">Draft – Assesing the Effect of Atmospheric HeatWaves on Reflectance and Pigment Composition of the Intertidal Seagrass <em>Nanozostera noltei</em> – Draft</h1>
           </div>
 
     
@@ -167,7 +161,7 @@ ul.task-list li input[type="checkbox"] {
       <div class="quarto-title-meta-column-start">
             <div class="quarto-title-meta-author">
           <div class="quarto-title-meta-heading">Authors</div>
-          <div class="quarto-title-meta-heading">Affiliations</div>
+          <div class="quarto-title-meta-heading">Affiliation</div>
           
                 <div class="quarto-title-meta-contents">
             <p class="author">Simon Oiry <a href="mailto:oirysimon@gmail.com" class="quarto-title-author-email"><i class="bi bi-envelope"></i></a> <a href="https://orcid.org/0000-0001-7161-5246" class="quarto-title-author-orcid"> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg=="></a></p>
@@ -186,35 +180,11 @@ ul.task-list li input[type="checkbox"] {
                       </p>
                   </div>
                       <div class="quarto-title-meta-contents">
-            <p class="author">Ana I. Sousa </p>
-          </div>
-                <div class="quarto-title-meta-contents">
-                    <p class="affiliation">
-                        ECOMARE - Laboratory for Innovation and Sustainability of Marine Biological Resources, CESAM – Centre for Environmental and Marine Studies, Department of Biology, University of Aveiro, Campus Universitário de Santiago, 3810-193 Aveiro, Portugal
-                      </p>
-                  </div>
-                      <div class="quarto-title-meta-contents">
             <p class="author">Philippe Rosa </p>
           </div>
                 <div class="quarto-title-meta-contents">
                     <p class="affiliation">
                         Institut des Substances et Organismes de la Mer, ISOMer, Nantes Université, UR 2160, F-44000 Nantes, France
-                      </p>
-                  </div>
-                      <div class="quarto-title-meta-contents">
-            <p class="author">Maria Laura Zoffoli </p>
-          </div>
-                <div class="quarto-title-meta-contents">
-                    <p class="affiliation">
-                        Consiglio Nazionale delle Ricerche, Istituto di Scienze Marine (CNR-ISMAR), 00133 Rome, Italy
-                      </p>
-                  </div>
-                      <div class="quarto-title-meta-contents">
-            <p class="author">Guillaume Brunier </p>
-          </div>
-                <div class="quarto-title-meta-contents">
-                    <p class="affiliation">
-                        BRGM French Geological Survey, Cayenne 97300, French Guiana
                       </p>
                   </div>
                       <div class="quarto-title-meta-contents">
@@ -255,7 +225,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
       <div class="abstract">
         <div class="block-title">Abstract</div>
-        <p>Coastal areas support seagrass meadows, which offer crucial ecosystem services including erosion control and carbon sequestration. However, these areas are increasingly impacted by human activities, leading to habitat fragmentation and seagrass decline. In situ surveys, traditionally performed to monitor these ecosystems face limitations on temporal and spatial coverage, particularly in intertidal zones, prompting the addition of satellite data within monitoring programs. Yet, satellite remote sensing struggles with spatial and spectral resolution, making it difficult to discriminate seagrass from other macrophytes in highly heterogenous meadows. Drone (unmanned aerial vehicles – UAV) images at a very high spatial resolution offer a promising solution to address challenges related to spatial heterogeneity and intrapixel mixture. This study focuses on using drone acquisitions with a ten spectral band sensor mirroring those of Sentinel-2, for mapping intertidal macrophytes and effectively discriminating between seagrass and green macroalgae. Nine drone flights were conducted at two different altitudes (12 m and 120 m) across heterogeneous intertidal European habitats in France and Portugal. Low altitude flights were used to train a Deep Learning classifier based on Neural Networks to discrimintate among five taxonomic classes of intertidal vegetation: Magnoliopsida (Seagrass), Chlorophyceae (Green macroalgae), Phaeophyceae (Brown algae), Rhodophyceae (Red macroalgae) and benthic Bacillariophyceae (Diatoms). Classification of drone imagery resulted in an overall accuracy of 94% across all the sites and images, covering a total area of 467 000 m². The model exhibited an accuracy of 96.4% in identifying seagrass. Importantly, seagrass and green algae can be discriminated, although they share the same pigment composition. As the algorithm was developed for a multispectral camera with ten spectral bands in the visible and near-infrared, it could be adapted to the Multi-Spectral Instrument (MSI) onboard Sentinel-2 thus offering promising perspectives for satellite remote sensing of intertidal biodiversity over lager scales.</p>
+        <p>To be written</p>
       </div>
     </div>
 
@@ -284,55 +254,21 @@ ul.task-list li input[type="checkbox"] {
 
 
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{oiry2024,
-  author = {Oiry, Simon and Ffinian Rowe Davies, Bede and I. Sousa, Ana
-    and Rosa, Philippe and Laura Zoffoli, Maria and Brunier, Guillaume
+  author = {Oiry, Simon and Ffinian Rowe Davies, Bede and Rosa, Philippe
     and Gernez, Pierre and Barillé, Laurent},
-  title = {Draft -\/- {Discriminating} {Seagrasses} {From} {Green}
-    {Macroalgae} in {European} {Intertidal} Areas Using High Resolution
-    Multispectral Drone Imagery -\/- {Draft}},
+  title = {Draft -\/- {Assesing} the {Effect} of {Atmospheric}
+    {HeatWaves} on {Reflectance} and {Pigment} {Composition} of the
+    {Intertidal} {Seagrass} {*Nanozostera} Noltei* -\/- {Draft}},
   date = {2024-07-03},
   langid = {en},
-  abstract = {Coastal areas support seagrass meadows, which offer
-    crucial ecosystem services including erosion control and carbon
-    sequestration. However, these areas are increasingly impacted by
-    human activities, leading to habitat fragmentation and seagrass
-    decline. In situ surveys, traditionally performed to monitor these
-    ecosystems face limitations on temporal and spatial coverage,
-    particularly in intertidal zones, prompting the addition of
-    satellite data within monitoring programs. Yet, satellite remote
-    sensing struggles with spatial and spectral resolution, making it
-    difficult to discriminate seagrass from other macrophytes in highly
-    heterogenous meadows. Drone (unmanned aerial vehicles – UAV) images
-    at a very high spatial resolution offer a promising solution to
-    address challenges related to spatial heterogeneity and intrapixel
-    mixture. This study focuses on using drone acquisitions with a ten
-    spectral band sensor mirroring those of Sentinel-2, for mapping
-    intertidal macrophytes and effectively discriminating between
-    seagrass and green macroalgae. Nine drone flights were conducted at
-    two different altitudes (12 m and 120 m) across heterogeneous
-    intertidal European habitats in France and Portugal. Low altitude
-    flights were used to train a Deep Learning classifier based on
-    Neural Networks to discrimintate among five taxonomic classes of
-    intertidal vegetation: Magnoliopsida (Seagrass), Chlorophyceae
-    (Green macroalgae), Phaeophyceae (Brown algae), Rhodophyceae (Red
-    macroalgae) and benthic Bacillariophyceae (Diatoms). Classification
-    of drone imagery resulted in an overall accuracy of 94\% across all
-    the sites and images, covering a total area of 467 000
-    m\textsuperscript{2}. The model exhibited an accuracy of 96.4\% in
-    identifying seagrass. Importantly, seagrass and green algae can be
-    discriminated, although they share the same pigment composition. As
-    the algorithm was developed for a multispectral camera with ten
-    spectral bands in the visible and near-infrared, it could be adapted
-    to the Multi-Spectral Instrument (MSI) onboard Sentinel-2 thus
-    offering promising perspectives for satellite remote sensing of
-    intertidal biodiversity over lager scales.}
+  abstract = {To be written}
 }
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-oiry2024" class="csl-entry quarto-appendix-citeas" role="listitem">
-Oiry, S., Ffinian Rowe Davies, B., I. Sousa, A., Rosa, P., Laura
-Zoffoli, M., Brunier, G., Gernez, P., Barillé, L., 2024. Draft --
-Discriminating Seagrasses From Green Macroalgae in European Intertidal
-areas using high resolution multispectral drone imagery -- Draft [WWW
-Document]. Remote Sensing of Environment.
+Oiry, S., Ffinian Rowe Davies, B., Rosa, P., Gernez, P., Barillé, L.,
+2024. Draft -- Assesing the Effect of Atmospheric HeatWaves on
+Reflectance and Pigment Composition of the Intertidal Seagrass
+*Nanozostera noltei* -- Draft [WWW Document]. Remote Sensing of
+Environment.
 </div></div></section></div></main>
 <!-- /main column -->
 <script id="quarto-html-after-body" type="application/javascript">
