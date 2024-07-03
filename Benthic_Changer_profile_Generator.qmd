@@ -286,8 +286,7 @@ return(list(Control_df = Control_df,Test_df = Test_df, Control_Profil = Control_
 
 ```
 
-```{r}
-
+```{r Profile Tuning}
 test <- Make_Profile(min_Air_Temp_control = 23,
                      max_Air_Temp_control = 23,
                     min_Air_Temp_test = 20,
@@ -303,7 +302,7 @@ test <- Make_Profile(min_Air_Temp_control = 23,
                     sunset = 22,
                     max_light_intensity = 120,
                     export = T,
-                    night_tide = F)
+                    night_tide = T)
 
 
 test$plot_test

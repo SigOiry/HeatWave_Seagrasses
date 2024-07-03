@@ -1,0 +1,32 @@
+project:
+  type: manuscript
+  output-dir: ../docs
+  
+execute:
+  freeze: auto
+
+format:
+  html:
+    toc: true
+    theme: spacelab
+    comments:
+      hypothesis: true
+  docx: 
+    output-file: "Simon_Drone_Paper"
+  elsevier-pdf: 
+    fig-pos: "H"
+    output-file: "Simon_Drone_Paper"
+render: 
+  - "!*.qmd"
+  - "!*.ipynb"
+  - "!*.out.ipynb"
+resources:
+  - "!*.qmd"
+  - "!*.ipynb"
+  - "!*.out.ipynb"
+  - "!*.embed.ipynb"
+
+bibliography: library.bib
+
+
+  

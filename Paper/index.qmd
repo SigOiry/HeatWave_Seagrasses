@@ -1,0 +1,87 @@
+---
+title: Draft -- Discriminating Seagrasses From Green Macroalgae in European Intertidal areas using high resolution multispectral drone imagery -- Draft
+author:
+  - name: Simon Oiry
+    orcid: 0000-0001-7161-5246
+    corresponding: true
+    email: oirysimon@gmail.com
+    roles:
+      - Investigation
+      - Writing
+      - Data acquisition
+    affiliations:
+      - Institut des Substances et Organismes de la Mer, ISOMer, Nantes Université, UR 2160, F-44000 Nantes, France
+  - name: Bede Ffinian Rowe Davies
+    corresponding: false
+    roles: 
+      - Investigation
+      - Data acquisition
+      - Revision
+    affiliations:
+      - Institut des Substances et Organismes de la Mer, ISOMer, Nantes Université, UR 2160, F-44000 Nantes, France
+  - name: Ana I. Sousa
+    corresponding: false
+    roles:
+      - Data acquisition
+      - Revision
+    affiliations:
+      - ECOMARE - Laboratory for Innovation and Sustainability of Marine Biological Resources, CESAM – Centre for Environmental and Marine Studies, Department of Biology, University of Aveiro, Campus Universitário de Santiago, 3810-193 Aveiro, Portugal
+  - name: Philippe Rosa
+    corresponding: false
+    roles: 
+      - Data acquisition
+      - Revision
+    affiliations:
+      - Institut des Substances et Organismes de la Mer, ISOMer, Nantes Université, UR 2160, F-44000 Nantes, France
+  - name: Maria Laura Zoffoli
+    corresponding: false
+    roles: 
+      - Data acquisition
+      - Revision
+    affiliations:
+      - Consiglio Nazionale delle Ricerche, Istituto di Scienze Marine (CNR-ISMAR), 00133 Rome, Italy
+  - name: Guillaume Brunier
+    corresponding: false
+    roles: 
+      - Data acquisition
+      - Revision
+    affiliations:
+      - BRGM French Geological Survey, Cayenne 97300, French Guiana
+  - name: Pierre Gernez
+    corresponding: false
+    roles: 
+      - Investigation
+      - Data acquisition
+      - Revision
+    affiliations:
+      - Institut des Substances et Organismes de la Mer, ISOMer, Nantes Université, UR 2160, F-44000 Nantes, France
+  - name: Laurent Barillé
+    corresponding: false
+    roles: 
+      - Investigation
+      - Data acquisition
+      - Revision
+    affiliations:
+      - Institut des Substances et Organismes de la Mer, ISOMer, Nantes Université, UR 2160, F-44000 Nantes, France
+keywords:
+  - Drone
+  - Remote Sensing
+  - Seagrass
+  - Coastal Ecosystems
+  - Neural Network 
+abstract: |
+  Coastal areas support seagrass meadows, which offer crucial ecosystem services including erosion control and carbon sequestration. However, these areas are increasingly impacted by human activities, leading to habitat fragmentation and seagrass decline. In situ surveys, traditionally performed to monitor these ecosystems face limitations on temporal and spatial coverage, particularly in intertidal zones, prompting the addition of satellite data within monitoring programs. Yet, satellite remote sensing struggles with spatial and spectral resolution, making it difficult to discriminate seagrass from other macrophytes in highly heterogenous meadows. Drone (unmanned aerial vehicles – UAV) images at a very high spatial resolution offer a promising solution to address challenges related to spatial heterogeneity and intrapixel mixture. This study focuses on using drone acquisitions with a ten spectral band sensor mirroring those of Sentinel-2, for mapping intertidal macrophytes and effectively discriminating between seagrass and green macroalgae. Nine drone flights were conducted at two different altitudes (12 m and 120 m) across heterogeneous intertidal European habitats in France and Portugal. Low altitude flights were used to train a Deep Learning classifier based on Neural Networks to discrimintate among five taxonomic classes of intertidal vegetation: Magnoliopsida (Seagrass), Chlorophyceae (Green macroalgae), Phaeophyceae (Brown algae), Rhodophyceae (Red macroalgae) and benthic Bacillariophyceae (Diatoms). Classification of drone imagery resulted in an overall accuracy of 94% across all the sites and images, covering a total area of 467 000 m². The model exhibited an accuracy of 96.4% in identifying seagrass. Importantly, seagrass and green algae can be discriminated, although they share the same pigment composition. As the algorithm was developed for a multispectral camera with ten spectral bands in the visible and near-infrared, it could be adapted to the Multi-Spectral Instrument (MSI) onboard Sentinel-2 thus offering promising perspectives for satellite remote sensing of intertidal biodiversity over lager scales. 
+plain-language-summary: |
+  This study demonstrates the efficacy of using drones equipped with multi-spectral sensors for mapping intertidal macrophytes, particularly seagrass, overcoming limitations of traditional in situ surveys and satellite remote sensing, with a Deep Learning classifier achieving 94% overall accuracy across diverse European habitats, and 96.4% accuracy specifically in identifying seagrass.
+key-points:
+  - An intertidal vegetation classifier has been built to be used across different study sites without losing classification accuracy. 
+  - Neural Network made to accuratly discriminates intertidal seagrasses from green algae (chlorophyceae)
+date: last-modified
+citation:
+  container-title: Remote Sensing of Environment
+number-sections: true
+notebook-links: false
+editor_options: 
+  chunk_output_type: console
+csl: RSE.csl
+---

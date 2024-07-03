@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.45">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Simon Oiry">
+<meta name="author" content="Bede Ffinian Rowe Davies">
+<meta name="author" content="Ana I. Sousa">
+<meta name="author" content="Philippe Rosa">
+<meta name="author" content="Maria Laura Zoffoli">
+<meta name="author" content="Guillaume Brunier">
+<meta name="author" content="Pierre Gernez">
+<meta name="author" content="Laurent Barillé">
+<meta name="dcterms.date" content="2024-07-03">
+<meta name="keywords" content="Drone, Remote Sensing, Seagrass, Coastal Ecosystems, Neural Network">
+
+<title>Draft – Discriminating Seagrasses From Green Macroalgae in European Intertidal areas using high resolution multispectral drone imagery – Draft</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script async="" src="https://hypothes.is/embed.js"></script>
+<script>
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    document.body.classList.add('hypothesis-enabled');
+  });
+</script>
+
+
+<meta name="citation_title" content="Draft -- Discriminating Seagrasses From Green Macroalgae in European Intertidal areas using high resolution multispectral drone imagery -- Draft">
+<meta name="citation_abstract" content="Coastal areas support seagrass meadows, which offer crucial ecosystem services including erosion control and carbon sequestration. However, these areas are increasingly impacted by human activities, leading to habitat fragmentation and seagrass decline. In situ surveys, traditionally performed to monitor these ecosystems face limitations on temporal and spatial coverage, particularly in intertidal zones, prompting the addition of satellite data within monitoring programs. Yet, satellite remote sensing struggles with spatial and spectral resolution, making it difficult to discriminate seagrass from other macrophytes in highly heterogenous meadows. Drone (unmanned aerial vehicles – UAV) images at a very high spatial resolution offer a promising solution to address challenges related to spatial heterogeneity and intrapixel mixture. This study focuses on using drone acquisitions with a ten spectral band sensor mirroring those of Sentinel-2, for mapping intertidal macrophytes and effectively discriminating between seagrass and green macroalgae. Nine drone flights were conducted at two different altitudes (12 m and 120 m) across heterogeneous intertidal European habitats in France and Portugal. Low altitude flights were used to train a Deep Learning classifier based on Neural Networks to discrimintate among five taxonomic classes of intertidal vegetation: Magnoliopsida (Seagrass), Chlorophyceae (Green macroalgae), Phaeophyceae (Brown algae), Rhodophyceae (Red macroalgae) and benthic Bacillariophyceae (Diatoms). Classification of drone imagery resulted in an overall accuracy of 94% across all the sites and images, covering a total area of 467 000 m². The model exhibited an accuracy of 96.4% in identifying seagrass. Importantly, seagrass and green algae can be discriminated, although they share the same pigment composition. As the algorithm was developed for a multispectral camera with ten spectral bands in the visible and near-infrared, it could be adapted to the Multi-Spectral Instrument (MSI) onboard Sentinel-2 thus offering promising perspectives for satellite remote sensing of intertidal biodiversity over lager scales.
+">
+<meta name="citation_keywords" content="Drone,Remote Sensing,Seagrass,Coastal Ecosystems,Neural Network">
+<meta name="citation_author" content="Simon Oiry">
+<meta name="citation_author" content="Bede Ffinian Rowe Davies">
+<meta name="citation_author" content="Ana I. Sousa">
+<meta name="citation_author" content="Philippe Rosa">
+<meta name="citation_author" content="Maria Laura Zoffoli">
+<meta name="citation_author" content="Guillaume Brunier">
+<meta name="citation_author" content="Pierre Gernez">
+<meta name="citation_author" content="Laurent Barillé">
+<meta name="citation_publication_date" content="2024-07-03">
+<meta name="citation_cover_date" content="2024-07-03">
+<meta name="citation_year" content="2024">
+<meta name="citation_online_date" content="2024-07-03">
+<meta name="citation_language" content="en">
+<meta name="citation_journal_title" content="Remote Sensing of Environment">
+<meta name="citation_reference" content="citation_title=‘Blue carbon’and nutrient stocks of salt marshes at a temperate coastal lagoon (Ria de Aveiro, Portugal);,citation_author=Ana I Sousa;,citation_author=Danielle B Santos;,citation_author=Eduardo Ferreira Silva;,citation_author=Lisa P Sousa;,citation_author=Daniel FR Cleary;,citation_author=Amadeu MVM Soares;,citation_author=Ana I Lillebø;,citation_publication_date=2017;,citation_cover_date=2017;,citation_year=2017;,citation_issue=1;,citation_volume=7;,citation_journal_title=Scientific reports;,citation_publisher=Nature Publishing Group UK London;">
+<meta name="citation_reference" content="citation_title=Blue Carbon stock in Zostera noltei meadows at Ria de Aveiro coastal lagoon (Portugal) over a decade;,citation_author=Ana I Sousa;,citation_author=José Figueiredo Silva;,citation_author=Ana Azevedo;,citation_author=Ana I Lillebø;,citation_publication_date=2019;,citation_cover_date=2019;,citation_year=2019;,citation_issue=1;,citation_volume=9;,citation_journal_title=Scientific reports;,citation_publisher=Nature Publishing Group UK London;">
+<meta name="citation_reference" content="citation_title=fastai;,citation_author=Jeremy Howard;,citation_author=others;,citation_publication_date=2018;,citation_cover_date=2018;,citation_year=2018;,citation_publisher=https://github.com/fastai/fastai; GitHub;">
+<meta name="citation_reference" content="citation_title=Agisoft Metashape;,citation_author=undefined Agisoft;,citation_publication_date=2019;,citation_cover_date=2019;,citation_year=2019;,citation_fulltext_html_url=https://www.agisoft.com/;">
+<meta name="citation_reference" content="citation_title=A review of photogrammetry and photorealistic 3D models in education from a psychological perspective;,citation_author=Steve Nebel;,citation_author=Maik Beege;,citation_author=Sascha Schneider;,citation_author=Günter Daniel Rey;,citation_publication_date=2020;,citation_cover_date=2020;,citation_year=2020;,citation_volume=5;,citation_conference_title=Frontiers in education;,citation_conference=Frontiers Media SA;">
+<meta name="citation_reference" content="citation_title=NIH Image to ImageJ: 25 years of image analysis;,citation_author=Caroline A Schneider;,citation_author=Wayne S Rasband;,citation_author=Kevin W Eliceiri;,citation_publication_date=2012;,citation_cover_date=2012;,citation_year=2012;,citation_issue=7;,citation_volume=9;,citation_journal_title=Nature methods;,citation_publisher=Nature Publishing Group;">
+<meta name="citation_reference" content="citation_title=The planetary role of seagrass conservation;,citation_author=Richard KF Unsworth;,citation_author=Leanne C Cullen-Unsworth;,citation_author=Benjamin LH Jones;,citation_author=Richard J Lilley;,citation_publication_date=2022;,citation_cover_date=2022;,citation_year=2022;,citation_issue=6606;,citation_volume=377;,citation_journal_title=Science;,citation_publisher=American Association for the Advancement of Science;">
+<meta name="citation_reference" content="citation_title=Global wetland outlook: state of the world’s wetlands and their services to people;,citation_author=Royal C Gardner;,citation_author=C Finlayson;,citation_publication_date=2018;,citation_cover_date=2018;,citation_year=2018;">
+<meta name="citation_reference" content="citation_title=Remote sensing in seagrass ecology: coupled dynamics between migratory herbivorous birds and intertidal meadows observed by satellite during four decades;,citation_author=Maria Laura Zoffoli;,citation_author=Pierre Gernez;,citation_author=Simon Oiry;,citation_author=Laurent Godet;,citation_author=Sébastien Dalloyau;,citation_author=Bede Ffinian Rowe Davies;,citation_author=Laurent Barillé;,citation_publication_date=2022-12;,citation_cover_date=2022-12;,citation_year=2022;,citation_doi=10.1002/rse2.319;,citation_issn=2056-3485;,citation_journal_title=Remote Sensing in Ecology and Conservation;">
+<meta name="citation_reference" content="citation_title=Stabilizing effects of seagrass meadows on coastal water benthic food webs;,citation_author=Emilia Jankowska;,citation_author=Loı̈c N Michel;,citation_author=Gilles Lepoint;,citation_author=Maria Włodarska-Kowalczuk;,citation_publication_date=2019;,citation_cover_date=2019;,citation_year=2019;,citation_volume=510;,citation_journal_title=Journal of Experimental Marine Biology and Ecology;,citation_publisher=Elsevier;">
+<meta name="citation_reference" content="citation_title=Seagrasses in an era of ocean warming: a review;,citation_author=Hung Manh Nguyen;,citation_author=Peter J Ralph;,citation_author=Lázaro Marı́n-Guirao;,citation_author=Mathieu Pernice;,citation_author=Gabriele Procaccini;,citation_publication_date=2021;,citation_cover_date=2021;,citation_year=2021;,citation_issue=5;,citation_volume=96;,citation_journal_title=Biological Reviews;,citation_publisher=Wiley Online Library;">
+<meta name="citation_reference" content="citation_title=Latitudinal patterns in european seagrass carbon reserves: influence of seasonal fluctuations versus short-term stress and disturbance events;,citation_author=Laura M Soissons;,citation_author=Eeke P Haanstra;,citation_author=Marieke M Van Katwijk;,citation_author=Ragnhild Asmus;,citation_author=Isabelle Auby;,citation_author=Laurent Barillé;,citation_author=Fernando G Brun;,citation_author=Patricia G Cardoso;,citation_author=Nicolas Desroy;,citation_author=Jerome Fournier;,citation_author=others;,citation_publication_date=2018;,citation_cover_date=2018;,citation_year=2018;,citation_volume=9;,citation_journal_title=Frontiers in Plant Science;,citation_publisher=Frontiers Media SA;">
+<meta name="citation_reference" content="citation_title=A global crisis for seagrass ecosystems;,citation_author=Robert J Orth;,citation_author=Tim JB Carruthers;,citation_author=William C Dennison;,citation_author=Carlos M Duarte;,citation_author=James W Fourqurean;,citation_author=Kenneth L Heck;,citation_author=A Randall Hughes;,citation_author=Gary A Kendrick;,citation_author=W Judson Kenworthy;,citation_author=Suzanne Olyarnik;,citation_author=others;,citation_publication_date=2006;,citation_cover_date=2006;,citation_year=2006;,citation_issue=12;,citation_volume=56;,citation_journal_title=Bioscience;,citation_publisher=American Institute of Biological Sciences;">
+<meta name="citation_reference" content="citation_title=Which genes in a typical intertidal seagrass (Zostera japonica) indicate copper-, lead-, and cadmium pollution?;,citation_author=Haiying Lin;,citation_author=Tao Sun;,citation_author=Yi Zhou;,citation_author=Ruiting Gu;,citation_author=Xiaomei Zhang;,citation_author=Wei Yang;,citation_publication_date=2018;,citation_cover_date=2018;,citation_year=2018;,citation_volume=9;,citation_journal_title=Frontiers in Plant Science;,citation_publisher=Frontiers Media SA;">
+<meta name="citation_reference" content="citation_title=Toward a coordinated global observing system for seagrasses and marine macroalgae;,citation_author=J Emmett Duffy;,citation_author=Lisandro Benedetti-Cecchi;,citation_author=Joaquin Trinanes;,citation_author=Frank E Muller-Karger;,citation_author=Rohani Ambo-Rappe;,citation_author=Christoffer Boström;,citation_author=Alejandro H Buschmann;,citation_author=Jarrett Byrnes;,citation_author=Robert G Coles;,citation_author=Joel Creed;,citation_author=others;,citation_publication_date=2019;,citation_cover_date=2019;,citation_year=2019;,citation_volume=6;,citation_journal_title=Frontiers in Marine Science;,citation_publisher=Frontiers Media SA;">
+<meta name="citation_reference" content="citation_title=Recent trend reversal for declining European seagrass meadows;,citation_author=Carmen B Los Santos;,citation_author=Dorte Krause-Jensen;,citation_author=Teresa Alcoverro;,citation_author=Núria Marbà;,citation_author=Carlos M Duarte;,citation_author=Marieke M Van Katwijk;,citation_author=Marta Pérez;,citation_author=Javier Romero;,citation_author=José L Sánchez-Lizaso;,citation_author=Guillem Roca;,citation_author=others;,citation_publication_date=2019;,citation_cover_date=2019;,citation_year=2019;,citation_issue=1;,citation_volume=10;,citation_journal_title=Nature communications;,citation_publisher=Nature Publishing Group UK London;">
+<meta name="citation_reference" content="citation_title=Decadal increase in the ecological status of a North-Atlantic intertidal seagrass meadow observed with multi-mission satellite time-series;,citation_abstract=Seagrass meadows are monitored in the frame of several environmental programs worldwide, including the Water Framework Directive (WFD), to evaluate the ecological status of European coastal and transitional water bodies. The large size, spatial complexity, and interannual variability of seagrass ecosystems significantly challenge field monitoring. In this study, a multi-mission satellite time-series was used to estimate long-term changes in seagrass status in a macrotidal system dominated by Zostera noltei, at Bourgneuf Bay (French Atlantic coast). Metrics of seagrass extent and density were obtained from Earth Observation (EO) using validated and inter-calibrated Landsat, SPOT and Sentinel2 data from 1985 to 2020. The information provided by satellite data made it possible to compute and compare several seagrass indicators currently in use in several European countries (France, Portugal and UK) within the WFD. Both the seagrass extent and meadow-averaged density displayed increasing trends since 1985. A time-series of merged observations from various satellites revealed a high degree of interannual variability in seagrass extent, with abrupt losses (up to 50;,citation_author=Maria Laura Zoffoli;,citation_author=Pierre Gernez;,citation_author=Laurent Godet;,citation_author=Steef Peters;,citation_author=Simon Oiry;,citation_author=Laurent Barillé;,citation_publication_date=2021-11;,citation_cover_date=2021-11;,citation_year=2021;,citation_fulltext_html_url=https://linkinghub.elsevier.com/retrieve/pii/S1470160X21006981;,citation_doi=10.1016/j.ecolind.2021.108033;,citation_issn=1470160X;,citation_volume=130;,citation_journal_title=Ecological Indicators;,citation_publisher=Elsevier;">
+<meta name="citation_reference" content="citation_title=Assessment of global habitat suitability and risk of ocean green tides;,citation_author=Zhongyuan Wang;,citation_author=Zhixiang Fang;,citation_author=Jianfeng Liang;,citation_author=Xiao Song;,citation_publication_date=2022;,citation_cover_date=2022;,citation_year=2022;,citation_volume=119;,citation_journal_title=Harmful Algae;,citation_publisher=Elsevier;">
+<meta name="citation_reference" content="citation_title=Essential ocean variables for global sustained observations of biodiversity and ecosystem changes;,citation_abstract=Sustained observations of marine biodiversity and ecosystems focused on specific conservation and management problems are needed around the world to effectively mitigate or manage changes resulting from anthropogenic pressures. These observations, while complex and expensive, are required by the international scientific, governance and policy communities to provide baselines against which the effects of human pressures and climate change may be measured and reported, and resources allocated to implement solutions. To identify biological and ecological essential ocean variables (EOVs) for implementation within a global ocean observing system that is relevant for science, informs society, and technologically feasible, we used a driver-pressure-state-impact-response (DPSIR) model. We (1) examined relevant international agreements to identify societal drivers and pressures on marine resources and ecosystems, (2) evaluated the temporal and spatial scales of variables measured by 100+ observing programs, and (3) analysed the impact and scalability of these variables and how they contribute to address societal and scientific issues. EOVs were related to the status of ecosystem components (phytoplankton and zooplankton biomass and diversity, and abundance and distribution of fish, marine turtles, birds and mammals), and to the extent and health of ecosystems (cover and composition of hard coral, seagrass, mangrove and macroalgal canopy). Benthic invertebrate abundance and distribution and microbe diversity and biomass were identified as emerging EOVs to be developed based on emerging requirements and new technologies. The temporal scale at which any shifts in biological systems will be detected will vary across the EOVs, the properties being monitored and the length of the existing time-series. Global implementation to deliver useful products will require collaboration of the scientific and policy sectors and a significant commitment to improve human and infrastructure capacity across the globe, including the development of new, more automated observing technologies, and encouraging the application of international standards and best practices.;,citation_author=Patricia Miloslavich;,citation_author=Nicholas J. Bax;,citation_author=Samantha E. Simmons;,citation_author=Eduardo Klein;,citation_author=Ward Appeltans;,citation_author=Octavio Aburto-Oropeza;,citation_author=Melissa Andersen Garcia;,citation_author=Sonia D. Batten;,citation_author=Lisandro Benedetti-Cecchi;,citation_author=David M. Checkley;,citation_author=Sanae Chiba;,citation_author=J. Emmett Duffy;,citation_author=Daniel C. Dunn;,citation_author=Albert Fischer;,citation_author=John Gunn;,citation_author=Raphael Kudela;,citation_author=Francis Marsac;,citation_author=Frank E. Muller-Karger;,citation_author=David Obura;,citation_author=Yunne Jai Shin;,citation_publication_date=2018-06;,citation_cover_date=2018-06;,citation_year=2018;,citation_fulltext_html_url=https://onlinelibrary.wiley.com/doi/full/10.1111/gcb.14108 https://onlinelibrary.wiley.com/doi/abs/10.1111/gcb.14108 https://onlinelibrary.wiley.com/doi/10.1111/gcb.14108;,citation_doi=10.1111/GCB.14108;,citation_issn=1365-2486;,citation_volume=24;,citation_journal_title=Global Change Biology;,citation_publisher=John Wiley &amp;amp;amp; Sons, Ltd;">
+<meta name="citation_reference" content="citation_title=Essential biodiversity variables;,citation_author=Henrique Miguel Pereira;,citation_author=Simon Ferrier;,citation_author=Michele Walters;,citation_author=Gary N Geller;,citation_author=Rob HG Jongman;,citation_author=Robert J Scholes;,citation_author=Michael William Bruford;,citation_author=Neil Brummitt;,citation_author=Stuart HM Butchart;,citation_author=AC Cardoso;,citation_author=others;,citation_publication_date=2013;,citation_cover_date=2013;,citation_year=2013;,citation_issue=6117;,citation_volume=339;,citation_journal_title=Science;,citation_publisher=American Association for the Advancement of Science;">
+<meta name="citation_reference" content="citation_title=Satellite remote sensing of canopy-forming kelp on a complex coastline: a novel procedure using the Landsat image archive;,citation_author=Wiebe Nijland;,citation_author=Luba Reshitnyk;,citation_author=Emily Rubidge;,citation_publication_date=2019;,citation_cover_date=2019;,citation_year=2019;,citation_volume=220;,citation_journal_title=Remote Sensing of Environment;,citation_publisher=Elsevier;">
+<meta name="citation_reference" content="citation_title=Long-term changes in the unique and largest seagrass meadows in the Bohai sea (China) using satellite (1974–2019) and sonar data: Implication for conservation and restoration;,citation_author=Shaochun Xu;,citation_author=Shuai Xu;,citation_author=Yi Zhou;,citation_author=Shidong Yue;,citation_author=Xiaomei Zhang;,citation_author=Ruiting Gu;,citation_author=Yu Zhang;,citation_author=Yongliang Qiao;,citation_author=Mingjie Liu;,citation_publication_date=2021;,citation_cover_date=2021;,citation_year=2021;,citation_issue=5;,citation_volume=13;,citation_journal_title=Remote Sensing;,citation_publisher=MDPI;">
+<meta name="citation_reference" content="citation_title=Mapping Mediterranean seagrasses with Sentinel-2 imagery;,citation_abstract=Mediterranean seagrasses have been hailed for their numerous ecosystem services, yet they are undergoing a decline in their coverage. The major complication with resolving this tendency is the sparsity of data on their overall distribution. This study addresses the suitability of the recently launched Sentinel-2 satellite for mapping the distribution of Mediterranean seagrass meadows. A comprehensive methodology is presented which applies atmospheric and analytical water column corrections and compares the performance of three different supervised classifiers. Remote sensing of the Thermaikos Gulf, northwestern Aegean Sea (Greece, eastern Mediterranean Sea) reveals that the utilization of Support Vector Machines on water column corrected reflectances yields best accuracies. Two Mediterranean seagrasses, Posidonia oceanica and Cymodocea nodosa, cover a total submerged area of 1.48 km2 between depths of 1.4–16.5 m. With its 10-m spatial resolution and 5-day revisit frequency, Sentinel-2 imagery can mitigate the Mediterranean seagrass distribution data gap and allow better management and conservation in the future in a retrospective, time- and cost-effective fashion.;,citation_author=Dimosthenis Traganos;,citation_author=Peter Reinartz;,citation_publication_date=2018;,citation_cover_date=2018;,citation_year=2018;,citation_doi=10.1016/j.marpolbul.2017.06.075;,citation_issn=18793363;,citation_volume=134;,citation_journal_title=Marine Pollution Bulletin;,citation_publisher=Elsevier Ltd;">
+<meta name="citation_reference" content="citation_title=Providing a framework for seagrass mapping in United States coastal ecosystems using high spatial resolution satellite imagery;,citation_author=Megan M Coffer;,citation_author=David D Graybill;,citation_author=Peter J Whitman;,citation_author=Blake A Schaeffer;,citation_author=Wilson B Salls;,citation_author=Richard C Zimmerman;,citation_author=Victoria Hill;,citation_author=Marie Cindy Lebrasse;,citation_author=Jiang Li;,citation_author=Darryl J Keith;,citation_author=others;,citation_publication_date=2023;,citation_cover_date=2023;,citation_year=2023;,citation_volume=337;,citation_journal_title=Journal of Environmental Management;,citation_publisher=Elsevier;">
+<meta name="citation_reference" content="citation_title=Operation of the xanthophyll cycle in the seagrass Zostera marina in response to variable irradiance;,citation_author=PJ Ralph;,citation_author=SM Polk;,citation_author=KA Moore;,citation_author=RJ Orth;,citation_author=WO Smith Jr;,citation_publication_date=2002;,citation_cover_date=2002;,citation_year=2002;,citation_issue=2;,citation_volume=271;,citation_journal_title=Journal of Experimental Marine Biology and Ecology;,citation_publisher=Elsevier;">
+<meta name="citation_reference" content="citation_title=New Hyperspectral Procedure to Discriminate Intertidal Macroalgae;,citation_abstract=The recent development and miniaturization of hyperspectral sensors embedded in drones has allowed the acquisition of hyperspectral images with high spectral and spatial resolution. The characteristics of both the embedded sensors and drones (viewing angle, flying altitude, resolution) create opportunities to consider the use of hyperspectral imagery to map and monitor macroalgae communities. In general, the overflight of the areas to be mapped is conconmittently associated accompanied with measurements carried out in the field to acquire the spectra of previously identified objects. An alternative to these simultaneous acquisitions is to use a hyperspectral library made up of pure spectra of the different species in place, that would spare field acquisition of spectra during each flight. However, the use of such a technique requires developed appropriate procedure for testing the level of species classification that can be achieved, as well as the reproducibility of the classification over time. This study presents a novel classification approach based on the use of reflectance spectra of macroalgae acquired in controlled conditions. This overall approach developed is based on both the use of the spectral angle mapper (SAM) algorithm applied on first derivative hyperspectral data. The efficiency of this approach has been tested on a hyperspectral library composed of 16 macroalgae species, and its temporal reproducibility has been tested on a monthly survey of the spectral response of different macro-algae species. In addition, the classification results obtained with this new approach were also compared to the results obtained through the use of the most recent and robust procedure published. The classification obtained shows that the developed approach allows to perfectly discriminate the different phyla, whatever the period. At the species level, the classification approach is less effective when the individuals studied belong to phylogenetically close species (i.e., Fucus spiralis and Fucus serratus).;,citation_author=Florian Douay;,citation_author=Charles Verpoorter;,citation_author=Gwendoline Duong;,citation_author=Nicolas Spilmont;,citation_author=François Gevaert;,citation_publication_date=2022;,citation_cover_date=2022;,citation_year=2022;,citation_fulltext_html_url=https://www.mdpi.com/2072-4292/14/2/346;,citation_issue=2;,citation_doi=10.3390/rs14020346;,citation_issn=2072-4292;,citation_volume=14;,citation_journal_title=Remote Sensing;">
+<meta name="citation_reference" content="citation_title=Multi- and hyperspectral classification of soft-bottom intertidal vegetation using a spectral library for coastal biodiversity remote sensing;,citation_abstract=Monitoring biodiversity and how anthropogenic pressures impact this is critical, especially as anthropogenically driven climate change continues to affect all ecosystems. Intertidal areas are exposed to particularly high levels of pressures owing to increased population density in coastal areas. Traditional methods of monitoring intertidal areas do not provide datasets with full coverage in a cost-effective or timely manner, and so the use of remote sensing to monitor these areas is becoming more common. Monitoring of ecologically important monospecific habitats, such as seagrass beds, using remote sensing techniques is well documented. However, the ability for multispectral data to distinguish efficiently and accurately between classes of vegetation with similar pigment composition, such as seagrass and green algae, has proved difficult, often requiring hyperspectral data. A machine learning approach was used to differentiate between soft-bottom intertidal vegetation classes when exposed at low tide, comparing 6 different multi- and hyperspectral remote and in situ sensors. For the library of 366 spectra, collected across Northern Europe, high accuracy (&amp;amp;amp;gt;80;,citation_author=B F R Davies;,citation_author=Pierre Gernez;,citation_author=Andréa Geraud;,citation_author=Simon Oiry;,citation_author=Philippe Rosa;,citation_author=Maria Laura Zoffoli;,citation_author=Laurent Barillé;,citation_publication_date=2023;,citation_cover_date=2023;,citation_year=2023;,citation_fulltext_html_url=https://www.sciencedirect.com/science/article/pii/S0034425723001050;,citation_doi=10.1016/j.rse.2023.113554;,citation_issn=0034-4257;,citation_volume=290;,citation_journal_title=Remote Sensing of Environment;">
+<meta name="citation_reference" content="citation_title=The capabilities of Sentinel-MSI (2A/2B) and Landsat-OLI (8/9) in seagrass and algae species differentiation using spectral reflectance;,citation_author=Abderrazak Bannari;,citation_author=Thamer Salim Ali;,citation_author=Asma Abahussain;,citation_publication_date=2022;,citation_cover_date=2022;,citation_year=2022;,citation_issue=2;,citation_volume=18;,citation_journal_title=Ocean Science;,citation_publisher=Copernicus GmbH;">
+<meta name="citation_reference" content="citation_title=Drastic decadal decline of the seagrass Cymodocea nodosa at Gran Canaria (eastern Atlantic): interactions with the green algae Caulerpa prolifera;,citation_author=Fernando Tuya;,citation_author=Harue Hernandez-Zerpa;,citation_author=Fernando Espino;,citation_author=Ricardo Haroun;,citation_publication_date=2013;,citation_cover_date=2013;,citation_year=2013;,citation_volume=105;,citation_journal_title=Aquatic Botany;,citation_publisher=Elsevier;">
+<meta name="citation_reference" content="citation_title=Drone-based large-scale particle image velocimetry applied to tidal stream energy resource assessment;,citation_author=Iain Fairley;,citation_author=Benjamin J Williamson;,citation_author=Jason McIlvenny;,citation_author=Nicholas King;,citation_author=Ian Masters;,citation_author=Matthew Lewis;,citation_author=Simon Neill;,citation_author=David Glasby;,citation_author=Daniel Coles;,citation_author=Ben Powell;,citation_author=others;,citation_publication_date=2022;,citation_cover_date=2022;,citation_year=2022;,citation_volume=196;,citation_journal_title=Renewable Energy;,citation_publisher=Elsevier;">
+<meta name="citation_reference" content="citation_title=Use of a drone for mapping and time series image acquisition of tidal zones;,citation_author=Jaehong Oh;,citation_author=Duk-jin Kim;,citation_author=Hyoseong Lee;,citation_publication_date=2017;,citation_cover_date=2017;,citation_year=2017;,citation_issue=2;,citation_volume=27;,citation_journal_title=Journal of the Korean Institute of Intelligent Systems;,citation_publisher=Korean Institute of Intelligent Systems;">
+<meta name="citation_reference" content="citation_title=Unmanned Aerial Vehicle (UAV) applications in coastal zone management—A review;,citation_author=Richard Adade;,citation_author=Abiodun Musa Aibinu;,citation_author=Bernard Ekumah;,citation_author=Jerry Asaana;,citation_publication_date=2021;,citation_cover_date=2021;,citation_year=2021;,citation_volume=193;,citation_journal_title=Environmental Monitoring and Assessment;,citation_publisher=Springer;">
+<meta name="citation_reference" content="citation_title=Accuracy of sand beach topography surveying by drones and photogrammetry;,citation_author=Elisa Casella;,citation_author=Jan Drechsel;,citation_author=Christian Winter;,citation_author=Markus Benninghoff;,citation_author=Alessio Rovere;,citation_publication_date=2020;,citation_cover_date=2020;,citation_year=2020;,citation_volume=40;,citation_journal_title=Geo-Marine Letters;,citation_publisher=Springer;">
+<meta name="citation_reference" content="citation_title=Satellite, drone and video camera multi-platform monitoring of coastal erosion at an engineered pocket beach: A showcase for coastal management at Elmina Bay, Ghana (West Africa);,citation_author=Donatus B Angnuureng;,citation_author=KE Brempong;,citation_author=PN Jayson-Quashigah;,citation_author=OA Dada;,citation_author=SGI Akuoko;,citation_author=J Frimpomaa;,citation_author=PA Mattah;,citation_author=Rafaël Almar;,citation_publication_date=2022;,citation_cover_date=2022;,citation_year=2022;,citation_volume=53;,citation_journal_title=Regional Studies in Marine Science;,citation_publisher=Elsevier;">
+<meta name="citation_reference" content="citation_title=The unique value proposition for using drones to map coastal ecosystems;,citation_author=Karen E Joyce;,citation_author=Kate C Fickas;,citation_author=Michelle Kalamandeen;,citation_publication_date=2023;,citation_cover_date=2023;,citation_year=2023;,citation_volume=1;,citation_journal_title=Cambridge Prisms: Coastal Futures;,citation_publisher=Cambridge University Press;">
+<meta name="citation_reference" content="citation_title=Application of Deep Learning for Classification of Intertidal Eelgrass from Drone-Acquired Imagery;,citation_author=Krti Tallam;,citation_author=Nam Nguyen;,citation_author=Jonathan Ventura;,citation_author=Andrew Fricker;,citation_author=Sadie Calhoun;,citation_author=Jennifer O’Leary;,citation_author=Mauriça Fitzgibbons;,citation_author=Ian Robbins;,citation_author=Ryan K Walter;,citation_publication_date=2023;,citation_cover_date=2023;,citation_year=2023;,citation_issue=9;,citation_volume=15;,citation_journal_title=Remote Sensing;,citation_publisher=MDPI;">
+<meta name="citation_reference" content="citation_title=Monitoring the marine invasive alien species Rugulopteryx okamurae using unmanned aerial vehicles and satellites;,citation_abstract=&amp;amp;amp;lt;p&amp;gt; &amp;lt;italic&amp;gt;Rugulopteryx okamurae</italic> is a species of brown macroalgae belonging to the <italic>Dictyotaceae</italic> family and native to the north-western Pacific. As an Invasive Alien Species (IAS), it was first detected in the Strait of Gibraltar in 2015. Since then, <italic>R. okamurae</italic> has been spreading rapidly through the submerged euphotic zone, colonizing from 0 to 50 m depth and generating substantial economic and environmental impacts on the Andalusian coasts (southern Spain). More than 40;,citation_author=Mar Roca;,citation_author=Martha Bonnet Dunbar;,citation_author=Alejandro Román;,citation_author=Isabel Caballero;,citation_author=Maria Laura Zoffoli;,citation_author=Pierre Gernez;,citation_author=Gabriel Navarro;,citation_publication_date=2022-10;,citation_cover_date=2022-10;,citation_year=2022;,citation_doi=10.3389/fmars.2022.1004012;,citation_issn=2296-7745;,citation_volume=9;,citation_journal_title=Frontiers in Marine Science;">
+<meta name="citation_reference" content="citation_title=Using a UAV-Mounted multispectral camera for the monitoring of marine macrophytes;,citation_author=Alejandro Román;,citation_author=Antonio Tovar-Sánchez;,citation_author=Irene Olivé;,citation_author=Gabriel Navarro;,citation_publication_date=2021;,citation_cover_date=2021;,citation_year=2021;,citation_journal_title=Frontiers in Marine Science;,citation_publisher=Frontiers;">
+<meta name="citation_reference" content="citation_title=Topographic Analysis of Intertidal Polychaete Reefs (Sabellaria alveolata) at a Very High Spatial Resolution;,citation_abstract=In temperate coastal regions of Western Europe, the polychaete Sabellaria alveolata (Linn&amp;amp;amp;eacute;) builds large intertidal reefs of several hectares on soft-bottom substrates. These reefs are protected by the European Habitat Directive EEC/92/43 under the status of biogenic structures hosting a high biodiversity and providing ecological functions such as protection against coastal erosion. As an alternative to time-consuming field campaigns, a UAV-based Structure-from-Motion photogrammetric survey was carried out in October 2020 over Noirmoutier Island (France) where the second-largest known European reef is located in a tidal delta. A DJI Phantom 4 Multispectral UAV provided a topographic dataset at very high resolutions of 5 cm/pixel for the Digital Surface Model (DSM) and 2.63 cm/pixel for the multispectral orthomosaic images. The reef footprint was mapped using a combination of two topographic indices: the Topographic Openness Index and the Topographic Position Index. The reef structures covered an area of 8.15 ha, with 89;,citation_author=Guillaume Brunier;,citation_author=Simon Oiry;,citation_author=Yves Gruet;,citation_author=Stanislas F. Dubois;,citation_author=Laurent Barillé;,citation_publication_date=2022-01;,citation_cover_date=2022-01;,citation_year=2022;,citation_fulltext_html_url=https://www.mdpi.com/2072-4292/14/2/307;,citation_doi=10.3390/RS14020307;,citation_issn=2072-4292;,citation_volume=14;,citation_journal_title=Remote Sensing 2022, Vol. 14, Page 307;,citation_publisher=Multidisciplinary Digital Publishing Institute;">
+<meta name="citation_reference" content="citation_title=Improving intertidal reef mapping using UAV surface, red edge, and near-infrared data;,citation_author=Antoine Collin;,citation_author=Stanislas Dubois;,citation_author=Dorothée James;,citation_author=Thomas Houet;,citation_publication_date=2019;,citation_cover_date=2019;,citation_year=2019;,citation_issue=3;,citation_volume=3;,citation_journal_title=Drones;,citation_publisher=MDPI;">
+<meta name="citation_reference" content="citation_title=UAV-mounted hyperspectral mapping of intertidal macroalgae;,citation_author=Thomas Rossiter;,citation_author=Thomas Furey;,citation_author=Tim McCarthy;,citation_author=Dagmar B Stengel;,citation_publication_date=2020;,citation_cover_date=2020;,citation_year=2020;,citation_volume=242;,citation_journal_title=Estuarine, Coastal and Shelf Science;,citation_publisher=Elsevier;">
+<meta name="citation_reference" content="citation_title=Benthic Intertidal Vegetation from the Tagus Estuary and Aveiro Lagoon;,citation_author=B F R Davies;,citation_author=A I. Sousa;,citation_author=R Figueira;,citation_author=S Oiry;,citation_author=P Gernez;,citation_author=L Barillé;,citation_publication_date=2023;,citation_cover_date=2023;,citation_year=2023;,citation_doi=10.15468/n4ak6x;,citation_publisher=Université de Nantes via GBIF.org;">
+<meta name="citation_reference" content="citation_title=Spatiotemporal index standardization improves the stock assessment of northern shrimp in the Gulf of Maine;,citation_abstract=&amp;amp;amp;lt;p&amp;gt;Estimated trends in relative stock abundance are a primary input to fish stock assessments. Accurate and precise estimates are essential for successful conservation and management. Scientifically designed data collection ensures that estimates of relative abundance are unbiased. However, the statistical efficiency of a design-based estimator may be low under certain circumstances. We apply a recently developed spatiotemporal model that incorporates habitat variables to estimate a model-based abundance index for northern shrimp (Pandalus borealis) in the Gulf of Maine. We contrast this spatiotemporal index with a classical design-based index and evaluate the impacts of differences between the two abundance indices on the stock assessment. We show that using the spatiotemporal index in the assessment model greatly alters the estimates of recruitment and spawning stock biomass and the determination of stock status. Also, incorporating the spatiotemporal index leads to less retrospective bias and outperforms the model with design-based index in terms of predictive performance through a retrospective cross-validation test. Our results suggest that temporal variability of population abundance could be exaggerated by the design-based estimator, and such imprecision may greatly affect the performance of a stock assessment and subsequent development of management decisions.&amp;lt;/p&amp;gt;;,citation_author=Jie Cao;,citation_author=James T. Thorson;,citation_author=R. Anne Richards;,citation_author=Yong Chen;,citation_publication_date=2017-11;,citation_cover_date=2017-11;,citation_year=2017;,citation_doi=10.1139/cjfas-2016-0137;,citation_issn=0706-652X;,citation_volume=74;,citation_journal_title=Canadian Journal of Fisheries and Aquatic Sciences;">
+<meta name="citation_reference" content="citation_title=Seasonal spectral variation of Zostera noltii and its influence on pigment-based Vegetation Indices;,citation_author=A Bargain;,citation_author=M Robin;,citation_author=V Méléder;,citation_author=P Rosa;,citation_author=E Le Menn;,citation_author=N Harin;,citation_author=L Barillé;,citation_publication_date=2013;,citation_cover_date=2013;,citation_year=2013;,citation_volume=446;,citation_journal_title=Journal of experimental marine biology and ecology;,citation_publisher=Elsevier;">
+<meta name="citation_reference" content="citation_title=Light and photosynthesis in aquatic ecosystems;,citation_author=John TO Kirk;,citation_publication_date=1994;,citation_cover_date=1994;,citation_year=1994;">
+<meta name="citation_reference" content="citation_title=Influence of three-dimensional coral structures on hyperspectral benthic reflectance and water-leaving reflectance;,citation_author=John D Hedley;,citation_author=Maryam Mirhakak;,citation_author=Adam Wentworth;,citation_author=Heidi M Dierssen;,citation_publication_date=2018;,citation_cover_date=2018;,citation_year=2018;,citation_issue=12;,citation_volume=8;,citation_journal_title=Applied Sciences;,citation_publisher=MDPI;">
+<meta name="citation_reference" content="citation_title=In vivo absorbance spectra and the ecophysiology of reef macroalgae;,citation_author=KS Beach;,citation_author=HB Borgeas;,citation_author=NJ Nishimura;,citation_author=CM Smith;,citation_publication_date=1997;,citation_cover_date=1997;,citation_year=1997;,citation_volume=16;,citation_journal_title=Coral Reefs;,citation_publisher=Springer;">
+<meta name="citation_reference" content="citation_title=Seagrass ecophysiological performance under ocean warming and acidification;,citation_author=Tiago Repolho;,citation_author=Bernardo Duarte;,citation_author=Gisela Dionı́sio;,citation_author=José Ricardo Paula;,citation_author=Ana R Lopes;,citation_author=Inês C Rosa;,citation_author=Tiago F Grilo;,citation_author=Isabel Caçador;,citation_author=Ricardo Calado;,citation_author=Rui Rosa;,citation_publication_date=2017;,citation_cover_date=2017;,citation_year=2017;,citation_issue=1;,citation_volume=7;,citation_journal_title=Scientific Reports;,citation_publisher=Nature Publishing Group UK London;">
+<meta name="citation_reference" content="citation_title=Eutrophication and warming-driven green tides (Ulva rigida) are predicted to increase under future climate change scenarios;,citation_author=Guang Gao;,citation_author=Anthony S Clare;,citation_author=Craig Rose;,citation_author=Gary S Caldwell;,citation_publication_date=2017;,citation_cover_date=2017;,citation_year=2017;,citation_issue=1;,citation_volume=114;,citation_journal_title=Marine Pollution Bulletin;,citation_publisher=Elsevier;">
+<meta name="citation_reference" content="citation_title=Nutrients and Eutrophication;,citation_author=Michelle Devlin;,citation_author=Jon Brodie;,citation_publication_date=2023;,citation_cover_date=2023;,citation_year=2023;,citation_inbook_title=Marine Pollution–Monitoring, Management and Mitigation;">
+<meta name="citation_reference" content="citation_title=Spatial and temporal variation in spectral reflectance: Are seagrass species spectrally distinct?;,citation_author=SK Fyfe;,citation_publication_date=2003;,citation_cover_date=2003;,citation_year=2003;,citation_issue=1part2;,citation_volume=48;,citation_journal_title=Limnology and Oceanography;,citation_publisher=Wiley Online Library;">
+<meta name="citation_reference" content="citation_title=Use of hyperspectral reflectance to non-destructively estimate seagrass Zostera noltei biomass;,citation_abstract=Seagrasses are marine plants ranked worldwide amongst the most valuable coastal ecosystems. The global conservation effort requires accurate estimation of seagrass abundance and taxonomic composition. Hyperspectral reflectance has been used to estimate seagrass biomass, despite requiring destructive laboratory measurements that goes against conservation principles. Therefore, we assessed the efficiency of Zostera noltei hyperspectral reflectance to estimate its aboveground biomass in intertidal areas, having Ria de Aveiro coastal lagoon (Portugal) as a case study, with seasonal samplings during a whole year comparing (non-destructive) field- and (destructive) laboratory-based measurements of the spectral signature. Several vegetation indices (VIs) that focus on the spectral absorption of specific pigments were also tested: Normalized Difference Vegetation Indices (NDVI)-like ratios, Double Difference (DD)-like Ratios and Simple Ratios (SR). Here we show that Z. noltei hyperspectral signature, measured in the field and in the laboratory, is clearly related to the aboveground biomass of the plant along the year. We found that among the VIs, NDVI-like ratios showed higher correlation with Z. noltei aboveground biomass than the other types of VIs. Taking into consideration the sensitivity to biomass saturation, the NDVI705 was identified as the best vegetation index to estimate Z. noltei biomass during the whole year and in both type of measurements, up to a saturation level, also demonstrating the successful use of non-destructive methods. The suitability of hyperspectral reflectance measurements in order to estimate Z. noltei aboveground biomass was confirmed, confirming also the potential efficient use of field-based measurements (non-destructive) for conservation practices and sustainable management of the species in intertidal ecosystems and allowing aboveground biomass to be potentially proposed as a metric for the evaluation of seagrass healthy condition under EU policies (e.g. Water Framework Directive, Marine Strategy Framework Directive).;,citation_author=Valentina Costa;,citation_author=João Serôdio;,citation_author=Ana I. Lillebø;,citation_author=Ana I. Sousa;,citation_publication_date=2021;,citation_cover_date=2021;,citation_year=2021;,citation_fulltext_html_url=https://www.sciencedirect.com/science/article/pii/S1470160X20309572;,citation_doi=https://doi.org/10.1016/j.ecolind.2020.107018;,citation_issn=1470-160X;,citation_volume=121;,citation_journal_title=Ecological Indicators;">
+<meta name="citation_reference" content="citation_title=Impact of radiometric variability on ultra-high resolution hyperspectral imagery over aquatic vegetation: preliminary results;,citation_author=Erika Piaser;,citation_author=Andrea Berton;,citation_author=Rossano Bolpagni;,citation_author=Michele Caccia;,citation_author=Maria Beatrice Castellani;,citation_author=Andrea Coppi;,citation_author=Alice Dalla Vecchia;,citation_author=Francesca Gallivanone;,citation_author=Giovanna Sona;,citation_author=Paolo Villa;,citation_publication_date=2023;,citation_cover_date=2023;,citation_year=2023;,citation_journal_title=IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing;,citation_publisher=IEEE;">
+<meta name="citation_reference" content="citation_title=Remote sensing of coastal vegetation phenology in a cold temperate intertidal system: implications for classification of coastal habitats;,citation_author=Brigitte Légaré;,citation_author=Simon Bélanger;,citation_author=Rakesh Kumar Singh;,citation_author=Pascal Bernatchez;,citation_author=Mathieu Cusson;,citation_publication_date=2022;,citation_cover_date=2022;,citation_year=2022;,citation_issue=13;,citation_volume=14;,citation_journal_title=Remote Sensing;,citation_publisher=MDPI;">
+<meta name="citation_reference" content="citation_title=Satellite sensor requirements for monitoring essential biodiversity variables of coastal ecosystems;,citation_author=Frank E Muller-Karger;,citation_author=Erin Hestir;,citation_author=Christiana Ade;,citation_author=Kevin Turpie;,citation_author=Dar A Roberts;,citation_author=David Siegel;,citation_author=Robert J Miller;,citation_author=David Humm;,citation_author=Noam Izenberg;,citation_author=Mary Keller;,citation_author=others;,citation_publication_date=2018;,citation_cover_date=2018;,citation_year=2018;,citation_issue=3;,citation_volume=28;,citation_journal_title=Ecological applications;,citation_publisher=Wiley Online Library;">
+<meta name="citation_reference" content="citation_title=Remote Sensing and Invasive Plants in Coastal Ecosystems: What We Know So Far and Future Prospects;,citation_author=Priscila Villalobos Perna;,citation_author=Mirko Di Febbraro;,citation_author=Maria Laura Carranza;,citation_author=Flavio Marzialetti;,citation_author=Michele Innangi;,citation_publication_date=2023;,citation_cover_date=2023;,citation_year=2023;,citation_issue=2;,citation_volume=12;,citation_journal_title=Land;,citation_publisher=MDPI;">
+<meta name="citation_reference" content="citation_title=Spatiotemporally explicit prediction of future ecosystem service provisioning in response to climate change, sea level rise, and adaptation strategies;,citation_abstract=We present a framework to relate the provision of multiple, interacting ecosystem services to climate change and land use adaptation, by combining hydrological process models with statistical species’ distribution models and transfer functions to upscale plot data to the landscape scale. Functional traits of the projected plant communities predict provisional and species conservation services, whereas the hydrological model predicts water-related regulatory services. We applied the framework to coastal areas of the Baltic Sea to predict future ecosystem service outputs in yearly time steps from 2010 to 2100, based on a “high emissions” climate change scenario, a projected sea-level rise of 1.05&nbsp;m, and four land-management options corresponding to future coastal adaptation strategies. The “Hold the line” strategy implies continual pumping of excess rainwater into the sea to allow farm income from grassland usage, together with high conservation values for rare plants and meadow birds. Towards the end of the century, with an increasing sea-level rise, this results in reverse groundwater flows from sea to land and soil salinization of grasslands. Conversely, “managed realignment” implies the abandonment of pumping, thereby changing grasslands to reeds, reducing farm income and species conservation values, but promoting water retention and carbon sequestration by peat production. Between 2010 and 2100, the time series averaged across all landscape patches masked substantial spatial shifts in the outputs of ecosystem services from lower to higher elevations, emphasizing the relevance of considering both time and space. Multifunctional landscapes, by compromising between provisioning and regulatory ecosystem services, may create the response diversity needed to successfully adapt to climate change and sea-level rise.;,citation_author=Anett Schibalski;,citation_author=Michael Kleyer;,citation_author=Martin Maier;,citation_author=Boris Schröder;,citation_publication_date=2022;,citation_cover_date=2022;,citation_year=2022;,citation_fulltext_html_url=https://www.sciencedirect.com/science/article/pii/S2212041622000109;,citation_doi=https://doi.org/10.1016/j.ecoser.2022.101414;,citation_issn=2212-0416;,citation_volume=54;,citation_journal_title=Ecosystem Services;">
+<meta name="citation_reference" content="citation_title=A predictive model based on multiple coastal anthropogenic pressures explains the degradation status of a marine ecosystem: Implications for management and conservation;,citation_author=Florian Holon;,citation_author=Guilhem Marre;,citation_author=Valeriano Parravicini;,citation_author=Nicolas Mouquet;,citation_author=Thomas Bockel;,citation_author=Pierre Descamp;,citation_author=Anne-Sophie Tribot;,citation_author=Pierre Boissery;,citation_author=Julie Deter;,citation_publication_date=2018;,citation_cover_date=2018;,citation_year=2018;,citation_volume=222;,citation_journal_title=Biological Conservation;,citation_publisher=Elsevier;">
+<meta name="citation_reference" content="citation_title=Global change and acceleration of anthropic pressures on Patagonian ecosystems;,citation_author=Pablo A Marquet;,citation_author=Alejandro H Buschmann;,citation_author=Derek Corcoran;,citation_author=Patricio Andrés Dı́az;,citation_author=Taryn Fuentes-Castillo;,citation_author=René Garreaud;,citation_author=Patricio Pliscoff;,citation_author=Alejandro Salazar;,citation_publication_date=2024;,citation_cover_date=2024;,citation_year=2024;,citation_inbook_title=Conservation in Chilean Patagonia: Assessing the State of Knowledge, Opportunities, and Challenges;">
+<meta name="citation_reference" content="citation_title=Using sentinel-2 satellite imagery to develop microphytobenthos-based water quality indices in estuaries;,citation_author=Simon Oiry;,citation_author=Laurent Barillé;,citation_publication_date=2021;,citation_cover_date=2021;,citation_year=2021;,citation_volume=121;,citation_journal_title=Ecological Indicators;,citation_publisher=Elsevier;">
+<meta name="citation_reference" content="citation_title=Satellite-assisted monitoring of water quality to support the implementation of the Water Framework Directive;,citation_author=E Papathanasopoulou;,citation_author=SGH Simis;,citation_author=K Alikas;,citation_author=A Ansper;,citation_author=J Anttila;,citation_author=A Barillé;,citation_author=L Barillé;,citation_author=V Brando;,citation_author=M Bresciani;,citation_author=M Bučas;,citation_author=others;,citation_publication_date=2019;,citation_cover_date=2019;,citation_year=2019;,citation_journal_title=EOMORES white paper;">
+<meta name="citation_reference" content="citation_title=Monitoring and modelling marine zooplankton in a changing climate;,citation_author=Lavenia Ratnarajah;,citation_author=Rana Abu-Alhaija;,citation_author=Angus Atkinson;,citation_author=Sonia Batten;,citation_author=Nicholas J Bax;,citation_author=Kim S Bernard;,citation_author=Gabrielle Canonico;,citation_author=Astrid Cornils;,citation_author=Jason D Everett;,citation_author=Maria Grigoratou;,citation_author=others;,citation_publication_date=2023;,citation_cover_date=2023;,citation_year=2023;,citation_issue=1;,citation_volume=14;,citation_journal_title=Nature Communications;,citation_publisher=Nature Publishing Group UK London;">
+<meta name="citation_reference" content="citation_title=Sentinel-2 remote sensing of Zostera noltei-dominated intertidal seagrass meadows;,citation_abstract=Accurate habitat mapping methods are urgently required for the monitoring, conservation, and management of blue carbon ecosystems and their associated services. This study focuses on exposed intertidal seagrass meadows, which play a major role in the functioning of nearshore ecosystems. Using Sentinel-2 (S2) data, we demonstrate that satellite remote sensing can be used to map seagrass percent cover (SPC) and leaf biomass (SB), and to characterize its seasonal dynamics. In situ radiometric and biological data were acquired from three intertidal meadows of Zostera noltei along the European Atlantic coast in the summers of 2018 and 2019. This information allowed algorithms to estimate SPC and SB from a vegetation index to be developed and assessed. Importantly, a single SPC algorithm could consistently be used to study Z. noltei-dominated meadows at several sites along the European Atlantic coast. To analyze the seagrass seasonal cycle and to select images corresponding to its maximal development, a two-year&nbsp;S2 dataset was acquired for a French study site in Bourgneuf Bay. The potential of S2 to characterize the Z. noltei seasonal cycle was demonstrated for exposed intertidal meadows. The SPC map that best represented seagrass growth annual maximum was validated using in situ measurements, resulting in a root mean square difference of 14;,citation_author=Maria Laura Zoffoli;,citation_author=Pierre Gernez;,citation_author=Philippe Rosa;,citation_author=Anthony Le Bris;,citation_author=Vittorio E. Brando;,citation_author=Anne-Laure Barillé;,citation_author=Nicolas Harin;,citation_author=Steef Peters;,citation_author=Kathrin Poser;,citation_author=Lazaros Spaias;,citation_author=Gloria Peralta;,citation_author=Laurent Barillé;,citation_publication_date=2020;,citation_cover_date=2020;,citation_year=2020;,citation_fulltext_html_url=https://www.sciencedirect.com/science/article/pii/S0034425720303904;,citation_doi=https://doi.org/10.1016/j.rse.2020.112020;,citation_issn=0034-4257;,citation_volume=251;,citation_journal_title=Remote Sensing of Environment;">
+<meta name="citation_reference" content="citation_title=“DIRECTIVE 2000/60/EC OF THE EUROPEAN PARLIAMENT AND OF THE COUNCIL of 23 October 2000 establishing a framework for Community action in the field of water policy” or, in short, the EU Water Framework Directive;,citation_author=undefined European-Commission;,citation_publication_date=2000;,citation_cover_date=2000;,citation_year=2000;,citation_issue=1;,citation_volume=L 327;,citation_journal_title=Official Journal of the European Communities;">
+<meta name="citation_reference" content="citation_title=Angiosperms (seagrass) within the EU water framework directive: a UK perspective;,citation_author=Jo Foden;,citation_author=DP Brazier;,citation_publication_date=2007;,citation_cover_date=2007;,citation_year=2007;,citation_issue=1-6;,citation_volume=55;,citation_journal_title=Marine Pollution Bulletin;,citation_publisher=Elsevier;">
+<meta name="citation_reference" content="citation_title=One hundred priority questions for advancing seagrass conservation in Europe;,citation_author=Lina Mtwana Nordlund;,citation_author=Richard KF Unsworth;,citation_author=Sieglind Wallner-Hahn;,citation_author=Lavenia Ratnarajah;,citation_author=Pedro Beca-Carretero;,citation_author=Elmira Boikova;,citation_author=James C Bull;,citation_author=Rosa M Chefaoui;,citation_author=Carmen B Santos;,citation_author=Karine Gagnon;,citation_author=others;,citation_publication_date=2024;,citation_cover_date=2024;,citation_year=2024;,citation_journal_title=Plants, People, Planet;,citation_publisher=Wiley Online Library;">
+<meta name="citation_reference" content="citation_title=The global distribution of seagrass meadows;,citation_author=Len J McKenzie;,citation_author=Lina M Nordlund;,citation_author=Benjamin L Jones;,citation_author=Leanne C Cullen-Unsworth;,citation_author=Chris Roelfsema;,citation_author=Richard KF Unsworth;,citation_publication_date=2020;,citation_cover_date=2020;,citation_year=2020;,citation_issue=7;,citation_volume=15;,citation_journal_title=Environmental Research Letters;,citation_publisher=IOP Publishing;">
+<meta name="citation_reference" content="citation_title=Estimating near-infrared leaf reflectance from leaf structural characteristics;,citation_abstract=The relationship between near-infrared reflectance at 800 nm (NIRR) from leaves and characteristics of leaf structure known to affect photosynthesis was investigated in 48 species of alpine angiosperms. This wavelength was selected to discriminate the effects of leaf structure vs. chemical or water content on leaf reflectance. A quantitative model was first constructed correlating NIRR with leaf structural characteristics for six species, and then validated using all 48 species. Among the structural characteristics tested in the reflectance model were leaf trichome density, the presence or absence of both leaf bicoloration and a thick leaf cuticle (&amp;amp;amp;gt;1 μm), leaf thickness, the ratio of palisade mesophyll to spongy mesophyll thickness (PM/SM), the proportion of the mesophyll occupied by intercellular air spaces (%IAS), and the ratio of mesophyll cell surface area exposed to IAS (Ames) per unit leaf surface area (A), or Ames/A. Multiple regression analysis showed that measured NIRR was highly correlated with Ames/A, leaf bicoloration, and the presence of a thick leaf cuticle (r2 = 0.93). In contrast, correlations between NIRR and leaf trichome density, leaf thickness, the PM/SM ratio, or %IAS were relatively weak (r2 &amp;lt; 0.25). A model incorporating Ames/A, leaf bicoloration, and cuticle thickness predicted NIRR accurately for 48 species (r2 = 0.43; P &amp;lt; 0.01) and may be useful for linking remotely sensed data to plant structure and function.;,citation_author=Michèle R. Slaton;,citation_author=E. Raymond Hunt Jr.;,citation_author=William K. Smith;,citation_publication_date=2001;,citation_cover_date=2001;,citation_year=2001;,citation_fulltext_html_url=https://bsapubs.onlinelibrary.wiley.com/doi/abs/10.2307/2657019;,citation_issue=2;,citation_doi=https://doi.org/10.2307/2657019;,citation_volume=88;,citation_journal_title=American Journal of Botany;">
+<meta name="citation_reference" content="citation_title=Growth and Labelling of Cell Wall Components of the Brown Alga Ectocarpus in Microfluidic Chips;,citation_author=Bénédicte Charrier;,citation_author=Samuel Boscq;,citation_author=Bradley J Nelson;,citation_author=Nino F Läubli;,citation_publication_date=2021;,citation_cover_date=2021;,citation_year=2021;,citation_volume=8;,citation_journal_title=Frontiers in Marine Science;,citation_publisher=Frontiers Media SA;">
+<meta name="citation_reference" content="citation_title=Spectrometric constraint in analysis of benthic diatom biomass using monospecific cultures;,citation_author=V Méléder;,citation_author=L Barillé;,citation_author=P Launeau;,citation_author=V Carrère;,citation_author=Y Rincé;,citation_publication_date=2003;,citation_cover_date=2003;,citation_year=2003;,citation_issue=4;,citation_volume=88;,citation_journal_title=Remote Sensing of Environment;,citation_publisher=Elsevier;">
+<meta name="citation_reference" content="citation_title=Long-term climate-associated dynamics of a tropical seagrass meadow: implications for the future;,citation_author=Michael A Rasheed;,citation_author=Richard KF Unsworth;,citation_publication_date=2011;,citation_cover_date=2011;,citation_year=2011;,citation_volume=422;,citation_journal_title=Marine Ecology Progress Series;">
+<meta name="citation_reference" content="citation_title=Dramatic loss of seagrass habitat under projected climate change in the Mediterranean Sea;,citation_author=Rosa M Chefaoui;,citation_author=Carlos M Duarte;,citation_author=Ester A Serrão;,citation_publication_date=2018;,citation_cover_date=2018;,citation_year=2018;,citation_issue=10;,citation_volume=24;,citation_journal_title=Global change biology;,citation_publisher=Wiley Online Library;">
+<meta name="citation_reference" content="citation_title=Opportunities for seagrass research derived from remote sensing: A review of current methods;,citation_author=Bijeesh Kozhikkodan Veettil;,citation_author=Raymond D Ward;,citation_author=Mariana Do Amaral Camara Lima;,citation_author=Milica Stankovic;,citation_author=Pham Ngoc Hoai;,citation_author=Ngo Xuan Quang;,citation_publication_date=2020;,citation_cover_date=2020;,citation_year=2020;,citation_volume=117;,citation_journal_title=Ecological Indicators;,citation_publisher=Elsevier;">
+<meta name="citation_reference" content="citation_title=Variable importance analysis: A comprehensive review;,citation_abstract=Measuring variable importance for computational models or measured data is an important task in many applications. It has drawn our attention that the variable importance analysis (VIA) techniques were developed independently in many disciplines. We are strongly aware of the necessity to aggregate all the good practices in each discipline, and compare the relative merits of each method, so as to instruct the practitioners to choose the optimal methods to meet different analysis purposes, and to guide current research on VIA. To this end, all the good practices, including seven groups of methods, i.e., the difference-based variable importance measures (VIMs), parametric regression and related VIMs, nonparametric regression techniques, hypothesis test techniques, variance-based VIMs, moment-independent VIMs and graphic VIMs, are reviewed and compared with a numerical test example set in two situations (independent and dependent cases). For ease of use, the recommendations are provided for different types of applications, and packages as well as software for implementing these VIA techniques are collected. Prospects for future study of VIA techniques are also proposed.;,citation_author=Pengfei Wei;,citation_author=Zhenzhou Lu;,citation_author=Jingwen Song;,citation_publication_date=2015;,citation_cover_date=2015;,citation_year=2015;,citation_fulltext_html_url=https://www.sciencedirect.com/science/article/pii/S0951832015001672;,citation_doi=https://doi.org/10.1016/j.ress.2015.05.018;,citation_issn=0951-8320;,citation_volume=142;,citation_journal_title=Reliability Engineering and System Safety;">
+<meta name="citation_reference" content="citation_title=“Green tides” are overwhelming the coastline of our blue planet: taking the world’s largest example;,citation_author=Nai-hao Ye;,citation_author=Xiao-wen Zhang;,citation_author=Yu-ze Mao;,citation_author=Cheng-wei Liang;,citation_author=Dong Xu;,citation_author=Jian Zou;,citation_author=Zhi-meng Zhuang;,citation_author=Qing-yin Wang;,citation_publication_date=2011;,citation_cover_date=2011;,citation_year=2011;,citation_volume=26;,citation_journal_title=Ecological Research;,citation_publisher=Springer;">
+<meta name="citation_reference" content="citation_title=Nitrogen and phosphorus in Ulva sp. in the Galician Rias Bajas (northwest Spain): Seasonal fluctuations and influence on growth;,citation_author=R Villares;,citation_author=X Puente;,citation_author=A Carballeira;,citation_publication_date=1999;,citation_cover_date=1999;,citation_year=1999;,citation_issue=1/4;,citation_volume=15;,citation_journal_title=Boletin-Instituto Español de Oceanografia;">
+<meta name="citation_reference" content="citation_title=Les marées vertes: 40 clés pour comprendre;,citation_author=Alain Ménesguen;,citation_publication_date=2018;,citation_cover_date=2018;,citation_year=2018;">
+<meta name="citation_reference" content="citation_title=European Nitrogen Assessement-Summary for policy makers;,citation_author=Mark A Sutton;,citation_author=H Van Grinsven;,citation_author=G Billen;,citation_author=A Bleeker;,citation_author=AF Bouwman;,citation_author=O Oenema;,citation_publication_date=2011;,citation_cover_date=2011;,citation_year=2011;,citation_inbook_title=the European Nitrogen Assessment. Sources, Effects and Policy Perspectives;">
+<meta name="citation_reference" content="citation_title=Sargassum invasion of coastal environments: a growing concern;,citation_author=Clifford Louime;,citation_author=Jodany Fortune;,citation_author=Gary Gervais;,citation_publication_date=2017;,citation_cover_date=2017;,citation_year=2017;,citation_issue=1;,citation_volume=13;,citation_journal_title=American Journal of Environmental Sciences;,citation_publisher=Science Publications;">
+<meta name="citation_reference" content="citation_title=Remote sensing of algal blooms: an overview with case studies;,citation_author=Victor Klemas;,citation_publication_date=2012;,citation_cover_date=2012;,citation_year=2012;,citation_issue=1A;,citation_volume=28;,citation_journal_title=Journal of coastal research;,citation_publisher=The Coastal Education; Research Foundation 1656 Cypress Row Drive, West&nbsp;…;">
+<meta name="citation_reference" content="citation_title=Spotting Green Tides over Brittany from Space: Three Decades of Monitoring with Landsat Imagery;,citation_abstract=Green tides of macroalgae have been negatively affecting the coasts of Brittany, France, for at least five decades, caused by excessive nitrogen inputs from the farming sector. Regular areal estimates of green tide surfaces are publicly available but only from 2002 onwards. Using free and openly accessible Landsat satellite imagery archives over 35 years (1984–2019), this study explores the potential of remote sensing for detection and long-term monitoring of green macroalgae blooms. By using a Google Earth Engine (GEE) script, we were able to detect and quantify green tide surfaces using the Normalized Difference Vegetation Index (NDVI) and Normalized Difference Water Index (NDWI) at four highly affected beaches in Northern Brittany. Mean green tide coverage was derived and analyzed from 1984 to 2019, at both monthly and annual scales. Our results show important interannual and seasonal fluctuations in estimated macroalgae cover. In terms of trends over time, green tide events did not show a decrease in extent at three out of four studied sites. The observed decrease in nitrogen concentrations for the rivers draining the study sites has not resulted in a reduction of green tide extents.;,citation_author=Louise Schreyers;,citation_author=Tim Emmerik;,citation_author=Lauren Biermann;,citation_author=Yves-François Le Lay;,citation_publication_date=2021;,citation_cover_date=2021;,citation_year=2021;,citation_fulltext_html_url=https://www.mdpi.com/2072-4292/13/8/1408;,citation_issue=8;,citation_doi=10.3390/rs13081408;,citation_issn=2072-4292;,citation_volume=13;,citation_journal_title=Remote Sensing;">
+<meta name="citation_reference" content="citation_title=Monitoring intertidal golden tides dominated by Ectocarpus siliculosus using Sentinel-2 imagery;,citation_abstract=Golden seaweed tides are a global environmental and social problem, that have been occurring along Ireland’s eastern coastline since the 1990s. This study focused on analysing the spatiotemporal dynamics of golden seaweed (Ectocarpus siliculosus) coverage at Dollymount Strand in Dublin Bay (Ireland), between 2016 and 2022, and its relationship with meteorological conditions. Hyperspectral measurements in the field and Sentinel-2 imagery were utilized to monitor macroalgal blooms with a spatiotemporal resolution of 10&nbsp;m and minimum costs. The normalized difference vegetation index (NDVI) values filtered between 0.1 and 1 were used to identify the coverage of golden seaweeds. The results showed that the golden seaweed coverage extended over 99;,citation_author=Sara Haro;,citation_author=Ricardo Bermejo;,citation_author=Robert Wilkes;,citation_author=Lorraine Bull;,citation_author=Liam Morrison;,citation_publication_date=2023;,citation_cover_date=2023;,citation_year=2023;,citation_fulltext_html_url=https://www.sciencedirect.com/science/article/pii/S1569843223002753;,citation_doi=https://doi.org/10.1016/j.jag.2023.103451;,citation_issn=1569-8432;,citation_volume=122;,citation_journal_title=International Journal of Applied Earth Observation and Geoinformation;">
+<meta name="citation_reference" content="citation_title=BioIntertidal Mapper software: A satellite approach for NDVI-based intertidal habitat mapping;,citation_author=Sara Haro;,citation_author=Jonathan Jimenez-Reina;,citation_author=Ricardo Bermejo;,citation_author=Liam Morrison;,citation_publication_date=2023;,citation_cover_date=2023;,citation_year=2023;,citation_volume=24;,citation_journal_title=SoftwareX;,citation_publisher=Elsevier;">
+</head>
+
+<body>
+
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Draft – Discriminating Seagrasses From Green Macroalgae in European Intertidal areas using high resolution multispectral drone imagery – Draft</h1>
+          </div>
+
+    
+    <div class="quarto-title-meta-container">
+      <div class="quarto-title-meta-column-start">
+            <div class="quarto-title-meta-author">
+          <div class="quarto-title-meta-heading">Authors</div>
+          <div class="quarto-title-meta-heading">Affiliations</div>
+          
+                <div class="quarto-title-meta-contents">
+            <p class="author">Simon Oiry <a href="mailto:oirysimon@gmail.com" class="quarto-title-author-email"><i class="bi bi-envelope"></i></a> <a href="https://orcid.org/0000-0001-7161-5246" class="quarto-title-author-orcid"> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg=="></a></p>
+          </div>
+                <div class="quarto-title-meta-contents">
+                    <p class="affiliation">
+                        Institut des Substances et Organismes de la Mer, ISOMer, Nantes Université, UR 2160, F-44000 Nantes, France
+                      </p>
+                  </div>
+                      <div class="quarto-title-meta-contents">
+            <p class="author">Bede Ffinian Rowe Davies </p>
+          </div>
+                <div class="quarto-title-meta-contents">
+                    <p class="affiliation">
+                        Institut des Substances et Organismes de la Mer, ISOMer, Nantes Université, UR 2160, F-44000 Nantes, France
+                      </p>
+                  </div>
+                      <div class="quarto-title-meta-contents">
+            <p class="author">Ana I. Sousa </p>
+          </div>
+                <div class="quarto-title-meta-contents">
+                    <p class="affiliation">
+                        ECOMARE - Laboratory for Innovation and Sustainability of Marine Biological Resources, CESAM – Centre for Environmental and Marine Studies, Department of Biology, University of Aveiro, Campus Universitário de Santiago, 3810-193 Aveiro, Portugal
+                      </p>
+                  </div>
+                      <div class="quarto-title-meta-contents">
+            <p class="author">Philippe Rosa </p>
+          </div>
+                <div class="quarto-title-meta-contents">
+                    <p class="affiliation">
+                        Institut des Substances et Organismes de la Mer, ISOMer, Nantes Université, UR 2160, F-44000 Nantes, France
+                      </p>
+                  </div>
+                      <div class="quarto-title-meta-contents">
+            <p class="author">Maria Laura Zoffoli </p>
+          </div>
+                <div class="quarto-title-meta-contents">
+                    <p class="affiliation">
+                        Consiglio Nazionale delle Ricerche, Istituto di Scienze Marine (CNR-ISMAR), 00133 Rome, Italy
+                      </p>
+                  </div>
+                      <div class="quarto-title-meta-contents">
+            <p class="author">Guillaume Brunier </p>
+          </div>
+                <div class="quarto-title-meta-contents">
+                    <p class="affiliation">
+                        BRGM French Geological Survey, Cayenne 97300, French Guiana
+                      </p>
+                  </div>
+                      <div class="quarto-title-meta-contents">
+            <p class="author">Pierre Gernez </p>
+          </div>
+                <div class="quarto-title-meta-contents">
+                    <p class="affiliation">
+                        Institut des Substances et Organismes de la Mer, ISOMer, Nantes Université, UR 2160, F-44000 Nantes, France
+                      </p>
+                  </div>
+                      <div class="quarto-title-meta-contents">
+            <p class="author">Laurent Barillé </p>
+          </div>
+                <div class="quarto-title-meta-contents">
+                    <p class="affiliation">
+                        Institut des Substances et Organismes de la Mer, ISOMer, Nantes Université, UR 2160, F-44000 Nantes, France
+                      </p>
+                  </div>
+                    </div>
+        
+        <div class="quarto-title-meta">
+
+                      
+                <div>
+            <div class="quarto-title-meta-heading">Published</div>
+            <div class="quarto-title-meta-contents">
+              <p class="date">July 3, 2024</p>
+            </div>
+          </div>
+          
+                
+              </div>
+      </div>
+      <div class="quarto-title-meta-column-end quarto-other-formats-target">
+      <div class="quarto-alternate-formats"><div class="quarto-title-meta-heading">Other Formats</div><div class="quarto-title-meta-contents"><p><a href="Simon_Drone_Paper.docx"><i class="bi bi-file-word"></i>MS Word</a></p></div><div class="quarto-title-meta-contents"><p><a href="Simon_Drone_Paper.pdf"><i class="bi bi-file-pdf"></i>PDF (elsevier)</a></p></div></div></div>
+    </div>
+
+    <div>
+      <div class="abstract">
+        <div class="block-title">Abstract</div>
+        <p>Coastal areas support seagrass meadows, which offer crucial ecosystem services including erosion control and carbon sequestration. However, these areas are increasingly impacted by human activities, leading to habitat fragmentation and seagrass decline. In situ surveys, traditionally performed to monitor these ecosystems face limitations on temporal and spatial coverage, particularly in intertidal zones, prompting the addition of satellite data within monitoring programs. Yet, satellite remote sensing struggles with spatial and spectral resolution, making it difficult to discriminate seagrass from other macrophytes in highly heterogenous meadows. Drone (unmanned aerial vehicles – UAV) images at a very high spatial resolution offer a promising solution to address challenges related to spatial heterogeneity and intrapixel mixture. This study focuses on using drone acquisitions with a ten spectral band sensor mirroring those of Sentinel-2, for mapping intertidal macrophytes and effectively discriminating between seagrass and green macroalgae. Nine drone flights were conducted at two different altitudes (12 m and 120 m) across heterogeneous intertidal European habitats in France and Portugal. Low altitude flights were used to train a Deep Learning classifier based on Neural Networks to discrimintate among five taxonomic classes of intertidal vegetation: Magnoliopsida (Seagrass), Chlorophyceae (Green macroalgae), Phaeophyceae (Brown algae), Rhodophyceae (Red macroalgae) and benthic Bacillariophyceae (Diatoms). Classification of drone imagery resulted in an overall accuracy of 94% across all the sites and images, covering a total area of 467 000 m². The model exhibited an accuracy of 96.4% in identifying seagrass. Importantly, seagrass and green algae can be discriminated, although they share the same pigment composition. As the algorithm was developed for a multispectral camera with ten spectral bands in the visible and near-infrared, it could be adapted to the Multi-Spectral Instrument (MSI) onboard Sentinel-2 thus offering promising perspectives for satellite remote sensing of intertidal biodiversity over lager scales.</p>
+      </div>
+    </div>
+
+    <div>
+      <div class="keywords">
+        <div class="block-title">Keywords</div>
+        <p>Drone, Remote Sensing, Seagrass, Coastal Ecosystems, Neural Network</p>
+      </div>
+    </div>
+
+    <div class="quarto-other-links-text-target">
+    </div>  </div>
+</header><div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
+<div id="quarto-sidebar-toc-left" class="sidebar toc-left">
+  
+</div>
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+</div>
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+  
+
+
+
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{oiry2024,
+  author = {Oiry, Simon and Ffinian Rowe Davies, Bede and I. Sousa, Ana
+    and Rosa, Philippe and Laura Zoffoli, Maria and Brunier, Guillaume
+    and Gernez, Pierre and Barillé, Laurent},
+  title = {Draft -\/- {Discriminating} {Seagrasses} {From} {Green}
+    {Macroalgae} in {European} {Intertidal} Areas Using High Resolution
+    Multispectral Drone Imagery -\/- {Draft}},
+  date = {2024-07-03},
+  langid = {en},
+  abstract = {Coastal areas support seagrass meadows, which offer
+    crucial ecosystem services including erosion control and carbon
+    sequestration. However, these areas are increasingly impacted by
+    human activities, leading to habitat fragmentation and seagrass
+    decline. In situ surveys, traditionally performed to monitor these
+    ecosystems face limitations on temporal and spatial coverage,
+    particularly in intertidal zones, prompting the addition of
+    satellite data within monitoring programs. Yet, satellite remote
+    sensing struggles with spatial and spectral resolution, making it
+    difficult to discriminate seagrass from other macrophytes in highly
+    heterogenous meadows. Drone (unmanned aerial vehicles – UAV) images
+    at a very high spatial resolution offer a promising solution to
+    address challenges related to spatial heterogeneity and intrapixel
+    mixture. This study focuses on using drone acquisitions with a ten
+    spectral band sensor mirroring those of Sentinel-2, for mapping
+    intertidal macrophytes and effectively discriminating between
+    seagrass and green macroalgae. Nine drone flights were conducted at
+    two different altitudes (12 m and 120 m) across heterogeneous
+    intertidal European habitats in France and Portugal. Low altitude
+    flights were used to train a Deep Learning classifier based on
+    Neural Networks to discrimintate among five taxonomic classes of
+    intertidal vegetation: Magnoliopsida (Seagrass), Chlorophyceae
+    (Green macroalgae), Phaeophyceae (Brown algae), Rhodophyceae (Red
+    macroalgae) and benthic Bacillariophyceae (Diatoms). Classification
+    of drone imagery resulted in an overall accuracy of 94\% across all
+    the sites and images, covering a total area of 467 000
+    m\textsuperscript{2}. The model exhibited an accuracy of 96.4\% in
+    identifying seagrass. Importantly, seagrass and green algae can be
+    discriminated, although they share the same pigment composition. As
+    the algorithm was developed for a multispectral camera with ten
+    spectral bands in the visible and near-infrared, it could be adapted
+    to the Multi-Spectral Instrument (MSI) onboard Sentinel-2 thus
+    offering promising perspectives for satellite remote sensing of
+    intertidal biodiversity over lager scales.}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-oiry2024" class="csl-entry quarto-appendix-citeas" role="listitem">
+Oiry, S., Ffinian Rowe Davies, B., I. Sousa, A., Rosa, P., Laura
+Zoffoli, M., Brunier, G., Gernez, P., Barillé, L., 2024. Draft --
+Discriminating Seagrasses From Green Macroalgae in European Intertidal
+areas using high resolution multispectral drone imagery -- Draft [WWW
+Document]. Remote Sensing of Environment.
+</div></div></section></div></main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
