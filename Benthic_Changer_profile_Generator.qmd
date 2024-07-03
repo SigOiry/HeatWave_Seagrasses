@@ -3,6 +3,8 @@ title: "Benthic_Changer_profile_Generator"
 author: "Simon Oiry"
 format: html
 editor: source
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r libraries}
@@ -26,7 +28,9 @@ Make_Profile <- function(max_Air_Temp_control,
                          low_tide_time,
                          sunrise,
                          sunset,
-                         max_light_intensity){
+                         max_light_intensity,
+                         export = F,
+                         night_tide = T){
   
   
   
@@ -87,12 +91,12 @@ Make_Profile <- function(max_Air_Temp_control,
   min_Water_Temp <- c(min_Water_Temp_control,min_Water_Temp_test)
   
   Date_Start <- date_start%>% 
-  as.POSIXct(format = "%Y-%m-%d %H:%M")
+  as.POSIXct(format = "%Y-%m-%d %H:%M", tz = "UTC")
   Date_end <- date_end %>% 
-  as.POSIXct(format = "%Y-%m-%d %H:%M")
+  as.POSIXct(format = "%Y-%m-%d %H:%M", tz = "UTC")
 
 low_tide_Time <- low_tide_time %>%
-  as.POSIXct(format = "%Y-%m-%d %H:%M")
+  as.POSIXct(format = "%Y-%m-%d %H:%M",tz = "UTC")
 
 Intensity_Max = max_light_intensity
 
@@ -159,7 +163,14 @@ Intensity_Max = max_light_intensity
       df_profile <- df_profile %>% 
         mutate(Hour = substr(as.character(Time), 12, 16),
                Hour = case_when(Hour == "" ~ "00:00",
-                                TRUE ~ Hour)) %>% 
+                                TRUE ~ Hour),
+               Minute_num = case_when(substr(as.character(Hour), 4, 5)=="00" ~ 0,
+                                      substr(as.character(Hour), 4, 5)=="15" ~ 25,
+                                      substr(as.character(Hour), 4, 5)=="30" ~ 50,
+                                      substr(as.character(Hour), 4, 5)=="45" ~ 75),
+              Hour_num= as.numeric(substr(as.character(Hour), 1, 2)),
+              Hour_num = Hour_num + (Minute_num/100)) %>% 
+        select(-Minute_num) %>% 
         left_join(df_Air_temp, by = "Hour") %>% 
         select(-c(Time_num,id)) %>% 
         rename(Temp_Air = Temp) %>% 
@@ -168,6 +179,7 @@ Intensity_Max = max_light_intensity
         rename(Temp_Water = Temp) %>%
         left_join(df_light, by = "Hour") %>% 
         select(-c(Time_num))
+      
       
       data <- df_profile %>%
         rowwise() %>%
@@ -190,6 +202,18 @@ Intensity_Max = max_light_intensity
           }
           data$tide_ID[ii] = count
         }
+        
+      }
+      
+      if (night_tide == F) {
+        
+        data <- data %>% 
+          mutate(Tide_Status = case_when(Hour_num <= sunrise+1 ~ "High_Tide",
+                                         Hour_num >= sunset-1 ~ "High_Tide",
+                                         TRUE ~ Tide_Status),
+                 Temp = case_when(Hour_num <= sunrise+1 ~ Temp_Water,
+                                         Hour_num >= sunset-1 ~ Temp_Water,
+                                         TRUE ~ Temp))
         
       }
       
@@ -248,6 +272,13 @@ plot_control <- ggplot()+
         axis.title.y = element_text(size = 18),
         axis.title.x = element_text(size = 18))
 
+if(export == T){
+  
+  write_delim(as.data.frame(Test_Profil), "Output/Chamber_Profile/Test/Profile.txt", delim = " ")
+  write_delim(as.data.frame(Control_Profil), "Output/Chamber_Profile/Control/Profile.txt", delim = " ")
+  
+}
+
   
 return(list(Control_df = Control_df,Test_df = Test_df, Control_Profil = Control_Profil, Test_Profil = Test_Profil, plot_test = plot_test, plot_control = plot_control))
 } #### End of the function
@@ -257,8 +288,8 @@ return(list(Control_df = Control_df,Test_df = Test_df, Control_Profil = Control_
 
 ```{r}
 
-test <- Make_Profile(min_Air_Temp_control = 10,
-                     max_Air_Temp_control = 20,
+test <- Make_Profile(min_Air_Temp_control = 23,
+                     max_Air_Temp_control = 23,
                     min_Air_Temp_test = 20,
                     max_Air_Temp_test = 35.8,
                     min_Water_Temp_control= 17, 
@@ -267,13 +298,15 @@ test <- Make_Profile(min_Air_Temp_control = 10,
                     max_Water_Temp_test = 17,
                     date_start = "2024-07-03 09:00",
                     date_end = "2024-07-04 18:00",
-                    low_tide_time = "2024-07-03 15:00",
+                    low_tide_time = "2024-07-03 16:00",
                     sunrise = 6.25,
                     sunset = 22,
-                    max_light_intensity = 120)
+                    max_light_intensity = 120,
+                    export = T,
+                    night_tide = F)
 
 
-test$plot_control
+test$plot_test
 
 ```
 
