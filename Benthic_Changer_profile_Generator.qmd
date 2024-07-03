@@ -81,6 +81,16 @@ Make_Profile <- function(max_Air_Temp_control,
   tide_times <- tide_times[order(tide_times$Start_Time), ]
   
   return(tide_times)
+  }
+  
+  decimal_to_hhmm <- function(decimal_hour) {
+  # Extract the integer part of the hour
+  hours <- floor(decimal_hour)
+  # Calculate the minutes
+  minutes <- round((decimal_hour - hours) * 60)
+  # Format hours and minutes to "HH:MM"
+  hhmm <- sprintf("%02d:%02d", hours, minutes)
+  return(hhmm)
 }
   
   suppressWarnings({
@@ -107,15 +117,10 @@ Intensity_Max = max_light_intensity
       min_Air = min_Air_Temp[i]
       
       ##### Air Temperature
-      df_Air_temp <- data.frame(Time_num = seq(0,24, by = 0.25)) %>%
+      df_Air_temp <- data.frame(Time_num = seq(0,24, by = 1 / 60)) %>%
         mutate(id = (Time_num-min(Time_num))/(max(Time_num)-min(Time_num))*2*pi,
         Temp = (((max_Air-min_Air)/2)*sin( id+4))+(max_Air+min_Air)/2,
-        Hour = paste(floor(Time_num), round((Time_num-floor(Time_num))*60), sep=":"),
-               Hour = paste(floor(Time_num), round((Time_num-floor(Time_num))*60), sep=":"),
-               Hour = case_when(nchar(Hour) == 3 ~ paste0("0",Hour,"0"),
-                                as.numeric(substr(Hour,1,2))>=10 & nchar(Hour) == 4 ~ paste0(Hour,"0"),
-                                nchar(Hour) == 4 ~ paste0("0",Hour),
-                                TRUE ~ Hour))
+        Hour = decimal_to_hhmm(Time_num))
       
       
       #### Water Temperature
@@ -124,31 +129,22 @@ Intensity_Max = max_light_intensity
       min_Water = min_Water_Temp[i]
       
 
-      df_Water_temp <- data.frame(Time_num = seq(0,24, by = 0.25)) %>%
+      df_Water_temp <- data.frame(Time_num = seq(0,24, by = 1 / 60)) %>%
         mutate(id = (Time_num-min(Time_num))/(max(Time_num)-min(Time_num))*2*pi,
         Temp = (((max_Water-min_Water)/2)*sin( id+4))+(max_Water+min_Water)/2,
-        Hour = paste(floor(Time_num), round((Time_num-floor(Time_num))*60), sep=":"),
-               Hour = paste(floor(Time_num), round((Time_num-floor(Time_num))*60), sep=":"),
-               Hour = case_when(nchar(Hour) == 3 ~ paste0("0",Hour,"0"),
-                                as.numeric(substr(Hour,1,2))>=10 & nchar(Hour) == 4 ~ paste0(Hour,"0"),
-                                nchar(Hour) == 4 ~ paste0("0",Hour),
-                                TRUE ~ Hour))
+        Hour = decimal_to_hhmm(Time_num))
       
       #### Light Intensity 
       
       Duration_of_the_Day = sunset - sunrise
       
-      df_light <- data.frame(Time_num = seq(0,23.99, by = 0.25)) %>% 
+      df_light <- data.frame(Time_num = seq(0,23.99, by = 1 / 60)) %>% 
         # mutate(id = (Hour-min(Hour))/(max(Hour)-min(Hour))*pi,
               mutate(light_intensity = Intensity_Max*sin((pi/Duration_of_the_Day)*(Time_num-sunrise)),
                      light_intensity = case_when(light_intensity<0 ~ 0,
                                                  light_intensity>100 ~ 100,
                                                  TRUE ~ light_intensity),
-                     Hour = paste(floor(Time_num), round((Time_num-floor(Time_num))*60), sep=":"),
-                     Hour = case_when(nchar(Hour) == 3 ~ paste0("0",Hour,"0"),
-                                      as.numeric(substr(Hour,1,2))>=10 & nchar(Hour) == 4 ~ paste0(Hour,"0"),
-                                      nchar(Hour) == 4 ~ paste0("0",Hour),
-                                      TRUE ~ Hour))      ### Tide 
+                     Hour = decimal_to_hhmm(Time_num))      ### Tide 
       
       tide_table <- calculate_tide(low_tide_Time,Date_Start,Date_end)
       
@@ -156,7 +152,7 @@ Intensity_Max = max_light_intensity
       ### Profile 
       df_profile <- data.frame(Time = Date_Start)
       while(df_profile[nrow(df_profile),1] != Date_end){
-        df_profile[nrow(df_profile)+1,1] <- df_profile[nrow(df_profile),1] + (15*60)
+        df_profile[nrow(df_profile)+1,1] <- df_profile[nrow(df_profile),1] + (1*60)
       }
       
       
@@ -164,12 +160,9 @@ Intensity_Max = max_light_intensity
         mutate(Hour = substr(as.character(Time), 12, 16),
                Hour = case_when(Hour == "" ~ "00:00",
                                 TRUE ~ Hour),
-               Minute_num = case_when(substr(as.character(Hour), 4, 5)=="00" ~ 0,
-                                      substr(as.character(Hour), 4, 5)=="15" ~ 25,
-                                      substr(as.character(Hour), 4, 5)=="30" ~ 50,
-                                      substr(as.character(Hour), 4, 5)=="45" ~ 75),
+               Minute_num = as.numeric(substr(as.character(Hour), 4, 5))/60,
               Hour_num= as.numeric(substr(as.character(Hour), 1, 2)),
-              Hour_num = Hour_num + (Minute_num/100)) %>% 
+              Hour_num = Hour_num + Minute_num/100) %>% 
         select(-Minute_num) %>% 
         left_join(df_Air_temp, by = "Hour") %>% 
         select(-c(Time_num,id)) %>% 
@@ -306,6 +299,8 @@ test <- Make_Profile(min_Air_Temp_control = 23,
 
 
 test$plot_test
+test$Test_df
+
 
 ```
 
