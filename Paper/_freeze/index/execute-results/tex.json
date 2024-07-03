@@ -1,0 +1,17 @@
+{
+  "hash": "9fcd63dee2962acfa156d0da8f345c47",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: Effect of Atmospheric Heatwaves on Reflectance and Pigment Composition of Intertidal *Nanozostera noltei*  -- Draft\nauthor:\n  - name: Simon Oiry\n    orcid: 0000-0001-7161-5246\n    corresponding: true\n    email: oirysimon@gmail.com\n    roles:\n      - Investigation\n      - Writing\n      - Data acquisition\n    affiliations:\n      - Institut des Substances et Organismes de la Mer, ISOMer, Nantes Université, UR 2160, F-44000 Nantes, France\n  - name: Bede Ffinian Rowe Davies\n    corresponding: false\n    roles: \n      - Investigation\n      - Data acquisition\n      - Revision\n    affiliations:\n      - Institut des Substances et Organismes de la Mer, ISOMer, Nantes Université, UR 2160, F-44000 Nantes, France\n  - name: Philippe Rosa\n    corresponding: false\n    roles: \n      - Data acquisition\n      - Revision\n    affiliations:\n      - Institut des Substances et Organismes de la Mer, ISOMer, Nantes Université, UR 2160, F-44000 Nantes, France\n  - name: Pierre Gernez\n    corresponding: false\n    roles: \n      - Investigation\n      - Data acquisition\n      - Revision\n    affiliations:\n      - Institut des Substances et Organismes de la Mer, ISOMer, Nantes Université, UR 2160, F-44000 Nantes, France\n  - name: Laurent Barillé\n    corresponding: false\n    roles: \n      - Investigation\n      - Data acquisition\n      - Revision\n    affiliations:\n      - Institut des Substances et Organismes de la Mer, ISOMer, Nantes Université, UR 2160, F-44000 Nantes, France\nkeywords:\n  - Drone\n  - Remote Sensing\n  - Seagrass\n  - Coastal Ecosystems\n  - Neural Network \nabstract: |\n  To be written\nplain-language-summary: |\n  To be written\nkey-points:\n  - An intertidal vegetation classifier has been built to be used across different study sites without losing classification accuracy. \n  - Neural Network made to accuratly discriminates intertidal seagrasses from green algae (chlorophyceae)\ndate: last-modified\ncitation:\n  container-title: Remote Sensing of Environment\nnumber-sections: true\nnotebook-links: false\neditor_options: \n  chunk_output_type: console\ncsl: RSE.csl\n---\n\n\n\n\n\ncoucoucpqp q\n\n\n\n\n\n::: {.cell}\n\n:::\n",
+    "supporting": [
+      "index_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": null,
+    "postProcess": false
+  }
+}
