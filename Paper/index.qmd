@@ -43,11 +43,11 @@ author:
     affiliations:
       - Institut des Substances et Organismes de la Mer, ISOMer, Nantes Université, UR 2160, F-44000 Nantes, France
 keywords:
-  - Drone
   - Remote Sensing
+  - Pigment Composition
   - Seagrass
   - Coastal Ecosystems
-  - Neural Network 
+  - Heatwaves 
 abstract: |
   To be written
 plain-language-summary: |
@@ -65,9 +65,8 @@ editor_options:
 csl: RSE.csl
 ---
 
-coucoucpqp q
+# Introduction
 
-```{r}
+Intertidal seagrasses play a crucial role in the ecosystem by providing habitats and feeding grounds for various marine species, supporting rich marine biodiversity, and contributing significantly to primary production and carbon sequestration [@unsworth2022planetary ; @sousa2019blue]. These seagrasses are essential in maintaining the health of coastal ecosystems by stabilizing sediments, filtering water, and serving as indicators of environmental changes due to their sensitivity to water quality variations [@zoffoli2021decadal]. The interactions between seagrass meadows and their associated herbivores further enhance the delivery of ecosystem services, including coastal protection and fisheries support [@jankowska2019stabilizing ; @zoffoli2023remote ; @gardner2018global]. Understanding and preserving these ecosystems are vital for maintaining the biodiversity and productivity of coastal regions [@scott2018role ; @ramesh2020seagrass]. 
 
-```
 
