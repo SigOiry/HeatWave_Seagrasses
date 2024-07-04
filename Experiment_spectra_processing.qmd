@@ -1,0 +1,148 @@
+---
+title: "TXT_processing"
+author: "Simon Oiry"
+format: html
+editor: source
+editor_options: 
+  chunk_output_type: console
+---
+
+
+```{r packages}
+library(tidyverse)
+```
+
+```{r data opening}
+filepath <- "Data/Experiment_Intertidal_Chambers/HW1"
+
+if(file.exists(paste0(filepath ,"/Test_and_Control_reflectance.csv") )== F){
+  
+listfile_control <- list.files(paste0(filepath,"/Control"), recursive = T , full.names = T) %>% 
+  as.data.frame() %>% 
+  rename(path = ".") %>% 
+  mutate(Spectra = gsub(".*/","",path) %>% gsub(".asd.txt","",.))
+
+for (i in 1:nrow(listfile_control)) {
+  
+  
+  a <- read_table(listfile_control$path[i], 
+    col_names = FALSE, skip = 4)
+  
+  b <- read_table(listfile_control$path[i], skip = 35) %>% 
+    set_names(c("Wavelength", "Value")) %>% 
+    mutate(Spectra = listfile_control$Spectra[i],
+           Date = as.character(a[3,3]),
+           Time = as.character(a[3,5]),
+           IntegrationTime = as.numeric(a[4,4]))
+  
+  if (i == 1) {
+    
+    df_control <- b
+    
+  }else{
+    df_control <- rbind(df_control,b)
+  }
+}
+
+df_control <- df_control %>% 
+  mutate(scenario = "Control")
+
+listfile_test <- list.files(paste0(filepath,"/Test"), recursive = T , full.names = T) %>% 
+  as.data.frame() %>% 
+  rename(path = ".") %>% 
+  mutate(Spectra = gsub(".*/","",path) %>% gsub(".asd.txt","",.))
+
+for (i in 1:nrow(listfile_test)) {
+  
+  
+  a <- read_table(listfile_test$path[i], 
+    col_names = FALSE, skip = 4)
+  
+  b <- read_table(listfile_test$path[i], skip = 35) %>% 
+    set_names(c("Wavelength", "Value")) %>% 
+    mutate(Spectra = listfile_test$Spectra[i],
+           Date = as.character(a[3,3]),
+           Time = as.character(a[3,5]),
+           IntegrationTime = as.numeric(a[4,4]))
+  
+  if (i == 1) {
+    
+    df_test <- b
+    
+  }else{
+    df_test <- rbind(df_test,b)
+  }
+}
+
+df_test <- df_test %>% 
+  mutate(scenario = "test")
+
+
+
+df <- rbind(df_control,df_test)
+
+write.csv(df, paste0(filepath ,"/Test_and_Control_reflectance.csv"), row.names = F)
+}else{
+  
+  df <- read.csv(paste0(filepath ,"/Test_and_Control_reflectance.csv"))
+}
+
+
+df <- df  %>%  
+  group_by(Spectra) %>% 
+  reframe(Wavelength = Wavelength,
+          Value = c(zoo::rollmean(Value, k=5, fill = NA)),
+          Date = Date,
+          Time = Time,
+          IntegrationTime = IntegrationTime,
+          scenario = scenario) %>% 
+  ungroup() %>% 
+  filter(!is.na(Value))%>% 
+  mutate(Time_POS = as.POSIXct(paste0(Date," ", substr(Time,1,5)), format = "%d/%m/%Y %H:%M"))
+```
+
+```{r ggplot}
+
+df %>% 
+  filter(Wavelength > 400 & Wavelength <950) %>% 
+ggplot() +
+  geom_line(aes(x = Wavelength, y = Value, group = Spectra, color = Time_POS))+
+  facet_wrap(~ scenario)
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+```{r data processing}
+
+
+a <- df % %>% 
+  mutate(ID = floor(as.numeric(Spectra)/10)) %>% 
+  group_by(Wavelength,ID) %>% 
+  reframe(Value = mean(Value),
+          Date = unique(Date)[1],
+          Time = unique(Time)[1],
+          IntegrationTime = mean(IntegrationTime))
+
+```
+
+```{r plot}
+
+a %>% 
+  filter(Wavelength == 650 | Wavelength == 900 | Wavelength == 450,
+         ID > 12) %>% 
+  ggplot()+
+  geom_line(aes(ID, Value, color = as.factor(Wavelength)))
+
+```
+
+

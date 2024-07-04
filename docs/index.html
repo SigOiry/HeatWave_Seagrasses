@@ -68,6 +68,35 @@ div.csl-indent {
   });
 </script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <meta name="citation_title" content="Draft -- Effect of Atmospheric Heatwaves on Reflectance and Pigment Composition of Intertidal *Nanozostera noltei*  -- Draft">
 <meta name="citation_abstract" content="To be written
@@ -226,14 +255,19 @@ div.csl-indent {
 <h1 data-number="1"><span class="header-section-number">1</span> Introduction</h1>
 <p>Intertidal seagrasses play a crucial role in the ecosystem by providing habitats and feeding grounds for various marine species, supporting rich marine biodiversity, and contributing significantly to primary production and carbon sequestration <span class="citation" data-cites="unsworth2022planetary sousa2019blue">(<a href="#ref-sousa2019blue" role="doc-biblioref">Sousa et al., 2019</a>; <a href="#ref-unsworth2022planetary" role="doc-biblioref">Unsworth et al., 2022</a>)</span>. These seagrasses are essential in maintaining the health of coastal ecosystems by stabilizing sediments, filtering water, and serving as indicators of environmental changes due to their sensitivity to water quality variations <span class="citation" data-cites="zoffoli2021decadal">(<a href="#ref-zoffoli2021decadal" role="doc-biblioref">Zoffoli et al., 2021</a>)</span>. The interactions between seagrass meadows and their associated herbivores further enhance the delivery of ecosystem services, including coastal protection and fisheries support <span class="citation" data-cites="jankowska2019stabilizing zoffoli2023remote gardner2018global">(<a href="#ref-gardner2018global" role="doc-biblioref">Gardner and Finlayson, 2018</a>; <a href="#ref-jankowska2019stabilizing" role="doc-biblioref">Jankowska et al., 2019</a>; <a href="#ref-zoffoli2023remote" role="doc-biblioref">Zoffoli et al., 2023</a>)</span>. Understanding and preserving these ecosystems are vital for maintaining the biodiversity and productivity of coastal regions <span class="citation" data-cites="scott2018role ramesh2020seagrass">(<a href="#ref-ramesh2020seagrass" role="doc-biblioref">Ramesh and Mohanraju, 2020</a>; <a href="#ref-scott2018role" role="doc-biblioref">Scott et al., 2018</a>)</span>.</p>
 <p>Despite their crucial role in marine ecosystems, intertidal seagrasses face numerous threats that compromise their health and functionality. Coastal development and human activities are primary threats. These activities not only reduce the available habitat for seagrasses but also increase water turbidity, which limits light penetration and hampers photosynthesis <span class="citation" data-cites="waycott2009accelerating">(<a href="#ref-waycott2009accelerating" role="doc-biblioref">Waycott et al., 2009</a>)</span>. Seagrasses are also threatened by nutrient enrichment from agricultural and urban runoff, which can lead to eutrophication. This condition promotes the overgrowth of algal blooms that compete with seagrasses for light and nutrients, further stressing these important plants <span class="citation" data-cites="thomsen2023meadow">(<a href="#ref-thomsen2023meadow" role="doc-biblioref">Thomsen et al., 2023</a>)</span> (Oiry et al.&nbsp;2024). Pollution from industrial and municipal sources introduces harmful chemicals and heavy metals into coastal waters, posing toxic risks to seagrass health. These pollutants can affect the physiological processes of seagrasses, reducing their growth and survival rates <span class="citation" data-cites="sevgi2022bitkilerde">(<a href="#ref-sevgi2022bitkilerde" role="doc-biblioref">Sevgi and Leblebici, 2022</a>)</span> Additionally, invasive species can out compete native seagrasses for resources, altering community structure and function <span class="citation" data-cites="simpson2016distribution">(<a href="#ref-simpson2016distribution" role="doc-biblioref">Simpson et al., 2016</a>)</span>.</p>
-<p>Heatwaves, exacerbated by climate change, pose a growing threat to seagrasses. Marine Heatwaves (MHW), defined by @hobday2016hierarchical as prolonged discrete anomalously warm water events, and Atmospheric Heatwaves (AHW), defined by <span class="citation" data-cites="perkins2013measurement">Perkins and Alexander (<a href="#ref-perkins2013measurement" role="doc-biblioref">2013</a>)</span> as periods of at least three consecutive days with temperatures exceeding the 90th percentile, cause severe physiological stress on seagrasses <span class="citation" data-cites="sawall2021chronically deguette2022physiological">(<a href="#ref-deguette2022physiological" role="doc-biblioref">Deguette et al., 2022</a>; <a href="#ref-sawall2021chronically" role="doc-biblioref">Sawall et al., 2021</a>)</span>. These events intensify other stressors, such as overgrazing and seed burial, compromising sexual recruitment [<span class="citation" data-cites="guerrero2020heat">Guerrero-Meseguer et al. (<a href="#ref-guerrero2020heat" role="doc-biblioref">2020</a>)</span>].</p>
+<p>Heatwaves, exacerbated by climate change, pose a growing threat to seagrasses. Marine Heatwaves (MHW), defined by <span class="citation" data-cites="hobday2016hierarchical">Hobday et al. (<a href="#ref-hobday2016hierarchical" role="doc-biblioref">2016</a>)</span> as prolonged discrete anomalously warm water events, and Atmospheric Heatwaves (AHW), defined by <span class="citation" data-cites="perkins2013measurement">Perkins and Alexander (<a href="#ref-perkins2013measurement" role="doc-biblioref">2013</a>)</span> as periods of at least three consecutive days with temperatures exceeding the 90th percentile, cause severe physiological stress on seagrasses <span class="citation" data-cites="sawall2021chronically deguette2022physiological">(<a href="#ref-deguette2022physiological" role="doc-biblioref">Deguette et al., 2022</a>; <a href="#ref-sawall2021chronically" role="doc-biblioref">Sawall et al., 2021</a>)</span>. At the interface between the land and oceans, intertidal seagrasses are exposed to both MHW and AHW. Heatwaves have profound impacts on seagrasses, with their effects varying based on species and geographic location. For instance, the seagrass <em>Zostera marina</em> exhibits high susceptibility to elevated sea surface temperatures during winter and spring, leading to advanced flowering, high mortality rates, and reduced biomass (<a href="https://dx.doi.org/10.1002/lno.11947">Sawall et al., 2021</a>). Similarly, <em>Cymodocea nodosa</em> shows increased photosynthetic activity during heatwaves but suffers negative effects on photosynthetic performance and leaf biomass during recovery (<a href="https://dx.doi.org/10.1038/s41598-022-12102-x">Deguette et al., 2022</a>). Additionally, different populations of <em>Zostera marina</em> along the European thermal gradient exhibit varied photophysiological responses during the recovery phase of heatwaves, indicating differential adaptation capabilities among populations (<a href="https://dx.doi.org/10.3354/MEPS09213">Winters et al., 2011</a>).</p>
+<p>These events intensify other stressors, such as overgrazing and seed burial, compromising sexual recruitment <span class="citation" data-cites="guerrero2020heat">(<a href="#ref-guerrero2020heat" role="doc-biblioref">Guerrero-Meseguer et al., 2020</a>)</span>.</p>
 </section>
-<section id="bibliography" class="level1 unnumbered" data-number="2">
-
+<section id="bibliography" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Bibliography</h1>
+<p><span id="eq-std"><span class="math display">\[
+R_{i}^{*}(\lambda) = \frac{R_{i}(\lambda) - min(R_{i})}{max(R_{i})- min(R_{i})}
+\tag{1}\]</span></span></p>
+<p>test <a href="#eq-std" class="quarto-xref">Equation&nbsp;1</a></p>
 
 </section>
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">2 Bibliography</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
 <div id="ref-deguette2022physiological" class="csl-entry" role="listitem">
 Deguette, A., Barrote, I., Silva, J., 2022. Physiological and morphological effects of a marine heatwave on the seagrass cymodocea nodosa. Scientific Reports 12, 7950.
 </div>
@@ -242,6 +276,9 @@ Gardner, R.C., Finlayson, C., 2018. Global wetland outlook: State of the world�
 </div>
 <div id="ref-guerrero2020heat" class="csl-entry" role="listitem">
 Guerrero-Meseguer, L., Marı́n, A., Sanz-Lázaro, C., 2020. Heat wave intensity can vary the cumulative effects of multiple environmental stressors on posidonia oceanica seedlings. Marine Environmental Research 159, 105001.
+</div>
+<div id="ref-hobday2016hierarchical" class="csl-entry" role="listitem">
+Hobday, A.J., Alexander, L.V., Perkins, S.E., Smale, D.A., Straub, S.C., Oliver, E.C., Benthuysen, J.A., Burrows, M.T., Donat, M.G., Feng, M., others, 2016. A hierarchical approach to defining marine heatwaves. Progress in oceanography 141, 227–238.
 </div>
 <div id="ref-jankowska2019stabilizing" class="csl-entry" role="listitem">
 Jankowska, E., Michel, L.N., Lepoint, G., Włodarska-Kowalczuk, M., 2019. Stabilizing effects of seagrass meadows on coastal water benthic food webs. Journal of Experimental Marine Biology and Ecology 510, 54–63.
