@@ -97,7 +97,9 @@ df <- df  %>%
           IntegrationTime = IntegrationTime,
           scenario = scenario) %>% 
   ungroup() %>% 
-  filter(!is.na(Value))%>% 
+  filter(!is.na(Value), 
+         !(scenario == "test" & Spectra %in% c("Heatwave100100","Heatwave100108")),
+         !(scenario == "Control" & Spectra %in% c("Heatwave100089")))%>% 
   mutate(Time_POS = as.POSIXct(paste0(Date," ", substr(Time,1,5)), format = "%d/%m/%Y %H:%M"))
 ```
 
