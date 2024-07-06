@@ -10,6 +10,7 @@ editor_options:
 library(tidyverse)
 library(heatwaveR)
 library(Utilities.Package)
+library(stars)
 ```
 
 
@@ -116,7 +117,6 @@ ggplot(df_heatwaves, aes(x=as.numeric(year))) +
   theme_Bede()
 
 ```
-
 
 ```{r cold spells}
 
@@ -237,3 +237,67 @@ df_sub %>%
         axis.title.x = element_text(size = 20),
         axis.title.y = element_text(size = 20))
 ```
+
+```{r Heatwaves Morbihan}
+library(sf) 
+library(rnaturalearth) 
+library(rnaturalearthdata) 
+library(rnaturalearthhires)
+
+df <- list.files("Data/MeteoFrance/RAW/",pattern = "HOR_departement_56_*", full.names = TRUE) %>% 
+  map(read.delim,
+      sep = ";",
+      .progress = TRUE) %>%
+  list_rbind() %>% 
+  dplyr::select(NOM_USUEL, LAT,LON,,AAAAMMJJHH,`T`, TN, TX, T10, T20, T50,T100) %>% 
+  dplyr::filter(!is.na(`T`)) %>% 
+  as_tibble()
+
+station <- df %>% 
+  group_by(NOM_USUEL) %>% 
+  reframe(Lat = unique(LAT),
+          Lon = unique(LON),
+          n_obs = n())
+
+
+bbox_france <- st_bbox(c(xmin = min(station$Lon),
+                         ymin = min(station$Lat),
+                         xmax = max(station$Lon),
+                         ymax = max(station$Lat)),
+                       crs = st_crs(France_shp)) 
+
+France_shp <- sovereignty10 %>% 
+  st_as_sf() %>% 
+  dplyr::filter(SOVEREIGNT%in%c("France")) %>% 
+  st_crop(bbox_france) %>% 
+  st_make_valid()
+
+
+station_shp <- station %>% 
+  st_as_sf(coords=c("Lon","Lat") )  %>% 
+  st_set_crs("EPSG:4326") 
+
+ggplot() +
+  geom_sf(data = France_map_cropped,linewidth=0.5,alpha=0.93,
+          fill="#CFCFCF",colour="grey30")+
+  ggforce::geom_mark_ellipse(data=station,
+                 aes(x=Lon,
+                     y=Lat,
+                     label = paste("n: ", n_obs),
+                     description=NOM_USUEL) ,
+                 linewidth=0.2,
+                 fill="goldenrod",
+                 show.legend=F,
+                 label.hjust = 0.2,
+                 con.size = 1,
+                 con.colour = "goldenrod4",
+                 label.fontsize = c(10,12),
+                 alpha=0.8,
+  expand = unit(1, "mm") , 
+  radius = unit(1, "mm") , 
+  label.buffer = unit(1, "mm") ,
+  label.fill = "grey90")
+  
+
+```
+
