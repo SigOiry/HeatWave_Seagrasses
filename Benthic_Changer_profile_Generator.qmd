@@ -30,7 +30,9 @@ Make_Profile <- function(max_Air_Temp_control,
                          sunset,
                          max_light_intensity,
                          export = F,
-                         night_tide = T){
+                         Tide = "Both",
+                         night_tide = T,
+                         time_step = 6){
   
   
   
@@ -117,7 +119,7 @@ Intensity_Max = max_light_intensity
       min_Air = min_Air_Temp[i]
       
       ##### Air Temperature
-      df_Air_temp <- data.frame(Time_num = seq(0,24, by = 1 / 60)) %>%
+      df_Air_temp <- data.frame(Time_num = seq(0,24, by = time_step / 60)) %>%
         mutate(id = (Time_num-min(Time_num))/(max(Time_num)-min(Time_num))*2*pi,
         Temp = (((max_Air-min_Air)/2)*sin( id+4))+(max_Air+min_Air)/2,
         Hour = decimal_to_hhmm(Time_num))
@@ -129,7 +131,7 @@ Intensity_Max = max_light_intensity
       min_Water = min_Water_Temp[i]
       
 
-      df_Water_temp <- data.frame(Time_num = seq(0,24, by = 1 / 60)) %>%
+      df_Water_temp <- data.frame(Time_num = seq(0,24, by = time_step / 60)) %>%
         mutate(id = (Time_num-min(Time_num))/(max(Time_num)-min(Time_num))*2*pi,
         Temp = (((max_Water-min_Water)/2)*sin( id+4))+(max_Water+min_Water)/2,
         Hour = decimal_to_hhmm(Time_num))
@@ -138,7 +140,7 @@ Intensity_Max = max_light_intensity
       
       Duration_of_the_Day = sunset - sunrise
       
-      df_light <- data.frame(Time_num = seq(0,23.99, by = 1 / 60)) %>% 
+      df_light <- data.frame(Time_num = seq(0,23.99, by = time_step / 60)) %>% 
         # mutate(id = (Hour-min(Hour))/(max(Hour)-min(Hour))*pi,
               mutate(light_intensity = Intensity_Max*sin((pi/Duration_of_the_Day)*(Time_num-sunrise)),
                      light_intensity = case_when(light_intensity<0 ~ 0,
@@ -152,7 +154,7 @@ Intensity_Max = max_light_intensity
       ### Profile 
       df_profile <- data.frame(Time = Date_Start)
       while(df_profile[nrow(df_profile),1] != Date_end){
-        df_profile[nrow(df_profile)+1,1] <- df_profile[nrow(df_profile),1] + (1*60)
+        df_profile[nrow(df_profile)+1,1] <- df_profile[nrow(df_profile),1] + (time_step*60)
       }
       
       
@@ -173,6 +175,7 @@ Intensity_Max = max_light_intensity
         left_join(df_light, by = "Hour") %>% 
         select(-c(Time_num))
       
+    
       
       data <- df_profile %>%
         rowwise() %>%
@@ -182,7 +185,10 @@ Intensity_Max = max_light_intensity
           if (nrow(tide_row) > 0) tide_row$Type[1] else NA
         }) %>%
         ungroup() %>% 
-        mutate(Temp = case_when(Tide_Status == "High_Tide" ~ Temp_Water,
+        mutate(Tide_Status = case_when(Tide == "Low" | Tide == "low" ~ "Low_Tide",
+                                       Tide == "High" | Tide == "high" ~ "High_Tide",
+                                       TRUE ~ Tide_Status),
+               Temp = case_when(Tide_Status == "High_Tide" ~ Temp_Water,
                                 TRUE ~ Temp_Air))
       data$tide_ID=NA
       for (ii in 1:nrow(data)) {
@@ -216,7 +222,7 @@ Intensity_Max = max_light_intensity
                T_prof = as.character(round(Temp,1)*10), 
                bin_tide = case_when(Tide_Status == "High_Tide" ~ 1, 
                                     TRUE ~ 0),
-               light_prof = case_when(nchar(as.character(round(light_intensity))) == 3 ~ as.character(light_intensity),
+               light_prof = case_when(nchar(as.character(round(light_intensity))) == 3 ~ as.character(round(light_intensity)),
                                       nchar(as.character(round(light_intensity))) == 1 ~ paste0("00",as.character(round(light_intensity))),
                                       TRUE ~ paste0("0",as.character(round(light_intensity)))),
                prof = paste0(UNIX,"-",T_prof,bin_tide,light_prof,"0")) %>% 
@@ -224,10 +230,12 @@ Intensity_Max = max_light_intensity
                
       
       if(i == 1){
-        Control_df = data
+        Control_df = data %>% 
+          mutate(Profile = Profil)
         Control_Profil = Profil
       }else{
-        Test_df = data
+        Test_df = data %>% 
+          mutate(Profile = Profil)
         Test_Profil = Profil
       }
   } ### End For loop
@@ -280,26 +288,28 @@ return(list(Control_df = Control_df,Test_df = Test_df, Control_Profil = Control_
 ```
 
 ```{r Profile Tuning}
-test <- Make_Profile(min_Air_Temp_control = 23,
+test <- Make_Profile(min_Air_Temp_control = 18,
                      max_Air_Temp_control = 23,
-                    min_Air_Temp_test = 20,
-                    max_Air_Temp_test = 35.8,
+                    min_Air_Temp_test = 18,
+                    max_Air_Temp_test = 23,
                     min_Water_Temp_control= 17, 
                     max_Water_Temp_control = 17,
                     min_Water_Temp_test = 17,
                     max_Water_Temp_test = 17,
-                    date_start = "2024-07-03 09:00",
-                    date_end = "2024-07-04 18:00",
-                    low_tide_time = "2024-07-03 16:00",
+                    date_start = "2024-07-05 09:00",
+                    date_end = "2024-07-08 18:00",
+                    low_tide_time = "2024-07-05 12:00",
                     sunrise = 6.25,
                     sunset = 22,
                     max_light_intensity = 120,
                     export = T,
-                    night_tide = T)
+                    Tide = "high",
+                    night_tide = T,
+                    time_step = 6)
 
 
-test$plot_test
-test$Test_df
+
+test$plot_control
 
 
 ```
