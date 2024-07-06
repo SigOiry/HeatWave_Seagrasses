@@ -303,7 +303,7 @@ test <- Make_Profile(min_Air_Temp_control = 18,
                     sunset = 22,
                     max_light_intensity = 120,
                     export = T,
-                    Tide = "high",
+                    Tide = "both",
                     night_tide = T,
                     time_step = 6)
 

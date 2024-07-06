@@ -243,6 +243,9 @@ library(sf)
 library(rnaturalearth) 
 library(rnaturalearthdata) 
 library(rnaturalearthhires)
+library(ggplot2)
+library(cowplot)
+library(magick)
 
 df <- list.files("Data/MeteoFrance/RAW/",pattern = "HOR_departement_56_*", full.names = TRUE) %>% 
   map(read.delim,
@@ -298,6 +301,75 @@ ggplot() +
   label.buffer = unit(1, "mm") ,
   label.fill = "grey90")
   
+df_56 <- df %>% 
+  dplyr::filter(str_detect(NOM_USUEL,"BIHOUE"),
+                !is.na(`T`)) %>% 
+  dplyr::select(NOM_USUEL, LAT,LON,,AAAAMMJJHH,`T`, TN, TX, T10, T20, T50,T100) %>% 
+  mutate(date = as.POSIXct(as.character(AAAAMMJJHH), format = "%Y%m%d%H",tz = "UTC"))
 
+
+ggplot(df_56)+
+  geom_line(aes(x = date, y = `T`))
+
+
+df_heatwaveR <- df_56 %>% 
+  rename(t = date,
+         temp = `T`) %>% 
+  dplyr::select(t,temp) %>% 
+  mutate(t = as.Date(t)) %>% 
+  group_by(t) %>% 
+  reframe(temp = max(temp,na.rm = T))
+
+
+
+clim <- ts2clm(df_heatwaveR, climatologyPeriod = c(min(df_heatwaveR$t), max(df_heatwaveR$t)))
+  
+event <- detect_event(clim,categories = T,minDuration = 2)
+  
+res <- detect_event(clim, minDuration = 2)
+mhw <- res$clim
+
+
+
+img_before <- readPNG("Data/screenshot_S2/Before_event_quiberon.png") %>%
+  rasterGrob(interpolate=TRUE)
+
+
+qplot(1:10, 1:10, geom="blank") +
+  annotation_custom(g, xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) +
+  geom_point()
+
+  
+plot <- mhw %>%
+    # filter(t > as.Date("2021-08-30") & t < as.Date("2021-09-20")
+  filter(t > as.Date("2021-01-1") & t < as.Date("2021-12-31")
+  ) %>%
+ggplot(aes(x = t, y = temp))+
+  geom_line() +
+  geom_line(aes(y = thresh,color = "darkred") , linewidth = 1)+
+  geom_flame(aes(y2 = thresh), fill = "darkred")+
+  scale_color_manual(values = "darkred",
+                     labels = "95th percentile of Temperature")+
+  geom_segment(aes(x = as.Date(18800), y = 13, xend = as.Date(18820), yend = 27),linewidth = 1)+
+  geom_segment(aes(x = as.Date(18855), y = 13, xend = as.Date(18835), yend = 27),linewidth = 1)+
+  xlab("Date")+
+  ylab("Temperature (°C)")+
+  theme_Bede()+
+  theme(axis.text.x = element_text(size = 20),
+        axis.text.y = element_text(size = 20),
+        axis.title.x = element_text(size = 23),
+        axis.title.y = element_text(size = 23),
+        legend.title=element_blank(),
+        legend.position =  "inside",
+        legend.position.inside = c(0.9,0.9),
+        legend.text = element_text(size = 15),
+        legend.key.width = unit(1.5,"cm"))
+
+plot_HW <- ggdraw() +
+  draw_image("Data/screenshot_S2/Before_event_quiberon.png",x = -0.05, y = -0.22, scale = .4) +
+  draw_image("Data/screenshot_S2/After_event_quiberon.png",x = 0.15, y = -0.22, scale = .4) +
+  draw_plot(plot)
+
+ggsave("Plot/Heatwave_Quiberon_September_2021.png",plot_HW,width= 2327*2.5, height=1245*2.5, unit = "px")  
 ```
 
