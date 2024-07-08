@@ -253,8 +253,7 @@ df <- list.files("Data/MeteoFrance/RAW/",pattern = "HOR_departement_56_*", full.
       .progress = TRUE) %>%
   list_rbind() %>% 
   dplyr::select(NOM_USUEL, LAT,LON,,AAAAMMJJHH,`T`, TN, TX, T10, T20, T50,T100) %>% 
-  dplyr::filter(!is.na(`T`)) %>% 
-  as_tibble()
+  dplyr::filter(!is.na(`T`)) 
 
 station <- df %>% 
   group_by(NOM_USUEL) %>% 
@@ -372,4 +371,76 @@ plot_HW <- ggdraw() +
 
 ggsave("Plot/Heatwave_Quiberon_September_2021.png",plot_HW,width= 2327*2.5, height=1245*2.5, unit = "px")  
 ```
+
+```{r Heatwaves Bourgneuf}
+
+
+
+df <- list.files("Data/MeteoFrance/RAW/",pattern = "HOR_departement_85_*", full.names = TRUE) %>% 
+  map(read.delim,
+      sep = ";",
+      .progress = TRUE) %>%
+  list_rbind() %>% 
+  dplyr::select(NOM_USUEL, LAT,LON,,AAAAMMJJHH,`T`, TN, TX, T10, T20, T50,T100) %>% 
+  dplyr::filter(!is.na(`T`))
+
+
+df_date <- df  %>% 
+  mutate(date = as.POSIXct(strptime(AAAAMMJJHH, format = "%Y%m%d%H"))) %>% 
+  group_by(NOM_USUEL) %>% 
+  reframe(min_date = min(date,na.rm = T),
+          max_date = max(date,na.rm = T),
+          n = n())
+
+selected_site <- df_date %>% 
+  filter(n ==max(n)) %>% 
+  pull(NOM_USUEL)
+
+df_sub <- df %>% 
+  dplyr::filter(NOM_USUEL == selected_site,
+                !is.na(`T`)) %>% 
+  dplyr::select(NOM_USUEL, LAT,LON,,AAAAMMJJHH,`T`, TN, TX, T10, T20, T50,T100) %>% 
+  mutate(date = as.POSIXct(as.character(AAAAMMJJHH), format = "%Y%m%d%H",tz = "UTC"))
+
+
+df_heatwaveR <- df_sub %>% 
+  rename(t = date,
+         temp = `T`) %>% 
+  dplyr::select(t,temp) %>% 
+  mutate(t = as.Date(t)) %>% 
+  group_by(t) %>% 
+  reframe(temp = max(temp,na.rm = T)) %>% 
+  dplyr::filter(t > as.Date("1948-12-31"))
+
+  
+
+  clim <- ts2clm(df_heatwaveR, climatologyPeriod = c("1949-01-01", "2024-06-23"))
+  
+  event <- detect_event(clim,categories = T,minDuration = 3)
+  
+  res <- detect_event(clim, minDuration = 3)
+  mhw <- res$clim
+  
+  mhw %>%
+    filter(t> as.Date("2022-07-01") & t<as.Date("2022-07-25") ) %>%
+ggplot(aes(x = t, y = temp))+
+    geom_line() +
+  geom_flame(aes(y2 = thresh))
+  
+  a <- df_sub %>% 
+    filter(date> as.Date("2022-07-01") & date<as.Date("2022-07-25") ) %>%
+    ggplot()+
+    # geom_hex(aes(x = date, y = `T`), bins = 10)+
+    geom_line(aes(x = date, y = `T`))+
+    ylab("Temperature (°C)")+
+    xlab("Date")+
+    theme_Bede()+
+    theme(axis.text.x = element_text(size = 15),
+          axis.text.y = element_text(size = 15),
+          axis.title.x = element_text(size = 20),
+          axis.title.y = element_text(size = 20))
+
+
+```
+
 

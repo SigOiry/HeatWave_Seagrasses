@@ -127,7 +127,7 @@ ggplot() +
 ```{r data processing}
 
 
-a <- df % %>% 
+a <- df % %>%
   mutate(ID = floor(as.numeric(Spectra)/10)) %>% 
   group_by(Wavelength,ID) %>% 
   reframe(Value = mean(Value),
