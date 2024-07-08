@@ -29,10 +29,12 @@ Make_Profile <- function(max_Air_Temp_control,
                          sunrise,
                          sunset,
                          max_light_intensity,
-                         export = F,
+                         export_profile = T,
                          Tide = "Both",
                          night_tide = T,
-                         time_step = 6){
+                         time_step = 6, 
+                         Save_Experiment = T, 
+                         Experiment_Name = "ThisIsATest"){
   
   
   
@@ -273,10 +275,28 @@ plot_control <- ggplot()+
         axis.title.y = element_text(size = 18),
         axis.title.x = element_text(size = 18))
 
-if(export == T){
+if(export_profile == T){
   
   write_delim(as.data.frame(Test_Profil), "Output/Chamber_Profile/Test/Profile.txt", delim = " ")
   write_delim(as.data.frame(Control_Profil), "Output/Chamber_Profile/Control/Profile.txt", delim = " ")
+  
+}
+
+if(Save_Experiment == T){
+  
+  dir.create(paste0("Output/Experiments/", Experiment_Name))
+  dir.create(paste0("Output/Experiments/", Experiment_Name, "/Plots"))
+  dir.create(paste0("Output/Experiments/", Experiment_Name, "/Profils"))
+  dir.create(paste0("Output/Experiments/", Experiment_Name, "/CSV"))
+  
+  write_delim(as.data.frame(Test_Profil), paste0("Output/Experiments/", Experiment_Name, "/Profils/","Test_Profile.txt"), delim = " ")
+  write_delim(as.data.frame(Control_Profil), paste0("Output/Experiments/", Experiment_Name, "/Profils/","Control_Profile.txt"), delim = " ")
+  
+  write.csv(Control_df, paste0("Output/Experiments/", Experiment_Name, "/CSV/","Control_dataframe.csv"),row.names = F)
+  write.csv(Test_df, paste0("Output/Experiments/", Experiment_Name, "/CSV/","Test_dataframe.csv"),row.names = F)
+  
+  ggsave(paste0("Output/Experiments/", Experiment_Name, "/Plots/","Control_plot.jpg"),plot_control, width = 660*4, height = 457*4,unit = "px")
+  ggsave(paste0("Output/Experiments/", Experiment_Name, "/Plots/","Test_plot.jpg"),plot_test, width = 660*4, height = 457*4,unit = "px")
   
 }
 
@@ -302,10 +322,12 @@ test <- Make_Profile(min_Air_Temp_control = 18,
                     sunrise = 6.25,
                     sunset = 22,
                     max_light_intensity = 120,
-                    export = T,
+                    export_profile = T,
                     Tide = "both",
                     night_tide = T,
-                    time_step = 2)
+                    time_step = 2, 
+                    Save_Experiment = T, 
+                    Experiment_Name = "HW2_08072024")
 
 
 
