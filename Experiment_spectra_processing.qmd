@@ -93,9 +93,11 @@ write.csv(df, paste0(filepath ,"/Test_and_Control_reflectance.csv"), row.names =
 
 
 df <- df  %>%  
+  dplyr::filter(Wavelength %% 2 == 0) %>% 
   group_by(Spectra) %>% 
   reframe(Wavelength = Wavelength,
-          Value = c(zoo::rollmean(Value, k=5, fill = NA)),
+          Value = Value,
+          Value_mean = c(zoo::rollmean(Value, k=9, fill = NA)),
           Date = Date,
           Time = Time,
           IntegrationTime = IntegrationTime,
@@ -137,8 +139,7 @@ ggplot(aes(x = Wavelength, y = Value, color = scenario)) +
 
 ```
 
-
-```{r Compare Spectra}
+```{r Compare NDVI}
 NIR_wavelength <- 800  # Example wavelength for NIR
 RED_wavelength <- 680 
 
@@ -231,26 +232,23 @@ df_coeffect %>%
 ```{r 2nd derivative}
 library(hsdar)
 
-df %>% 
-  dplyr::filter(ID == unique(ID)[1],
-                Wavelength >= 450 & Wavelength <= 900) %>% 
-  ggplot()+
-  geom_line(aes(x = Wavelength, y = Value))
-
-
-
-
 spectra <- df %>% 
   dplyr::select(Value,ID,Wavelength) %>%
   dplyr::filter(Wavelength >= 450 & Wavelength <= 900) %>% 
   pivot_wider(names_from = ID, values_from = Value) %>% 
   dplyr::select(-Wavelength)
 
-wavelength <- c(450:900)
+wavelength <- seq(from = 450, to = 900,by = 2)
 
 deriv <- speclib(spectra = as.matrix(spectra), wavelength = wavelength) %>% 
-  noiseFiltering(method = "sgolay", n =5) %>% 
-  derivative.speclib(m=2) %>% 
+  noiseFiltering(method = "sgolay", n =15) %>%
+  derivative.speclib(m=1) %>% 
+  noiseFiltering(method = "sgolay", n =15) %>%
+  derivative.speclib(m=1)  %>%
+  noiseFiltering(method = "sgolay", n =15) %>%
+  # derivative.speclib(m=1) %>% 
+  # noiseFiltering(method = "sgolay", n =15) %>%
+  # derivative.speclib(m=1) %>% 
   spectra() %>% 
   t()%>% 
   as_tibble() 
@@ -273,9 +271,14 @@ deriv_long <- deriv %>%
 
 deriv_plot <- deriv_long %>%
   dplyr::filter(scenario == "test") %>%
-  dplyr::filter(ID == unique(ID)[1]) %>%
-  ggplot(aes(x = Wavelength, y = Deriv))+
+  dplyr::filter(ID == unique(ID)[100]) %>% 
+  # mutate(Deriv = c(zoo::rollmean(Deriv, k=10, fill = NA))) %>% 
+  ggplot(aes(x = Wavelength-15, y = Deriv))+
   geom_line()+
+  # geom_vline(xintercept = 670, color = "red")+
+    geom_vline(xintercept = 650, color = "blue")+
+
+  # geom_smooth(method = "loess")+
   theme_Bede()
 
 sp <- deriv_long %>% 
@@ -288,6 +291,56 @@ sp <- deriv_long %>%
 
 deriv_plot + sp
 ```
+
+```{r Raw vs Cleaned}
+spectra <- df %>% 
+  dplyr::select(Value_mean,ID,Wavelength) %>%
+  dplyr::filter(Wavelength >= 450 & Wavelength <= 900) %>% 
+  pivot_wider(names_from = ID, values_from = Value_mean) %>% 
+  dplyr::select(-Wavelength)
+
+wavelength <- seq(from = 450, to = 900,by = 2)
+
+sp_cleaned <- speclib(spectra = as.matrix(spectra), wavelength = wavelength) %>% 
+  noiseFiltering(method = "sgolay", n =5) %>%
+  # derivative.speclib(m=2, method = "finApprox") %>% 
+  spectra() %>% 
+  t()%>% 
+  as_tibble() 
+ 
+
+names(sp_cleaned) <- names(spectra)
+
+
+Cleaned_long <- sp_cleaned %>% 
+  dplyr::mutate(Wavelength = wavelength) %>% 
+  pivot_longer(-Wavelength, names_to = "ID", values_to = "Value_cleaned") %>% 
+  left_join(df,by = c("Wavelength","ID"))
+
+
+Cleaned_long %>%
+  dplyr::filter(scenario == "test") %>%
+  dplyr::filter(ID == unique(ID)[100]) %>% 
+ggplot(aes(x = Wavelength))+
+  geom_line(aes(y = Value), color = "red")+
+  geom_line(aes(y = Value_cleaned), color = "blue")
+
+
+```
+
+
+```{r check abs 680}
+
+deriv_long %>% 
+  dplyr::filter(Wavelength == 700) %>% 
+  ggplot(aes(x = Time_POS, y = Deriv, color = scenario))+
+  ylab("Hauteur du Pic")+
+  geom_point()+
+  geom_smooth(method = "glm")
+
+
+```
+
 
 ```{r}
 data(spectral_data)
