@@ -83,4 +83,10 @@ Heatwaves, exacerbated by climate change, pose a growing threat to seagrasses. M
 
 Remote sensing is increasingly being utilized to monitor marine ecosystems, including seagrass meadows. Through the Water Framework Directive and the Marine Strategy Framework Directive, Europe is promoting remote sensing techniques for habitat mapping, as these methods enable the monitoring of extensive areas over time [@papathanasopoulou2019satellite]. By using spectral indices, such as the Normalized Difference Vegetation Index (NDVI) and the Soil-Adjusted Vegetation Index (SAVI), or by analyzing specific spectral patterns, remote sensing can effectively quantify vegetation health over time [@huete2012vegetation ; @kloos2021agricultural ; @carlan2020identifying ; @akbar2020mangrove]. Bleaching and browning events of seagrass beds have been observed following episodes of intense heat along the Brittany coast of France (Pers. obs.). This study will experimentally test the hypothesis that warm events modify the pigment composition and reflectance of seagrass, linking these changes with satellite remote sensing.
 
+# Material & Methods
+
+## Sampling and Acclimation of seagrasses
+
+Seagrass was sampled from a *Nanozostera noltei* (dwarf eelgrass, syn. *Zostera noltei*) meadow on Noirmoutier Island, France (46°57'32.0"N 2°10'37.0"W) at low tide. A shovel was used to sample seagrass from an area of 30 cm by 15 cm and 10 cm deep. The seagrass, along with sediment, meiofauna, and macrofauna, was placed in plastic trays. To avoid hydric stress during transportation, seawater was added to each tray. At the same time, seawater was sampled from a nearby site and transported to the lab, where it was filtered using a 0.22 µm nitrocellulose filter to remove all suspended particulate matter. This water was used in the acclimation tank and the intertidal chambers.
+
 # Bibliography
