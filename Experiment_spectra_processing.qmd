@@ -82,7 +82,7 @@ df_test <- df_test %>%
 
 
 df <- rbind(df_control,df_test) %>%
-    mutate(Time_POS = as.POSIXct(paste0(Date," ", substr(Time,1,5)), format = "%m/%d/%Y %H:%M")) %>% 
+    mutate(Time_POS = as.POSIXct(paste0(Date," ", substr(Time,1,5)), format = "%m/%d/%Y %H:%M")) %>%
   mutate(ID = paste0(Spectra, as.character(as.numeric(Time_POS))))
 
 write.csv(df, paste0(filepath ,"/Test_and_Control_reflectance.csv"), row.names = F)
@@ -107,7 +107,10 @@ df <- df  %>%
   dplyr::filter(!is.na(Value)) %>%  
          # !(scenario == "test" & Spectra %in% c("Heatwave100100","Heatwave100108")),
          # !(scenario == "Control" & Spectra %in% c("Heatwave100089")))%>% 
-  mutate(Time_POS = as.POSIXct(paste0(Date," ", substr(Time,1,5)), format = "%m/%d/%Y %H:%M"))
+  mutate(Time_POS = as.POSIXct(paste0(Date," ", substr(Time,1,5)), format = "%m/%d/%Y %H:%M"))%>% 
+  dplyr::filter(Wavelength >= 440 & Wavelength <= 990) %>% 
+  group_by(Spectra,scenario) %>% 
+  mutate(std = (Value_mean-min(Value_mean))/(max(Value_mean)-min(Value_mean))) 
 ```
 
 
@@ -115,7 +118,7 @@ df <- df  %>%
 ```{r ggplot Raw data}
 
 df_std <- df %>% 
-  filter(Wavelength > 440 & Wavelength <900) %>% 
+  dplyr::filter(Wavelength >= 440 & Wavelength <=900) %>% 
   group_by(Spectra,scenario) %>% 
   mutate(std = (Value-min(Value))/(max(Value)-min(Value))) 
 
@@ -150,8 +153,8 @@ RED_wavelength <- 680
 
 NDVI <- df %>% 
   ungroup() %>% 
-  dplyr::select(-c(Value,Date,Time,IntegrationTime,ID)) %>% 
-  filter(Wavelength %in% c(NIR_wavelength, RED_wavelength)) %>%
+  dplyr::select(-c(Value,Date,Time,IntegrationTime,ID,std)) %>% 
+  dplyr::filter(Wavelength %in% c(NIR_wavelength, RED_wavelength)) %>%
   pivot_wider(names_from = Wavelength, values_from = Value_mean) %>%
   group_by(Time_POS,Spectra,scenario) %>% 
   reframe(value = (`800` - `680`) / (`800` + `680`))
@@ -159,7 +162,7 @@ NDVI <- df %>%
 NDVI %>% 
 ggplot(aes(x = Time_POS, y = value, color = scenario)) +
   geom_point(alpha = 0.3)+
-  geom_smooth(method = "gam")+
+  geom_smooth(method = "glm")+
   facet_wrap(~ scenario)+
   theme_Bede()+
   scale_colour_Bede("mixed")
@@ -172,15 +175,15 @@ Wv2 <- 900
 
 Slope <- df %>% 
     dplyr::filter(Wavelength %in% c(Wv1, Wv2, 650)) %>%
-    dplyr::select(-c(Value,Date,Time,IntegrationTime,ID)) %>% 
+    dplyr::select(-c(Value,Date,Time,IntegrationTime,ID,std)) %>% 
     pivot_wider(names_from = Wavelength, values_from = Value_mean) %>%
     group_by(Time_POS,scenario) %>% 
     reframe(value = ((`900`-`750`)/(900-750)))
 
 Slope %>% 
 ggplot(aes(x = Time_POS, y = value, color = scenario)) +
-  geom_line()+
-  geom_smooth(method = "gam")+
+  geom_point()+
+  geom_smooth(method = "glm")+
   facet_wrap(~ scenario)+
   theme_Bede()+
   scale_colour_Bede("mixed")
@@ -189,19 +192,23 @@ ggplot(aes(x = Time_POS, y = value, color = scenario)) +
 ```{r Water Absorption}
 
 Water_abs <- df %>% 
-  filter(Wavelength %in% c(930,960,990,950,970)) %>%
-  dplyr::select(-c(Value,Date,Time,IntegrationTime,ID)) %>% 
-  pivot_wider(names_from = Wavelength, values_from = Value_mean) %>%
+  dplyr::filter(Wavelength %in% c(930,960,990,950,970)) %>%
+  dplyr::select(-c(Value,Time,IntegrationTime,ID,Value_mean)) %>% 
+  pivot_wider(names_from = Wavelength, values_from = std) %>%
   group_by(scenario, Spectra, Time_POS) %>% 
   reframe(a = (`990`-`930`)/60,
          b = (16.5*`930`)-(15.5*`990`),
          abs_water = a * `960` + b,
-         abs_water2 = (0.5*(`990`+`950`))-`970`)
+         abs_water2 = (0.5*(`990`+`950`))-`970`,
+         Date = Date)
 
 Water_abs %>% 
   ggplot(aes(x = Time_POS, y = abs_water2, color = scenario))+
   geom_point(alpha = 0.3)+
-  geom_smooth(method = "gam")+
+    # geom_boxplot(aes(group = interaction(Date,scenario)))+
+  geom_smooth(aes(group = interaction(Date,scenario)), method = "gam" )+
+    geom_smooth( method = "glm" )+
+  
   ylab("Moisture Stress Index")+
   theme_Bede()+
   scale_colour_Bede("mixed")
@@ -210,11 +217,11 @@ Water_abs %>%
 
 ```{r Water content and NDVI}
 df_NDVI <- NDVI %>% 
-  select(-scenario) %>% 
+  dplyr::select(-scenario) %>% 
   rename(NDVI = "value")
 
 df_coeffect <- Water_abs %>% 
-  select(c(Time_POS,Spectra,scenario,abs_water,abs_water2)) %>% 
+  dplyr::select(c(Time_POS,Spectra,scenario,abs_water,abs_water2)) %>% 
   # mutate(abs_water = ((max(abs_water)- abs_water)/(max(abs_water)-min(abs_water)))) %>% 
   left_join(df_NDVI, by = c("Time_POS","Spectra")) %>% 
   mutate(residual =  lm(NDVI ~ abs_water2) %>% residuals())
@@ -242,12 +249,12 @@ df_coeffect %>%
 library(hsdar)
 
 spectra <- df %>% 
-  dplyr::select(Value,ID,Wavelength) %>%
-  dplyr::filter(Wavelength >= 450 & Wavelength <= 900) %>% 
-  pivot_wider(names_from = ID, values_from = Value_mean) %>% 
+  ungroup() %>%   dplyr::select(std,ID,Wavelength) %>%
+  # dplyr::filter(Wavelength >= 450 & Wavelength <= 900) %>% 
+  pivot_wider(names_from = ID, values_from = std) %>% 
   dplyr::select(-Wavelength)
 
-wavelength <- seq(from = 450, to = 900,by = 1)
+wavelength <- seq(from = 440, to = 990,by = 1)
 
 deriv <- speclib(spectra = as.matrix(spectra), wavelength = wavelength) %>% 
   noiseFiltering(method = "sgolay", n =15) %>%
@@ -269,6 +276,8 @@ names(deriv) <- names(spectra)
 deriv_long <- deriv %>% 
   dplyr::mutate(Wavelength = wavelength-15) %>% 
   pivot_longer(-Wavelength, names_to = "ID", values_to = "Deriv") %>% 
+  dplyr::filter(Wavelength >= 440 & Wavelength <= 900) %>% 
+
   left_join(df,by = c("Wavelength","ID"))
 
 
@@ -342,11 +351,11 @@ ggplot(aes(x = Wavelength))+
 ```
 
 
-```{r check abs 655}
+```{r check abs}
 
 deriv_long %>% 
   
-  dplyr::filter(Wavelength == 575) %>% 
+  dplyr::filter(Wavelength == 676) %>% 
   ggplot(aes(x = Time_POS, y = Deriv, color = scenario))+
   ylab("Hauteur du Pic")+
   geom_boxplot(aes(group = interaction(Date,scenario)))+
@@ -354,3 +363,51 @@ deriv_long %>%
 
 
 ```
+
+```{r sd_derivative}
+
+deriv_long %>% 
+  dplyr::filter(Wavelength < 700) %>% 
+  group_by(Wavelength,scenario) %>% 
+  reframe(sd = sd(Deriv, na.rm = T),
+          diff = max(Deriv,na.rm = T)-min(Deriv,na.rm=T)) %>% 
+  ggplot()+
+  geom_line(aes(x = Wavelength, y = diff, color = scenario))+
+  geom_vline(xintercept = 655, color = "red")+
+  geom_vline(xintercept = 676, color = "blue")+
+  geom_vline(xintercept = 602, color = "green")+
+  geom_vline(xintercept = 628, color = "goldenrod")+
+  geom_vline(xintercept = 493, color = "darkred")+
+  theme_Bede()+
+  scale_colour_Bede("mixed")
+
+  # facet_wrap(~ scenario)
+
+```
+
+```{r Green leaf index}
+
+green_wavelength <- 550  # Example wavelength for NIR
+RED_wavelength <- 680 
+Blue_wavelength <- 450
+
+GLI <- df %>% 
+  ungroup() %>% 
+  dplyr::select(-c(Value,Date,Time,IntegrationTime,ID,std)) %>% 
+  dplyr::filter(Wavelength %in% c(green_wavelength, RED_wavelength,Blue_wavelength)) %>%
+  pivot_wider(names_from = Wavelength, values_from = Value_mean) %>%
+  group_by(Time_POS,Spectra,scenario) %>% 
+  reframe(value = (2*`550`-`680`-`450`) / (2*`550`+`680`+`450`))
+
+GLI %>% 
+ggplot(aes(x = Time_POS, y = value, color = scenario)) +
+  geom_point(alpha = 0.3)+
+  geom_smooth(method = "glm")+
+  facet_wrap(~ scenario)+
+  theme_Bede()+
+  scale_colour_Bede("mixed")
+
+
+```
+
+
