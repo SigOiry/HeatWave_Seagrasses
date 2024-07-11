@@ -12,6 +12,7 @@ editor_options:
 library(tidyverse)
 library(Utilities.Package)
 library(patchwork)
+library(hsdar)
 ```
 
 ```{r data opening}
@@ -123,9 +124,9 @@ df_std <- df %>%
   mutate(std = (Value-min(Value))/(max(Value)-min(Value))) 
 
 
-df_std %>% 
+df %>% 
 ggplot() +
-  geom_line(aes(x = Wavelength, y = std, group = Spectra, color = Time_POS))+
+  geom_line(aes(x = Wavelength, y = Value_mean, group = Spectra, color = Time_POS))+
   facet_wrap(~ scenario)+
   theme_Bede()
 
@@ -246,7 +247,6 @@ df_coeffect %>%
 ```
 
 ```{r 2nd derivative}
-library(hsdar)
 
 spectra <- df %>% 
   ungroup() %>%   dplyr::select(std,ID,Wavelength) %>%
@@ -297,6 +297,8 @@ deriv_plot <- deriv_long %>%
   geom_vline(xintercept = 676, color = "blue")+
   geom_vline(xintercept = 605, color = "green")+
   geom_vline(xintercept = 575, color = "goldenrod")+
+  geom_vline(xintercept = 525, color = "darkred")+
+
 
 
   # geom_smooth(method = "loess")+
@@ -311,7 +313,9 @@ sp <- deriv_long %>%
   theme_Bede()
 
 deriv_plot + sp
+
 ```
+
 
 ```{r Raw vs Cleaned}
 
@@ -354,11 +358,15 @@ ggplot(aes(x = Wavelength))+
 ```{r check abs}
 
 deriv_long %>% 
-  
-  dplyr::filter(Wavelength == 676) %>% 
-  ggplot(aes(x = Time_POS, y = Deriv, color = scenario))+
+    dplyr::select(-c(Value,Date,Time,IntegrationTime,Value_mean,ID,std)) %>%
+  dplyr::filter(Wavelength == 676 |
+                Wavelength == 655) %>%
+  pivot_wider(names_from = Wavelength, values_from = Deriv) %>%
+  mutate(abs_ratio = `655`/`676`) %>% 
+  ggplot(aes(x = Time_POS, y = abs_ratio, color = scenario))+
   ylab("Hauteur du Pic")+
-  geom_boxplot(aes(group = interaction(Date,scenario)))+
+  geom_point(alpha = 0.3)+
+  # geom_boxplot(aes(group = interaction(Date,scenario)))+
   geom_smooth(method = "glm")
 
 

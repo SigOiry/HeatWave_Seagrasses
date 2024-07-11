@@ -1,0 +1,98 @@
+---
+title: "SST_Heatwaves"
+author: "Simon Oiry"
+format: html
+editor: source
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r library}
+library(tidyverse)
+library(terra)
+library(ncdf4)
+library(heatwaveR)
+
+```
+
+```{r}
+
+
+# Define the path to your NetCDF file
+file_path <- "Data/SST/Quiberon_1982_2022.nc"
+
+# Open the NetCDF file
+nc <- nc_open(file_path)
+
+# Display information about the file
+print(nc)
+
+# Assuming the temperature variable is named "temperature", replace with the correct name if different
+# Get the name of the temperature variable
+temp_var_name <- "adjusted_sea_surface_temperature"  # Adjust this according to your file's variable name
+
+# Get the temperature variable
+temperature_data <- ncvar_get(nc, temp_var_name)
+
+# Get the time variable
+time_data <- ncvar_get(nc, "time")  # Adjust "time" if the name is different
+
+# Calculate the mean temperature across the time dimension (assuming time is the first dimension)
+mean_temperature <- apply(temperature_data, c(2,3), mean, nan.rm = TRUE) %>% 
+  t()
+
+# Create a dataframe with time and mean temperature
+mean_temperature_df <- data.frame(time = time_data, mean_temperature = mean_temperature) %>% 
+  pivot_longer(-time, names_to = "name", values_to = "Temp") %>% 
+  group_by(time) %>% 
+  reframe(Temp = mean(Temp,na.rm = T))
+
+mean_temperature_df %>% 
+  dplyr::filter(!is.nan(as.numeric(Temp))) %>%
+ggplot()+
+  geom_point(aes(x = time, y = Temp))
+
+```
+
+```{r}
+sst <- readxl::read_excel("Data/SST/SST_Quiberon.xlsx") %>% 
+  mutate(time = as.POSIXct(substr(time,2,9), format = "%m/%d/%y"),
+         sst = as.numeric(`SST (degree celsius)`)) %>% 
+  dplyr::filter(!is.nan(sst))
+
+ggplot(sst)+
+  geom_point(aes(x = time, y = sst))
+
+
+min(sst$time)
+max(sst$time)
+```
+
+```{r MHW}
+
+
+df_heatwaveR <- sst %>% 
+  rename(t = time,
+         temp = sst) %>%
+  mutate(t = as.Date(t)) %>% 
+  dplyr::select(t,temp) 
+
+  
+
+  clim <- ts2clm(df_heatwaveR, climatologyPeriod = c(min(df_heatwaveR$t), max(df_heatwaveR$t)))
+  
+  event <- detect_event(clim,categories = T,minDuration = 3)
+  
+  res <- detect_event(clim, minDuration = 3)
+  mhw <- res$clim
+  
+  mhw %>%
+    filter(t> as.Date("2021-08-01") ) %>%
+ggplot(aes(x = t, y = temp))+
+    geom_line() +
+  geom_flame(aes(y2 = thresh))
+  
+
+
+```
+

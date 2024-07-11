@@ -167,15 +167,15 @@ Intensity_Max = max_light_intensity
                Minute_num = as.numeric(substr(as.character(Hour), 4, 5))/60,
               Hour_num= as.numeric(substr(as.character(Hour), 1, 2)),
               Hour_num = Hour_num + Minute_num/100) %>% 
-        select(-Minute_num) %>% 
+        dplyr::select(-Minute_num) %>% 
         left_join(df_Air_temp, by = "Hour") %>% 
-        select(-c(Time_num,id)) %>% 
+        dplyr::select(-c(Time_num,id)) %>% 
         rename(Temp_Air = Temp) %>% 
         left_join(df_Water_temp, by = "Hour") %>% 
-        select(-c(Time_num,id)) %>%
+        dplyr::select(-c(Time_num,id)) %>%
         rename(Temp_Water = Temp) %>%
         left_join(df_light, by = "Hour") %>% 
-        select(-c(Time_num))
+        dplyr::select(-c(Time_num))
       
     
       
@@ -183,7 +183,7 @@ Intensity_Max = max_light_intensity
         rowwise() %>%
         mutate(Tide_Status = {
           tide_row <- tide_table %>%
-            filter(Time >= Start_Time & Time <= End_Time)
+            dplyr::filter(Time >= Start_Time & Time <= End_Time)
           if (nrow(tide_row) > 0) tide_row$Type[1] else NA
         }) %>%
         ungroup() %>% 
@@ -316,9 +316,9 @@ test <- Make_Profile(min_Air_Temp_control = 18,
                     max_Water_Temp_control = 17,
                     min_Water_Temp_test = 17,
                     max_Water_Temp_test = 17,
-                    date_start = "2024-07-10 15:00",
-                    date_end = "2024-07-11 18:00",
-                    low_tide_time = "2024-07-11 03:00",
+                    date_start = "2024-07-11 15:00",
+                    date_end = "2024-07-12 18:00",
+                    low_tide_time = "2024-07-12 03:00",
                     sunrise = 6.25,
                     sunset = 22,
                     max_light_intensity = 120,
@@ -327,7 +327,7 @@ test <- Make_Profile(min_Air_Temp_control = 18,
                     night_tide = T,
                     time_step = 2, 
                     Save_Experiment = T, 
-                    Experiment_Name = "HW2_11072024")
+                    Experiment_Name = "HW2_12072024")
 
 
 
