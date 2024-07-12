@@ -1,0 +1,152 @@
+---
+title: "French_coastline_heatwaves"
+format: html
+editor: source
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r library}
+library(tidyverse)
+library(sf) 
+library(heatwaveR)
+library(Utilities.Package)
+library(leaflet)
+```
+
+```{r data list}
+
+file_list <- list.files("Data/MeteoFrance/RAW", full.names = T) %>% 
+  as_tibble() %>% 
+  rename(path = "value") %>% 
+  mutate(names = gsub(".*/","",path),
+         dep = substr(names,17,18),
+         date_start = substr(names,28,31),
+         date_end = substr(names,33,36))
+
+```
+
+```{r data subsampling}
+
+for(i in 1:length(unique(file_list$dep))){
+  a <- file_list %>% 
+    dplyr::filter(dep == unique(file_list$dep)[i])
+  
+  df_dept <- a %>% 
+    pull(path) %>% 
+  map(read.delim,
+      sep = ";",
+      .progress = TRUE) %>%
+  list_rbind() %>% 
+  dplyr::select(NOM_USUEL, LAT,LON,,AAAAMMJJHH,`T`, TN, TX, T10, T20, T50,T100) %>% 
+  dplyr::filter(!is.na(`T`))
+  
+  
+  station_dept <- df_dept %>% 
+    group_by(NOM_USUEL) %>% 
+    reframe(lat = mean(LAT),
+            lon = mean(LON),
+            n_obs = n())
+  
+  station_dept_shp <- station_dept %>% 
+  st_as_sf(coords=c("lon","lat") )  %>% 
+  st_set_crs("EPSG:4326")
+  
+  
+  
+  
+bbox_france <- sf::st_bbox(c(xmin = min(station_dept$lon),
+                         ymin = min(station_dept$lat),
+                         xmax = max(station_dept$lon),
+                         ymax = max(station_dept$lat)),
+                       crs = sf::st_crs(4326)) 
+
+France_shp <- "Data/shp/France_buffer_10km.shp" %>%
+  sf::read_sf()
+
+points_in_polygons <- st_join(station_dept_shp, France_shp, join = st_intersects)
+
+# Filter out the points in A that overlap with polygons in B
+station_dept_buffered <- station_dept_shp[is.na(points_in_polygons$status), ] %>% 
+  as.data.frame() %>% 
+  dplyr::select(NOM_USUEL) %>% 
+  left_join(station_dept, by = "NOM_USUEL")
+
+
+
+# ggplot() +
+#   geom_sf(data = France_shp,linewidth=0.5,alpha=0.93,
+#           fill="#CFCFCF",colour="grey30")+
+#   ggforce::geom_mark_ellipse(data=station_dept_shp_buffered,
+#                  aes(x=lon,
+#                      y=lat,
+#                      label = paste("n: ", n_obs),
+#                      description=NOM_USUEL) ,
+#                  linewidth=0.2,
+#                  fill="goldenrod",
+#                  show.legend=F,
+#                  label.hjust = 0.2,
+#                  con.size = 1,
+#                  con.colour = "goldenrod4",
+#                  label.fontsize = c(10,12),
+#                  alpha=0.8,
+#   expand = unit(1, "mm") , 
+#   radius = unit(1, "mm") , 
+#   label.buffer = unit(1, "mm") ,
+#   label.fill = "grey90")
+
+
+df_dept_selected <- df_dept %>% 
+  dplyr::filter(NOM_USUEL %in% station_dept_buffered$NOM_USUEL)
+
+
+write.csv(df_dept_selected, paste0("Data/MeteoFrance/10km/dep_",unique(file_list$dep)[i],"_",min(a$date_start),"_",max(a$date_end),".csv"), row.names = F)
+}
+
+```
+
+```{r data_opening}
+
+df  <- "Data/MeteoFrance/10km" %>% 
+  list.files(full.names = T) %>%
+  map(read.csv,
+      .progress = TRUE) %>%
+  list_rbind() %>%
+  as_tibble()
+```
+
+```{r leaflet map}
+
+shp_stations <- df %>%  
+  group_by(NOM_USUEL) %>% 
+  reframe(lat = mean(LAT),
+          lon = mean(LON)) %>% 
+  st_as_sf(coords=c("lon","lat") )  %>% 
+  st_set_crs("EPSG:4326")
+  
+
+m <- leaflet() %>% 
+  addTiles() %>% 
+  addProviderTiles(provider = providers$Esri.WorldImagery) %>% 
+  leaflet::addMarkers(data = shp_stations) %>% 
+  addLabelOnlyMarkers(data = shp_stations,
+    label = ~NOM_USUEL,
+    labelOptions = labelOptions(
+      noHide = TRUE,  # Labels are always visible
+      direction = 'top',
+      textOnly = TRUE,
+      style = list(
+        "color" = "black",          # Text color
+        "background-color" = "white",  # Background color
+        "font-size" = "14px",        # Font size
+        "padding" = "5px"            # Padding
+      )
+    )
+  ) %>% 
+  clearBounds()
+
+htmlwidgets::saveWidget(m, "Output/maps/map.html", selfcontained = TRUE)
+browseURL("Output/maps/map.html")
+```
+
+

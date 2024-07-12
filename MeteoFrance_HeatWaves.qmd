@@ -238,7 +238,7 @@ df_sub %>%
         axis.title.y = element_text(size = 20))
 ```
 
-```{r Heatwaves Morbihan}
+```{r Heatwaves 56}
 library(sf) 
 library(rnaturalearth) 
 library(rnaturalearthdata) 
@@ -372,7 +372,7 @@ plot_HW <- ggdraw() +
 ggsave("Plot/Heatwave_Quiberon_September_2021.png",plot_HW,width= 2327*2.5, height=1245*2.5, unit = "px")  
 ```
 
-```{r Heatwaves Bourgneuf}
+```{r Heatwaves 44}
 
 
 
@@ -442,5 +442,7 @@ ggplot(aes(x = t, y = temp))+
 
 
 ```
+
+
 
 
