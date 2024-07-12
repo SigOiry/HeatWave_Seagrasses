@@ -192,13 +192,26 @@ Intensity_Max = max_light_intensity
                                        TRUE ~ Tide_Status),
                Temp = case_when(Tide_Status == "High_Tide" ~ Temp_Water,
                                 TRUE ~ Temp_Air))
-      data$tide_ID=NA
+    
+      
+      for (ii in 1:nrow(data)) {
+        
+        if (is.na(data$Tide_Status[ii])) {
+          
+          status <- data$Tide_Status[ii+1:nrow(data)]
+          status <- status[!is.na(status)][1]
+        
+          data$Tide_Status[ii] <- status
+        }
+        
+      }
+        data$tide_ID=NA
       for (ii in 1:nrow(data)) {
         if (ii == 1) {
           count = 1
           data$tide_ID[ii] = count 
         }else{
-          if (data$Tide_Status[ii] != data$Tide_Status[ii-1]) {
+          if ((data$Tide_Status[ii] != data$Tide_Status[ii-1])) {
             count = count+ 1
           }
           data$tide_ID[ii] = count
@@ -316,18 +329,18 @@ test <- Make_Profile(min_Air_Temp_control = 18,
                     max_Water_Temp_control = 17,
                     min_Water_Temp_test = 17,
                     max_Water_Temp_test = 17,
-                    date_start = "2024-07-11 15:00",
-                    date_end = "2024-07-12 18:00",
-                    low_tide_time = "2024-07-12 03:00",
+                    date_start = "2024-07-12 11:00",
+                    date_end = "2024-07-15 18:00",
+                    low_tide_time = "2024-07-12 15:00",
                     sunrise = 6.25,
                     sunset = 22,
                     max_light_intensity = 120,
                     export_profile = T,
                     Tide = "both",
                     night_tide = T,
-                    time_step = 2, 
+                    time_step = 6, 
                     Save_Experiment = T, 
-                    Experiment_Name = "HW2_12072024")
+                    Experiment_Name = "HW2_12072024_to_15072024")
 
 
 
