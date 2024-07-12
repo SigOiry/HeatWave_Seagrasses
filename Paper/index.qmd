@@ -85,7 +85,15 @@ Bleaching and browning events of seagrass beds have been observed following epis
 
 # Material & Methods
 
-## Sampling and Acclimation of seagrasses
+## Heatwaves detection and characterisation
+### Air temperature
+
+Since January 1, 2024, Meteo France weather data has been free and openly accessible. Hourly weather data for the French coast of the Atlantic and the Channel has been downloaded using a  [custom script](https://github.com/SigOiry/HeatWave_Seagrasses/blob/main/MeteoFrance_Extraction.qmd), as no API has been developed for downloading this data. Weather stations located within 10 kilometers of the coastline were considered, but only those with a minimum of 30 years of data were included to ensure accurate climatology reconstruction. Among the 156 weather station that are within the 10km threshold of coastline, 36 had enought data to reconstruct the climatology. Hourly data has been aggregated to daily mean temperatures.
+
+
+## Experiment
+
+### Sampling and Acclimation of seagrasses
 
 Seagrass was sampled from a *Nanozostera noltei* (dwarf eelgrass, syn. Zostera noltei) meadow on Noirmoutier Island, France (46°57'32.0"N 2°10'37.0"W) at low tide in June 2024. A shovel was used to sample seagrass from an area of 30 cm by 15 cm and 10 cm deep, maintaining the sediment structure and avoiding damage to the rhizomes and the leafs of the seagrass. The seagrass, along with sediment, meiofauna, and macrofauna, was placed in plastic trays. To avoid hydric stress during transportation, seawater was added to each tray. Simultaneously, seawater was sampled from a nearby site and transported to the lab, where it was filtered using a 0.22 µm nitrocellulose filter to remove all suspended particulate matter. This water was used in the acclimation tank and the intertidal chambers. The seagrasses were acclimated for two weeks with a water temperature of 17°C, matching the temperature at the time of sampling, and with light of 150 µmol.s-1.m-2 of PAR photons [@akbar2020mangrove]. A wave generator was used in the tank to circulate and reoxygenate the water.
 

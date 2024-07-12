@@ -112,24 +112,29 @@ df  <- "Data/MeteoFrance/10km" %>%
   map(read.csv,
       .progress = TRUE) %>%
   list_rbind() %>%
-  as_tibble()
+  as_tibble() %>% 
+  mutate(date = as.POSIXct(strptime(AAAAMMJJHH, format = "%Y%m%d%H")))
+
 ```
 
-```{r leaflet map}
+```{r data processing}
 
-shp_stations <- df %>%  
+stations <- df %>% 
   group_by(NOM_USUEL) %>% 
-  reframe(lat = mean(LAT),
+  reframe(n = n(),
+          min_date = min(date, na.rm = T),
+          lat = mean(LAT),
           lon = mean(LON)) %>% 
+  dplyr::filter(min_date < as.POSIXct("01/07/1994", format = "%d/%m/%Y") & n > (30*365.25*24))%>% 
   st_as_sf(coords=c("lon","lat") )  %>% 
   st_set_crs("EPSG:4326")
-  
+
 
 m <- leaflet() %>% 
   addTiles() %>% 
   addProviderTiles(provider = providers$Esri.WorldImagery) %>% 
-  leaflet::addMarkers(data = shp_stations) %>% 
-  addLabelOnlyMarkers(data = shp_stations,
+  leaflet::addMarkers(data = stations) %>% 
+  addLabelOnlyMarkers(data = stations,
     label = ~NOM_USUEL,
     labelOptions = labelOptions(
       noHide = TRUE,  # Labels are always visible
@@ -147,6 +152,8 @@ m <- leaflet() %>%
 
 htmlwidgets::saveWidget(m, "Output/maps/map.html", selfcontained = TRUE)
 browseURL("Output/maps/map.html")
+
 ```
+
 
 
