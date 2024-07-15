@@ -321,6 +321,8 @@ return(list(Control_df = Control_df,Test_df = Test_df, Control_Profil = Control_
 ```
 
 ```{r Profile Tuning}
+
+
 test <- Make_Profile(min_Air_Temp_control = 18,
                      max_Air_Temp_control = 23,
                     min_Air_Temp_test = 23,
@@ -329,24 +331,63 @@ test <- Make_Profile(min_Air_Temp_control = 18,
                     max_Water_Temp_control = 17,
                     min_Water_Temp_test = 17,
                     max_Water_Temp_test = 17,
-                    date_start = "2024-07-12 11:00",
-                    date_end = "2024-07-15 18:00",
-                    low_tide_time = "2024-07-12 15:00",
+                    date_start = "2024-07-02 00:00",
+                    date_end = "2024-07-08 23:00",
+                    low_tide_time = "2024-07-02 03:00",
                     sunrise = 6.25,
                     sunset = 22,
                     max_light_intensity = 120,
                     export_profile = T,
                     Tide = "both",
                     night_tide = T,
-                    time_step = 6, 
-                    Save_Experiment = T, 
+                    time_step = 60, 
+                    Save_Experiment = F, 
                     Experiment_Name = "HW2_12072024_to_15072024")
 
 
 
 test$plot_test
 
+a <- test$Test_df %>% 
+  mutate(Time_chr = as.character(Time),
+          day = substr(Time_chr, 1,10)) %>% 
+  group_by(day) %>% 
+  reframe(`T` = max(Temp_Air)) %>% 
+  mutate(date = as.Date(as.POSIXct(day, format = "%Y-%m-%d"))) %>% 
+  dplyr::select(date,`T` ) %>% 
+  dplyr::filter(date >= min(as.Date(test$Test_df$Time)))
 
 ```
+
+```{r COmpare with climatology}
+
+climato <- read.csv("Data/MeteoFrance/10km/dep_85_1870_2024.csv") %>% 
+  mutate(date = as.POSIXct(substr(as.character(AAAAMMJJHH),1,8), format = "%Y%m%d",tz = "UTC")) %>%
+  dplyr::filter(NOM_USUEL=="L ILE D YEU") %>% 
+  dplyr::select(c(date,`T`)) %>% 
+  group_by(date) %>% 
+  reframe(`T` = max(`T`)) %>% 
+  bind_rows(a) %>% 
+  rename(temp = `T`,
+         t = date) %>% 
+  mutate(t = as.Date(t))
+
+
+  clim <- ts2clm(climato, climatologyPeriod = c(min(climato$t), max(climato$t)))
+  
+  event <- detect_event(clim,categories = T,minDuration = 3)
+  
+  res <- detect_event(clim, minDuration = 3)
+  mhw <- res$clim
+  
+  mhw %>%
+    filter(t> as.Date("2024-06-01") ) %>%
+ggplot(aes(x = t, y = temp))+
+    geom_line() +
+  geom_flame(aes(y2 = thresh))
+  
+
+```
+
 
 
