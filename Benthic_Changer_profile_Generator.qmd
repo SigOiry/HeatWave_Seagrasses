@@ -23,6 +23,10 @@ Make_Profile <- function(max_Air_Temp_control,
                          min_Water_Temp_control, 
                          max_Water_Temp_test, 
                          min_Water_Temp_test, 
+                         daily_increase_Air_Test =0,
+                         daily_increase_Water_Test =0,
+                         daily_increase_Air_Control =0,
+                         daily_increase_Water_Control =0,
                          date_start, 
                          date_end, 
                          low_tide_time,
@@ -40,6 +44,7 @@ Make_Profile <- function(max_Air_Temp_control,
   
   
   calculate_tide <- function(initial_tide_time, start_time, end_time, tide_duration_hours = 6) {
+    
   initial_tide_time <- as.POSIXct(initial_tide_time, format = "%Y-%m-%d %H:%M:%S")
   start_time <- as.POSIXct(start_time, format = "%Y-%m-%d %H:%M:%S")
   end_time <- as.POSIXct(end_time, format = "%Y-%m-%d %H:%M:%S")
@@ -95,15 +100,48 @@ Make_Profile <- function(max_Air_Temp_control,
   # Format hours and minutes to "HH:MM"
   hhmm <- sprintf("%02d:%02d", hours, minutes)
   return(hhmm)
+  }
+  
+  generate_temperature_df <- function(start_date, end_date, time_step, max_T, min_T, daily_increase) {
+  # Create a sequence of date-time values from start to end date
+  time_seq <- seq(ymd_hms(start_date), ymd_hms(end_date), by = paste(time_step, "mins"))
+  
+  # Calculate the time in hours from the start date
+  time_hours <- as.numeric(difftime(time_seq, ymd_hms(start_date), units = "hours"))
+  
+  # Calculate the day factor (fraction of days since start date)
+  day_factor <- time_hours / 24
+  
+  # Create the temperature values using a sinusoidal function with gradual daily increase
+  id <- (time_hours %% 24) / 24 * 2 * pi  # Normalized time within each day
+  
+  # Calculate the temperature with a gradual increase throughout each day
+  Temp <- (((max_T - min_T) / 2) * sin(id + 4)) + ((max_T + min_T) / 2) + (daily_increase * day_factor)
+    # Temp <- (((max_Air - min_Air) / 2) * sin(id + pi + pi / 12)) + ((max_Air + min_Air) / 2) + (daily_increase * day_factor)
+
+  
+  # Create the data frame
+  df_temp <- data.frame(
+    Time = time_seq,
+    Time_num = time_hours,
+    Temp = Temp,
+    Hour = sapply(time_hours, decimal_to_hhmm)
+  )
+  
+  return(df_temp)
 }
+
   
   suppressWarnings({
   max_Air_Temp <- c(max_Air_Temp_control,max_Air_Temp_test)
   min_Air_Temp <- c(min_Air_Temp_control,min_Air_Temp_test)
+  daily_Air_increase <- c(daily_increase_Air_Control,daily_increase_Air_Test)
+
   
   max_Water_Temp <- c(max_Water_Temp_control,max_Water_Temp_test)
   min_Water_Temp <- c(min_Water_Temp_control,min_Water_Temp_test)
-  
+  daily_Water_increase <- c(daily_increase_Water_Control,daily_increase_Water_Test)
+ 
   Date_Start <- date_start%>% 
   as.POSIXct(format = "%Y-%m-%d %H:%M", tz = "UTC")
   Date_end <- date_end %>% 
@@ -117,26 +155,36 @@ Intensity_Max = max_light_intensity
 
 
   for (i in 1:2) {
+    
+    
       max_Air = max_Air_Temp[i]
       min_Air = min_Air_Temp[i]
+      daily_increase = daily_Air_increase[i]
       
       ##### Air Temperature
-      df_Air_temp <- data.frame(Time_num = seq(0,24, by = time_step / 60)) %>%
-        mutate(id = (Time_num-min(Time_num))/(max(Time_num)-min(Time_num))*2*pi,
-        Temp = (((max_Air-min_Air)/2)*sin( id+4))+(max_Air+min_Air)/2,
-        Hour = decimal_to_hhmm(Time_num))
+      # df_Air_temp <- data.frame(Time_num = seq(0,24, by = time_step / 60)) %>%
+      #   mutate(id = (Time_num-min(Time_num))/(max(Time_num)-min(Time_num))*2*pi,
+      #   Temp = (((max_Air-min_Air)/2)*sin( id+4))+(max_Air+min_Air)/2,
+      #   Hour = decimal_to_hhmm(Time_num))
+      
+      df_Air_temp <- generate_temperature_df(date_start, date_end, time_step,max_Air,min_Air,daily_increase) 
       
       
       #### Water Temperature
       
       max_Water = max_Water_Temp[i]
       min_Water = min_Water_Temp[i]
+      daily_increase = daily_Water_increase[i]
       
-
-      df_Water_temp <- data.frame(Time_num = seq(0,24, by = time_step / 60)) %>%
-        mutate(id = (Time_num-min(Time_num))/(max(Time_num)-min(Time_num))*2*pi,
-        Temp = (((max_Water-min_Water)/2)*sin( id+4))+(max_Water+min_Water)/2,
-        Hour = decimal_to_hhmm(Time_num))
+      ##### Air Temperature
+      # df_Air_temp <- data.frame(Time_num = seq(0,24, by = time_step / 60)) %>%
+      #   mutate(id = (Time_num-min(Time_num))/(max(Time_num)-min(Time_num))*2*pi,
+      #   Temp = (((max_Air-min_Air)/2)*sin( id+4))+(max_Air+min_Air)/2,
+      #   Hour = decimal_to_hhmm(Time_num))
+      
+      df_Water_temp <- generate_temperature_df(date_start, date_end, time_step,max_Water,min_Water,daily_increase) 
+      
+      
       
       #### Light Intensity 
       
@@ -152,6 +200,8 @@ Intensity_Max = max_light_intensity
       
       tide_table <- calculate_tide(low_tide_Time,Date_Start,Date_end)
       
+      tide_table$End_Time[nrow(tide_table)] <- tide_table$End_Time[nrow(tide_table)]+(60*60)*2
+      
       
       ### Profile 
       df_profile <- data.frame(Time = Date_Start)
@@ -161,24 +211,19 @@ Intensity_Max = max_light_intensity
       
       
       df_profile <- df_profile %>% 
-        mutate(Hour = substr(as.character(Time), 12, 16),
-               Hour = case_when(Hour == "" ~ "00:00",
-                                TRUE ~ Hour),
-               Minute_num = as.numeric(substr(as.character(Hour), 4, 5))/60,
-              Hour_num= as.numeric(substr(as.character(Hour), 1, 2)),
-              Hour_num = Hour_num + Minute_num/100) %>% 
-        dplyr::select(-Minute_num) %>% 
-        left_join(df_Air_temp, by = "Hour") %>% 
-        dplyr::select(-c(Time_num,id)) %>% 
+        mutate(Hour_light = substr(as.character(Time), 12, 16),
+               Hour_light = case_when(Hour_light == "" ~ "00:00",
+                                TRUE ~ Hour_light)) %>%
+        left_join(df_Air_temp, by = "Time") %>% 
+        dplyr::select(-c(Hour,Time_num)) %>% 
         rename(Temp_Air = Temp) %>% 
-        left_join(df_Water_temp, by = "Hour") %>% 
-        dplyr::select(-c(Time_num,id)) %>%
-        rename(Temp_Water = Temp) %>%
-        left_join(df_light, by = "Hour") %>% 
+        left_join(df_Water_temp, by = "Time") %>% 
+        dplyr::select(-c(Hour,Time_num)) %>% 
+        rename(Temp_Water = Temp) %>% 
+        left_join(df_light, by = c("Hour_light" = "Hour")) %>% 
         dplyr::select(-c(Time_num))
       
     
-      
       data <- df_profile %>%
         rowwise() %>%
         mutate(Tide_Status = {
@@ -193,6 +238,25 @@ Intensity_Max = max_light_intensity
                Temp = case_when(Tide_Status == "High_Tide" ~ Temp_Water,
                                 TRUE ~ Temp_Air))
     
+      for (iii in 1:(nrow(data)-1)) {
+        
+        if (data$Tide_Status[iii]!=data$Tide_Status[iii+1]) {
+          a <- data[1,] %>% 
+              mutate(Time = data$Time[iii]+60,
+                     Hour_light = data$Hour_light[iii],
+                     Temp_Air = data$Temp_Air[iii],
+                     Temp_Water = data$Temp_Water[iii],
+                     light_intensity = data$light_intensity[iii],
+                     Tide_Status = if(data$Tide_Status[iii] == "High_Tide") "Low_Tide" else "High_Tide",
+                     Temp = if(data$Tide_Status[iii] == "High_Tide") data$Temp_Air[iii] else data$Temp_Water[iii]
+                     )
+        data <- data %>% 
+          bind_rows(a)
+        }
+      }
+      
+      data <- data %>% 
+        arrange(Time)
       
       for (ii in 1:nrow(data)) {
         
@@ -262,8 +326,11 @@ polygon_table <-   Test_df %>%
   reframe(Tide_Status = unique(Tide_Status), 
           xmin = min(Time),
           xmax = max(Time),
-          ymin = min(min_Air_Temp,min_Water_Temp),
-          ymax = max(max_Air_Temp,max_Water_Temp)) %>% 
+          T_min = min(Temp_Air,Temp_Water),
+          T_max = max(Temp_Air,Temp_Water)) %>% 
+  ungroup() %>% 
+  mutate( ymin = min(T_min),
+          ymax = max(T_max)) %>% 
   rename(Tide = Tide_Status) %>% 
   mutate(Tide = case_when(Tide == "High_Tide" ~ "High",
                           TRUE ~ "Low"))
@@ -327,13 +394,17 @@ test <- Make_Profile(min_Air_Temp_control = 18,
                      max_Air_Temp_control = 23,
                     min_Air_Temp_test = 23,
                     max_Air_Temp_test = 35,
-                    min_Water_Temp_control= 17, 
-                    max_Water_Temp_control = 17,
-                    min_Water_Temp_test = 17,
-                    max_Water_Temp_test = 17,
-                    date_start = "2024-07-02 00:00",
-                    date_end = "2024-07-08 23:00",
-                    low_tide_time = "2024-07-02 03:00",
+                    min_Water_Temp_control= 18, 
+                    max_Water_Temp_control = 18,
+                    min_Water_Temp_test = 18,
+                    max_Water_Temp_test = 18,
+                    date_start = "2024-07-16 00:00:00",
+                    date_end = "2024-07-22 23:00:00",
+                    low_tide_time = "2024-07-16 13:00:00",
+                    daily_increase_Air_Test = 1,
+                    daily_increase_Water_Test = 0.5,
+                    daily_increase_Air_Control = 0,
+                    daily_increase_Water_Control = 0,
                     sunrise = 6.25,
                     sunset = 22,
                     max_light_intensity = 120,
@@ -346,7 +417,7 @@ test <- Make_Profile(min_Air_Temp_control = 18,
 
 
 
-test$plot_test
+test$plot_control
 
 a <- test$Test_df %>% 
   mutate(Time_chr = as.character(Time),
