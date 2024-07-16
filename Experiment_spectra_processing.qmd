@@ -118,12 +118,6 @@ df <- df  %>%
 
 ```{r ggplot Raw data}
 
-df_std <- df %>% 
-  dplyr::filter(Wavelength >= 440 & Wavelength <=900) %>% 
-  group_by(Spectra,scenario) %>% 
-  mutate(std = (Value-min(Value))/(max(Value)-min(Value))) 
-
-
 df %>% 
 ggplot() +
   geom_line(aes(x = Wavelength, y = Value_mean, group = Spectra, color = Time_POS))+
