@@ -30,6 +30,7 @@ Make_Profile <- function(max_Air_Temp_control,
                          date_start, 
                          date_end, 
                          low_tide_time,
+                         High_Tide_Until = NA,
                          sunrise,
                          sunset,
                          max_light_intensity,
@@ -201,6 +202,8 @@ Intensity_Max = max_light_intensity
       tide_table <- calculate_tide(low_tide_Time,Date_Start,Date_end)
       
       tide_table$End_Time[nrow(tide_table)] <- tide_table$End_Time[nrow(tide_table)]+(60*60)*2
+      tide_table$Start_Time[1] <- tide_table$Start_Time[1]-(60*60)*2
+
       
       
       ### Profile 
@@ -294,6 +297,16 @@ Intensity_Max = max_light_intensity
                                          TRUE ~ Temp))
         
       }
+       if(!is.na(High_Tide_Until)){
+         low_tide_at <- as.POSIXct(High_Tide_Until, format = "%Y-%m-%d %H:%M", tz = "UTC")
+         
+         data <- data %>% 
+          mutate(Tide_Status = case_when(Time <= low_tide_at ~ "High_Tide",
+                                         TRUE ~ Tide_Status),
+                 Temp = case_when(Time <= low_tide_at ~ Temp_Water,
+                                         TRUE ~ Temp))
+         
+       }
       
       
       Profil <- data %>% 
@@ -398,9 +411,10 @@ test <- Make_Profile(min_Air_Temp_control = 18,
                     max_Water_Temp_control = 18,
                     min_Water_Temp_test = 18,
                     max_Water_Temp_test = 18,
-                    date_start = "2024-07-16 00:00:00",
+                    date_start = "2024-07-14 23:00:00",
                     date_end = "2024-07-22 23:00:00",
                     low_tide_time = "2024-07-16 13:00:00",
+                    High_Tide_Until = "2024-07-16 09:00:00",
                     daily_increase_Air_Test = 1,
                     daily_increase_Water_Test = 0.5,
                     daily_increase_Air_Control = 0,
@@ -413,11 +427,11 @@ test <- Make_Profile(min_Air_Temp_control = 18,
                     night_tide = T,
                     time_step = 60, 
                     Save_Experiment = F, 
-                    Experiment_Name = "HW2_12072024_to_15072024")
+                    Experiment_Name = "HW3_15072024_to_22072024")
 
 
 
-test$plot_control
+test$plot_test
 
 a <- test$Test_df %>% 
   mutate(Time_chr = as.character(Time),
