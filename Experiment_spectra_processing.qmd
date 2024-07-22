@@ -16,7 +16,7 @@ library(hsdar)
 ```
 
 ```{r data opening}
-filepath <- "Data/Experiment_Intertidal_Chambers/HW2"
+filepath <- "Data/Experiment_Intertidal_Chambers/HW3"
 
 if(file.exists(paste0(filepath ,"/Test_and_Control_reflectance.csv") )== F){
   
@@ -95,12 +95,13 @@ write.csv(df, paste0(filepath ,"/Test_and_Control_reflectance.csv"), row.names =
 
 df <- df  %>%  
   # dplyr::filter(Wavelength %% 2 == 0) %>% 
-  group_by(Spectra) %>% 
+  group_by(ID) %>% 
   reframe(Wavelength = Wavelength,
           Value = Value,
           Value_mean = c(zoo::rollmean(Value, k=9, fill = NA)),
           Date = Date,
           Time = Time,
+          Spectra = Spectra,
           IntegrationTime = IntegrationTime,
           scenario = scenario,
           ID = ID) %>% 
@@ -111,20 +112,19 @@ df <- df  %>%
   mutate(Time_POS = as.POSIXct(paste0(Date," ", substr(Time,1,5)), format = "%m/%d/%Y %H:%M"))%>% 
   dplyr::filter(Wavelength >= 440 & Wavelength <= 990) %>% 
   group_by(Spectra,scenario) %>% 
-  mutate(std = (Value_mean-min(Value_mean))/(max(Value_mean)-min(Value_mean))) 
+  mutate(std = (Value_mean-min(Value_mean,na.rm=T))/(max(Value_mean,na.rm=T)-min(Value_mean,na.rm=T))) %>% 
+  ungroup() %>% 
+  mutate(timeDiff = round(as.numeric(Time_POS - min(Time_POS))/3600),0)
+
 ```
-
-
 
 ```{r ggplot Raw data}
 
 df %>% 
-ggplot() +
-  geom_line(aes(x = Wavelength, y = Value_mean, group = Spectra, color = Time_POS))+
+  ggplot() +
+  geom_line(aes(x = Wavelength, y = std, group = Spectra, color = Time_POS))+
   facet_wrap(~ scenario)+
   theme_Bede()
-
-
 
 ```
 
@@ -143,7 +143,7 @@ ggplot(aes(x = Wavelength, y = Value, color = scenario)) +
 ```
 
 ```{r Compare NDVI}
-NIR_wavelength <- 800  # Example wavelength for NIR
+NIR_wavelength <- 800  # Exampmple wavelength for NIR
 RED_wavelength <- 680 
 
 NDVI <- df %>% 
@@ -152,7 +152,8 @@ NDVI <- df %>%
   dplyr::filter(Wavelength %in% c(NIR_wavelength, RED_wavelength)) %>%
   pivot_wider(names_from = Wavelength, values_from = Value_mean) %>%
   group_by(Time_POS,Spectra,scenario) %>% 
-  reframe(value = (`800` - `680`) / (`800` + `680`))
+  reframe(value = (`800` - `680`) / (`800` + `680`),
+          timeDiff = timeDiff)
 
 NDVI %>% 
 ggplot(aes(x = Time_POS, y = value, color = scenario)) +
@@ -161,6 +162,12 @@ ggplot(aes(x = Time_POS, y = value, color = scenario)) +
   facet_wrap(~ scenario)+
   theme_Bede()+
   scale_colour_Bede("mixed")
+
+# NDVI %>%
+#   ggplot()+
+#   geom_boxplot(aes(x = (timeDiff), y = value, color = scenario, group = interaction(timeDiff,scenario)))+
+#   annotate("rect", xmin = missing_start, xmax = missing_end, ymin = -Inf, ymax = Inf,
+#            alpha = 0.2, fill = "grey")
   
 ```
 
@@ -201,7 +208,7 @@ Water_abs %>%
   ggplot(aes(x = Time_POS, y = abs_water2, color = scenario))+
   geom_point(alpha = 0.3)+
     # geom_boxplot(aes(group = interaction(Date,scenario)))+
-  geom_smooth(aes(group = interaction(Date,scenario)), method = "gam" )+
+  geom_smooth(aes(group = interaction(Date,scenario)), method = "glm" )+
     geom_smooth( method = "glm" )+
   
   ylab("Moisture Stress Index")+
@@ -243,7 +250,8 @@ df_coeffect %>%
 ```{r 2nd derivative}
 
 spectra <- df %>% 
-  ungroup() %>%   dplyr::select(std,ID,Wavelength) %>%
+  ungroup() %>%   
+  dplyr::select(std,ID,Wavelength) %>%
   # dplyr::filter(Wavelength >= 450 & Wavelength <= 900) %>% 
   pivot_wider(names_from = ID, values_from = std) %>% 
   dplyr::select(-Wavelength)
@@ -261,17 +269,19 @@ deriv <- speclib(spectra = as.matrix(spectra), wavelength = wavelength) %>%
   # derivative.speclib(m=1) %>% 
   spectra() %>% 
   t()%>% 
-  as_tibble() 
+  as_tibble()
+  
  
 
 names(deriv) <- names(spectra)
 
+deriv <- deriv %>% 
+  mutate(wavelength = wavelength-14)
 
 deriv_long <- deriv %>% 
-  dplyr::mutate(Wavelength = wavelength-15) %>% 
+  dplyr::mutate(Wavelength = wavelength) %>% 
   pivot_longer(-Wavelength, names_to = "ID", values_to = "Deriv") %>% 
   dplyr::filter(Wavelength >= 440 & Wavelength <= 900) %>% 
-
   left_join(df,by = c("Wavelength","ID"))
 
 
@@ -357,13 +367,22 @@ deriv_long %>%
                 Wavelength == 655) %>%
   pivot_wider(names_from = Wavelength, values_from = Deriv) %>%
   mutate(abs_ratio = `655`/`676`) %>% 
-  ggplot(aes(x = Time_POS, y = abs_ratio, color = scenario))+
+  ggplot(aes(x = Time_POS, y = `676`, color = scenario))+
   ylab("Hauteur du Pic")+
   geom_point(alpha = 0.3)+
   # geom_boxplot(aes(group = interaction(Date,scenario)))+
   geom_smooth(method = "glm")
 
 
+deriv_long %>% 
+    dplyr::select(-c(Value,Date,Time,IntegrationTime,Value_mean,ID,std)) %>%
+  dplyr::filter(Wavelength == 676,
+                !is.na(timeDiff)) %>%
+  pivot_wider(names_from = Wavelength, values_from = Deriv) %>%
+  ggplot(aes(x = as.factor(timeDiff), y = `676`, color = scenario, group = interaction(scenario, timeDiff)))+
+  ylab("Hauteur du Pic")+
+  ylim(c(0,0.002))+
+  geom_boxplot()
 ```
 
 ```{r sd_derivative}
@@ -373,13 +392,14 @@ deriv_long %>%
   group_by(Wavelength,scenario) %>% 
   reframe(sd = sd(Deriv, na.rm = T),
           diff = max(Deriv,na.rm = T)-min(Deriv,na.rm=T)) %>% 
-  ggplot()+
-  geom_line(aes(x = Wavelength, y = diff, color = scenario))+
-  geom_vline(xintercept = 655, color = "red")+
+  ggplot(aes(x = Wavelength-4, y = diff, color = scenario))+
+  geom_line(alpha=0.3)+
+  # geom_vline(xintercept = 655, color = "red")+
   geom_vline(xintercept = 676, color = "blue")+
-  geom_vline(xintercept = 602, color = "green")+
-  geom_vline(xintercept = 628, color = "goldenrod")+
-  geom_vline(xintercept = 493, color = "darkred")+
+  # geom_vline(xintercept = 602, color = "green")+
+  # geom_vline(xintercept = 628, color = "goldenrod")+
+  # geom_vline(xintercept = 493, color = "darkred")+
+  geom_smooth(method="gam")+
   theme_Bede()+
   scale_colour_Bede("mixed")
 
@@ -406,7 +426,10 @@ ggplot(aes(x = Time_POS, y = value, color = scenario)) +
   geom_point(alpha = 0.3)+
   geom_smooth(method = "glm")+
   facet_wrap(~ scenario)+
+  ylab("Green Leaf Index")+
+  xlab("Time")+
   theme_Bede()+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
   scale_colour_Bede("mixed")
 
 
