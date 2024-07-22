@@ -300,10 +300,19 @@ Intensity_Max = max_light_intensity
        if(!is.na(High_Tide_Until)){
          low_tide_at <- as.POSIXct(High_Tide_Until, format = "%Y-%m-%d %H:%M", tz = "UTC")
          
+         Temp1 <- data %>% 
+           dplyr::filter(Time == low_tide_at)
+         
+         temp_diff <- Temp1$Temp_Water - min_Water
+         
          data <- data %>% 
+           ungroup() %>% 
           mutate(Tide_Status = case_when(Time <= low_tide_at ~ "High_Tide",
                                          TRUE ~ Tide_Status),
-                 Temp = case_when(Time <= low_tide_at ~ Temp_Water,
+                 Temp_Water = Temp_Water - temp_diff,
+                 Temp = case_when(Tide_Status == "High_Tide" ~ Temp_Water,
+                                  TRUE ~ Temp_Air),
+                 Temp = case_when(Time <= low_tide_at ~ min_Water,
                                          TRUE ~ Temp))
          
        }
@@ -426,7 +435,7 @@ test <- Make_Profile(min_Air_Temp_control = 18,
                     Tide = "both",
                     night_tide = T,
                     time_step = 60, 
-                    Save_Experiment = T, 
+                    Save_Experiment = F, 
                     Experiment_Name = "HW4_22072024_to_26072024")
 
 
