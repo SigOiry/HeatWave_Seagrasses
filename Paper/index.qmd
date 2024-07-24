@@ -86,15 +86,21 @@ Bleaching and browning events of seagrass beds have been observed following epis
 # Material & Methods
 
 ## Heatwaves detection and characterisation
+
 ### Air temperature
 
-Since January 1, 2024, Meteo France weather data has been free and openly accessible. Hourly weather data for the French coast of the Atlantic and the Channel has been downloaded using a  [custom script](https://github.com/SigOiry/HeatWave_Seagrasses/blob/main/MeteoFrance_Extraction.qmd), as no API has been developed for downloading this data. Weather stations located within 10 kilometers of the coastline were considered, but only those with a minimum of 30 years of data were included to ensure accurate climatology reconstruction. Among the 156 weather station that are within the 10km threshold of coastline, 36 had enought data to reconstruct the climatology. Hourly data has been aggregated to daily mean temperatures.
-
+Since January 1, 2024, Meteo France weather data has been freely and openly accessible. Hourly weather data for the French coast of the Atlantic and the Channel has been downloaded using a [custom script](https://github.com/SigOiry/HeatWave_Seagrasses/blob/main/MeteoFrance_Extraction.qmd), as no API has been developed for downloading this data at the date of this study. Weather stations located within 10 kilometers of the coastline were considered, but only those with a minimum of 30 years of data were included to ensure accurate climatology reconstruction. Among the 156 weather station that are within the 10km threshold of coastline, 36 had enough data to reconstruct the climatology. Hourly data has been aggregated to daily mean temperatures.
 
 ## Experiment
 
 ### Sampling and Acclimation of seagrasses
 
 Seagrass was sampled from a *Nanozostera noltei* (dwarf eelgrass, syn. Zostera noltei) meadow on Noirmoutier Island, France (46°57'32.0"N 2°10'37.0"W) at low tide in June 2024. A shovel was used to sample seagrass from an area of 30 cm by 15 cm and 10 cm deep, maintaining the sediment structure and avoiding damage to the rhizomes and the leafs of the seagrass. The seagrass, along with sediment, meiofauna, and macrofauna, was placed in plastic trays. To avoid hydric stress during transportation, seawater was added to each tray. Simultaneously, seawater was sampled from a nearby site and transported to the lab, where it was filtered using a 0.22 µm nitrocellulose filter to remove all suspended particulate matter. This water was used in the acclimation tank and the intertidal chambers. The seagrasses were acclimated for two weeks with a water temperature of 17°C, matching the temperature at the time of sampling, and with light of 150 µmol.s-1.m-2 of PAR photons [@akbar2020mangrove]. A wave generator was used in the tank to circulate and reoxygenate the water.
+
+### Experimental design
+
+Two intertidal chambers from [ElectricBlue](https://electricblue.eu/intertidal-chamber) were used to simulate tidal cycles and control water temperature during high tide and air temperature during low tide. One chamber served as the control, while the other was used for the experimental treatment. The control chamber was maintained at temperatures representative of the typical seasonal conditions: water temperatures between 18°C and 19°C and air temperatures between 18°C and 23°C. For the experimental treatment, the air temperature was set to mimic an atmospheric heatwave that occurred over the seagrass meadow of Porh Saint-Guénël, Plouharnel, France (47°35'40.0"N, 3°07'30.0"W) from August 26, 2021, to September 6, 2021. On the first day of the experiment, air temperatures in the experimental chamber were set to range from 23°C at night to 35°C during the day, with a daily increase of 1°C. The water temperature in the experimental chamber was similarly adjusted to reflect the heatwave conditions, starting from the normal seasonal range (18°C) and gradually increasing to simulate the rising temperatures experienced during the heatwave (+0.5°C daily). This setup aimed to replicate the thermal stress experienced by the seagrass meadow during the actual heatwave event.
+
+
 
 # Bibliography

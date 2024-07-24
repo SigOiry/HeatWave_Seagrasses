@@ -361,7 +361,7 @@ plot_test <- ggplot()+
   geom_rect(data = polygon_table , aes(ymin = ymin, ymax = ymax, xmin = xmin, xmax =xmax, fill = Tide, group = tide_ID),alpha = 0.1) +
   geom_line(data = Test_df,aes(x = Time, y = Temp))+
   ylab("Expermental Temperature (°C)")+
-  theme_Bede()+
+  # theme_Bede()+
   theme(axis.text.x = element_text(size = 15),
         axis.text.y = element_text(size = 15),
         axis.title.y = element_text(size = 18),
@@ -371,7 +371,7 @@ plot_control <- ggplot()+
   geom_rect(data = polygon_table , aes(ymin = ymin, ymax = ymax, xmin = xmin, xmax =xmax, fill = Tide, group = tide_ID),alpha = 0.1) +
   geom_line(data = Control_df,aes(x = Time, y = Temp))+
   ylab("Expermental Temperature (°C)")+
-  theme_Bede()+
+  # theme_Bede()+
   theme(axis.text.x = element_text(size = 15),
         axis.text.y = element_text(size = 15),
         axis.title.y = element_text(size = 18),
@@ -416,14 +416,14 @@ test <- Make_Profile(min_Air_Temp_control = 18,
                      max_Air_Temp_control = 23,
                     min_Air_Temp_test = 23,
                     max_Air_Temp_test = 35,
-                    min_Water_Temp_control= 18, 
-                    max_Water_Temp_control = 18,
-                    min_Water_Temp_test = 18,
-                    max_Water_Temp_test = 18,
-                    date_start = "2024-07-19 23:00:00",
+                    min_Water_Temp_control= 19, 
+                    max_Water_Temp_control = 19,
+                    min_Water_Temp_test = 19,
+                    max_Water_Temp_test = 19,
+                    date_start = "2024-07-22 21:00:00",
                     date_end = "2024-07-26 23:00:00",
-                    low_tide_time = "2024-07-16 13:00:00",
-                    High_Tide_Until = "2024-07-22 09:00:00",
+                    low_tide_time = "2024-07-23 12:00:00",
+                    High_Tide_Until = "2024-07-24 09:00:00",
                     daily_increase_Air_Test = 1,
                     daily_increase_Water_Test = 0.5,
                     daily_increase_Air_Control = 0,
@@ -435,8 +435,8 @@ test <- Make_Profile(min_Air_Temp_control = 18,
                     Tide = "both",
                     night_tide = T,
                     time_step = 60, 
-                    Save_Experiment = F, 
-                    Experiment_Name = "HW4_22072024_to_26072024")
+                    Save_Experiment = T, 
+                    Experiment_Name = "HW5_24072024_to_26072024")
 
 
 
