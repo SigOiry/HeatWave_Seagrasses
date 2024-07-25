@@ -331,7 +331,9 @@ knitr::include_graphics("Figs/Chamber_Profils.png")
 
 #### Radiomertric measurment
 
-Throughout the experiment, hyperspectral signatures of both the control and treatment seagrasses were taken using an ASD HandHeld 2 equipped with a fiber optic, allowing measurements to be taken directly inside the chamber without opening it. An average reflectance spectrum of five spectra, each with an integration time of 544 ms, was taken every minute. Every 10 minutes, the fiber optic was switched from on benthic chamber to the other, in order to measure reflectance in both treatment and control. Reflectance calibration of the instrument was performed each morning at the very first moment of low tide using a Spectralon white reference with 99% Lambertian reflectivity. The 2nd derivative of reflectance spectra has been calculated to retrieve absorption features and compare it variability over time. Two radiometric indices where also followed over time :
+Throughout the experiment, hyperspectral signatures of both the control and treatment seagrasses were taken using an ASD HandHeld 2 equipped with a fiber optic, allowing measurements to be taken directly inside the chamber without opening it. An average reflectance spectrum of five spectra, each with an integration time of 544 ms, was taken every minute. Every 10 minutes, the fiber optic was switched from on benthic chamber to the other, in order to measure reflectance in both treatment and control. Reflectance calibration of the instrument was performed each morning at the very first moment of low tide using a Spectralon white reference with 99% Lambertian reflectivity. 
+
+The second derivative of the reflectance spectra was calculated to retrieve absorption features and compare their variability over time. Two radiometric indices were also monitored throughout the experiment : 
 
 -   The Normalized Difference Vegetation Index (NDVI, @rouse1974monitoring), as a proxy of the concentration of chlorophyll-a (@eq-ndvi)
 
@@ -347,6 +349,6 @@ $$
 GLI = \frac{[R(550nm)-R(668nm)]+[R(550nm)-R(450nm)]}{(2 \times R(550nm) )+ R(668nm) + R(450nm) }
 $$ {#eq-gli}
 
-where $R(668nm)$ is the reflectance in the red at 668 nm, $R(550nm)$ is the reflectance in the green at 550 nm and $R(450)$ is the refletance in the blue at 450 nm.
+where $R(668nm)$ is the reflectance in the red at 668 nm, $R(550nm)$ is the reflectance in the green at 550 nm and $R(450)$ is the reflectance in the blue at 450 nm.
 
 # Bibliography
