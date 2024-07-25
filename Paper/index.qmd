@@ -89,7 +89,7 @@ Bleaching and browning events of seagrass beds have been observed following epis
 
 ### Air temperature
 
-Since January 1, 2024, Meteo France weather data has been freely and openly accessible. Hourly weather data for the French coast of the Atlantic and the Channel has been downloaded using a [custom script](https://github.com/SigOiry/HeatWave_Seagrasses/blob/main/MeteoFrance_Extraction.qmd), as no API has been developed for downloading this data at the date of this study. Weather stations located within 10 kilometers of the coastline were considered, but only those with a minimum of 30 years of data were included to ensure accurate climatology reconstruction. Among the 156 weather station that are within the 10km threshold of coastline, 36 had enough data to reconstruct the climatology. Hourly data has been aggregated to daily mean temperatures.
+Since January 1, 2024, Meteo France weather data has been freely and openly accessible. Hourly air temperature data (°C) for the French coast of the Atlantic and the Channel has been downloaded using a [custom script](https://github.com/SigOiry/HeatWave_Seagrasses/blob/main/MeteoFrance_Extraction.qmd), as no API has been developed for downloading this data at the date of this study. Weather stations located within 10 kilometers of the coastline were considered, but only those with a minimum of 30 years of data were included to ensure accurate climatology reconstruction. Among the 156 weather stations comprised within the 10km of coastline, only 36 had enough data to reconstruct the climatology. Hourly data has been aggregated to daily mean temperatures at each stations.
 
 ### Water temperature
 
@@ -99,11 +99,11 @@ not done yet !
 
 ### Sampling and Acclimation of seagrasses
 
-Seagrass was sampled from a *Nanozostera noltei* (dwarf eelgrass, syn. Zostera noltei) meadow on Noirmoutier Island, France (46°57'32.0"N 2°10'37.0"W) at low tide in June 2024. A shovel was used to sample seagrass from an area of 30 cm by 15 cm and 10 cm deep, maintaining the sediment structure and avoiding damage to the rhizomes and the leafs of the seagrass. The seagrass, along with sediment, meiofauna, and macrofauna, was placed in plastic trays. To avoid hydric stress during transportation, seawater was added to each tray. Simultaneously, seawater was sampled from a nearby site and transported to the lab, where it was filtered using a 0.22 µm nitrocellulose filter to remove all suspended particulate matter. This water was used in the acclimation tank and the intertidal chambers. The seagrasses were acclimated for two weeks with a water temperature of 17°C, matching the temperature at the time of sampling, and with light of 150 µmol.s-1.m-2 of PAR photons [@akbar2020mangrove]. A wave generator was used in the tank to circulate and reoxygenate the water.
+Seagrass was sampled from a *Nanozostera noltei* (dwarf eelgrass, syn. Zostera noltei) meadow on Noirmoutier Island, France (46°57'32.0"N 2°10'37.0"W) at low tide in June 2024. A shovel was used to sample seagrass from an area of 30 cm by 15 cm and 5 cm deep, maintaining the sediment structure and avoiding damage to the rhizomes and the leafs of the seagrass. The seagrass, along with sediment, meiofauna, and macrofauna, was placed in plastic trays. To avoid hydric stress during transportation, seawater was added to each tray. Simultaneously, seawater was sampled from a nearby site and transported to the lab, where it was filtered using a 0.22 µm nitrocellulose filter to remove all suspended particulate matter. This seawater was used in the acclimation tank and the intertidal chambers. The seagrasses were acclimated at high tide for one weeks with a water temperature of 17°C, matching the temperature at the time of sampling, and with light of 150 µmol.s-1.m-2 of PAR photons [@akbar2020mangrove]. A wave generator was used in the tank to circulate and reoxygenate the water.
 
 ### Experimental design
 
-Two intertidal chambers from [ElectricBlue](https://electricblue.eu/intertidal-chamber) were used to simulate tidal cycles and control water temperature during high tide and air temperature during low tide. One chamber served as the control, while the other was used for the experimental treatment. The control chamber was maintained at temperatures representative of the typical seasonal conditions: water temperatures between 18°C and 19°C and air temperatures between 18°C and 23°C. For the experimental treatment, the air temperature was set to mimic an atmospheric heatwave that occurred over the seagrass meadow of Porh Saint-Guénël, Plouharnel, France (47°35'40.0"N, 3°07'30.0"W) from August 26, 2021, to September 6, 2021. On the first day of the experiment, air temperatures in the experimental chamber were set to range from 23°C at night to 35°C during the day, with a daily increase of 1°C. The water temperature in the experimental chamber was similarly adjusted to reflect the heatwave conditions, starting from the normal seasonal range (18°C) and gradually increasing to simulate the rising temperatures experienced during the heatwave (+0.5°C daily). This setup aimed to replicate the thermal stress experienced by the seagrass meadow during the actual heatwave event.
+Two intertidal chambers from [ElectricBlue](https://electricblue.eu/intertidal-chamber) were used to simulate tidal cycles and control water temperature during high tide and air temperature during low tide. One chamber served as the control, while the other was used for the experimental treatment. The control chamber was maintained at temperatures representative of the typical seasonal conditions: water temperatures between 18°C and 19°C and air temperatures between 18°C and 23°C, following circadian temperature variability (@fig-Profile). For the experimental treatment, the air temperature was set to mimic an atmospheric heatwave that occurred over the seagrass meadow of Porh Saint-Guénël, Plouharnel, France (47°35'40.0"N, 3°07'30.0"W) from August 26, 2021, to September 6, 2021. On the first day of the experiment, air temperatures in the experimental chamber were set to range from 23°C at night to 35°C during the day, with a daily increase of 1°C. The water temperature in the experimental chamber was similarly adjusted to reflect the heatwave conditions, starting from the normal seasonal range (18°C) and gradually increasing to simulate the rising temperatures experienced during the heatwave (+0.5°C daily). This setup aimed to replicate the thermal stress experienced by the seagrass meadow during the actual heatwave event (@fig-Profile).
 
 ```{r chamber profiles}
 #| cache: true
@@ -114,6 +114,7 @@ Two intertidal chambers from [ElectricBlue](https://electricblue.eu/intertidal-c
 library(MapRs)
 library(tidyverse)
 library(Utilities.Package)
+library(patchwork)
 
 experimental_design <- Make_Chamber_Profile(min_Air_Temp_control = 19,
                                             max_Air_Temp_control = 23,
@@ -162,38 +163,53 @@ polygon_table <-   df %>%
   mutate( ymin = min(T_min),
           ymax = max(T_max)) %>% 
   rename(Tide = Tide_Status) %>% 
-  mutate(Tide = case_when(Tide == "High_Tide" ~ "High",
-                          TRUE ~ "Low"))
+  mutate(Tide = case_when(Tide == "High_Tide" ~ "High Tide",
+                          TRUE ~ "Low Tide"))
 
-water_polyline <- df %>% 
+#### Test
+water_polyline_test <- df %>% 
   dplyr::filter(scenario == "Test") %>% 
   dplyr::filter(Tide_Status == "High_Tide") 
 
-air_polylines <- df %>% 
+air_polyline_test <- df %>% 
   dplyr::filter(scenario == "Test") %>% 
   dplyr::filter(Tide_Status == "Low_Tide")
 
-max_air_temp <- df %>% 
+max_air_temp_test <- df %>% 
   dplyr::filter(scenario == "Test") %>% 
   dplyr::filter(Tide_Status == "Low_Tide") %>% 
   group_by(tide_ID) %>% 
   dplyr::filter(Temp == max(Temp)) %>% 
   dplyr::filter(Temp >=35)
 
-  
+  cols_fill <- c("High Tide" = "blue", "Low Tide" = "red")
+  cols_col <- c("Air Temperature" = "red4", "Water Temperature" = "blue3")
 
-df %>% 
+
+
+plot_treatment <- df %>% 
   dplyr::filter(scenario == "Test") %>% 
 ggplot()+
   geom_line(aes(x = Time, y = Temp))+
-  geom_rect(data = polygon_table , aes(ymin = ymin, ymax = ymax, xmin = xmin, xmax =xmax, fill = Tide, group = tide_ID),alpha = 0.1) +
-  geom_line(data = water_polyline, aes(x = Time, y = Temp, group = tide_ID), color = "blue3", linewidth = 1)+
-  scale_x_datetime(date_breaks = "12 hour", date_labels = "%H:%M") +
-
-  geom_line(data = air_polylines, aes(x = Time, y = Temp, group = tide_ID), color = "red4", linewidth = 1)+
-   ggforce::geom_mark_ellipse(data=max_air_temp,
+  geom_rect(data = polygon_table , aes(ymin = 18, ymax = 39, xmin = xmin, xmax =xmax, fill = Tide, group = tide_ID),alpha = 0.1,show.legend = F) +
+  geom_line(data = df  %>% 
+    dplyr::filter(Time > as.POSIXct("2024-07-24 09:00:00", format = "%Y-%m-%d %H:%M", tz = "UTC")) %>% 
+    dplyr::filter(scenario == "Test"),
+    aes(x = Time, y = Temp_Water, color = "Water Temperature"), linewidth = 1, linetype = "dashed", alpha = 0.3,show.legend = F)+
+  geom_line(data = water_polyline_test, aes(x = Time, y = Temp, group = tide_ID, color = "Water Temperature"), linewidth = 1,show.legend = F)+
+    scale_x_datetime(date_breaks = "6 hour", date_labels = "%H:%M") +
+  geom_line(aes(x = Time, y = Temp_Air, color = "Air Temperature"), linewidth = 1, linetype = "dashed", alpha = 0.3,show.legend = F)+
+  geom_line(data = air_polyline_test, aes(x = Time, y = Temp, group = tide_ID, color = "Air Temperature"),, linewidth = 1,show.legend = F)+
+    geom_text(data = data.frame(x = as.POSIXct("2024-07-24 03:00:00", format = "%Y-%m-%d %H:%M", tz = "UTC"), y = 38.5, label = "Treatment"), aes( x = x, y =y , label = label), hjust = 0, size = 10)+
+    scale_fill_manual(name = "legend",
+                      values = cols_fill) +
+    scale_color_manual(name = "legend",
+                       values = cols_col) +
+   ggforce::geom_mark_ellipse(data=max_air_temp_test,
                  aes(x=Time,
                      y=Temp,
+                     x0 = Time, 
+                     y0 = Temp + 1,
                      label = paste0(Temp, " °C"),
                      group = tide_ID),
                      # description=Description),
@@ -209,12 +225,106 @@ ggplot()+
   radius = unit(2, "mm") ,
   label.fill = "grey90",
   label.buffer = unit(5, "mm"))+
-  ylim(c(17,39))+
+  ylab("Temperature (°C)")+
+  ylim(c(18,39))+
+  scale_y_continuous(position = "right") +
+  theme_Bede()+
+    theme(axis.text.x = element_text(size = 25, angle = 45, vjust = 0.6),
+          axis.text.y = element_text(size = 25),
+          axis.title.x = element_text(size = 30),
+          axis.title.y = element_text(size = 30))
 
-  theme_Bede()
+### Control 
+water_polyline_control <- df %>% 
+  dplyr::filter(scenario == "Control") %>% 
+  dplyr::filter(Tide_Status == "High_Tide") 
 
+air_polylines_control <- df %>% 
+  dplyr::filter(scenario == "Control") %>% 
+  dplyr::filter(Tide_Status == "Low_Tide")
+
+max_air_temp_control <- df %>% 
+  dplyr::filter(scenario == "Control") %>% 
+  dplyr::filter(Tide_Status == "Low_Tide") %>% 
+  group_by(tide_ID) %>% 
+  dplyr::filter(Temp == max(Temp)) %>% 
+  dplyr::filter(Temp >=20)
+
+  cols_fill <- c("High Tide" = "blue", "Low Tide" = "red")
+  cols_col <- c("Air Temperature" = "red4", "Water Temperature" = "blue3")
+
+
+
+plot_control <- df %>% 
+  dplyr::filter(scenario == "Control") %>% 
+  ggplot()+
+    geom_line(aes(x = Time, y = Temp),alpha = 0.2, linewidth = 1)+
+    geom_rect(data = polygon_table , aes(ymin = 18, ymax = 39, xmin = xmin, xmax =xmax, fill = Tide, group = tide_ID),alpha = 0.1) +
+    geom_line(data = df  %>% 
+      dplyr::filter(Time > as.POSIXct("2024-07-24 09:00:00", format = "%Y-%m-%d %H:%M", tz = "UTC")) %>% 
+      dplyr::filter(scenario == "Control"),
+      aes(x = Time, y = Temp_Water, color = "Water Temperature"), linewidth = 1, linetype = "dashed", alpha = 0.3)+
+    geom_line(data = water_polyline_control, aes(x = Time, y = Temp, group = tide_ID, color = "Water Temperature"), linewidth = 1)+
+    scale_x_datetime(date_breaks = "6 hour", date_labels = "%H:%M") +
+    geom_line(aes(x = Time, y = Temp_Air, color = "Air Temperature"), linewidth = 1, linetype = "dashed", alpha = 0.3)+
+    geom_line(data = air_polylines_control, aes(x = Time, y = Temp, group = tide_ID, color = "Air Temperature"), linewidth = 1)+
+    geom_text(data = data.frame(x = as.POSIXct("2024-07-24 03:00:00", format = "%Y-%m-%d %H:%M", tz = "UTC"), y = 38.5, label = "Control"), aes( x = x, y =y , label = label), hjust = 0,size = 10)+
+    ggforce::geom_mark_ellipse(data=max_air_temp_control,
+                   aes(x=Time,
+                       y=round(Temp,0),
+                       x0 = Time, 
+                       y0 = Temp + 1,
+                       label = paste0(round(Temp,0), " °C"),
+                       group = tide_ID),
+                       # description=Description),
+                   size=0.3,
+                   fill = "goldenrod",
+                   con.colour = "goldenrod4",
+                   show.legend=F,
+                   label.fontsize = 25,
+                   label.hjust = 0.5,
+                   con.size = 2,
+                   alpha=0.8,
+    expand = unit(2, "mm") , 
+    radius = unit(2, "mm") ,
+    label.fill = "grey90",
+    label.buffer = unit(5, "mm"))+
+    scale_fill_manual(name = "legend",
+                      values = cols_fill) +
+    scale_color_manual(name = "legend",
+                       values = cols_col) +
+  ylab("Temperature (°C)")+
+
+    ylim(c(18,39))+
+    theme_Bede()+
+    theme(legend.position = c(0.16,.8),
+          legend.background = element_rect(fill=scales::alpha('white', 0.8)),
+          legend.text = element_text(size = 20, hjust = 0),
+          legend.title = element_blank(),
+          legend.key.size = unit(0.7,"cm"),
+          legend.spacing = unit(0,"mm"),
+          axis.text.x = element_text(size = 25,angle = 45, vjust = 0.6),
+          axis.text.y = element_text(size = 25),
+          axis.title.x = element_text(size = 30),
+          axis.title.y = element_text(size = 30))
+
+
+plt <- plot_control + plot_treatment
+
+ggsave("Paper/Figs/Chamber_Profils.png",plt, height = 874*4, width = 1911*4, unit= "px")
 ```
 
+```{r Fig Profiles}
+#| cache: false
+#| echo: false
+#| warning: false
+#| fig-cap:  Temperature profiles of both the control (left) and the treatment (right) followed during the heatwave experiment. The red line indicates air temperature, whereas the blue line indicates water temperature. Due to the tidal cycle followed during the experiment, the seagrasses only experience temperatures representade by solid lines.
+#| label: fig-Profile
+#| fig-width: 10
+#| fig-height: 8
+#| out-width: "100%"
 
+knitr::include_graphics("Figs/Chamber_Profils.png")
+```
 
 # Bibliography

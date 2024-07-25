@@ -297,16 +297,20 @@ characterisation}\label{heatwaves-detection-and-characterisation}
 \subsubsection{Air temperature}\label{air-temperature}
 
 Since January 1, 2024, Meteo France weather data has been freely and
-openly accessible. Hourly weather data for the French coast of the
-Atlantic and the Channel has been downloaded using a
+openly accessible. Hourly air temperature data (°C) for the French coast
+of the Atlantic and the Channel has been downloaded using a
 \href{https://github.com/SigOiry/HeatWave_Seagrasses/blob/main/MeteoFrance_Extraction.qmd}{custom
 script}, as no API has been developed for downloading this data at the
 date of this study. Weather stations located within 10 kilometers of the
 coastline were considered, but only those with a minimum of 30 years of
 data were included to ensure accurate climatology reconstruction. Among
-the 156 weather station that are within the 10km threshold of coastline,
-36 had enough data to reconstruct the climatology. Hourly data has been
-aggregated to daily mean temperatures.
+the 156 weather stations comprised within the 10km of coastline, only 36
+had enough data to reconstruct the climatology. Hourly data has been
+aggregated to daily mean temperatures at each stations.
+
+\subsubsection{Water temperature}\label{water-temperature}
+
+not done yet !
 
 \subsection{Experiment}\label{experiment}
 
@@ -316,19 +320,19 @@ seagrasses}\label{sampling-and-acclimation-of-seagrasses}
 Seagrass was sampled from a \emph{Nanozostera noltei} (dwarf eelgrass,
 syn. Zostera noltei) meadow on Noirmoutier Island, France (46°57'32.0''N
 2°10'37.0''W) at low tide in June 2024. A shovel was used to sample
-seagrass from an area of 30 cm by 15 cm and 10 cm deep, maintaining the
+seagrass from an area of 30 cm by 15 cm and 5 cm deep, maintaining the
 sediment structure and avoiding damage to the rhizomes and the leafs of
 the seagrass. The seagrass, along with sediment, meiofauna, and
 macrofauna, was placed in plastic trays. To avoid hydric stress during
 transportation, seawater was added to each tray. Simultaneously,
 seawater was sampled from a nearby site and transported to the lab,
 where it was filtered using a 0.22 µm nitrocellulose filter to remove
-all suspended particulate matter. This water was used in the acclimation
-tank and the intertidal chambers. The seagrasses were acclimated for two
-weeks with a water temperature of 17°C, matching the temperature at the
-time of sampling, and with light of 150 µmol.s-1.m-2 of PAR photons
-\citep{akbar2020mangrove}. A wave generator was used in the tank to
-circulate and reoxygenate the water.
+all suspended particulate matter. This seawater was used in the
+acclimation tank and the intertidal chambers. The seagrasses were
+acclimated at high tide for one weeks with a water temperature of 17°C,
+matching the temperature at the time of sampling, and with light of 150
+µmol.s-1.m-2 of PAR photons \citep{akbar2020mangrove}. A wave generator
+was used in the tank to circulate and reoxygenate the water.
 
 \subsubsection{Experimental design}\label{experimental-design}
 
@@ -339,7 +343,8 @@ tide and air temperature during low tide. One chamber served as the
 control, while the other was used for the experimental treatment. The
 control chamber was maintained at temperatures representative of the
 typical seasonal conditions: water temperatures between 18°C and 19°C
-and air temperatures between 18°C and 23°C. For the experimental
+and air temperatures between 18°C and 23°C, following circadian
+temperature variability (Figure~\ref{fig-Profile}). For the experimental
 treatment, the air temperature was set to mimic an atmospheric heatwave
 that occurred over the seagrass meadow of Porh Saint-Guénël, Plouharnel,
 France (47°35'40.0''N, 3°07'30.0''W) from August 26, 2021, to September
@@ -351,7 +356,25 @@ conditions, starting from the normal seasonal range (18°C) and gradually
 increasing to simulate the rising temperatures experienced during the
 heatwave (+0.5°C daily). This setup aimed to replicate the thermal
 stress experienced by the seagrass meadow during the actual heatwave
-event.
+event (Figure~\ref{fig-Profile}).
+
+\phantomsection\label{cell-fig-Profile}
+\begin{figure}[H]
+
+\centering{
+
+\includegraphics[width=1\textwidth,height=\textheight]{Figs/Chamber_Profils.png}
+
+}
+
+\caption{\label{fig-Profile}Temperature profiles of both the control
+(left) and the treatment (right) followed during the heatwave
+experiment. The red line indicates air temperature, whereas the blue
+line indicates water temperature. Due to the tidal cycle followed during
+the experiment, the seagrasses only experience temperatures representade
+by solid lines.}
+
+\end{figure}%
 
 
 \renewcommand\refname{Bibliography}
