@@ -306,7 +306,15 @@ coastline were considered, but only those with a minimum of 30 years of
 data were included to ensure accurate climatology reconstruction. Among
 the 156 weather stations comprised within the 10km of coastline, only 36
 had enough data to reconstruct the climatology. Hourly data has been
-aggregated to daily mean temperatures at each stations.
+aggregated to daily mean temperatures at each stations. Heatwave
+detection was performed using the HeatwaveR package in R
+\citep{heatwaveR}. This package utilizes the methodology proposed by
+\citep{hobday2016hierarchical} to detect heatwave events. The
+climatology for the year was computed using the temperature time series.
+An event was considered a heatwave each time the temperature exceeded
+the 90th percentile of the climatology for five consecutive days. The
+severity of each event has beeen assed using the methodology proposed by
+\citep{hobday2018categorizing}.
 
 \subsubsection{Water temperature}\label{water-temperature}
 

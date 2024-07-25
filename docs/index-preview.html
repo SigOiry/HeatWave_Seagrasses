@@ -236,6 +236,8 @@
 <meta name="citation_reference" content="citation_title=Mangrove vegetation health index analysis by implementing NDVI (normalized difference vegetation index) classification method on sentinel-2 image data case study: Segara Anakan, Kabupaten Cilacap;,citation_author=MR Akbar;,citation_author=PAA Arisanto;,citation_author=BA Sukirno;,citation_author=PH Merdeka;,citation_author=MM Priadhi;,citation_author=S Zallesa;,citation_publication_date=2020;,citation_cover_date=2020;,citation_year=2020;,citation_volume=584;,citation_conference_title=IOP Conference Series: Earth and Environmental Science;,citation_conference=IOP Publishing;">
 <meta name="citation_reference" content="citation_title=Monitoring vegetation systems in the Great Plains with ERTS;,citation_author=John Wilson Rouse;,citation_author=Rüdiger H Haas;,citation_author=John A Schell;,citation_author=Donald W Deering;,citation_author=others;,citation_publication_date=1974;,citation_cover_date=1974;,citation_year=1974;,citation_issue=1;,citation_volume=351;,citation_journal_title=NASA Spec. Publ;">
 <meta name="citation_reference" content="citation_title=Spatially located platform and aerial photography for documentation of grazing impacts on wheat;,citation_author=Mounir Louhaichi;,citation_author=Michael M Borman;,citation_author=Douglas E Johnson;,citation_publication_date=2001;,citation_cover_date=2001;,citation_year=2001;,citation_issue=1;,citation_volume=16;,citation_journal_title=Geocarto International;,citation_publisher=Taylor &amp;amp;amp; Francis;">
+<meta name="citation_reference" content="citation_title=heatwaveR: A central algorithm for the detection of heatwaves and cold-spells;,citation_author=Robert W. Schlegel;,citation_author=Albertus J. Smit;,citation_publication_date=2018;,citation_cover_date=2018;,citation_year=2018;,citation_issue=27;,citation_doi=10.21105/joss.00821;,citation_volume=3;,citation_journal_title=Journal of Open Source Software;">
+<meta name="citation_reference" content="citation_title=Categorizing and naming marine heatwaves;,citation_author=Alistair J Hobday;,citation_author=Eric CJ Oliver;,citation_author=Alex Sen Gupta;,citation_author=Jessica A Benthuysen;,citation_author=Michael T Burrows;,citation_author=Markus G Donat;,citation_author=Neil J Holbrook;,citation_author=Pippa J Moore;,citation_author=Mads S Thomsen;,citation_author=Thomas Wernberg;,citation_author=others;,citation_publication_date=2018;,citation_cover_date=2018;,citation_year=2018;,citation_issue=2;,citation_volume=31;,citation_journal_title=Oceanography;,citation_publisher=JSTOR;">
 </head>
 
   <body class="quarto-notebook">
@@ -385,7 +387,7 @@
 <h2 data-number="2.1" class="anchored" data-anchor-id="heatwaves-detection-and-characterisation"><span class="header-section-number">2.1</span> Heatwaves detection and characterisation</h2>
 <section id="air-temperature" class="level3" data-number="2.1.1">
 <h3 data-number="2.1.1" class="anchored" data-anchor-id="air-temperature"><span class="header-section-number">2.1.1</span> Air temperature</h3>
-<p>Since January 1, 2024, Meteo France weather data has been freely and openly accessible. Hourly air temperature data (°C) for the French coast of the Atlantic and the Channel has been downloaded using a <a href="https://github.com/SigOiry/HeatWave_Seagrasses/blob/main/MeteoFrance_Extraction.qmd">custom script</a>, as no API has been developed for downloading this data at the date of this study. Weather stations located within 10 kilometers of the coastline were considered, but only those with a minimum of 30 years of data were included to ensure accurate climatology reconstruction. Among the 156 weather stations comprised within the 10km of coastline, only 36 had enough data to reconstruct the climatology. Hourly data has been aggregated to daily mean temperatures at each stations.</p>
+<p>Since January 1, 2024, Meteo France weather data has been freely and openly accessible. Hourly air temperature data (°C) for the French coast of the Atlantic and the Channel has been downloaded using a <a href="https://github.com/SigOiry/HeatWave_Seagrasses/blob/main/MeteoFrance_Extraction.qmd">custom script</a>, as no API has been developed for downloading this data at the date of this study. Weather stations located within 10 kilometers of the coastline were considered, but only those with a minimum of 30 years of data were included to ensure accurate climatology reconstruction. Among the 156 weather stations comprised within the 10km of coastline, only 36 had enough data to reconstruct the climatology. Hourly data has been aggregated to daily mean temperatures at each stations. Heatwave detection was performed using the HeatwaveR package in R <span class="citation" data-cites="heatwaveR">(<a href="#ref-heatwaveR" role="doc-biblioref">Schlegel and Smit, 2018</a>)</span>. This package utilizes the methodology proposed by <span class="citation" data-cites="hobday2016hierarchical">Hobday et al. (<a href="#ref-hobday2016hierarchical" role="doc-biblioref">2016</a>)</span> to detect heatwave events. The climatology for the year was computed using the temperature time series. An event was considered a heatwave each time the temperature exceeded the 90th percentile of the climatology for five consecutive days. The severity of each event has beeen assed using the methodology proposed by <span class="citation" data-cites="hobday2018categorizing">Hobday et al. (<a href="#ref-hobday2018categorizing" role="doc-biblioref">2018</a>)</span>.</p>
 </section>
 <section id="water-temperature" class="level3" data-number="2.1.2">
 <h3 data-number="2.1.2" class="anchored" data-anchor-id="water-temperature"><span class="header-section-number">2.1.2</span> Water temperature</h3>
@@ -665,6 +667,9 @@ Guerrero-Meseguer, L., Marı́n, A., Sanz-Lázaro, C., 2020. Heat wave intensity
 <div id="ref-hobday2016hierarchical" class="csl-entry" role="listitem">
 Hobday, A.J., Alexander, L.V., Perkins, S.E., Smale, D.A., Straub, S.C., Oliver, E.C., Benthuysen, J.A., Burrows, M.T., Donat, M.G., Feng, M., others, 2016. A hierarchical approach to defining marine heatwaves. Progress in oceanography 141, 227–238.
 </div>
+<div id="ref-hobday2018categorizing" class="csl-entry" role="listitem">
+Hobday, A.J., Oliver, E.C., Gupta, A.S., Benthuysen, J.A., Burrows, M.T., Donat, M.G., Holbrook, N.J., Moore, P.J., Thomsen, M.S., Wernberg, T., others, 2018. Categorizing and naming marine heatwaves. Oceanography 31, 162–173.
+</div>
 <div id="ref-huete2012vegetation" class="csl-entry" role="listitem">
 Huete, A.R., 2012. Vegetation indices, remote sensing and forest monitoring. Geography Compass 6, 513–532.
 </div>
@@ -691,6 +696,9 @@ Rouse, J.W., Haas, R.H., Schell, J.A., Deering, D.W., others, 1974. Monitoring v
 </div>
 <div id="ref-sawall2021chronically" class="csl-entry" role="listitem">
 Sawall, Y., Ito, M., Pansch, C., 2021. Chronically elevated sea surface temperatures revealed high susceptibility of the eelgrass zostera marina to winter and spring warming. Limnology and Oceanography 66, 4112–4124.
+</div>
+<div id="ref-heatwaveR" class="csl-entry" role="listitem">
+Schlegel, R.W., Smit, A.J., 2018. <span class="nocase">heatwaveR</span>: A central algorithm for the detection of heatwaves and cold-spells. Journal of Open Source Software 3, 821. <a href="https://doi.org/10.21105/joss.00821">https://doi.org/10.21105/joss.00821</a>
 </div>
 <div id="ref-scott2018role" class="csl-entry" role="listitem">
 Scott, A.L., York, P.H., Duncan, C., Macreadie, P.I., Connolly, R.M., Ellis, M.T., Jarvis, J.C., Jinks, K.I., Marsh, H., Rasheed, M.A., 2018. The role of herbivory in structuring tropical seagrass ecosystem service delivery. Frontiers in Plant Science 9, 127.
@@ -1144,7 +1152,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script>  </div> <!-- /content -->  <script>var lightboxQuarto = GLightbox({"loop":false,"selector":".lightbox","closeEffect":"zoom","descPosition":"bottom","openEffect":"zoom"});
+</script>  </div> <!-- /content -->  <script>var lightboxQuarto = GLightbox({"openEffect":"zoom","closeEffect":"zoom","descPosition":"bottom","selector":".lightbox","loop":false});
 (function() {
   let previousOnload = window.onload;
   window.onload = () => {
