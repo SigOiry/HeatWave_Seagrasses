@@ -392,9 +392,37 @@ each morning at the very first moment of low tide using a Spectralon
 white reference with 99\% Lambertian reflectivity. The 2nd derivative of
 reflectance spectra has been calculated to retrieve absorption features
 and compare it variability over time. Two radiometric indices where also
-followed over time : - The Normalized Difference Vegetation Index (NDVI,
-\citep{rouse1974monitoring}), as a proxy of the concentration of
-chlorophyll-a
+followed over time :
+
+\begin{itemize}
+\tightlist
+\item
+  The Normalized Difference Vegetation Index (NDVI,
+  \citep{rouse1974monitoring}), as a proxy of the concentration of
+  chlorophyll-a (Equation~\ref{eq-ndvi})
+\end{itemize}
+
+\begin{equation}\phantomsection\label{eq-ndvi}{
+NDVI = \frac{R(840nm)-R(668nm)}{R(840nm)+R(668nm)}
+}\end{equation}
+
+where \(R(840nm)\) is the reflectance at 840 nm and \(R(668nm)\) is the
+reflectance at 668 nm.
+
+\begin{itemize}
+\tightlist
+\item
+  The Green Leaf Index (GLI, \citep{louhaichi2001spatially}), as a
+  measurment of the greenness of seagrass leafs (Equation~\ref{eq-gli})
+\end{itemize}
+
+\begin{equation}\phantomsection\label{eq-gli}{
+GLI = \frac{[R(550nm)-R(668nm)]+[R(550nm)-R(450nm)]}{(2 \times R(550nm) )+ R(668nm) + R(450nm) }
+}\end{equation}
+
+where \(R(668nm)\) is the reflectance in the red at 668 nm, \(R(550nm)\)
+is the reflectance in the green at 550 nm and \(R(450)\) is the
+refletance in the blue at 450 nm.
 
 
 \renewcommand\refname{Bibliography}

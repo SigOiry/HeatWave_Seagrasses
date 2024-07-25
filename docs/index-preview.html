@@ -192,7 +192,7 @@
   window.document.addEventListener("DOMContentLoaded", function (_event) {
     document.body.classList.add('hypothesis-enabled');
   });
-</script>  
+</script>   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script> 
       <meta name="citation_title" content="Draft -- Effect of Atmospheric Heatwaves on Reflectance and Pigment Composition of Intertidal *Nanozostera noltei*  -- Draft">
 <meta name="citation_abstract" content="To be written
 ">
@@ -235,6 +235,7 @@
 <meta name="citation_reference" content="citation_title=Identifying urban vegetation stress factors based on open access remote sensing imagery and field observations;,citation_author=Irina Cârlan;,citation_author=Bogdan-Andrei Mihai;,citation_author=Constantin Nistor;,citation_author=André Große-Stoltenberg;,citation_publication_date=2020;,citation_cover_date=2020;,citation_year=2020;,citation_volume=55;,citation_journal_title=Ecological Informatics;,citation_publisher=Elsevier;">
 <meta name="citation_reference" content="citation_title=Mangrove vegetation health index analysis by implementing NDVI (normalized difference vegetation index) classification method on sentinel-2 image data case study: Segara Anakan, Kabupaten Cilacap;,citation_author=MR Akbar;,citation_author=PAA Arisanto;,citation_author=BA Sukirno;,citation_author=PH Merdeka;,citation_author=MM Priadhi;,citation_author=S Zallesa;,citation_publication_date=2020;,citation_cover_date=2020;,citation_year=2020;,citation_volume=584;,citation_conference_title=IOP Conference Series: Earth and Environmental Science;,citation_conference=IOP Publishing;">
 <meta name="citation_reference" content="citation_title=Monitoring vegetation systems in the Great Plains with ERTS;,citation_author=John Wilson Rouse;,citation_author=Rüdiger H Haas;,citation_author=John A Schell;,citation_author=Donald W Deering;,citation_author=others;,citation_publication_date=1974;,citation_cover_date=1974;,citation_year=1974;,citation_issue=1;,citation_volume=351;,citation_journal_title=NASA Spec. Publ;">
+<meta name="citation_reference" content="citation_title=Spatially located platform and aerial photography for documentation of grazing impacts on wheat;,citation_author=Mounir Louhaichi;,citation_author=Michael M Borman;,citation_author=Douglas E Johnson;,citation_publication_date=2001;,citation_cover_date=2001;,citation_year=2001;,citation_issue=1;,citation_volume=16;,citation_journal_title=Geocarto International;,citation_publisher=Taylor &amp;amp;amp; Francis;">
 </head>
 
   <body class="quarto-notebook">
@@ -623,7 +624,21 @@ Figure&nbsp;1: Temperature profiles of both the control (left) and the treatment
 <h3 data-number="2.2.3" class="anchored" data-anchor-id="measurment-and-sampling"><span class="header-section-number">2.2.3</span> Measurment and Sampling</h3>
 <section id="radiomertric-measurment" class="level4" data-number="2.2.3.1">
 <h4 data-number="2.2.3.1" class="anchored" data-anchor-id="radiomertric-measurment"><span class="header-section-number">2.2.3.1</span> Radiomertric measurment</h4>
-<p>Throughout the experiment, hyperspectral signatures of both the control and treatment seagrasses were taken using an ASD HandHeld 2 equipped with a fiber optic, allowing measurements to be taken directly inside the chamber without opening it. An average reflectance spectrum of five spectra, each with an integration time of 544 ms, was taken every minute. Every 10 minutes, the fiber optic was switched from on benthic chamber to the other, in order to measure reflectance in both treatment and control. Reflectance calibration of the instrument was performed each morning at the very first moment of low tide using a Spectralon white reference with 99% Lambertian reflectivity. The 2nd derivative of reflectance spectra has been calculated to retrieve absorption features and compare it variability over time. Two radiometric indices where also followed over time : - The Normalized Difference Vegetation Index (NDVI, <span class="citation" data-cites="rouse1974monitoring">Rouse et al. (<a href="#ref-rouse1974monitoring" role="doc-biblioref">1974</a>)</span>), as a proxy of the concentration of chlorophyll-a</p>
+<p>Throughout the experiment, hyperspectral signatures of both the control and treatment seagrasses were taken using an ASD HandHeld 2 equipped with a fiber optic, allowing measurements to be taken directly inside the chamber without opening it. An average reflectance spectrum of five spectra, each with an integration time of 544 ms, was taken every minute. Every 10 minutes, the fiber optic was switched from on benthic chamber to the other, in order to measure reflectance in both treatment and control. Reflectance calibration of the instrument was performed each morning at the very first moment of low tide using a Spectralon white reference with 99% Lambertian reflectivity. The 2nd derivative of reflectance spectra has been calculated to retrieve absorption features and compare it variability over time. Two radiometric indices where also followed over time :</p>
+<ul>
+<li>The Normalized Difference Vegetation Index (NDVI, <span class="citation" data-cites="rouse1974monitoring">Rouse et al. (<a href="#ref-rouse1974monitoring" role="doc-biblioref">1974</a>)</span>), as a proxy of the concentration of chlorophyll-a (<a href="#eq-ndvi" class="quarto-xref">Equation&nbsp;1</a>)</li>
+</ul>
+<p><span id="eq-ndvi"><span class="math display">\[
+NDVI = \frac{R(840nm)-R(668nm)}{R(840nm)+R(668nm)}
+\tag{1}\]</span></span></p>
+<p>where <span class="math inline">\(R(840nm)\)</span> is the reflectance at 840 nm and <span class="math inline">\(R(668nm)\)</span> is the reflectance at 668 nm.</p>
+<ul>
+<li>The Green Leaf Index (GLI, <span class="citation" data-cites="louhaichi2001spatially">Louhaichi et al. (<a href="#ref-louhaichi2001spatially" role="doc-biblioref">2001</a>)</span>), as a measurment of the greenness of seagrass leafs (<a href="#eq-gli" class="quarto-xref">Equation&nbsp;2</a>)</li>
+</ul>
+<p><span id="eq-gli"><span class="math display">\[
+GLI = \frac{[R(550nm)-R(668nm)]+[R(550nm)-R(450nm)]}{(2 \times R(550nm) )+ R(668nm) + R(450nm) }
+\tag{2}\]</span></span></p>
+<p>where <span class="math inline">\(R(668nm)\)</span> is the reflectance in the red at 668 nm, <span class="math inline">\(R(550nm)\)</span> is the reflectance in the green at 550 nm and <span class="math inline">\(R(450)\)</span> is the refletance in the blue at 450 nm.</p>
 </section>
 </section>
 </section>
@@ -657,6 +672,9 @@ Jankowska, E., Michel, L.N., Lepoint, G., Włodarska-Kowalczuk, M., 2019. Stabil
 </div>
 <div id="ref-kloos2021agricultural" class="csl-entry" role="listitem">
 Kloos, S., Yuan, Y., Castelli, M., Menzel, A., 2021. Agricultural drought detection with MODIS based vegetation health indices in southeast germany. Remote Sensing 13, 3907.
+</div>
+<div id="ref-louhaichi2001spatially" class="csl-entry" role="listitem">
+Louhaichi, M., Borman, M.M., Johnson, D.E., 2001. Spatially located platform and aerial photography for documentation of grazing impacts on wheat. Geocarto International 16, 65–70.
 </div>
 <div id="ref-papathanasopoulou2019satellite" class="csl-entry" role="listitem">
 Papathanasopoulou, E., Simis, S., Alikas, K., Ansper, A., Anttila, J., Barillé, A., Barillé, L., Brando, V., Bresciani, M., Bučas, M., others, 2019. Satellite-assisted monitoring of water quality to support the implementation of the water framework directive. EOMORES white paper.

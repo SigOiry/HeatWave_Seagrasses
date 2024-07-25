@@ -327,12 +327,26 @@ ggsave("Paper/Figs/Chamber_Profils.png",plt, height = 874*4, width = 1911*4, uni
 knitr::include_graphics("Figs/Chamber_Profils.png")
 ```
 
-### Measurment and Sampling 
+### Measurment and Sampling
 
 #### Radiomertric measurment
 
-Throughout the experiment, hyperspectral signatures of both the control and treatment seagrasses were taken using an ASD HandHeld 2 equipped with a fiber optic, allowing measurements to be taken directly inside the chamber without opening it. An average reflectance spectrum of five spectra, each with an integration time of 544 ms, was taken every minute.  Every 10 minutes, the fiber optic was switched from on benthic chamber to the other, in order to measure reflectance in both treatment and control. Reflectance calibration of the instrument was performed each morning at the very first moment of low tide using a Spectralon white reference with 99% Lambertian reflectivity.
-The 2nd derivative of reflectance spectra has been calculated to retrieve absorption features and compare it variability over time. Two radiometric indices where also followed over time :
- - The Normalized Difference Vegetation Index (NDVI, @rouse1974monitoring), as a proxy of the concentration of chlorophyll-a
+Throughout the experiment, hyperspectral signatures of both the control and treatment seagrasses were taken using an ASD HandHeld 2 equipped with a fiber optic, allowing measurements to be taken directly inside the chamber without opening it. An average reflectance spectrum of five spectra, each with an integration time of 544 ms, was taken every minute. Every 10 minutes, the fiber optic was switched from on benthic chamber to the other, in order to measure reflectance in both treatment and control. Reflectance calibration of the instrument was performed each morning at the very first moment of low tide using a Spectralon white reference with 99% Lambertian reflectivity. The 2nd derivative of reflectance spectra has been calculated to retrieve absorption features and compare it variability over time. Two radiometric indices where also followed over time :
+
+-   The Normalized Difference Vegetation Index (NDVI, @rouse1974monitoring), as a proxy of the concentration of chlorophyll-a (@eq-ndvi)
+
+$$
+NDVI = \frac{R(840nm)-R(668nm)}{R(840nm)+R(668nm)}
+$$ {#eq-ndvi}
+
+where $R(840nm)$ is the reflectance at 840 nm and $R(668nm)$ is the reflectance at 668 nm.
+
+-   The Green Leaf Index (GLI, @louhaichi2001spatially), as a measurment of the greenness of seagrass leafs (@eq-gli)
+
+$$
+GLI = \frac{[R(550nm)-R(668nm)]+[R(550nm)-R(450nm)]}{(2 \times R(550nm) )+ R(668nm) + R(450nm) }
+$$ {#eq-gli}
+
+where $R(668nm)$ is the reflectance in the red at 668 nm, $R(550nm)$ is the reflectance in the green at 550 nm and $R(450)$ is the refletance in the blue at 450 nm.
 
 # Bibliography
