@@ -11,7 +11,7 @@
     <meta name="author" content="Augustin Debly">
     <meta name="author" content="Pierre Gernez">
     <meta name="author" content="Laurent Barillé">
-    <meta name="dcterms.date" content="2024-07-25">
+    <meta name="dcterms.date" content="2024-07-26">
     <meta name="keywords" content="Remote Sensing, Pigment Composition, Seagrass, Coastal Ecosystems, Heatwaves">
 
     <title>Draft – Effect of Atmospheric Heatwaves on Reflectance and Pigment Composition of Intertidal Nanozostera noltei – Draft</title>
@@ -203,10 +203,10 @@
 <meta name="citation_author" content="Augustin Debly">
 <meta name="citation_author" content="Pierre Gernez">
 <meta name="citation_author" content="Laurent Barillé">
-<meta name="citation_publication_date" content="2024-07-25">
-<meta name="citation_cover_date" content="2024-07-25">
+<meta name="citation_publication_date" content="2024-07-26">
+<meta name="citation_cover_date" content="2024-07-26">
 <meta name="citation_year" content="2024">
-<meta name="citation_online_date" content="2024-07-25">
+<meta name="citation_online_date" content="2024-07-26">
 <meta name="citation_language" content="en">
 <meta name="citation_journal_title" content="Remote Sensing of Environment">
 <meta name="citation_reference" content="citation_title=The role of herbivory in structuring tropical seagrass ecosystem service delivery;,citation_author=Abigail L Scott;,citation_author=Paul H York;,citation_author=Clare Duncan;,citation_author=Peter I Macreadie;,citation_author=Rod M Connolly;,citation_author=Megan T Ellis;,citation_author=Jessie C Jarvis;,citation_author=Kristin I Jinks;,citation_author=Helene Marsh;,citation_author=Michael A Rasheed;,citation_publication_date=2018;,citation_cover_date=2018;,citation_year=2018;,citation_volume=9;,citation_journal_title=Frontiers in Plant Science;,citation_publisher=Frontiers Media SA;">
@@ -317,7 +317,7 @@
                 <div>
             <div class="quarto-title-meta-heading">Published</div>
             <div class="quarto-title-meta-contents">
-              <p class="date">July 25, 2024</p>
+              <p class="date">July 26, 2024</p>
             </div>
           </div>
           
@@ -626,7 +626,7 @@ Figure&nbsp;1: Temperature profiles of both the control (left) and the treatment
 <h3 data-number="2.2.3" class="anchored" data-anchor-id="measurement-and-sampling"><span class="header-section-number">2.2.3</span> Measurement and Sampling</h3>
 <section id="radiometric-measurement" class="level4" data-number="2.2.3.1">
 <h4 data-number="2.2.3.1" class="anchored" data-anchor-id="radiometric-measurement"><span class="header-section-number">2.2.3.1</span> Radiometric measurement</h4>
-<p>Throughout the experiment, hyperspectral signatures of both the control and treatment seagrasses were taken using an ASD HandHeld 2 equipped with a fiber optic, allowing measurements to be taken directly inside the chamber without opening it. An average of five reflectance spectrum (<span class="math inline">\(R(\lambda)\)</span>), each with an integration time of 544 ms, was taken every minute. Every 10 minutes, the fiber optic was switched from one benthic chamber to the other, in order to measure reflectance in both treatment and control. Because light conditions were controled inside of the chambers, reflectance calibration of the instrument was performed only each morning at the very first moment of low tide using a Spectralon white reference with 99% Lambertian reflectivity.</p>
+<p>Throughout the experiment, hyperspectral signatures of both the control and treatment seagrasses were taken using an ASD HandHeld 2 equipped with a fiber optic, allowing measurements to be taken directly inside the chamber without opening it. An average of five reflectance spectrum (<span class="math inline">\(R(\lambda)\)</span>), each with an integration time of 544 ms, was taken every minute. Every 10 minutes, the fiber optic was switched from one benthic chamber to the other, in order to measure reflectance in both treatment and control. Because light conditions were controlled inside of the chambers, reflectance calibration of the instrument was performed only each morning at the very first moment of low tide using a Spectralon white reference with 99% Lambertian reflectivity.</p>
 <p>The second derivative of <span class="math inline">\(R\)</span> was calculated to retrieve absorption features and compare their variability over time. Two radiometric indices were also monitored throughout the experiment :</p>
 <ul>
 <li>The Normalized Difference Vegetation Index (NDVI, <span class="citation" data-cites="rouse1974monitoring">Rouse et al. (<a href="#ref-rouse1974monitoring" role="doc-biblioref">1974</a>)</span>), as a proxy of the concentration of chlorophyll-a (<a href="#eq-ndvi" class="quarto-xref">Equation&nbsp;1</a>)</li>
@@ -642,6 +642,13 @@ NDVI = \frac{R(840)-R(668)}{R(840)+R(668)}
 GLI = \frac{[R(550)-R(668)]+[R(550)-R(450)]}{(2 \times R(550) )+ R(668) + R(450) }
 \tag{2}\]</span></span></p>
 <p>where <span class="math inline">\(R(550)\)</span> and <span class="math inline">\(R(450)\)</span> are the reflectance in green at 550 nm and in the blue at 450 nm, respectively.</p>
+<ul>
+<li>The Mid-Infrared Water Absorption Index (MIWAI, pers. com.) that is design to measure the absorption of the water around 970 nm. The index make the difference between a linear interpolation between 950 and 990 nm and compare that value to the reflectance at 970 nm :</li>
+</ul>
+<p><span id="eq-MIWAI"><span class="math display">\[
+MIWAI = 0.5 \times [R(990)+R(950)]-R(970)
+\tag{3}\]</span></span></p>
+<p>where <span class="math inline">\(R(990)\)</span>, <span class="math inline">\(R(970)\)</span> and <span class="math inline">\(R(950)\)</span> are the reflectance in the infrared at 990, 970 and 950 nm, respectively.</p>
 <p><strong>ADD MICASENSE PICTURES</strong></p>
 <p><strong>ADD HPLC SAMPLING</strong></p>
 </section>
@@ -1154,7 +1161,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script>  </div> <!-- /content -->  <script>var lightboxQuarto = GLightbox({"selector":".lightbox","openEffect":"zoom","descPosition":"bottom","closeEffect":"zoom","loop":false});
+</script>  </div> <!-- /content -->  <script>var lightboxQuarto = GLightbox({"selector":".lightbox","loop":false,"descPosition":"bottom","closeEffect":"zoom","openEffect":"zoom"});
 (function() {
   let previousOnload = window.onload;
   window.onload = () => {

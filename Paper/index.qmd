@@ -333,7 +333,7 @@ knitr::include_graphics("Figs/Chamber_Profils.png")
 
 #### Radiometric measurement
 
-Throughout the experiment, hyperspectral signatures of both the control and treatment seagrasses were taken using an ASD HandHeld 2 equipped with a fiber optic, allowing measurements to be taken directly inside the chamber without opening it. An average of five reflectance spectrum ($R(\lambda)$), each with an integration time of 544 ms, was taken every minute. Every 10 minutes, the fiber optic was switched from one benthic chamber to the other, in order to measure reflectance in both treatment and control. Because light conditions were controled inside of the chambers, reflectance calibration of the instrument was performed only each morning at the very first moment of low tide using a Spectralon white reference with 99% Lambertian reflectivity. 
+Throughout the experiment, hyperspectral signatures of both the control and treatment seagrasses were taken using an ASD HandHeld 2 equipped with a fiber optic, allowing measurements to be taken directly inside the chamber without opening it. An average of five reflectance spectrum ($R(\lambda)$), each with an integration time of 544 ms, was taken every minute. Every 10 minutes, the fiber optic was switched from one benthic chamber to the other, in order to measure reflectance in both treatment and control. Because light conditions were controlled inside of the chambers, reflectance calibration of the instrument was performed only each morning at the very first moment of low tide using a Spectralon white reference with 99% Lambertian reflectivity. 
 
 The second derivative of $R$ was calculated to retrieve absorption features and compare their variability over time. Two radiometric indices were also monitored throughout the experiment : 
 
@@ -352,6 +352,14 @@ GLI = \frac{[R(550)-R(668)]+[R(550)-R(450)]}{(2 \times R(550) )+ R(668) + R(450)
 $$ {#eq-gli}
 
 where $R(550)$ and $R(450)$ are the reflectance in green at 550 nm and in the blue at 450 nm, respectively.
+
+-   The Mid-Infrared Water Absorption Index (MIWAI, pers. com.) that is design to measure the absorption of the water around 970 nm. The index make the difference between a linear interpolation between 950 and 990 nm and compare that value to the reflectance at 970 nm : 
+
+$$
+MIWAI = 0.5 \times [R(990)+R(950)]-R(970)
+$$ {#eq-MIWAI}
+
+where $R(990)$, $R(970)$ and $R(950)$ are the reflectance in the infrared at 990, 970 and 950 nm, respectively. 
 
 **ADD MICASENSE PICTURES**
 
