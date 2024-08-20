@@ -105,6 +105,153 @@ Seagrass was sampled from a *Nanozostera noltei* (dwarf eelgrass, syn. Zostera n
 
 ### Experimental design
 
+```{r pictures design}
+#| cache: true
+#| echo: false
+#| eval: false
+#| warning: false
+
+library(tidyverse)
+library(tidyterra)
+library(terra)
+
+get_letter_position <- function(img){
+  
+  ext <- ext(img)
+  
+  x <- as.numeric(ext[1]+0.1*ext[2])
+  y <- as.numeric(ext[4]-0.1*ext[4])
+  
+  return(c(x,y))
+}
+
+letter_C <- rast("Data/imgs/Tray_low2.png") %>% 
+  get_letter_position()
+
+Tray_low <- ggplot()+
+  geom_spatraster_rgb(data = rast("Data/imgs/Tray_low2.png"))+
+  coord_equal()+
+  geom_text(aes(x = letter_C[1],y=letter_C[2], label = "C"), size = 10)+
+    theme_void()+
+  theme(axis.text = element_blank(), 
+        axis.title = element_blank(), 
+        axis.ticks = element_blank(), 
+        axis.ticks.length = unit(0, "pt"),
+        panel.grid.major=element_blank(), 
+        panel.grid.minor=element_blank(), 
+        plot.margin = margin(0, 0, 0, 0, "pt"))
+  
+
+
+letter_D <- rast("Data/imgs/Tray_high.jpg") %>% 
+  get_letter_position()
+
+Tray_high <- ggplot()+
+  geom_spatraster_rgb(data = rast("Data/imgs/Tray_high.jpg"))+
+  coord_equal()+
+  geom_text(aes(x = letter_D[1]/2,y=letter_D[2], label = "D"), size = 10)+
+    theme_void()+
+  theme(axis.text = element_blank(), 
+        axis.title = element_blank(), 
+        axis.ticks = element_blank(), 
+        axis.ticks.length = unit(0, "pt"),
+        panel.grid.major=element_blank(), 
+        panel.grid.minor=element_blank(), 
+        plot.margin = margin(0,0,0,0, "pt"))
+  
+
+letter_B <- rast("Data/imgs/Chamber.jpg") %>% 
+  get_letter_position()
+
+Chamber <- ggplot()+
+  geom_spatraster_rgb(data = rast("Data/imgs/Chamber.jpg"))+
+  coord_equal()+
+  geom_text(aes(x = letter_B[1],y=letter_B[2], label = "B"), size = 10)+
+    theme_void()+
+  theme(axis.text = element_blank(), 
+        axis.title = element_blank(), 
+        axis.ticks = element_blank(), 
+        axis.ticks.length = unit(0, "pt"),
+        panel.grid.major=element_blank(), 
+        panel.grid.minor=element_blank(), 
+        plot.margin = margin(0, 0, 0, 0, "pt"))
+  
+
+letter_A <- rast("Data/imgs/Sampling.jpg") %>% 
+  get_letter_position()
+
+Sampling <- ggplot()+
+  geom_spatraster_rgb(data = rast("Data/imgs/Sampling.jpg"))+
+  coord_equal()+
+  geom_text(aes(x = letter_A[1],y=letter_A[2], label = "A"), size = 10)+
+    theme_void()+
+  theme(axis.text = element_blank(), 
+        axis.title = element_blank(), 
+        axis.ticks = element_blank(), 
+        axis.ticks.length = unit(0, "pt"),
+        panel.grid.major=element_blank(), 
+        panel.grid.minor=element_blank(), 
+        plot.margin = margin(0, 0, 0, 0, "pt"))
+
+
+letter_E <- rast("Data/imgs/Micasense_mount.jpg") %>% 
+  get_letter_position()
+
+micasense <- ggplot()+
+  geom_spatraster_rgb(data = rast("Data/imgs/Micasense_mount.jpg"))+
+  coord_equal()+
+  geom_text(aes(x = letter_E[1],y=letter_E[2], label = "E"), size = 10)+
+    theme_void()+
+  theme(axis.text = element_blank(), 
+        axis.title = element_blank(), 
+        axis.ticks = element_blank(), 
+        axis.ticks.length = unit(0, "pt"),
+        panel.grid.major=element_blank(), 
+        panel.grid.minor=element_blank(), 
+        plot.margin = margin(0, 0, 0, 0, "pt"))
+
+
+# layout1 <- c(
+#   patchwork::area(t = 1, l = 1, b = 20, r = 10),
+#   patchwork::area(t = 1, l = 10, b = 20, r = 19),
+#   patchwork::area(t = 1, l = 19, b = 20, r = 28),
+#   patchwork::area(t = 20, l = 0.5, b = 29, r = 19),
+#   patchwork::area(t = 20, l = 19, b = 29, r = 28)
+# 
+# )
+
+layout1 <- c(
+  patchwork::area(t = 1, l = 1, b = 1000, r = 500),
+  patchwork::area(t = 1, l = 501, b = 1000, r = 1000),
+  patchwork::area(t = 1, l = 1001, b = 1000, r = 1500),
+  patchwork::area(t = 1001, l = 1, b = 1500, r = 1000),
+  patchwork::area(t = 1001, l = 1001, b = 1500, r = 1500)
+
+)
+
+
+plot(layout1)
+
+plot<-Sampling+
+  Chamber+
+  Tray_low+
+  Tray_high+
+  micasense+
+  # patchwork::plot_layout(design=layout1)+
+  patchwork::plot_layout(design=layout1, widths = c(1, 1), heights = c(1, 1)) &
+  theme(
+    plot.margin = unit(c(0, 0, 0, 0), "pt")
+  )
+
+
+ggsave("Paper/Figs/Experimental_design.png",plot, height = 10, width = 10, dpi = 800)
+
+
+
+# plot(layout1)
+```
+
+
 Two intertidal chambers from [ElectricBlue](https://electricblue.eu/intertidal-chamber) were used to simulate tidal cycles and control water temperature during high tide and air temperature during low tide. One chamber served as the control, while the other was used for the experimental treatment. The control chamber was maintained at temperatures representative of the typical seasonal conditions: water temperatures between 18°C and 19°C and air temperatures between 18°C and 23°C, following circadian temperature variability (@fig-Profile left). For the experimental treatment, the air temperature was set to mimic an atmospheric heatwave that occurred over the seagrass meadow of Porh Saint-Guénël, Plouharnel, France (47°35'40.0"N, 3°07'30.0"W) from August 26, 2021, to September 6, 2021. On the first day of the experiment, air temperatures in the experimental chamber were set to range from 23°C at night to 35°C during the day, with a daily increase of 1°C. The water temperature in the experimental chamber was similarly adjusted to reflect the heatwave conditions, starting from the normal seasonal range (18°C) and gradually increasing to simulate the rising temperatures experienced during the heatwave (+0.5°C daily). This setup aimed to replicate the thermal stress experienced by the seagrass meadow during the actual heatwave event (@fig-Profile right).
 
 ```{r chamber profiles}
