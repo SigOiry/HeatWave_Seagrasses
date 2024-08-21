@@ -1,0 +1,39 @@
+---
+title: "Replicats comparison"
+format: html
+editor: source
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+library(MapRs)
+```
+
+```{r data opening}
+HW3 <- MapRs::Open_library("Data/Experiment_Intertidal_Chambers/HW3") %>% 
+  mutate(ID = gsub("HW2","HW3",ID),
+         Spectra = gsub("HW2","HW3",Spectra),
+         experiment = "HW3")
+HW5 <- MapRs::Open_library("Data/Experiment_Intertidal_Chambers/HW5") %>% 
+  mutate(experiment = "HW5")
+
+df <- rbind(HW3,HW5) %>% 
+  mutate(Subdir = gsub("/","",Subdir)) %>% 
+  rename(scenario = "Subdir")
+
+rm(HW3, HW5)
+```
+
+```{r Data plotting}
+
+df %>% 
+  dplyr::filter(Wavelength > 490) %>% 
+  ggplot()+
+  geom_line(aes(x = Wavelength, y = std , group = Spectra, color = timeDiff))+
+  facet_wrap(experiment ~ scenario)+
+  # geom_text(aes(x = 0, y = Value_mean, label = Spectra))+
+  theme_Bede()
+
+```
+

@@ -1,0 +1,85 @@
+---
+title: "SST_Heatwaves"
+author: "Simon Oiry"
+format: html
+editor: source
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r library}
+library(tidyverse)
+library(terra)
+library(ncdf4)
+library(heatwaveR)
+
+```
+
+```{r}
+
+
+# Define the path to your NetCDF file
+file_path <- "Data/SST/cmems_obs-sst_atl_phy_my_l3s_P1D-m_1720775912589.nc"
+
+# Open the NetCDF file
+nc <- nc_open(file_path)
+
+# Display information about the file
+print(nc)
+
+# Assuming the temperature variable is named "temperature", replace with the correct name if different
+# Get the name of the temperature variable
+temp_var_name <- "adjusted_sea_surface_temperature"  # Adjust this according to your file's variable name
+
+# Get the temperature variable
+temperature_data <- ncvar_get(nc, temp_var_name)
+
+# Get the time variable
+time_data <- ncvar_get(nc, "time")  # Adjust "time" if the name is different
+
+# Calculate the mean temperature across the time dimension (assuming time is the first dimension)
+mean_temperature <- apply(temperature_data, 3, mean, na.rm = TRUE) 
+
+# Create a dataframe with time and mean temperature
+sst <- data.frame(time = time_data, sst = mean_temperature) %>% 
+  mutate(time = as.POSIXct(time, origin="1970-01-01")) 
+
+
+sst %>% 
+  dplyr::filter(!is.nan(as.numeric(mean_temperature))) %>%
+ggplot(aes(x = time, y = sst-273.15))+
+  geom_point(alpha = 0.3)+
+  geom_smooth(method = "glm")
+
+```
+
+
+```{r MHW}
+
+
+df_heatwaveR <- sst %>% 
+  rename(t = time,
+         temp = sst) %>%
+  mutate(t = as.Date(t),
+         temp = temp - 273.15) %>% 
+  dplyr::select(t,temp) 
+
+  
+
+  clim <- ts2clm(df_heatwaveR, climatologyPeriod = c(min(df_heatwaveR$t), max(df_heatwaveR$t)))
+  
+  event <- detect_event(clim,categories = T,minDuration = 3)
+  
+  res <- detect_event(clim, minDuration = 3)
+  mhw <- res$clim
+  
+  mhw %>%
+    filter(t> as.Date("2021-01-01") & t < as.Date("2021-12-15") ) %>%
+ggplot(aes(x = t, y = temp))+
+    geom_line() +
+    geom_flame(aes(y2 = thresh))+
+    geom_line(aes(y = thresh), color = "darkred")
+```
+
+
+

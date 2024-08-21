@@ -1,0 +1,71 @@
+---
+title: "Meteo_France_Extraction"
+author: "Simon Oiry"
+format: html
+editor: source
+editor_options: 
+  chunk_output_type: console
+---
+
+
+```{r}
+library(tidyverse)
+library(httr)
+library(glue)
+library(janitor)
+library(jsonlite)
+library(sf)
+
+round_any <- function(x, accuracy, f = round) {
+  f(x / accuracy) * accuracy
+}
+
+
+# which départements to download
+sel_dep <- c("64","40","33","17","85","44","56","29","22","35","50","14","27","76","80","62","59")
+
+# for the map (code INSEE région)
+sel_reg <- "44"
+
+# count files available
+n_files <- GET("https://www.data.gouv.fr/api/2/datasets/6569b4473bedf2e7abad3b72/")  %>% 
+  content() %>% 
+  pluck("resources", "total")
+
+
+# get files informations
+files_available <- GET(glue("https://www.data.gouv.fr/api/2/datasets/6569b4473bedf2e7abad3b72/resources/?page=1&page_size={n_files}&type=main")) %>% 
+  content(as = "text", encoding = "UTF-8") %>% 
+  fromJSON(flatten = TRUE) %>% 
+  pluck("data") %>% 
+  as_tibble(.name_repair = make_clean_names)
+
+```
+
+
+```{r Download}
+
+if (!length(list.files("Data/MeteoFrance/RAW"))) {
+  files_available %>% 
+    mutate(dep = str_extract(title, "(?<=departement_)[:alnum:]{2,3}(?=_)")) %>% 
+    filter(dep %in% sel_dep) %>% 
+    pwalk(\(url, title, format, ...) {
+      GET(url,
+          write_disk(glue("Data/MeteoFrance/RAW/{title}.{format}"),
+                     overwrite = TRUE))
+          },
+      .progress = TRUE)
+}
+
+# parsing problems with readr::read_delim
+# we use read.delim instead
+meteo <- list.files("Data/MeteoFrance/RAW", full.names = TRUE) %>% 
+  map(read.delim,
+      sep = ";",
+      .progress = TRUE) %>%
+  list_rbind() %>% 
+  dplyr::select(NOM_USUEL, LAT,LON,,AAAAMMJJHH,`T`, TN, TX, T10, T20, T50,T100) %>% 
+  dplyr::filter(!is.na(`T`))
+
+```
+

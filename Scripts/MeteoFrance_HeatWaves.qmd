@@ -1,0 +1,448 @@
+---
+title: "MeteoFrance Heatwaves Records"
+format: html
+editor: source
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r libraries}
+library(tidyverse)
+library(heatwaveR)
+library(Utilities.Package)
+library(stars)
+```
+
+
+```{r data opening}
+
+df <- list.files("Data/MeteoFrance/RAW/",pattern = "HOR_departement_85_*", full.names = TRUE) %>% 
+  map(read.delim,
+      sep = ";",
+      .progress = TRUE) %>%
+  list_rbind() %>% 
+  dplyr::select(NOM_USUEL, LAT,LON,,AAAAMMJJHH,`T`, TN, TX, T10, T20, T50,T100) %>% 
+  dplyr::filter(!is.na(`T`))
+```
+
+```{r first process}
+
+df_date <- df  %>% 
+  mutate(date = as.POSIXct(strptime(AAAAMMJJHH, format = "%Y%m%d%H"))) %>% 
+  group_by(NOM_USUEL) %>% 
+  reframe(min_date = min(date,na.rm = T),
+          max_date = max(date,na.rm = T),
+          n = n())
+
+selected_site <- df_date %>% 
+  filter(n ==max(n)) %>% 
+  pull(NOM_USUEL)
+
+df_sub <- df %>% 
+  dplyr::filter(NOM_USUEL == selected_site,
+                !is.na(`T`)) %>% 
+  dplyr::select(NOM_USUEL, LAT,LON,,AAAAMMJJHH,`T`, TN, TX, T10, T20, T50,T100) %>% 
+  mutate(date = as.POSIXct(as.character(AAAAMMJJHH), format = "%Y%m%d%H",tz = "UTC"))
+
+
+ggplot(df_sub)+
+  # geom_hex(aes(x = date, y = `T`), bins = 10)+
+  geom_line(aes(x = date, y = `T`))+
+  ylab("Temperature (°C)")+
+  xlab("Date")+
+  theme_Bede()+
+  theme(axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        axis.title.x = element_text(size = 20),
+        axis.title.y = element_text(size = 20))
+
+df_heatwaveR <- df_sub %>% 
+  rename(t = date,
+         temp = `T`) %>% 
+  dplyr::select(t,temp) %>% 
+  mutate(t = as.Date(t)) %>% 
+  group_by(t) %>% 
+  reframe(temp = max(temp,na.rm = T)) %>% 
+  dplyr::filter(t > as.Date("1948-12-31"))
+
+  
+
+  clim <- ts2clm(df_heatwaveR, climatologyPeriod = c("1949-01-01", "2024-06-23"))
+  
+  event <- detect_event(clim,categories = T,minDuration = 3)
+  
+  res <- detect_event(clim, minDuration = 3)
+  mhw <- res$clim
+  
+  mhw %>%
+    filter(t> as.Date("2022-01-01") ) %>%
+ggplot(aes(x = t, y = temp))+
+    geom_line() +
+  geom_flame(aes(y2 = thresh))
+```
+
+```{r frequency of heatwaves as define in Perkins and Alexander (2013)}
+
+freq_heatwave <- event %>% 
+  mutate(year = substr(as.character(date_start),1,4)) %>% 
+  group_by(year) %>% 
+  reframe(value = n()) %>% 
+  mutate(data = "Frequency")
+
+intensity_heatwave <- event %>% 
+  mutate(year = substr(as.character(date_start),1,4)) %>% 
+  group_by(year) %>% 
+  reframe(value = sum(intensity_cumulative)) %>% 
+  mutate(data = "Intensity") %>% 
+  mutate(value = sqrt(value*value))
+
+
+df_heatwaves <- rbind(freq_heatwave,intensity_heatwave) %>% 
+  pivot_wider(names_from = data, values_from = value)
+
+coeff=30
+ggplot(df_heatwaves, aes(x=as.numeric(year))) +
+  geom_point( aes(y=Frequency), color = "blue") +
+  geom_smooth( aes(y=Frequency), color = "blue",method = "gam")+
+  geom_point( aes(y=Intensity / coeff), color = "red") +
+  geom_smooth( aes(y=Intensity / coeff), color = "red",method = "gam")+
+  scale_y_continuous(
+    
+    # Features of the first axis
+    name = "Frequency",
+    
+    # Add a second axis and specify its features
+    sec.axis = sec_axis(~.*coeff, name="Intensity")
+  )+
+  theme_Bede()
+
+```
+
+```{r cold spells}
+
+cold_clim <- ts2clm(df_heatwaveR, climatologyPeriod = c("1949-01-01", "2024-06-23"),
+                   pctile = 10)
+  res_cold <- detect_event(cold_clim, coldSpells = T)
+  event_cold <- detect_event(cold_clim,categories = T) %>% 
+    filter(intensity_cumulative < 0)
+  coldspell_clim <- res_cold$clim
+  
+  coldspell_clim %>% 
+    filter(t> as.Date("2022-01-01")) %>%
+ggplot(aes(x = t, y = temp))+
+    geom_line() +
+  geom_flame(aes(y = thresh ,y2 = temp))
+
+    
+freq_coldspells <- event_cold %>% 
+  mutate(year = substr(as.character(date_start),1,4)) %>% 
+  group_by(year) %>% 
+  reframe(value = n()) %>% 
+  mutate(data = "Frequency")
+
+intensity_coldspells <- event_cold %>% 
+  mutate(year = substr(as.character(date_start),1,4)) %>% 
+  group_by(year) %>% 
+  reframe(value = sum(intensity_cumulative)) %>% 
+  mutate(data = "Intensity") %>% 
+  mutate(value = sqrt(value*value))
+
+df_coldspells <- rbind(freq_coldspells,intensity_coldspells) %>% 
+  pivot_wider(names_from = data, values_from = value)
+
+coeff=15
+ggplot(df_coldspells, aes(x=as.numeric(year))) +
+  geom_point( aes(y=Frequency), color = "blue") +
+  geom_smooth( aes(y=Frequency), color = "blue",method = "gam")+
+  geom_point( aes(y=Intensity / coeff), color = "red") +
+  geom_smooth( aes(y=Intensity / coeff), color = "red",method = "gam")+
+  scale_y_continuous(
+    
+    # Features of the first axis
+    name = "Frequency",
+    
+    # Add a second axis and specify its features
+    sec.axis = sec_axis(~.*coeff, name="Intensity")
+  )
+
+
+
+ggplot(freq_coldspells, aes(x = as.numeric(year), y = n))+
+  geom_point()+
+  geom_smooth(method = "gam")+
+  theme_Bede()
+
+ggplot(intensity_coldspells, aes(x = as.numeric(year), y = intensity))+
+  geom_point()+
+  geom_smooth(method = "gam")+
+  scale_y_reverse()+
+  theme_Bede()
+
+
+
+```
+
+```{r}
+
+  
+event_cold <- event_cold %>% 
+  mutate(datatype = "Cold")
+
+event_hot <- event %>% 
+  mutate(datatype = "Hot")
+
+df_Bede <- event_cold  %>% 
+  bind_rows(event_hot) %>% 
+  mutate(intensity_cumulative = sqrt(abs(intensity_cumulative)))
+  
+
+ggplot(df_Bede,aes(x = date_peak, y = abs(intensity_cumulative), color = datatype))+
+  geom_point(alpha = 0.5)+
+  geom_smooth(method = "gam")
+
+df_Bede2 <- df_Bede%>% 
+  mutate(year = substr(as.character(date_peak),1,4)) %>% 
+  group_by(year, datatype) %>% 
+  reframe(value = n(),
+          cumul = sum(abs(intensity_cumulative))) 
+
+ggplot(df_Bede2, aes(x = as.numeric(year), y = value, color = datatype ))+
+  geom_point()+
+  geom_smooth(method = "loess")
+```
+
+```{r exemple of event for the exeriment}
+    
+ev1 <- event %>% 
+    filter(event_no == 261)
+
+mhw_event <- mhw %>%
+    filter(t> as.Date("2022-07-05") & t< as.Date("2022-07-20"))
+# ggplot(aes(x = t, y = temp))+
+#     geom_line() +
+#   geom_flame(aes(y2 = thresh))
+
+df_sub %>% 
+    filter(date> as.Date("2022-07-05") & date< as.Date("2022-07-20")) %>%
+  ggplot()+
+  # geom_hex(aes(x = date, y = `T`), bins = 10)+
+  geom_line(aes(x = date, y = `T`))+
+  geom_line(data = mhw_event, aes(x = as.POSIXct(t+0.65), y = temp))+
+  geom_flame(data = mhw_event, aes(x = as.POSIXct(t+0.65), y = temp, y2 = thresh), alpha = 0.2)+
+  ylab("Temperature (°C)")+
+  xlab("Date")+
+  theme_Bede()+
+  theme(axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        axis.title.x = element_text(size = 20),
+        axis.title.y = element_text(size = 20))
+```
+
+```{r Heatwaves 56}
+library(sf) 
+library(rnaturalearth) 
+library(rnaturalearthdata) 
+library(rnaturalearthhires)
+library(ggplot2)
+library(cowplot)
+library(magick)
+
+df <- list.files("Data/MeteoFrance/RAW/",pattern = "HOR_departement_56_*", full.names = TRUE) %>% 
+  map(read.delim,
+      sep = ";",
+      .progress = TRUE) %>%
+  list_rbind() %>% 
+  dplyr::select(NOM_USUEL, LAT,LON,,AAAAMMJJHH,`T`, TN, TX, T10, T20, T50,T100) %>% 
+  dplyr::filter(!is.na(`T`)) 
+
+station <- df %>% 
+  group_by(NOM_USUEL) %>% 
+  reframe(Lat = unique(LAT),
+          Lon = unique(LON),
+          n_obs = n())
+
+
+bbox_france <- st_bbox(c(xmin = min(station$Lon),
+                         ymin = min(station$Lat),
+                         xmax = max(station$Lon),
+                         ymax = max(station$Lat)),
+                       crs = st_crs(France_shp)) 
+
+France_shp <- sovereignty10 %>% 
+  st_as_sf() %>% 
+  dplyr::filter(SOVEREIGNT%in%c("France")) %>% 
+  st_crop(bbox_france) %>% 
+  st_make_valid()
+
+
+station_shp <- station %>% 
+  st_as_sf(coords=c("Lon","Lat") )  %>% 
+  st_set_crs("EPSG:4326") 
+
+ggplot() +
+  geom_sf(data = France_map_cropped,linewidth=0.5,alpha=0.93,
+          fill="#CFCFCF",colour="grey30")+
+  ggforce::geom_mark_ellipse(data=station,
+                 aes(x=Lon,
+                     y=Lat,
+                     label = paste("n: ", n_obs),
+                     description=NOM_USUEL) ,
+                 linewidth=0.2,
+                 fill="goldenrod",
+                 show.legend=F,
+                 label.hjust = 0.2,
+                 con.size = 1,
+                 con.colour = "goldenrod4",
+                 label.fontsize = c(10,12),
+                 alpha=0.8,
+  expand = unit(1, "mm") , 
+  radius = unit(1, "mm") , 
+  label.buffer = unit(1, "mm") ,
+  label.fill = "grey90")
+  
+df_56 <- df %>% 
+  dplyr::filter(str_detect(NOM_USUEL,"BIHOUE"),
+                !is.na(`T`)) %>% 
+  dplyr::select(NOM_USUEL, LAT,LON,,AAAAMMJJHH,`T`, TN, TX, T10, T20, T50,T100) %>% 
+  mutate(date = as.POSIXct(as.character(AAAAMMJJHH), format = "%Y%m%d%H",tz = "UTC"))
+
+
+ggplot(df_56)+
+  geom_line(aes(x = date, y = `T`))
+
+
+df_heatwaveR <- df_56 %>% 
+  rename(t = date,
+         temp = `T`) %>% 
+  dplyr::select(t,temp) %>% 
+  mutate(t = as.Date(t)) %>% 
+  group_by(t) %>% 
+  reframe(temp = max(temp,na.rm = T))
+
+
+
+clim <- ts2clm(df_heatwaveR, climatologyPeriod = c(min(df_heatwaveR$t), max(df_heatwaveR$t)))
+  
+event <- detect_event(clim,categories = T,minDuration = 2)
+  
+res <- detect_event(clim, minDuration = 2)
+mhw <- res$clim
+
+
+
+img_before <- readPNG("Data/screenshot_S2/Before_event_quiberon.png") %>%
+  rasterGrob(interpolate=TRUE)
+
+
+qplot(1:10, 1:10, geom="blank") +
+  annotation_custom(g, xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) +
+  geom_point()
+
+  
+plot <- mhw %>%
+    # filter(t > as.Date("2021-08-30") & t < as.Date("2021-09-20")
+  filter(t > as.Date("2021-01-1") & t < as.Date("2021-12-31")
+  ) %>%
+ggplot(aes(x = t, y = temp))+
+  geom_line() +
+  geom_line(aes(y = thresh,color = "darkred") , linewidth = 1)+
+  geom_flame(aes(y2 = thresh), fill = "darkred")+
+  scale_color_manual(values = "darkred",
+                     labels = "95th percentile of Temperature")+
+  geom_segment(aes(x = as.Date(18800), y = 13, xend = as.Date(18820), yend = 27),linewidth = 1)+
+  geom_segment(aes(x = as.Date(18855), y = 13, xend = as.Date(18835), yend = 27),linewidth = 1)+
+  xlab("Date")+
+  ylab("Temperature (°C)")+
+  theme_Bede()+
+  theme(axis.text.x = element_text(size = 20),
+        axis.text.y = element_text(size = 20),
+        axis.title.x = element_text(size = 23),
+        axis.title.y = element_text(size = 23),
+        legend.title=element_blank(),
+        legend.position =  "inside",
+        legend.position.inside = c(0.9,0.9),
+        legend.text = element_text(size = 15),
+        legend.key.width = unit(1.5,"cm"))
+
+plot_HW <- ggdraw() +
+  draw_image("Data/screenshot_S2/Before_event_quiberon.png",x = -0.05, y = -0.22, scale = .4) +
+  draw_image("Data/screenshot_S2/After_event_quiberon.png",x = 0.15, y = -0.22, scale = .4) +
+  draw_plot(plot)
+
+ggsave("Plot/Heatwave_Quiberon_September_2021.png",plot_HW,width= 2327*2.5, height=1245*2.5, unit = "px")  
+```
+
+```{r Heatwaves 44}
+
+
+
+df <- list.files("Data/MeteoFrance/RAW/",pattern = "HOR_departement_85_*", full.names = TRUE) %>% 
+  map(read.delim,
+      sep = ";",
+      .progress = TRUE) %>%
+  list_rbind() %>% 
+  dplyr::select(NOM_USUEL, LAT,LON,,AAAAMMJJHH,`T`, TN, TX, T10, T20, T50,T100) %>% 
+  dplyr::filter(!is.na(`T`))
+
+
+df_date <- df  %>% 
+  mutate(date = as.POSIXct(strptime(AAAAMMJJHH, format = "%Y%m%d%H"))) %>% 
+  group_by(NOM_USUEL) %>% 
+  reframe(min_date = min(date,na.rm = T),
+          max_date = max(date,na.rm = T),
+          n = n())
+
+selected_site <- df_date %>% 
+  filter(n ==max(n)) %>% 
+  pull(NOM_USUEL)
+
+df_sub <- df %>% 
+  dplyr::filter(NOM_USUEL == selected_site,
+                !is.na(`T`)) %>% 
+  dplyr::select(NOM_USUEL, LAT,LON,,AAAAMMJJHH,`T`, TN, TX, T10, T20, T50,T100) %>% 
+  mutate(date = as.POSIXct(as.character(AAAAMMJJHH), format = "%Y%m%d%H",tz = "UTC"))
+
+
+df_heatwaveR <- df_sub %>% 
+  rename(t = date,
+         temp = `T`) %>% 
+  dplyr::select(t,temp) %>% 
+  mutate(t = as.Date(t)) %>% 
+  group_by(t) %>% 
+  reframe(temp = max(temp,na.rm = T)) %>% 
+  dplyr::filter(t > as.Date("1948-12-31"))
+
+  
+
+  clim <- ts2clm(df_heatwaveR, climatologyPeriod = c("1949-01-01", "2024-06-23"))
+  
+  event <- detect_event(clim,categories = T,minDuration = 3)
+  
+  res <- detect_event(clim, minDuration = 3)
+  mhw <- res$clim
+  
+  mhw %>%
+    filter(t> as.Date("2022-07-01") & t<as.Date("2022-07-25") ) %>%
+ggplot(aes(x = t, y = temp))+
+    geom_line() +
+  geom_flame(aes(y2 = thresh))
+  
+  a <- df_sub %>% 
+    filter(date> as.Date("2022-07-01") & date<as.Date("2022-07-25") ) %>%
+    ggplot()+
+    # geom_hex(aes(x = date, y = `T`), bins = 10)+
+    geom_line(aes(x = date, y = `T`))+
+    ylab("Temperature (°C)")+
+    xlab("Date")+
+    theme_Bede()+
+    theme(axis.text.x = element_text(size = 15),
+          axis.text.y = element_text(size = 15),
+          axis.title.x = element_text(size = 20),
+          axis.title.y = element_text(size = 20))
+
+
+```
+
+
+
+
