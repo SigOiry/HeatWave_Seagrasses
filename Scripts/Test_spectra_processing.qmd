@@ -19,7 +19,7 @@ library(MapRs)
 ```{r data opening}
 filepath <- "Data/Experiment_Intertidal_Chambers/HW5"
 
-if(file.exists(paste0(filepath ,"/Test_and_Control_reflectance.csv") )== F){
+if(file.exists(paste0(filepath ,"/Reflectance_dataframe.csv") )== F){
   
 listfile_control <- list.files(paste0(filepath,"/Control"), recursive = T , full.names = T) %>% 
   as.data.frame() %>% 
@@ -27,7 +27,6 @@ listfile_control <- list.files(paste0(filepath,"/Control"), recursive = T , full
   mutate(Spectra = gsub(".*/","",path) %>% gsub(".asd.txt","",.))
 
 for (i in 1:nrow(listfile_control)) {
-  
   
   a <- read_table(listfile_control$path[i], 
     col_names = FALSE, skip = 4)
@@ -90,13 +89,14 @@ df <- rbind(df_control,df_test) %>%
 write.csv(df, paste0(filepath ,"/Test_and_Control_reflectance.csv"), row.names = F)
 }else{
   
-  df <- read.csv(paste0(filepath ,"/Test_and_Control_reflectance.csv"))
+  df <- read.csv(paste0(filepath ,"/Reflectance_dataframe.csv"))
 }
 
 
 df <- df  %>%  
   # dplyr::filter(Wavelength %% 2 == 0) %>% 
   group_by(ID) %>% 
+  mutate(scenario = gsub("/","",subdir)) %>%  
   reframe(Wavelength = Wavelength,
           Value = Value,
           Value_mean = c(zoo::rollmean(Value, k=9, fill = NA)),
@@ -261,16 +261,17 @@ df_coeffect %>%
 
 ```{r 2nd derivative}
 
-spectra <- df %>% 
+Spectra <- df %>% 
   ungroup() %>%   
-  dplyr::select(Value,ID,Wavelength) %>%
+  mutate(ID = paste0(Spectra,"_",scenario,"_",as.numeric(Time_POS))) %>% 
+  dplyr::select(Value_mean,ID,Wavelength) %>%
   # dplyr::filter(Wavelength >= 450 & Wavelength <= 900) %>% 
-  tidyr::pivot_wider(names_from = ID, values_from = Value) %>% 
-  dplyr::select(-Wavelength)
+  tidyr::pivot_wider(names_from = ID, values_from = Value_mean) %>% 
+  dplyr::select(-Wavelength) 
 
 wavelength <- seq(from = 440, to = 990,by = 1)
 
-deriv <- speclib(spectra = as.matrix(spectra), wavelength = wavelength) %>% 
+deriv <- hsdar::speclib(spectra = as.matrix(Spectra), wavelength = wavelength) %>% 
   hsdar::noiseFiltering(method = "sgolay", n =15) %>%
   derivative.speclib(m=1) %>% 
   noiseFiltering(method = "sgolay", n =15) %>%
@@ -285,7 +286,7 @@ deriv <- speclib(spectra = as.matrix(spectra), wavelength = wavelength) %>%
   
  
 
-names(deriv) <- names(spectra)
+names(deriv) <- names(Spectra)
 
 deriv <- deriv %>% 
   mutate(wavelength = wavelength-14)

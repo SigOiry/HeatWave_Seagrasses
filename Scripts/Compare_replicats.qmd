@@ -8,21 +8,138 @@ editor_options:
 
 ```{r}
 library(MapRs)
+library(lubridate)
+library(patchwork)
+library(hsdar)
 ```
+
+```{r functions}
+
+Correction_Factor_Computation <- function(Radiance, Ref){
+
+  Ref_Rad <- Radiance %>% 
+    dplyr::filter(Time == Ref) %>% 
+    pull(Value)
+  
+  for(i in 1:length(unique(Radiance$Time))){
+    
+    Rad_to_Compare <- Radiance %>% 
+    dplyr::filter(Time == unique(Radiance$Time)[i])
+    
+
+    Diff <- Rad_to_Compare %>% 
+      mutate(Value = (Value/Ref_Rad)) %>% 
+      rename(Correction_factor = "Value")
+    
+    if(i == 1){
+      Correction_factor = Diff
+    }else{
+      Correction_factor = rbind(Correction_factor,Diff)
+    }
+  }
+  
+  return(Correction_factor %>% 
+           dplyr::select(-Date))
+}
+
+```
+
 
 ```{r data opening}
 HW3 <- MapRs::Open_library("Data/Experiment_Intertidal_Chambers/HW3") %>% 
   mutate(ID = gsub("HW2","HW3",ID),
          Spectra = gsub("HW2","HW3",Spectra),
-         experiment = "HW3")
-HW5 <- MapRs::Open_library("Data/Experiment_Intertidal_Chambers/HW5") %>% 
-  mutate(experiment = "HW5")
-
-df <- rbind(HW3,HW5) %>% 
-  mutate(Subdir = gsub("/","",Subdir)) %>% 
+         experiment = "HW3",
+         Subdir = gsub("/","",Subdir),
+         Time = substr(Time,1,5))%>% 
   rename(scenario = "Subdir")
 
-rm(HW3, HW5)
+HW5 <- MapRs::Open_library("Data/Experiment_Intertidal_Chambers/HW5") %>% 
+  mutate(experiment = "HW5",
+         Subdir = gsub("/","",Subdir),
+         Time = substr(Time,1,5))%>% 
+  rename(scenario = "Subdir")
+```
+
+```{r Radiance of References}
+
+Rad <- MapRs::Open_library("Data/Radiance_Referances") %>% 
+  mutate(Date = ymd_hms(paste0("2024-08-21 ",substr(Spectra,1,2) %>%  gsub("[^0-9]", "", .),":00:00"))) %>%
+  group_by(Date, Wavelength) %>% 
+  reframe(Value = mean(Value))
+
+full_time_seq <- seq(min(Rad$Date), max(Rad$Date), by = "min")
+
+
+for(i in 1:length(unique(Rad$Wavelength))){
+  
+  a <- Rad %>% 
+    dplyr::filter(Wavelength == unique(Rad$Wavelength)[i])
+  
+  interpolated_values <- approx(
+  x = a$Date, 
+  y = a$Value, 
+  xout = full_time_seq
+  )
+  
+  interpolated_series <- data.frame(
+    Date = interpolated_values$x,
+    Wavelength = rep(unique(Rad$Wavelength)[i],length(interpolated_values$x)),
+    Value = interpolated_values$y
+  )
+  
+  if(i == 1){
+    df_interpolated = interpolated_series
+  }else{
+    df_interpolated = rbind(df_interpolated,interpolated_series)
+  }
+}
+
+ggplot(df_interpolated)+
+  geom_line(aes(x = Wavelength, y = Value, color = Date, group = Date))
+
+##################
+
+Radiance <- df_interpolated %>% 
+    as_tibble() %>% 
+  mutate(Time = substr(as.character(Date),12,16))
+
+#########################
+```
+
+```{r Spectra Correction}
+
+Cor_9h <- Correction_Factor_Computation(Radiance , "09:10")
+Cor_9h_max <- Cor_9h %>% 
+  dplyr::filter(Time == "12:00")
+Cor_10h <- Correction_Factor_Computation(Radiance , "10:10")
+Cor_10h_max <- Cor_10h %>% 
+  dplyr::filter(Time == "12:00")
+
+
+HW3 <- HW3 %>% 
+  left_join(Cor_10h, by = c("Time","Wavelength"))  %>%
+  left_join(dplyr::select(Cor_10h_max, Wavelength, Correction_factor), by = "Wavelength", suffix = c("", "_max")) %>%
+  dplyr::mutate(Correction_factor = ifelse(!Time %in% Cor_10h$Time, Correction_factor_max, Correction_factor)) %>% 
+  dplyr::select(-Correction_factor_max) %>% 
+  dplyr::mutate(Value_mean_corrected = Value_mean * Correction_factor)
+
+HW5 <- HW5 %>% 
+  left_join(Cor_9h, by = c("Time","Wavelength"))  %>%
+  left_join(dplyr::select(Cor_9h_max, Wavelength, Correction_factor), by = "Wavelength", suffix = c("", "_max")) %>%
+  dplyr::mutate(Correction_factor = ifelse(!Time %in% Cor_9h$Time, Correction_factor_max, Correction_factor)) %>% 
+  dplyr::select(-Correction_factor_max)%>% 
+  dplyr::mutate(Value_mean_corrected = Value_mean * Correction_factor)
+
+df <- rbind(HW3,HW5) %>%
+  group_by(ID) %>% 
+  mutate(std_cor = (Value_mean_corrected-min(Value_mean_corrected))/(max(Value_mean_corrected)-min(Value_mean_corrected))) %>%
+  ungroup() %>% 
+  mutate(Value_mean_cor = Value_mean_corrected) %>% 
+  dplyr::select(-c(Value_mean,std,Value_mean_corrected,IntegrationTime)) %>% 
+  dplyr::rename(Raw_value = "Value",
+                Scenario = "scenario",
+                Experiment = "experiment")
 ```
 
 ```{r Data plotting}
@@ -30,10 +147,107 @@ rm(HW3, HW5)
 df %>% 
   dplyr::filter(Wavelength > 490) %>% 
   ggplot()+
-  geom_line(aes(x = Wavelength, y = std , group = Spectra, color = timeDiff))+
-  facet_wrap(experiment ~ scenario)+
+  geom_line(aes(x = Wavelength, y = std_cor , group = Spectra, color = timeDiff))+
+  facet_wrap(Experiment ~ Scenario)+
   # geom_text(aes(x = 0, y = Value_mean, label = Spectra))+
   theme_Bede()
 
 ```
+
+```{r NDVI}
+NIR_wavelength <- 900  # Exampmple wavelength for NIR
+RED_wavelength <- 665 
+
+NDVI <- df %>% 
+  ungroup() %>% 
+  dplyr::select(-c(Raw_value,Date,Time,ID,std_cor,Correction_factor)) %>% 
+  dplyr::filter(Wavelength %in% c(NIR_wavelength, RED_wavelength)) %>%
+  pivot_wider(names_from = Wavelength, values_from = Value_mean_cor) %>%
+  group_by(Time_POS,Spectra,Scenario,Experiment) %>% 
+  reframe(value = (`900` - `665`) / (`900` + `665`),
+          timeDiff = timeDiff) %>% 
+  dplyr::filter(!timeDiff %in% c(6,30,54))
+
+
+NDVI %>%   
+  mutate(timeDiff = as.factor(timeDiff)) %>% 
+  # mutate(timeAdjusted = cumsum(c(0, diff(timeDiff)) * !is.na(value))) %>% 
+  ggplot(aes(x = timeDiff, y = value, color = Scenario)) +
+  geom_point(alpha = 0.3)+
+  # geom_boxplot(aes(group = interaction(Scenario,timeDiff)))+
+  # geom_smooth(aes(x = as.numeric(timeDiff)),method = "gam")+
+  facet_wrap(~ Experiment)+
+  theme_Bede()+
+  scale_colour_Bede("mixed")+
+  theme(
+    axis.text.x = element_text(angle = 45, vjust = 0.5)
+  )
+
+
+Relative_NDVI <- NDVI %>% 
+  dplyr::select(-c(Time_POS)) %>% 
+  pivot_wider(names_from = "Scenario", values_from = "value") %>%
+  group_by(timeDiff,Experiment) %>%
+  reframe(Test = mean(Test,na.rm = T),
+          Control = mean(Control,na.rm = T)) %>% 
+  mutate(Relative = (Test-Control))
+  # dplyr::select(-Control) %>% 
+  # mutate(Test = abs(relative-Test)) %>% 
+  # rename(Relative = "Test") %>% 
+  # dplyr::select(-c(relative)) %>% 
+  # drop_na(Relative)
+  
+
+
+  Relative_NDVI %>% 
+    mutate(timeDiff = (timeDiff)) %>% 
+    ggplot(aes(x = timeDiff, y = Relative, color = Experiment))+
+    geom_point()+
+    # geom_point(aes(y = mean(Relative)))+
+    geom_smooth(method = "glm")+
+    ylab("Relative NDVI of the Test to the Control")
+  
+
+
+
+```
+
+```{r Water Absorption}
+df2_selected <- df %>% dplyr::select(ID, Time_POS, Scenario,Experiment,Date)
+
+Water_abs <- df %>% 
+  dplyr::filter(Wavelength %in% c(930,960,990,950,970)) %>%
+  dplyr::select(-c(Raw_value,Time,Scenario, Spectra, Correction_factor,Time_POS,std_cor)) %>% 
+  pivot_wider(names_from = Wavelength, values_from = Value_mean_cor) %>%
+  group_by(ID) %>% 
+  reframe(
+         # a = (`990`-`930`)/60,
+         # b = (16.5*`930`)-(15.5*`990`),
+         # abs_water = a * `960` + b,
+         abs_water = (0.5*(`990`+`950`))-`970`) %>% 
+  left_join(df2_selected, by = "ID")
+
+
+
+Water_abs %>% 
+  ggplot(aes(x = Time_POS, y = abs_water, color = Scenario))+
+  geom_point(alpha = 0.3)+
+    # geom_boxplot(aes(group = interaction(Date,scenario)))+
+  geom_smooth(aes(group = interaction(Date,Scenario)), method = "glm" )+
+    geom_smooth( method = "glm" )+
+  
+  ylab("Moisture Stress Index")+
+  theme_Bede()+
+  scale_colour_Bede("mixed")
+  # facet_wrap(~scenario)
+
+```
+
+
+```{r 2nd Derivative}
+
+
+```
+
+
 
