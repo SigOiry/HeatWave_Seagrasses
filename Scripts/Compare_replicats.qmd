@@ -213,7 +213,8 @@ Relative_NDVI <- NDVI %>%
 ```
 
 ```{r Water Absorption}
-df2_selected <- df %>% dplyr::select(ID, Time_POS, Scenario,Experiment,Date)
+df2_selected <- df %>% dplyr::select(ID, timeDiff, Time_POS, Scenario,Experiment,Date) %>% 
+  distinct()
 
 Water_abs <- df %>% 
   dplyr::filter(Wavelength %in% c(930,960,990,950,970)) %>%
@@ -230,15 +231,17 @@ Water_abs <- df %>%
 
 
 Water_abs %>% 
-  ggplot(aes(x = Time_POS, y = abs_water, color = Scenario))+
-  geom_point(alpha = 0.3)+
-    # geom_boxplot(aes(group = interaction(Date,scenario)))+
-  geom_smooth(aes(group = interaction(Date,Scenario)), method = "glm" )+
+  ggplot(aes(x = as.factor(timeDiff), y = abs_water, color = Scenario))+
+  # geom_point(alpha = 0.3)+
+  geom_boxplot()+
+  # geom_boxplot(aes(group = interaction(Date,Scenario)))+
+  # geom_smooth(aes(group = interaction(Date,Scenario)), method = "glm" )+
     geom_smooth( method = "glm" )+
   
   ylab("Moisture Stress Index")+
   theme_Bede()+
-  scale_colour_Bede("mixed")
+  scale_colour_Bede("mixed")+
+  facet_wrap(~Experiment)
   # facet_wrap(~scenario)
 
 ```

@@ -1,0 +1,51 @@
+---
+title: "In_situ temperature processing"
+format: html
+editor: source
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+library(MapRs)
+```
+
+```{r}
+fn <- function(x){
+  a <- read_csv(x,skip = 21) %>% 
+    mutate(file = gsub(".*/","",x))
+  return(a)
+}
+
+
+df <- list.files("Data/In_situ_temperature/",".csv",full.names = T) %>% 
+  map(fn) %>% 
+  bind_rows() %>% 
+  mutate(location = case_when(str_detect(file,"Upper") ~ "Upper",
+                              str_detect(file,"Lower") ~ "Lower"),
+         date = as.POSIXct(time, format = c("%Y-%m-%d %H:%M")),
+         date = case_when(location == "Upper" ~ date-70,
+                          T ~ date),
+         date = date + 60*60*2) %>% 
+  dplyr::filter(date >= as.POSIXct("2024-07-31 00:00:00") & date <= as.POSIXct("2024-08-01 00:00:00") )
+  
+
+ggplot(df,aes(x = date, y = temp))+
+  geom_line()+
+  facet_wrap(~location)+=
+  xlab("local time")+
+  geom_smooth(method = "lm")
+
+df %>% 
+  dplyr::select(-time, -file) %>% 
+  pivot_wider(names_from = location, values_from = temp) %>% 
+  group_by(date) %>%
+  mutate(diff = Upper - Lower) %>% 
+  ggplot()+
+    geom_line(aes(x = date, y = diff))
+
+ggplot()+
+  geom_line(aes(x = date, y = temp))+
+  facet_wrap(~location)
+```
+
