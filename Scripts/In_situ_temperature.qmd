@@ -8,9 +8,223 @@ editor_options:
 
 ```{r}
 library(MapRs)
+library(terra)
+library(rvest)
+```
+
+
+```{r function Tide}
+
+Tide_info<-function(coords=NA,tide_date=NA){
+  
+  
+  data_coord<-list.files("./", pattern="station_coordinate.csv",full.names = T,recursive = T)
+  if (length(data_coord)==1) {
+    station_coordinate<-read.csv(data_coord)
+    
+  }
+  if (exists("station_coordinate")==FALSE) {
+    
+    url_stat<-"http://www.ioc-sealevelmonitoring.org/list.php?operator=&showall=all&output=general"
+    download.file(url_stat, destfile = "scrapedpage_stat.html",quiet=T)
+    webpage_stat <- read_html("scrapedpage_stat.html")
+    stat_table<-rvest::html_text(rvest::html_nodes(webpage_stat,'td'))
+    stat_table<-stat_table[-length(stat_table)]
+    
+    stat_table<-stat_table[-c(1:19)]
+    name_stat_table<-stat_table[c(1:10)]
+    name_stat_table<-unlist(strsplit(name_stat_table,"\r\r\n\t\t\t\t"))
+    name_stat_table[8]<-"Last_Observation_Time_in_GMT"
+    for (i in 1:length(name_stat_table)) {
+      name_stat_table[i]<-gsub(" ","_",  name_stat_table[i])
+      
+    }
+    
+    
+    stat_table<-stat_table[-c(1:10)]
+    stat_table<-as.data.frame(matrix(stat_table,ncol=11,byrow = T))
+    names(stat_table)<-name_stat_table
+    
+    stat_table<-stat_table[which((nchar(stat_table$Code)==4)|(nchar(stat_table$Code)==5)),]
+    # stat_table<-stat_table[which(stat_table$Connection=="ftp"),]
+    stat_table$Last_Observation_Time_in_GMT<-substr(stat_table$Last_Observation_Time_in_GMT,7,nchar(stat_table$Last_Observation_Time_in_GMT))
+    stat_table<-stat_table[which((stat_table$Last_Observation_Time_in_GMT!="-down-")),]
+    stat_table<-stat_table[which((stat_table$Last_Observation_Time_in_GMT!="-maintenance-")),]
+    
+    for (i in 1:nrow(stat_table)) {
+      
+      print(paste0(i,"/",nrow(stat_table)," station: ",stat_table$Code[i]))
+      
+      url_coord<-paste0("http://www.ioc-sealevelmonitoring.org/station.php?code=",stat_table$Code[i])
+      download.file(url_coord, destfile = "scrapedpage_coord.html",quiet=T)
+      webpage <- read_html("scrapedpage_coord.html")
+      stat_coord<-as.character(rvest::html_text(rvest::html_nodes(webpage,'tr')))
+      
+      lat<-stat_coord[which(substr(stat_coord,1,8)=="Latitude")]
+      long<-stat_coord[which(substr(stat_coord,1,9)=="Longitude")]
+      lat<-gsub("Latitude . ","",lat)
+      long<-gsub("Longitude . ","",long)
+      stat_table$long[i]<-long
+      stat_table$lat[i]<-lat
+      
+      station_coordinate<-stat_table
+      
+      
+    }
+    # return(station_coordinate)
+    write.csv(station_coordinate,"./station_coordinate.csv")
+  }
+  
+  
+  
+  sr<-crs('+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs')
+  # coord_centroid<-data.frame(x=(c(xmax(roi)+xmin(roi), ymax(roi)+ymin(roi))/2)[1],
+  #                            y=(c(xmax(roi)+xmin(roi), ymax(roi)+ymin(roi))/2)[2])
+  
+  # coordinates(coord_centroid)<- ~x+y
+  # crs(coord_centroid)<-crs(roi)
+  # 
+  # roi <- spTransform(coord_centroid, sr)
+  # coord_centroid<-c(xmax(roi)+xmin(roi), ymax(roi)+ymin(roi))/2
+  # 
+  dist_roi_Tide<-data.frame(
+    code_tide=station_coordinate$Code,
+    Name_station=station_coordinate$Location,
+    dist=NA
+  )
+  
+  coord_centroid = coords
+  
+  for (i in 1:nrow(station_coordinate)) {
+    
+    dist_roi_Tide$dist[i]<-sqrt(((coord_centroid[2]-station_coordinate$long[i])^2)+(coord_centroid[1]-station_coordinate$lat[i])^2)
+  }
+  
+  site_name_selected<-dist_roi_Tide[which(dist_roi_Tide$dist==min(dist_roi_Tide$dist)),]
+  site_id<-site_name_selected$code_tide[1]
+  
+  
+  tide_date_wrong<-as.POSIXct(tide_date, format = "%Y-%m-%d")
+  tide_date_true<-tide_date_wrong+ (60*60*24)
+  
+  
+  # site_id<-"batr"
+  
+  url <- paste0("http://www.ioc-sealevelmonitoring.org/bgraph.php?code=",site_id,"&output=tab&period=1&endtime=",tide_date_true)
+  download.file(url, destfile = "scrapedpage.html",quiet=T)
+  webpage <- read_html("scrapedpage.html")
+  tidal_RAW<-rvest::html_text(rvest::html_nodes(webpage,'td'))
+  Tide_table<-as.data.frame(matrix(tidal_RAW,ncol=2, byrow = T))
+  names(Tide_table)<-Tide_table[1,]
+  Tide_table<-Tide_table[-1,]
+  Tide_table$`Time (UTC)`<-as.POSIXct(Tide_table$`Time (UTC)`, tryFormats = c("%Y-%m-%d %H:%M:%OS",
+                                                                              "%Y/%m/%d %H:%M:%OS",
+                                                                              "%Y-%m-%d %H:%M",
+                                                                              "%Y/%m/%d %H:%M",
+                                                                              "%Y-%m-%d",
+                                                                              "%Y/%m/%d",
+                                                                              "%Y%m%d %H:%M:%OS3",
+                                                                              "%Y%m%d %H:%M",
+                                                                              "%Y%m%d"))
+  
+  Tide_table_aggregate <- aggregate(as.numeric(Tide_table[,2]), 
+                                    list(fiveMin=cut(Tide_table$`Time (UTC)`, "10 mins")),
+                                    mean)
+  # # Tide_table_aggregate$x<-round(Tide_table_aggregate$x,3)
+  # Tide_table_aggregate$fiveMin<-as.POSIXct(Tide_table_aggregate$fiveMin, tryFormats = c("%Y-%m-%d %H:%M:%S",
+  #                                                                                       "%Y/%m/%d %H:%M:%S",
+  #                                                                                       "%Y-%m-%d %H:%M",
+  #                                                                                       "%Y/%m/%d %H:%M",
+  #                                                                                       "%Y-%m-%d",
+  #                                                                                       "%Y/%m/%d",
+  #                                                                                       "%Y%m%d %H:%M:%S",
+  #                                                                                       "%Y%m%d %H:%M",
+  #                                                                                       "%Y%m%d"))
+
+  Tide_table_aggregate$smooth<-signal::sgolayfilt(Tide_table_aggregate$x,n=15)
+  
+  # Tide_table_aggregate$first_diff<- ave(Tide_table_aggregate$smooth , Tide_table_aggregate$fiveMin , FUN=function(i) c(NA,diff(i)))
+  
+  
+  
+  
+  for (i in 1:(nrow(Tide_table_aggregate)-1)) {
+    
+    a<-as.numeric(Tide_table_aggregate[i,3])-as.numeric(Tide_table_aggregate[i+1,3])
+    # a<-round(a,digits = 2)
+    
+    if (i==1) {
+      
+      if (a>0) {
+        Tide_type<-"jusant"
+        
+      }else{
+        Tide_type<-"flot"
+      }
+    }else{
+      
+      if (a>0 & Tide_type=="flot" ) {
+        Tide_table_aggregate[i,4]<-"HT"
+      }
+      if (a<0 & Tide_type=="jusant" ){
+        Tide_table_aggregate[i,4]<-"LT"
+      }
+      if (a>0) {
+        Tide_type<-"jusant"
+        
+      }else{
+        Tide_type<-"flot"
+      }
+      
+    }
+    
+  }
+  names(Tide_table_aggregate)<-c('date','water_height',"smooth",'tide_step')
+  
+  
+  Tide_table_aggregate$date1 <- as.character(Tide_table_aggregate$date) %>% 
+    as.POSIXct(format = "%Y-%m-%d %H:%M:%S")
+  
+  Tide_table_aggregate$date1[1]<- as.character(Tide_table_aggregate$date[1]) %>% 
+    as.POSIXct(format = "%Y-%m-%d %H:%M:%S")
+  Tide_table_aggregate$date1[nrow(Tide_table_aggregate)]<- as.character(Tide_table_aggregate$date[nrow(Tide_table_aggregate)]) %>% 
+    as.POSIXct(format = "%Y-%m-%d %H:%M:%S")
+  
+  Tide_table_aggregate <- Tide_table_aggregate %>% 
+    dplyr::select(-date) %>% 
+    rename(date = "date1")
+  BMPM<-Tide_table_aggregate[which(is.na(Tide_table_aggregate[,4])==FALSE),]
+  
+  plot_tide<-ggplot(data=Tide_table_aggregate,aes(x=date,y=water_height))+
+    geom_line()+
+    geom_vline(xintercept = as.POSIXct(BMPM$date,tryFormats = c("%Y-%m-%d %H:%M:%OS",
+                                                                "%Y/%m/%d %H:%M:%OS",
+                                                                "%Y-%m-%d %H:%M",
+                                                                "%Y/%m/%d %H:%M",
+                                                                "%Y-%m-%d",
+                                                                "%Y/%m/%d",
+                                                                "%Y%m%d %H:%M:%OS3",
+                                                                "%Y%m%d %H:%M",
+                                                                "%Y%m%d")), linetype="dotted", 
+               color = "blue", size=1.5)
+    
+ 
+  out<-list()
+  out$site<-site_name_selected
+  out$tide<-BMPM
+  out$df_tide<-Tide_table_aggregate[,c(1,2,4)]
+  out$tide_plot<-plot_tide
+  
+  return(out)
+  
+}
+
+
 ```
 
 ```{r}
+
+tide_date = "2024-08-10"
 fn <- function(x){
   a <- read_csv(x,skip = 21) %>% 
     mutate(file = gsub(".*/","",x))
@@ -23,29 +237,167 @@ df <- list.files("Data/In_situ_temperature/",".csv",full.names = T) %>%
   bind_rows() %>% 
   mutate(location = case_when(str_detect(file,"Upper") ~ "Upper",
                               str_detect(file,"Lower") ~ "Lower"),
-         date = as.POSIXct(time, format = c("%Y-%m-%d %H:%M")),
+         date = as.POSIXct(time, format = c("%Y-%m-%d %H:%M:%S")),
          date = case_when(location == "Upper" ~ date-70,
                           T ~ date),
          date = date + 60*60*2) %>% 
-  dplyr::filter(date >= as.POSIXct("2024-07-31 00:00:00") & date <= as.POSIXct("2024-08-01 00:00:00") )
-  
+      # dplyr::filter(date >= as.POSIXct("2024-08-14 12:00:00") & date <= as.POSIXct("2024-08-16 00:00:00") ) %>%
+  mutate(day = as.Date(date),
+         tide = NA)
+# 
+# ggplot()+
+#   geom_line(data = df, aes(x = date, y = temp))+
+#   # geom_vline(data = df_tide, aes(xintercept = time, color = tide))+
+#   facet_wrap(~location)+
+#   xlab("local time")+
+#   theme_Bede()
 
-ggplot(df,aes(x = date, y = temp))+
-  geom_line()+
-  facet_wrap(~location)+=
+
+for(i in 1:length(unique(df$day))){
+  
+  tide_of_the_day <- Tide_info(coords = c(46.9,-2.15), tide_date = unique(df$day)[i])$tide
+  
+  if (i == 1) {
+    tide_df <- tide_of_the_day
+  }else{
+    tide_df <- rbind(tide_df, tide_of_the_day)
+  }
+}
+
+
+for (i in 1:nrow(tide_df)) {
+  
+  df <- df %>% 
+    mutate(diff = difftime(df$time,tide_df$date[i], units = "mins") %>%  as.numeric() %>%  abs())
+  
+  mindiff <- min(abs(df$diff))
+  
+  if (abs(mindiff) < 10) {
+    
+    df <- df %>% 
+      group_by(location) %>% 
+      mutate(tide = case_when(diff == min(diff) ~ tide_df$tide_step[i],
+                              T ~ tide)) %>% 
+      ungroup()
+    
+  }
+  
+  df <- df %>% 
+    dplyr::select(-diff)
+  
+}
+
+df_tide <- df %>% 
+  dplyr::filter(!is.na(tide)) %>% 
+  mutate(time = time + 60*60+2)
+
+ggplot()+
+  geom_line(data = df, aes(x = date, y = temp))+
+  geom_vline(data = df_tide, aes(xintercept = time, color = tide))+
+  facet_wrap(~location)+
   xlab("local time")+
-  geom_smooth(method = "lm")
+  theme_Bede()
 
 df %>% 
   dplyr::select(-time, -file) %>% 
   pivot_wider(names_from = location, values_from = temp) %>% 
+  dplyr::filter(!is.na(Upper),
+                !is.na(Lower)) %>% 
   group_by(date) %>%
-  mutate(diff = Upper - Lower) %>% 
+  mutate(mean = mean(Upper, Lower, na.rm = T)) %>% 
+  ungroup() %>% 
+  mutate(filtered_mean = zoo::rollmean(mean,11, fill = NA)) %>% 
   ggplot()+
-    geom_line(aes(x = date, y = diff))
+    geom_vline(data = df_tide, aes(xintercept = time, color = tide))+
+    geom_line(aes(x = date, y = mean), color = "goldenrod")+
+    geom_line(aes(x = date, y = filtered_mean), color = "darkred")
 
 ggplot()+
   geom_line(aes(x = date, y = temp))+
   facet_wrap(~location)
+```
+
+
+```{r}
+library(suncalc)
+fn <- function(x){
+  a <- read_csv(x,skip = 21) %>% 
+    mutate(file = gsub(".*/","",x))
+  return(a)
+}
+
+
+df <- list.files("Data/In_situ_temperature/",".csv",full.names = T) %>% 
+  map(fn) %>% 
+  bind_rows() %>% 
+  mutate(location = case_when(str_detect(file,"Upper") ~ "Upper",
+                              str_detect(file,"Lower") ~ "Lower"),
+         date = as.POSIXct(time, format = c("%Y-%m-%d %H:%M:%S")),
+         date = case_when(location == "Upper" ~ date-70,
+                          T ~ date),
+         date = date + 60*60*2 - 28) %>% 
+      # dplyr::filter(date >= as.POSIXct("2024-08-14 12:00:00") & date <= as.POSIXct("2024-08-16 00:00:00") ) %>%
+  mutate(day = as.Date(date))
+# 
+# ggplot()+
+#   geom_line(data = df, aes(x = date, y = temp))+
+#   # geom_vline(data = df_tide, aes(xintercept = time, color = tide))+
+#   facet_wrap(~location)+
+#   xlab("local time")+
+#   theme_Bede()
+
+
+for(i in 1:length(unique(df$day))){
+  
+  tide_of_the_day <- Tide_info(coords = c(46.9,-2.15), tide_date = unique(df$day)[i])$df_tide %>% 
+    as_tibble() %>% 
+    dplyr::filter(!is.na(date))
+  
+  if (i == 1) {
+    tide_df <- tide_of_the_day
+  }else{
+    tide_df <- rbind(tide_df, tide_of_the_day)
+  }
+}
+
+
+tide_df <- tide_df %>% 
+  dplyr::filter(water_height <= quantile(water_height, probs = 0.99)) %>% 
+  mutate(smooth = zoo::rollmean(water_height, k = 5, fill = NA))
+
+df_cleaned <- df %>% 
+  dplyr::select(-time, -file) %>% 
+  pivot_wider(names_from = location, values_from = temp) %>% 
+  dplyr::filter(!is.na(Upper),
+                !is.na(Lower)) %>% 
+  group_by(date) %>%
+  mutate(mean = mean(Upper, Lower, na.rm = T)) %>% 
+  ungroup() %>% 
+  mutate(filtered_mean = zoo::rollmean(mean,11, fill = NA)) 
+
+
+for(i in 1:length(unique(df_cleaned$day))){
+  sun <- getSunlightTimes(unique(df_cleaned$day)[i], lat = 46.9, lon = -2.15, keep = c("sunrise","sunset"))
+    sun$sunrise <- sun$sunrise+60*60*2
+    sun$sunset <- sun$sunset+60*60*2
+    
+    if (i == 1) {
+      sun_df <- sun
+    }else{
+      sun_df = rbind(sun_df,sun)
+    }
+}
+
+
+
+ggplot()+
+  geom_rect(data = sun_df, aes(xmin = sunrise, xmax = sunset, ymin = 14, ymax = 30, group = date), color = "yellow", fill = "yellow", alpha = 0.2)+
+  geom_line(data = df_cleaned, aes(x = date, y = Upper))+
+  geom_line(data = tide_df, aes(x = date, y = smooth*6),color = "darkblue", linetype = "dashed")+
+  scale_y_continuous("Temperature",limits = c(5,40),sec.axis = sec_axis(~ . /6, name = "Water height (m)"))+
+  xlim(c(min(sun_df$sunrise), as.POSIXct("2024-08-08 00:00:00")))+
+  theme_Bede()
+
+
 ```
 
