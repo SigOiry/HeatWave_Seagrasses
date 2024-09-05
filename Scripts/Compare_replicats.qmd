@@ -59,6 +59,17 @@ HW5 <- MapRs::Open_library("Data/Experiment_Intertidal_Chambers/HW5") %>%
          Subdir = gsub("/","",Subdir),
          Time = substr(Time,1,5))%>% 
   rename(scenario = "Subdir")
+
+HW6 <- MapRs::Open_library("Data/Experiment_Intertidal_Chambers/HW6") %>% 
+  mutate(experiment = "HW6",
+         Subdir = gsub("/","",Subdir),
+         Time = substr(Time,1,5))%>% 
+  rename(scenario = "Subdir")
+
+HW6 <- MapRs::clean_spectra(HW6, batch_size = 100)
+# HW6 <- cleaned
+
+
 ```
 
 ```{r Radiance of References}
@@ -131,7 +142,14 @@ HW5 <- HW5 %>%
   dplyr::select(-Correction_factor_max)%>% 
   dplyr::mutate(Value_mean_corrected = Value_mean * Correction_factor)
 
-df <- rbind(HW3,HW5) %>%
+HW6 <- HW6 %>% 
+  left_join(Cor_9h, by = c("Time","Wavelength"))  %>%
+  left_join(dplyr::select(Cor_9h_max, Wavelength, Correction_factor), by = "Wavelength", suffix = c("", "_max")) %>%
+  dplyr::mutate(Correction_factor = ifelse(!Time %in% Cor_9h$Time, Correction_factor_max, Correction_factor)) %>% 
+  dplyr::select(-Correction_factor_max)%>% 
+  dplyr::mutate(Value_mean_corrected = Value_mean * Correction_factor)
+
+df <- rbind(HW3,HW5,HW6) %>%
   group_by(ID) %>% 
   mutate(std_cor = (Value_mean_corrected-min(Value_mean_corrected))/(max(Value_mean_corrected)-min(Value_mean_corrected))) %>%
   ungroup() %>% 
@@ -147,8 +165,8 @@ df <- rbind(HW3,HW5) %>%
 df %>% 
   dplyr::filter(Wavelength > 490) %>% 
   ggplot()+
-  geom_line(aes(x = Wavelength, y = Value_mean_cor , group = Spectra, color = timeDiff))+
-  facet_wrap(Experiment ~ Scenario)+
+  geom_line(aes(x = Wavelength, y = std_cor , group = Spectra, color = timeDiff))+
+  facet_wrap(Scenario ~ Experiment)+
   # geom_text(aes(x = 0, y = Value_mean, label = Spectra))+
   theme_Bede()
 
@@ -299,25 +317,58 @@ deriv_long %>%
   # mutate(Deriv = c(zoo::rollmean(Deriv, k=10, fill = NA))) %>% 
   ggplot(aes(x = Wavelength, y = Deriv))+
   geom_line()+
-  geom_vline(xintercept = 655, color = "red")+
+  geom_vline(xintercept = 656, color = "red")+
   geom_vline(xintercept = 676, color = "blue")+
-  geom_vline(xintercept = 605, color = "green")+
-  geom_vline(xintercept = 575, color = "goldenrod")+
-  geom_vline(xintercept = 525, color = "darkred")
+  # geom_vline(xintercept = 605, color = "green")+
+  # geom_vline(xintercept = 575, color = "goldenrod")+
+  # geom_vline(xintercept = 525, color = "darkred")+
+  xlim(c(450,700))+
+  theme_Bede()
+
+offset <- deriv_long %>% 
+    dplyr::select(-c(Raw_value,Date,Correction_factor,Time,Value_mean_cor,ID,std_cor)) %>%
+  dplyr::filter(Wavelength == 676) %>%
+  pivot_wider(names_from = Wavelength, values_from = Deriv) %>%
+  mutate(Date = as.Date(Time_POS) %>% as.character()) %>%
+  dplyr::select(-Time_POS) %>% 
+  pivot_wider(names_from = Scenario, values_from = `676`) %>% 
+  group_by(Date,Experiment) %>% 
+  reframe(diff = mean(Control,na.rm=T)-mean(Test,na.rm=T)) %>% 
+  group_by(Experiment) %>% 
+  slice(1) %>% 
+  dplyr::select(-Date)
+
+df_line <- deriv_long %>% 
+    dplyr::select(-c(Raw_value,Date,Correction_factor,Time,Value_mean_cor,ID,std_cor)) %>%
+  dplyr::filter(Wavelength == 676) %>%
+  pivot_wider(names_from = Wavelength, values_from = Deriv) %>%
+  mutate(Date = as.Date(Time_POS) %>% as.character()) %>%
+  dplyr::select(-Time_POS) %>% 
+  left_join(offset, by = "Experiment") %>% 
+  mutate(`676` = case_when(Scenario == "Test" ~ `676`+diff,
+                           T ~ `676`)) %>% 
+  group_by(Scenario,Experiment,Date) %>% 
+  reframe(coords_line = median(`676`),
+          timeDiff = timeDiff) 
 
 
 deriv_long %>% 
     dplyr::select(-c(Raw_value,Date,Correction_factor,Time,Value_mean_cor,ID,std_cor)) %>%
-  dplyr::filter(Wavelength == 676 |
-                Wavelength == 655) %>%
+  dplyr::filter(Wavelength == 676) %>%
   pivot_wider(names_from = Wavelength, values_from = Deriv) %>%
-  mutate(abs_ratio = `655`/`676`, 
-         Date = as.Date(Time_POS)) %>% 
-  ggplot(aes(x = Time_POS, y = `676`+0.1, color = Scenario))+
+  mutate(Date = as.Date(Time_POS) %>% as.character()) %>%
+  dplyr::select(-Time_POS) %>% 
+  left_join(offset, by = "Experiment") %>% 
+  mutate(`676` = case_when(Scenario == "Test" ~ `676`+diff,
+                           T ~ `676`)) %>% 
+  ggplot(aes(x = timeDiff, y = `676`, color = Scenario))+
   facet_wrap(~Experiment, scales = "free")+
+  # geom_line(data = df_line,aes(x = timeDiff, y = coords_line, group = (Scenario)))+
+  # geom_smooth(method = "loess")+ 
   ylab("Hauteur du Pic")+
   # geom_point()+
-  geom_boxplot(aes(group = interaction(Date,Scenario)))
+  geom_boxplot(aes(group = interaction(Date,Scenario)))+
+  theme_Bede()
   # geom_smooth(method = "loess")
 
 
