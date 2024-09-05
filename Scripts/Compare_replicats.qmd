@@ -147,7 +147,7 @@ df <- rbind(HW3,HW5) %>%
 df %>% 
   dplyr::filter(Wavelength > 490) %>% 
   ggplot()+
-  geom_line(aes(x = Wavelength, y = std_cor , group = Spectra, color = timeDiff))+
+  geom_line(aes(x = Wavelength, y = Value_mean_cor , group = Spectra, color = timeDiff))+
   facet_wrap(Experiment ~ Scenario)+
   # geom_text(aes(x = 0, y = Value_mean, label = Spectra))+
   theme_Bede()
@@ -248,6 +248,77 @@ Water_abs %>%
 
 
 ```{r 2nd Derivative}
+
+
+Spectra <- df %>% 
+  ungroup() %>%   
+  dplyr::select(Value_mean_cor,ID,Wavelength) %>%
+  # dplyr::filter(Wavelength >= 450 & Wavelength <= 900) %>% 
+  tidyr::pivot_wider(names_from = ID, values_from = Value_mean_cor) %>% 
+  dplyr::select(-Wavelength) 
+
+wavelength <- seq(from = min(df$Wavelength), to = max(df$Wavelength),
+                  by = 1)
+
+deriv <- hsdar::speclib(spectra = as.matrix(Spectra), wavelength = wavelength) %>% 
+  hsdar::noiseFiltering(method = "sgolay", n =15) %>%
+  derivative.speclib(m=1) %>% 
+  noiseFiltering(method = "sgolay", n =15) %>%
+  derivative.speclib(m=1)  %>%
+  noiseFiltering(method = "sgolay", n =15) %>%
+  # derivative.speclib(m=1) %>% 
+  # noiseFiltering(method = "sgolay", n =15) %>%
+  # derivative.speclib(m=1) %>% 
+  spectra() %>% 
+  t()%>% 
+  as_tibble()
+
+
+
+names(deriv) <- names(Spectra)
+
+deriv <- deriv %>% 
+  mutate(wavelength = wavelength-16)
+
+deriv_long <- deriv %>% 
+  dplyr::rename(Wavelength = wavelength) %>% 
+  pivot_longer(-Wavelength, names_to = "ID", values_to = "Deriv") %>% 
+  dplyr::filter(Wavelength >= 440 & Wavelength <= 900) %>% 
+  left_join(df,by = c("Wavelength","ID"))
+
+
+
+# deriv_long %>% 
+#   ggplot(aes(x = Wavelength, y = Deriv, color = Time_POS, group = Spectra))+
+#   geom_line()+
+#   facet_wrap(~ scenario)
+
+deriv_long %>%
+  dplyr::filter(Scenario == "Test") %>%
+  dplyr::filter(ID == unique(ID)[100]) %>%
+  # mutate(Deriv = c(zoo::rollmean(Deriv, k=10, fill = NA))) %>% 
+  ggplot(aes(x = Wavelength, y = Deriv))+
+  geom_line()+
+  geom_vline(xintercept = 655, color = "red")+
+  geom_vline(xintercept = 676, color = "blue")+
+  geom_vline(xintercept = 605, color = "green")+
+  geom_vline(xintercept = 575, color = "goldenrod")+
+  geom_vline(xintercept = 525, color = "darkred")
+
+
+deriv_long %>% 
+    dplyr::select(-c(Raw_value,Date,Correction_factor,Time,Value_mean_cor,ID,std_cor)) %>%
+  dplyr::filter(Wavelength == 676 |
+                Wavelength == 655) %>%
+  pivot_wider(names_from = Wavelength, values_from = Deriv) %>%
+  mutate(abs_ratio = `655`/`676`, 
+         Date = as.Date(Time_POS)) %>% 
+  ggplot(aes(x = Time_POS, y = `676`+0.1, color = Scenario))+
+  facet_wrap(~Experiment, scales = "free")+
+  ylab("Hauteur du Pic")+
+  # geom_point()+
+  geom_boxplot(aes(group = interaction(Date,Scenario)))
+  # geom_smooth(method = "loess")
 
 
 ```
