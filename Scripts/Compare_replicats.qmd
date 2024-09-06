@@ -162,10 +162,10 @@ df <- rbind(HW3,HW5,HW6) %>%
 
 ```{r Data plotting}
 
-df %>% 
-  dplyr::filter(Wavelength > 490) %>% 
+sp_plot <- df %>% 
+  dplyr::filter(Wavelength > 450) %>% 
   ggplot()+
-  geom_line(aes(x = Wavelength, y = std_cor , group = Spectra, color = timeDiff))+
+  geom_line(aes(x = Wavelength, y =  std_cor, group = Spectra, color = timeDiff))+
   facet_wrap(Scenario ~ Experiment)+
   # geom_text(aes(x = 0, y = Value_mean, label = Spectra))+
   theme_Bede()
@@ -178,28 +178,43 @@ RED_wavelength <- 665
 
 NDVI <- df %>% 
   ungroup() %>% 
-  dplyr::select(-c(Raw_value,Date,Time,ID,std_cor,Correction_factor)) %>% 
+  dplyr::select(-c(Raw_value,Date,Time,ID,Value_mean_cor,Correction_factor)) %>% 
   dplyr::filter(Wavelength %in% c(NIR_wavelength, RED_wavelength)) %>%
-  pivot_wider(names_from = Wavelength, values_from = Value_mean_cor) %>%
+  pivot_wider(names_from = Wavelength, values_from = std_cor) %>%
   group_by(Time_POS,Spectra,Scenario,Experiment) %>% 
   reframe(value = (`900` - `665`) / (`900` + `665`),
           timeDiff = timeDiff) %>% 
-  dplyr::filter(!timeDiff %in% c(6,30,54))
+  dplyr::filter(!timeDiff %in% c(6,30,54)) %>% 
+  mutate(Days = as.Date(Time_POS))
 
+
+Diff_NDVI <- NDVI %>% 
+  dplyr::select(-Time_POS) %>% 
+  pivot_wider(names_from = Scenario, values_from = value) %>% 
+  group_by(Days,Experiment) %>% 
+  reframe(diff = mean(Control, na.rm = T)-mean(Test,na.rm = T)) %>% 
+  ungroup() %>% 
+  group_by(Experiment) %>% 
+  slice(1) %>% 
+  ungroup() %>% 
+  dplyr::select(-Days)
 
 NDVI %>%   
-  mutate(timeDiff = as.factor(timeDiff)) %>% 
-  # mutate(timeAdjusted = cumsum(c(0, diff(timeDiff)) * !is.na(value))) %>% 
+  left_join(Diff_NDVI, by = "Experiment") %>%
+  mutate(timeDiff = as.factor(timeDiff),
+         value_corrected = case_when(Scenario == "Test" ~ value + diff,
+                           T ~ value)) %>% 
+  dplyr::select(-diff) %>% 
+
   ggplot(aes(x = timeDiff, y = value, color = Scenario)) +
-  geom_point(alpha = 0.3)+
-  # geom_boxplot(aes(group = interaction(Scenario,timeDiff)))+
-  # geom_smooth(aes(x = as.numeric(timeDiff)),method = "gam")+
-  facet_wrap(~ Experiment)+
+  geom_boxplot(aes(group = interaction(Scenario,Days)), outliers = F)+
+  facet_wrap(~ Experiment, scales = "free",)+
   theme_Bede()+
   scale_colour_Bede("mixed")+
   theme(
     axis.text.x = element_text(angle = 45, vjust = 0.5)
-  )
+  )+
+  theme_Bede()
 
 
 Relative_NDVI <- NDVI %>% 
@@ -223,7 +238,8 @@ Relative_NDVI <- NDVI %>%
     geom_point()+
     # geom_point(aes(y = mean(Relative)))+
     geom_smooth(method = "glm")+
-    ylab("Relative NDVI of the Test to the Control")
+    ylab("Relative NDVI of the Test to the Control")+
+    theme_Bede()
   
 
 
@@ -244,14 +260,15 @@ Water_abs <- df %>%
          # b = (16.5*`930`)-(15.5*`990`),
          # abs_water = a * `960` + b,
          abs_water = (0.5*(`990`+`950`))-`970`) %>% 
-  left_join(df2_selected, by = "ID")
+  left_join(df2_selected, by = "ID") %>% 
+  mutate(Days = as.Date(Time_POS))
 
 
 
 Water_abs %>% 
   ggplot(aes(x = as.factor(timeDiff), y = abs_water, color = Scenario))+
   # geom_point(alpha = 0.3)+
-  geom_boxplot()+
+  geom_boxplot(aes(group = interaction(Days,Scenario)))+
   # geom_boxplot(aes(group = interaction(Date,Scenario)))+
   # geom_smooth(aes(group = interaction(Date,Scenario)), method = "glm" )+
     geom_smooth( method = "glm" )+
@@ -263,7 +280,6 @@ Water_abs %>%
   # facet_wrap(~scenario)
 
 ```
-
 
 ```{r 2nd Derivative}
 
@@ -301,7 +317,7 @@ deriv <- deriv %>%
 deriv_long <- deriv %>% 
   dplyr::rename(Wavelength = wavelength) %>% 
   pivot_longer(-Wavelength, names_to = "ID", values_to = "Deriv") %>% 
-  dplyr::filter(Wavelength >= 440 & Wavelength <= 900) %>% 
+  dplyr::filter(Wavelength >= 440 & Wavelength <= 700) %>% 
   left_join(df,by = c("Wavelength","ID"))
 
 
@@ -322,7 +338,7 @@ deriv_long %>%
   # geom_vline(xintercept = 605, color = "green")+
   # geom_vline(xintercept = 575, color = "goldenrod")+
   # geom_vline(xintercept = 525, color = "darkred")+
-  xlim(c(450,700))+
+  # xlim(c(450,700))+
   theme_Bede()
 
 offset <- deriv_long %>% 
@@ -372,7 +388,126 @@ deriv_long %>%
   # geom_smooth(method = "loess")
 
 
+waterAbs <- Water_abs %>% 
+  dplyr::select(ID,abs_water,Scenario)
+
+deriv_long %>% 
+    dplyr::select(-c(Raw_value,Date,Correction_factor,Time,Value_mean_cor,std_cor)) %>%
+  dplyr::filter(Wavelength == 676) %>%
+  pivot_wider(names_from = Wavelength, values_from = Deriv) %>%
+  mutate(Date = as.Date(Time_POS) %>% as.character()) %>%
+  dplyr::select(-Time_POS) %>% 
+  left_join(offset, by = "Experiment") %>% 
+  mutate(`676` = case_when(Scenario == "Test" ~ `676`+diff,
+                           T ~ `676`)) %>% 
+  dplyr::filter(Scenario == "Control") %>%
+  left_join(waterAbs, by = "ID") %>% 
+  ggplot(aes(x = `676`, y = abs_water))+
+  # ggplot2::scale_y_log10()+
+  geom_point(aes(colour = Experiment))+
+  theme_Bede()+
+  geom_smooth(method = "glm")
 ```
+
+```{r Compare Slope}
+Wv1 <- 750  # Example wavelength for NIR
+Wv2 <- 900
+
+Slope <- df %>% 
+    dplyr::filter(Wavelength %in% c(Wv1, Wv2, 650)) %>%
+    dplyr::select(c(ID, Time_POS, Experiment, Scenario, timeDiff, std_cor, Wavelength)) %>% 
+    pivot_wider(names_from = Wavelength, values_from = std_cor) %>%
+    group_by(Time_POS,Scenario) %>% 
+    reframe(value = ((`900`-`750`)/(900-750)),
+            Experiment = Experiment,
+            ID = ID) %>% 
+  left_join(Water_abs, by = c("ID","Time_POS","Scenario","Experiment")) %>% mutate(Normalised_slope = (value - abs_water)/(value + abs_water)) %>%
+  group_by(Experiment,Scenario,Days) 
+
+Slope %>% 
+ggplot(aes(x = Time_POS, y = value, color = Scenario)) +
+  # geom_point()+
+  geom_boxplot(aes(group = interaction(Days,Scenario)))+
+  # geom_smooth(method = "glm")+
+  facet_wrap(~ Experiment, scales = "free")+
+  theme_Bede()+
+  scale_colour_Bede("mixed")
+
+
+Slope %>% 
+ggplot(aes(x = abs_water, y = value, color = Scenario)) +
+  geom_point()+
+  # geom_boxplot(aes(group = interaction(Days,Scenario)))+
+  # geom_smooth(method = "glm")+
+  facet_wrap(~ Experiment, scales = "free")+
+  theme_Bede()+
+  scale_colour_Bede("mixed")
+```
+
+```{r}
+
+a <- df %>% 
+    dplyr::filter(Experiment == "HW3") %>%
+    dplyr::select(c(ID, Time_POS, Experiment, Scenario, timeDiff, std_cor, Wavelength)) %>% 
+  mutate(Days = as.Date(Time_POS)) %>% 
+  group_by(Days,Wavelength,Scenario) %>% 
+  slice(c(1:5))%>% 
+  reframe(mean = mean(std_cor)) %>% 
+  mutate(num =1,
+         ID = paste0(Days,num,Scenario)) 
+
+b <- df %>% 
+    dplyr::filter(Experiment == "HW3") %>%
+    dplyr::select(c(ID, Time_POS, Experiment, Scenario, timeDiff, std_cor, Wavelength)) %>% 
+  mutate(Days = as.Date(Time_POS)) %>% 
+  group_by(Days, Wavelength,Scenario) %>% 
+  slice(c(length(unique(ID))-5:length(unique(ID)))) %>% 
+  reframe(mean = mean(std_cor))%>% 
+  mutate(num =2,
+         ID = paste0(Days,num,Scenario))
+
+rbind(a,b) %>% 
+  dplyr::filter(Scenario == "Test") %>% 
+  ggplot(aes(x = Wavelength, y = mean))+
+  geom_line(aes(color = as.factor(num), group =ID ))+
+  facet_wrap(~Days)
+
+```
+
+```{r}
+
+df1 <- df %>% 
+    dplyr::filter(Experiment == "HW3",
+                  Scenario == "Test") %>% 
+  mutate(Days = as.Date(Time_POS)) %>% 
+    dplyr::filter(Days == unique(Days)[2]) 
+    # mutate(num_day = case_when(Days == unique(Days)[1] ~ "1",
+    #                            Days == unique(Days)[2] ~ "2",
+    #                            Days == unique(Days)[3] ~ "3"))
+
+
+for(i in 1:length(unique(df1$Time_POS))){
+  sp <- df1 %>% 
+    dplyr::filter(Time_POS == unique(Time_POS)[i]) 
+  
+  plot <- ggplot(sp)+
+    geom_line(aes(x = Wavelength, y = std_cor), linewidth = 1) +
+    theme_Bede()+
+    geom_text(aes(x = 550, y =0.8, label = unique(Time_POS) %>% as.character()), size = 10)+
+    # geom_text(aes(x = 550, y =0.7, label = paste0("Day "unique(num_day) %>% as.character())), size = 10)+
+
+    ylab("Standardised Reflectance")+
+    theme(axis.text.x = element_text(size = 20),
+          axis.text.y = element_text(size = 20),
+          axis.title.x = element_text(size = 25),
+          axis.title.y = element_text(size = 25))
+  
+  ggsave(paste0("Output/plot_sp/Plot",i,".png"),plot, width=982*4,height=610*4, unit = "px")
+}
+
+MapRs::create_gif(list.files("Output/plot_sp", pattern = "png", full.names = T))
+```
+
 
 
 
