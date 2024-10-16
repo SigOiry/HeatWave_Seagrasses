@@ -131,6 +131,7 @@
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
+
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
@@ -151,6 +152,7 @@ Ecosystems, Heatwaves},
   citecolor={Blue},
   urlcolor={Blue},
   pdfcreator={LaTeX via pandoc}}
+
 
 \setlength{\parindent}{6pt}
 \begin{document}
@@ -210,6 +212,7 @@ Ecosystems \sep
 \end{keyword}
 \end{frontmatter}
     
+
 \section{Introduction}\label{introduction}
 
 Intertidal seagrasses play a crucial role in the ecosystem by providing
@@ -328,22 +331,42 @@ seagrasses}\label{sampling-and-acclimation-of-seagrasses}
 
 Seagrass was sampled from a \emph{Nanozostera noltei} (dwarf eelgrass,
 syn. Zostera noltei) meadow on Noirmoutier Island, France (46°57'32.0''N
-2°10'37.0''W) at low tide in June 2024. A shovel was used to sample
-seagrass from an area of 30 cm by 15 cm and 5 cm deep, maintaining the
-sediment structure and avoiding damage to the rhizomes and the leafs of
-the seagrass. The seagrass, along with sediment, meiofauna, and
-macrofauna, was placed in plastic trays. To avoid hydric stress during
-transportation, seawater was added to each tray. Simultaneously,
-seawater was sampled from a nearby site and transported to the lab,
-where it was filtered using a 0.22 µm nitrocellulose filter to remove
-all suspended particulate matter. This seawater was used in the
-acclimation tank and the intertidal chambers. The seagrasses were
-acclimated at high tide for one weeks with a water temperature of 17°C,
-matching the temperature at the time of sampling, and with light of 150
-µmol.s-1.m-2 of PAR photons \citep{akbar2020mangrove}. A wave generator
-was used in the tank to circulate and reoxygenate the water.
+2°10'37.0''W) at low tide in June 2024. A home-made inox sampling box
+was used to sample seagrass from an area of 30 cm by 15 cm and 5 cm
+deep, maintaining the sediment structure and avoiding damage to the
+rhizomes and the leafs of the seagrass. This sampling box allowed to
+limitate sampling variability between replicates. The seagrass, along
+with sediment, meiofauna, and macrofauna, was placed in plastic trays.
+To avoid hydric stress during transportation, seawater was added to each
+tray. Simultaneously, seawater was sampled from a nearby site and
+transported to the lab, where it was filtered using a 0.22 µm
+nitrocellulose filter to remove all suspended particulate matter. This
+seawater was used in the acclimation tank and the intertidal chambers.
+The seagrasses were acclimated at high tide for one weeks with a water
+temperature of 17°C, matching the temperature at the time of sampling,
+and with light of 150 µmol.s-1.m-2 of PAR photons
+\citep{akbar2020mangrove}. A wave generator was used in the tank to
+circulate and reoxygenate the water.
 
 \subsubsection{Experimental design}\label{experimental-design}
+
+\phantomsection\label{cell-fig-design}
+\begin{figure}[H]
+
+\centering{
+
+\includegraphics[width=1\textwidth,height=\textheight]{Figs/Experimental_design.png}
+
+}
+
+\caption{\label{fig-design}Illustrations of the various steps of the
+experiment. A: Field sampling of seagrass using a homemade sampling box;
+B: Intertidal chambers used during the experiment; C: Seagrass sample
+inside a chamber during the experiment at high tide; D: Photo of the
+treatment sample at the start of the experiment; E: Photo of the
+treatment sample at the end of the experiment.}
+
+\end{figure}%
 
 Two intertidal chambers from
 \href{https://electricblue.eu/intertidal-chamber}{ElectricBlue} were
@@ -497,6 +520,7 @@ photodiode array detector (2998 PDA) and a fluorimeter (Ex: 425 nm, Em:
 
 \renewcommand\refname{Bibliography}
   \bibliography{library.bib}
+
 
 
 \end{document}

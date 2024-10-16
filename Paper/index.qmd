@@ -101,7 +101,7 @@ not done yet !
 
 ### Sampling and acclimation of seagrasses
 
-Seagrass was sampled from a *Nanozostera noltei* (dwarf eelgrass, syn. Zostera noltei) meadow on Noirmoutier Island, France (46°57'32.0"N 2°10'37.0"W) at low tide in June 2024. A shovel was used to sample seagrass from an area of 30 cm by 15 cm and 5 cm deep, maintaining the sediment structure and avoiding damage to the rhizomes and the leafs of the seagrass. The seagrass, along with sediment, meiofauna, and macrofauna, was placed in plastic trays. To avoid hydric stress during transportation, seawater was added to each tray. Simultaneously, seawater was sampled from a nearby site and transported to the lab, where it was filtered using a 0.22 µm nitrocellulose filter to remove all suspended particulate matter. This seawater was used in the acclimation tank and the intertidal chambers. The seagrasses were acclimated at high tide for one weeks with a water temperature of 17°C, matching the temperature at the time of sampling, and with light of 150 µmol.s-1.m-2 of PAR photons [@akbar2020mangrove]. A wave generator was used in the tank to circulate and reoxygenate the water.
+Seagrass was sampled from a *Nanozostera noltei* (dwarf eelgrass, syn. Zostera noltei) meadow on Noirmoutier Island, France (46°57'32.0"N 2°10'37.0"W) at low tide in June 2024. A home-made inox sampling box was used to sample seagrass from an area of 30 cm by 15 cm and 5 cm deep, maintaining the sediment structure and avoiding damage to the rhizomes and the leafs of the seagrass. This sampling box allowed to limitate sampling variability between replicates. The seagrass, along with sediment, meiofauna, and macrofauna, was placed in plastic trays. To avoid hydric stress during transportation, seawater was added to each tray. Simultaneously, seawater was sampled from a nearby site and transported to the lab, where it was filtered using a 0.22 µm nitrocellulose filter to remove all suspended particulate matter. This seawater was used in the acclimation tank and the intertidal chambers. The seagrasses were acclimated at high tide for one weeks with a water temperature of 17°C, matching the temperature at the time of sampling, and with light of 150 µmol.s-1.m-2 of PAR photons [@akbar2020mangrove]. A wave generator was used in the tank to circulate and reoxygenate the water.
 
 ### Experimental design
 
@@ -119,72 +119,51 @@ get_letter_position <- function(img){
   
   ext <- ext(img)
   
-  x <- as.numeric(ext[1]+0.1*ext[2])
-  y <- as.numeric(ext[4]-0.1*ext[4])
+  x <- as.numeric(ext[1]+(0.05*(ext[2]-ext[1])))
+  y <- as.numeric(ext[3]+(0.95*(ext[4]-ext[3])))
+
   
-  return(c(x,y))
+  return(c(ext[1]+0.1, ext[4]-0.1))
 }
 
-letter_C <- rast("Data/imgs/Tray_low2.png") %>% 
-  get_letter_position()
 
-Tray_low <- ggplot()+
-  geom_spatraster_rgb(data = rast("Data/imgs/Tray_low2.png"))+
+
+A <- rast("Data/imgs/Simon_Sampling.png") 
+ext(A) <- c(0,0.975,-1.95,0)
+
+B <- rast("Data/imgs/Chamber.jpg") 
+ext(B) <- c(1.025,2,-1.95,0)
+
+D <- rast("Data/imgs/Seagrass_before_zoomed.png")
+ext(D) <- c(2.05,3.025,-1.4625,0)
+
+C <- rast("Data/imgs/Tray_high.jpg") 
+ext(C) <- c(0,2,-2.975,-2)
+
+E <- rast("Data/imgs/Seagrass_after_zoomed.png")
+ext(E) <- c(2.05,3.025,-2.975,-1.5125)
+
+letter_A <- get_letter_position(A)
+letter_B <- get_letter_position(B)
+letter_C <- get_letter_position(C)
+letter_D <- get_letter_position(D)
+letter_E <- get_letter_position(E)
+
+letter_size <- 3
+
+plot <- ggplot()+
+  geom_spatraster_rgb(data = A, maxcell = 20e+05)+
+  geom_spatraster_rgb(data = B, maxcell = 20e+05)+
+  geom_spatraster_rgb(data = C, maxcell = 20e+05)+
+  geom_spatraster_rgb(data = D, maxcell = 20e+05)+
+  geom_spatraster_rgb(data = E, maxcell = 20e+05)+
   coord_equal()+
-  geom_text(aes(x = letter_C[1],y=letter_C[2], label = "C"), size = 10)+
-    theme_void()+
-  theme(axis.text = element_blank(), 
-        axis.title = element_blank(), 
-        axis.ticks = element_blank(), 
-        axis.ticks.length = unit(0, "pt"),
-        panel.grid.major=element_blank(), 
-        panel.grid.minor=element_blank(), 
-        plot.margin = margin(0, 0, 0, 0, "pt"))
-  
-
-
-letter_D <- rast("Data/imgs/Tray_high.jpg") %>% 
-  get_letter_position()
-
-Tray_high <- ggplot()+
-  geom_spatraster_rgb(data = rast("Data/imgs/Tray_high.jpg"))+
-  coord_equal()+
-  geom_text(aes(x = letter_D[1]/2,y=letter_D[2], label = "D"), size = 10)+
-    theme_void()+
-  theme(axis.text = element_blank(), 
-        axis.title = element_blank(), 
-        axis.ticks = element_blank(), 
-        axis.ticks.length = unit(0, "pt"),
-        panel.grid.major=element_blank(), 
-        panel.grid.minor=element_blank(), 
-        plot.margin = margin(0,0,0,0, "pt"))
-  
-
-letter_B <- rast("Data/imgs/Chamber.jpg") %>% 
-  get_letter_position()
-
-Chamber <- ggplot()+
-  geom_spatraster_rgb(data = rast("Data/imgs/Chamber.jpg"))+
-  coord_equal()+
-  geom_text(aes(x = letter_B[1],y=letter_B[2], label = "B"), size = 10)+
-    theme_void()+
-  theme(axis.text = element_blank(), 
-        axis.title = element_blank(), 
-        axis.ticks = element_blank(), 
-        axis.ticks.length = unit(0, "pt"),
-        panel.grid.major=element_blank(), 
-        panel.grid.minor=element_blank(), 
-        plot.margin = margin(0, 0, 0, 0, "pt"))
-  
-
-letter_A <- rast("Data/imgs/Sampling.jpg") %>% 
-  get_letter_position()
-
-Sampling <- ggplot()+
-  geom_spatraster_rgb(data = rast("Data/imgs/Sampling.jpg"))+
-  coord_equal()+
-  geom_text(aes(x = letter_A[1],y=letter_A[2], label = "A"), size = 10)+
-    theme_void()+
+  geom_label(aes(x = letter_A[1],y=letter_A[2], label = "A"), alpha = 0.5, size = letter_size)+
+  geom_label(aes(x = letter_B[1],y=letter_B[2], label = "B"), alpha = 0.5, size = letter_size)+
+  geom_label(aes(x = letter_C[1],y=letter_C[2], label = "C"), alpha = 0.5, size = letter_size)+
+  geom_label(aes(x = letter_D[1],y=letter_D[2], label = "D"), alpha = 0.5, size = letter_size)+
+  geom_label(aes(x = letter_E[1],y=letter_E[2], label = "E"), alpha = 0.5, size = letter_size)+
+  theme_void()+
   theme(axis.text = element_blank(), 
         axis.title = element_blank(), 
         axis.ticks = element_blank(), 
@@ -193,62 +172,21 @@ Sampling <- ggplot()+
         panel.grid.minor=element_blank(), 
         plot.margin = margin(0, 0, 0, 0, "pt"))
 
+ggsave("Paper/Figs/Experimental_design.png",plot, width = 3.025, height = 2.975, dpi = 800)
 
-letter_E <- rast("Data/imgs/Micasense_mount.jpg") %>% 
-  get_letter_position()
+```
 
-micasense <- ggplot()+
-  geom_spatraster_rgb(data = rast("Data/imgs/Micasense_mount.jpg"))+
-  coord_equal()+
-  geom_text(aes(x = letter_E[1],y=letter_E[2], label = "E"), size = 10)+
-    theme_void()+
-  theme(axis.text = element_blank(), 
-        axis.title = element_blank(), 
-        axis.ticks = element_blank(), 
-        axis.ticks.length = unit(0, "pt"),
-        panel.grid.major=element_blank(), 
-        panel.grid.minor=element_blank(), 
-        plot.margin = margin(0, 0, 0, 0, "pt"))
+```{r Fig design}
+#| cache: false
+#| echo: false
+#| warning: false
+#| fig-cap: "Illustrations of the various steps of the experiment. A: Field sampling of seagrass using a homemade sampling box; B: Intertidal chambers used during the experiment; C: Seagrass sample inside a chamber during the experiment at high tide; D: Photo of the treatment sample at the start of the experiment; E: Photo of the treatment sample at the end of the experiment."
+#| label: fig-design
+#| fig-width: 10
+#| fig-height: 10
+#| out-width: "100%"
 
-
-# layout1 <- c(
-#   patchwork::area(t = 1, l = 1, b = 20, r = 10),
-#   patchwork::area(t = 1, l = 10, b = 20, r = 19),
-#   patchwork::area(t = 1, l = 19, b = 20, r = 28),
-#   patchwork::area(t = 20, l = 0.5, b = 29, r = 19),
-#   patchwork::area(t = 20, l = 19, b = 29, r = 28)
-# 
-# )
-
-layout1 <- c(
-  patchwork::area(t = 1, l = 1, b = 1000, r = 500),
-  patchwork::area(t = 1, l = 501, b = 1000, r = 1000),
-  patchwork::area(t = 1, l = 1001, b = 1000, r = 1500),
-  patchwork::area(t = 1001, l = 1, b = 1500, r = 1000),
-  patchwork::area(t = 1001, l = 1001, b = 1500, r = 1500)
-
-)
-
-
-plot(layout1)
-
-plot<-Sampling+
-  Chamber+
-  Tray_low+
-  Tray_high+
-  micasense+
-  # patchwork::plot_layout(design=layout1)+
-  patchwork::plot_layout(design=layout1, widths = c(1, 1), heights = c(1, 1)) &
-  theme(
-    plot.margin = unit(c(0, 0, 0, 0), "pt")
-  )
-
-
-ggsave("Paper/Figs/Experimental_design.png",plot, height = 10, width = 10, dpi = 800)
-
-
-
-# plot(layout1)
+knitr::include_graphics("Figs/Experimental_design.png")
 ```
 
 
@@ -467,7 +405,7 @@ ggsave("Paper/Figs/Chamber_Profils.png",plt, height = 874*4, width = 1911*4, uni
 #| cache: false
 #| echo: false
 #| warning: false
-#| fig-cap:  Temperature profiles of both the control (left) and the treatment (right) followed during the heatwave experiment. The red line indicates air temperature, whereas the blue line indicates water temperature. Due to the tidal cycle followed during the experiment, the seagrasses only experience temperatures representade by solid lines.
+#| fig-cap: "Temperature profiles of both the control (left) and the treatment (right) followed during the heatwave experiment. The red line indicates air temperature, whereas the blue line indicates water temperature. Due to the tidal cycle followed during the experiment, the seagrasses only experience temperatures representade by solid lines."
 #| label: fig-Profile
 #| fig-width: 10
 #| fig-height: 8
