@@ -300,16 +300,16 @@ characterisation}\label{heatwaves-detection-and-characterisation}
 \subsubsection{Air temperature}\label{air-temperature}
 
 Since January 1, 2024, Meteo France weather data has been freely and
-openly accessible. Hourly air temperature data (°C) for the French coast
-of the Atlantic and the Channel has been downloaded using a
-\href{https://github.com/SigOiry/HeatWave_Seagrasses/blob/main/MeteoFrance_Extraction.qmd}{custom
-script}, as no API has been developed for downloading this data at the
-date of this study. Weather stations located within 10 kilometers of the
-coastline were considered, but only those with a minimum of 30 years of
-data were included to ensure accurate climatology reconstruction. Among
-the 156 weather stations comprised within the 10km of coastline, only 36
-had enough data to reconstruct the climatology. Hourly data has been
-aggregated to daily mean temperatures at each station.
+openly accessible. Hourly air temperature data (°C) for the French
+Atlantic and Channel coasts was retrieved using a
+\href{https://github.com/SigOiry/HeatWave_Seagrasses/blob/main/Scripts/MeteoFrance_Extraction.qmd}{custom
+script} as no API was available at the time of this study. Weather
+stations located within 10 kilometers of the coastline were considered,
+but only those with at least 30 years of data were included to ensure
+reliable climatological reconstruction. Of the 156 weather stations
+within 10 kilometers of the coast, only 36 had sufficient data for
+climatology reconstruction. The hourly data was then aggregated into
+daily mean temperatures for each station.
 
 Heatwave detection was performed using the HeatwaveR package in R
 \citep{heatwaveR}. This package utilizes the methodology proposed by
@@ -322,7 +322,7 @@ by \citep{hobday2018categorizing}.
 
 \subsubsection{Water temperature}\label{water-temperature}
 
-not done yet !
+https://doi.org/10.48670/moi-00311
 
 \subsection{Experiment}\label{experiment}
 
@@ -330,23 +330,23 @@ not done yet !
 seagrasses}\label{sampling-and-acclimation-of-seagrasses}
 
 Seagrass was sampled from a \emph{Nanozostera noltei} (dwarf eelgrass,
-syn. Zostera noltei) meadow on Noirmoutier Island, France (46°57'32.0''N
-2°10'37.0''W) at low tide in June 2024. A home-made inox sampling box
-was used to sample seagrass from an area of 30 cm by 15 cm and 5 cm
-deep, maintaining the sediment structure and avoiding damage to the
-rhizomes and the leafs of the seagrass. This sampling box allowed to
-limitate sampling variability between replicates. The seagrass, along
-with sediment, meiofauna, and macrofauna, was placed in plastic trays.
-To avoid hydric stress during transportation, seawater was added to each
-tray. Simultaneously, seawater was sampled from a nearby site and
-transported to the lab, where it was filtered using a 0.22 µm
-nitrocellulose filter to remove all suspended particulate matter. This
-seawater was used in the acclimation tank and the intertidal chambers.
-The seagrasses were acclimated at high tide for one weeks with a water
-temperature of 17°C, matching the temperature at the time of sampling,
-and with light of 150 µmol.s-1.m-2 of PAR photons
-\citep{akbar2020mangrove}. A wave generator was used in the tank to
-circulate and reoxygenate the water.
+syn. \emph{Zostera noltei}) meadow on Noirmoutier Island, France
+(46°57'32.0''N 2°10'37.0''W) at low tide in June 2024. A home-made inox
+sampling box was used to sample seagrass from an area of 30 cm by 15 cm
+and 5 cm deep, maintaining the sediment structure and avoiding damage to
+the rhizomes and the leafs of the seagrass (Figure~\ref{fig-design} A).
+This sampling box allowed to limitate sampling variability between
+replicates. The seagrass, along with sediment, meiofauna, and
+macrofauna, was placed in plastic trays. To avoid hydric stress during
+transportation, seawater was added to each tray. Simultaneously,
+seawater was sampled from a nearby site and transported to the lab,
+where it was filtered using a 0.22 µm nitrocellulose filter to remove
+all suspended particulate matter. This seawater was used in the
+acclimation tank and the intertidal chambers. The seagrasses were
+acclimated at high tide for one weeks with a water temperature of 17°C,
+matching the temperature at the time of sampling, and with light of 150
+µmol.s-1.m-2 of PAR photons \citep{akbar2020mangrove}. A wave generator
+was used in the tank to circulate and reoxygenate the water.
 
 \subsubsection{Experimental design}\label{experimental-design}
 
@@ -371,24 +371,25 @@ treatment sample at the end of the experiment.}
 Two intertidal chambers from
 \href{https://electricblue.eu/intertidal-chamber}{ElectricBlue} were
 used to simulate tidal cycles and control water temperature during high
-tide and air temperature during low tide. One chamber served as the
-control, while the other was used for the experimental treatment. The
-control chamber was maintained at temperatures representative of the
-typical seasonal conditions: water temperatures between 18°C and 19°C
-and air temperatures between 18°C and 23°C, following circadian
-temperature variability (Figure~\ref{fig-Profile} left). For the
-experimental treatment, the air temperature was set to mimic an
-atmospheric heatwave that occurred over the seagrass meadow of Porh
-Saint-Guénël, Plouharnel, France (47°35'40.0''N, 3°07'30.0''W) from
-August 26, 2021, to September 6, 2021. On the first day of the
-experiment, air temperatures in the experimental chamber were set to
-range from 23°C at night to 35°C during the day, with a daily increase
-of 1°C. The water temperature in the experimental chamber was similarly
-adjusted to reflect the heatwave conditions, starting from the normal
-seasonal range (18°C) and gradually increasing to simulate the rising
-temperatures experienced during the heatwave (+0.5°C daily). This setup
-aimed to replicate the thermal stress experienced by the seagrass meadow
-during the actual heatwave event (Figure~\ref{fig-Profile} right).
+tide and air temperature during low tide (Figure~\ref{fig-design} B,C).
+One chamber served as the control, while the other was used for the
+experimental treatment. The control chamber was maintained at
+temperatures representative of the typical seasonal conditions: water
+temperatures between 18°C and 19°C and air temperatures between 18°C and
+23°C, following circadian temperature variability
+(Figure~\ref{fig-Profile} left). For the experimental treatment, the air
+temperature was set to mimic an atmospheric heatwave that occurred over
+the seagrass meadow of Porh Saint-Guénël, Plouharnel, France
+(47°35'40.0''N, 3°07'30.0''W) from August 26, 2021, to September 6,
+2021. On the first day of the experiment, air temperatures in the
+experimental chamber were set to range from 23°C at night to 35°C during
+the day, with a daily increase of 1°C. The water temperature in the
+experimental chamber was similarly adjusted to reflect the heatwave
+conditions, starting from the normal seasonal range (18°C) and gradually
+increasing to simulate the rising temperatures experienced during the
+heatwave (+0.5°C daily). This setup aimed to replicate the thermal
+stress experienced by the seagrass meadow during the actual heatwave
+event (Figure~\ref{fig-Profile} right).
 
 \phantomsection\label{cell-fig-Profile}
 \begin{figure}[H]
@@ -410,10 +411,7 @@ by solid lines.}
 
 \subsubsection{Measurement and sampling}\label{measurement-and-sampling}
 
-\paragraph{Radiometric measurement}\label{radiometric-measurement}
-
-\subparagraph{Hyperspectral
-measurement}\label{hyperspectral-measurement}
+\paragraph{Hyperspectral measurement}\label{hyperspectral-measurement}
 
 Throughout the experiment, hyperspectral signatures of both the control
 and treatment seagrasses were taken using an ASD HandHeld 2 equipped
@@ -482,7 +480,9 @@ MIWAI = 0.5 \times [R(990)+R(950)]-R(970)
 where \(R(990)\), \(R(970)\) and \(R(950)\) are the reflectance in the
 infrared at 990, 970 and 950 nm, respectively.
 
-\subparagraph{Multispectral imagery
+\begin{quote}
+\mbox{}%
+\paragraph{Multispectral imagery
 measurement}\label{multispectral-imagery-measurement}
 
 Parallel to hyperspectral measurements, multispectral images were taken
@@ -500,6 +500,7 @@ vegetation using drone imagery, has been applied to each image taken
 inside the intertidal chambers. To understand the behavior of the model
 on seagrasses affected by heatwaves, classification images from before
 and after the heatwave have been compared.
+\end{quote}
 
 \paragraph{Leaves sampling and HPLC
 measurement}\label{leaves-sampling-and-hplc-measurement}

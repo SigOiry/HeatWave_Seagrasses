@@ -98,6 +98,11 @@ Heatwave detection was performed using the HeatwaveR package in R [@heatwaveR]. 
 https://doi.org/10.48670/moi-00311
 
 ```{r SST_processing}
+#| cache: true
+#| echo: false
+#| eval: false
+#| warning: false
+
 library(tidyverse)
 library(terra)
 library(ncdf4)
