@@ -34,6 +34,22 @@ author:
       - Revision
     affiliations:
       - Institut des Substances et Organismes de la Mer, ISOMer, Nantes Université, UR 2160, F-44000 Nantes, France
+  - name: Anne-Laure Barillé
+    corresponding: false
+    roles: 
+      - Investigation
+      - Data acquisition
+      - Revision
+    affiliations:
+      - Bio-littoral, Immeuble Le Nevada, 2 Rue du Château de l'Eraudière, 44300 Nantes, France
+  - name: Nicolas Harrin
+    corresponding: false
+    roles: 
+      - Investigation
+      - Data acquisition
+      - Revision
+    affiliations:
+      - Bio-littoral, Immeuble Le Nevada, 2 Rue du Château de l'Eraudière, 44300 Nantes, France
   - name: Pierre Gernez
     corresponding: false
     roles: 
@@ -85,100 +101,215 @@ Bleaching and browning events of seagrass beds have been observed following epis
 
 # Material & Methods
 
-## Heatwaves detection and characterisation
+## Observation of an *in situ* heatwave event over a seagrass meadow.
 
-### Air temperature
+### FieldTrip
 
-Since January 1, 2024, Meteo France weather data has been freely and openly accessible. Hourly air temperature data (°C) for the French Atlantic and Channel coasts was retrieved using a [custom script](https://github.com/SigOiry/HeatWave_Seagrasses/blob/main/Scripts/MeteoFrance_Extraction.qmd) as no API was available at the time of this study. Weather stations located within 10 kilometers of the coastline were considered, but only those with at least 30 years of data were included to ensure reliable climatological reconstruction. Of the 156 weather stations within 10 kilometers of the coast, only 36 had sufficient data for climatology reconstruction. The hourly data was then aggregated into daily mean temperatures for each station.
-
-Heatwave detection was performed using the HeatwaveR package in R [@heatwaveR]. This package utilizes the methodology proposed by @hobday2016hierarchical to detect heatwave events. The climatology for the year was computed using the temperature time series. An event was considered a heatwave each time the temperature exceeded the 90th percentile of the climatology for five consecutive days. The severity of each event has been assessed using the methodology proposed by @hobday2018categorizing.
-
-### Water temperature
-
-https://doi.org/10.48670/moi-00311
-
-```{r SST_processing}
+```{r filedtrip Quadrats}
 #| cache: true
 #| echo: false
 #| eval: false
 #| warning: false
 
 library(tidyverse)
-library(terra)
-library(ncdf4)
-library(heatwaveR)
-library(Utilities.Package)
+library(exiftoolr)
+
+if(!file.exists("Data/Biolittoral/Bio-Littoral_Drone/Quadrat_metadata.csv")){
+ image_list <- list.files("Data/Biolittoral/Bio-Littoral_Drone/OFB2021_Quadrat_Zost_QBR", recursive = T, full.names = T) %>% 
+  as_tibble() %>% 
+  dplyr::rename(path = "value") %>% 
+  dplyr::mutate(filename = gsub(".*/","",path),
+                lat = NA,
+                lon=NA) %>% 
+  dplyr::filter(str_detect(path,"Quadrats"))
 
 
-##### NC opening and processing ######
+  for (i in 1:nrow(image_list)) {
+    a <- exiftoolr::exif_read(image_list$path[i])
+    
+    lat_a <- a$GPSLatitude
+    lon_B <- a$GPSLongitude
+    
+    image_list$lat[i] <- lat_a
+    image_list$lon[i] <- lon_B
+  } 
+ 
+ write.csv(imagelist, "Data/Biolittoral/Bio-Littoral_Drone/Quadrat_metadata.csv", row.names = F)
+}else{
+  image_list <- read.csv("Data/Biolittoral/Bio-Littoral_Drone/Quadrat_metadata.csv") %>% 
+    as_tibble()
+}
 
-# Define the path to your NetCDF file
-file_path <- "Data/SST/cmems_obs-sst_atl_phy_my_l3s_P1D-m_1729089512246.nc"
-
-# Open the NetCDF file
-nc <- nc_open(file_path)
-
-# Display information about the file
-print(nc)
-
-# Assuming the temperature variable is named "temperature", replace with the correct name if different
-# Get the name of the temperature variable
-temp_var_name <- "adjusted_sea_surface_temperature"  # Adjust this according to your file's variable name
-
-# Get the temperature variable
-temperature_data <- ncvar_get(nc, temp_var_name)
-
-# Get the time variable
-time_data <- ncvar_get(nc, "time")  # Adjust "time" if the name is different
-
-# Calculate the mean temperature across the time dimension (assuming time is the first dimension)
-mean_temperature <- apply(temperature_data, 3, mean, na.rm = TRUE) 
-
-# Create a dataframe with time and mean temperature
-sst <- data.frame(time = time_data, sst = mean_temperature) %>% 
-  mutate(time = as.POSIXct(time, origin="1970-01-01")) 
-
-sst %>% 
-  dplyr::filter(!is.nan(as.numeric(mean_temperature))) %>%
-ggplot(aes(x = time, y = sst-273.15))+
-  geom_point(alpha = 0.3)+
-  geom_smooth(method = "glm")
-
-
-#### HEATWAVE DETECTION ########
-
-df_heatwaveR <- sst %>% 
-  rename(t = time,
-         temp = sst) %>%
-  mutate(t = as.Date(t),
-         temp = temp - 273.15) %>% 
-  dplyr::select(t,temp) 
-
-  
-
-  clim <- ts2clm(df_heatwaveR, climatologyPeriod = c(min(df_heatwaveR$t), max(df_heatwaveR$t)))
-  
-  event <- detect_event(clim,categories = T,minDuration = 3)
-  
-  res <- detect_event(clim, minDuration = 3)
-  mhw <- res$clim
-  
-  mhw %>%
-    filter(t> as.Date("2018-05-15") & t < as.Date("2018-10-15") ) %>%
-ggplot(aes(x = t, y = temp))+
-    geom_line() +
-    geom_point()+
-    geom_flame(aes(y2 = thresh))+
-    geom_line(aes(y = thresh), color = "darkred")+
-    theme_Bede()
 ```
 
+```{r shiny app quadrat images}
+
+library(shiny)
+
+
+# Initialize 'Target_types' column if not already present
+if (!"Target_types" %in% colnames(image_list)) {
+  image_list$Target_types <- NA
+}
+
+ui <- fluidPage(
+  titlePanel("Image Annotation App"),
+  sidebarLayout(
+    sidebarPanel(
+      uiOutput("category_ui"),
+      textInput("new_category", "Add New Category"),
+      actionButton("add_category_btn", "Add Category"),
+      actionButton("next_btn", "Next Image")
+    ),
+    mainPanel(
+      imageOutput("image_display", width = "900px")
+    )
+  )
+)
+
+server <- function(input, output, session) {
+  # Reactive value to keep track of the current image index
+  current_index <- reactiveVal(1)
+  
+  # ReactiveValues to store categories
+  rv <- reactiveValues(categories = character())
+  
+  # Display the current image
+  output$image_display <- renderImage({
+    # Get the current image path
+    img_path <- image_list$path[current_index()]
+    
+    # Check if the image file exists
+    if (file.exists(img_path)) {
+      list(src = img_path, contentType = 'image/jpeg', style = "width:100%; height:auto;", alt = "Image")
+    } else {
+      list(src = "https://via.placeholder.com/400x300?text=Image+Not+Found", contentType = 'image/png', alt = "Image Not Found")
+    }
+  }, deleteFile = FALSE)
+  
+  # Generate the UI for categories
+  output$category_ui <- renderUI({
+    if (length(rv$categories) > 0) {
+      checkboxGroupInput("selected_categories", "Select Categories:", choices = rv$categories)
+    } else {
+      tags$p("No categories available. Please add a new category.")
+    }
+  })
+  
+  # Add new category
+  observeEvent(input$add_category_btn, {
+    new_cat <- input$new_category
+    if (!is.null(new_cat) && new_cat != "") {
+      rv$categories <- unique(c(rv$categories, new_cat))
+      updateTextInput(session, "new_category", value = "")
+    }
+  })
+  
+  # Next button logic
+  observeEvent(input$next_btn, {
+    # Get selected categories
+    selected_cats <- input$selected_categories
+    if (is.null(selected_cats)) {
+      selected_cats <- NA
+    } else {
+      selected_cats <- paste(selected_cats, collapse = ", ")
+    }
+    
+    # Save the selected categories to 'Target_types' column
+    image_list$Target_types[current_index()] <<- selected_cats
+    
+    # Move to next image
+    if (current_index() < nrow(image_list)) {
+      current_index(current_index() + 1)
+      
+      # Reset the selected categories input
+      updateCheckboxGroupInput(session, "selected_categories", selected = character(0))
+    } else {
+      showModal(modalDialog(
+        title = "End of Images",
+        "You have reached the end of the images.",
+        easyClose = TRUE
+      ))
+    }
+  })
+}
+
+shinyApp(ui = ui, server = server)
+
+
+```
+
+
+
+A fieldtrip, aiming to map a seagrass meadow near Quiberon (France : 46°57'32.0"N, 2°10'37.0"W), occurred in the 10th of September 2021. During this fieldtrip, bleaching of seagrasses have been observed, resulting in the darkening of seagrass leaves over large area of the meadow. During this fieldtrip, drone flight have been performed over two areas of the meadow, using a DJI Matrice 200 carrying a Sequoia Mutlispectral camera. The Sequoia have a total of 4 spectral bands : Green (550 ± 40 nm), Red (660 ± 40 nm), RedEdge (735 ± 10 nm) and Near Infrared (790 ± 40 nm). A total of `r nrow(imagelist)` Ground Control Points (GCP) in the form of georeferenced quadrats pictures have been captured all over the meadow. This allows to determine the type of vegetation, the density and the health status of it visually. Those images have then been splitted in two separate groups : Healthy seagrasses and Bleached seagrasses. This splitting have been performed by visual estimation of the status of the leaf. 
+
+### Air temperature
+
+Since January 1, 2024, Meteo France weather data has been freely and openly accessible. Hourly air temperature data (°C) for the French Atlantic and Channel coasts was retrieved using a [custom script](https://github.com/SigOiry/HeatWave_Seagrasses/blob/main/Scripts/MeteoFrance_Extraction.qmd) as no API was available at the time of this study. Weather stations located within 10 kilometers of the coastline were considered, but only those with at least 30 years of data were included to ensure reliable climatological reconstruction. Of the 156 weather stations within 10 kilometers of the coast, only 36 had sufficient data for climatology reconstruction. The hourly data was then aggregated into daily mean temperatures for each station.
+
+Heatwave detection was performed using the HeatwaveR package in R [@heatwaveR]. This package utilizes the methodology proposed by @hobday2016hierarchical to detect heatwave events. The climatology for the year was computed using the temperature time series. An event was considered a heatwave each time the temperature exceeded the 90th percentile of the climatology for three consecutive days. The severity of each event has been assessed using the methodology proposed by @hobday2018categorizing.
+
+### Water temperature
+
+```{r Polygon_area_SST}
+#| cache: true
+#| echo: false
+#| eval: true
+#| warning: false
+
+library(sf)
+# Define the bounding box around Quiberon (adjust the range as needed)
+lon_min <- -3.5
+lon_max <- -2.7
+lat_min <- 47.3
+lat_max <- 47.7
+
+poly <- data.frame(
+  x = c(lon_min,lon_max,lon_max,lon_min),
+  y = c(lat_max,lat_max,lat_min,lat_min),
+  id = c(1,1,1,1)
+)
+
+
+# Ensure the polygon is closed by adding the first point at the end if necessary
+if (!all(poly[1, c("x", "y")] == poly[nrow(poly), c("x", "y")])) {
+  poly <- rbind(poly, poly[1, ])
+}
+
+# Create a matrix of coordinates
+coords <- as.matrix(poly[, c("x", "y")])
+
+# Create a list of coordinate matrices (required by st_polygon)
+polygon_list <- list(coords)
+
+# Create an 'sfc' (simple features geometry list column) object with the appropriate CRS
+polygon_sfc <- st_sfc(st_polygon(polygon_list), crs = 4326)  # CRS 4326 corresponds to WGS84
+
+# Combine the 'id' with the geometry to create an 'sf' object
+poly_sf <- st_sf(id = unique(poly$id), geometry = polygon_sfc)
+
+poly_sf_projected <- st_transform(poly_sf, crs = 32630)  # UTM Zone 30N
+
+# 2. Calculate the area in square meters
+area_poly_sst_m2 <- st_area(poly_sf_projected)
+
+# 3. Convert the area to square kilometers
+area_poly_sst_km2 <- units::set_units(area_poly_sst_m2, km^2)
+
+# Convert the units object to numeric for rounding
+area_poly_sst_numeric <- as.numeric(area_poly_sst_km2)
+
+# 4. Round the area to the nearest hundred
+area_poly_sst_rounded <- round(area_poly_sst_numeric / 100) * 100
+```
+
+Sea Surface Temperature (SST) data were downloaded from the Copernicus CMEMS platform [@CMEMS_1] for the French coast, covering the period from 1982 to 2022. Only pixels within an area of `r area_poly_sst_rounded` km² around Quiberon, Brittany, France (47°29′03″N, 3°07′09″W) were extracted and analyzed. This area was large enough to minimize missing values caused by cloud cover, yet small enough to avoid being influenced by the stability of offshore SST. After the masking step, a daily average of the remaining pixels was calculated, resulting in a daily mean SST value for the entire time series. Using this daily average since 1982, the SST climatology was computed with the HeatwaveR package in R [@heatwaveR]. The same methodology used to detect air temperature events was applied to identify SST events.
 
 ## Experiment
 
 ### Sampling and acclimation of seagrasses
 
-Seagrass was sampled from a *Nanozostera noltei* (dwarf eelgrass, syn. *Zostera noltei*) meadow on Noirmoutier Island, France (46°57'32.0"N 2°10'37.0"W) at low tide in June 2024. A home-made inox sampling box was used to sample seagrass from an area of 30 cm by 15 cm and 5 cm deep, maintaining the sediment structure and avoiding damage to the rhizomes and the leafs of the seagrass (@fig-design A). This sampling box allowed to limitate sampling variability between replicates. The seagrass, along with sediment, meiofauna, and macrofauna, was placed in plastic trays. To avoid hydric stress during transportation, seawater was added to each tray. Simultaneously, seawater was sampled from a nearby site and transported to the lab, where it was filtered using a 0.22 µm nitrocellulose filter to remove all suspended particulate matter. This seawater was used in the acclimation tank and the intertidal chambers. The seagrasses were acclimated at high tide for one weeks with a water temperature of 17°C, matching the temperature at the time of sampling, and with light of 150 µmol.s-1.m-2 of PAR photons [@akbar2020mangrove]. A wave generator was used in the tank to circulate and reoxygenate the water.
+Seagrass was sampled from a *Nanozostera noltei* (dwarf eelgrass, syn. *Zostera noltei*) meadow on Noirmoutier Island, France (46°57'32.0"N, 2°10'37.0"W) at low tide in June 2024. A home-made inox sampling box was used to sample seagrass from an area of 30 cm by 15 cm and 5 cm deep, maintaining the sediment structure and avoiding damage to the rhizomes and the leafs of the seagrass (@fig-design A). This sampling box allowed to limitate sampling variability between replicates. The seagrass, along with sediment, meiofauna, and macrofauna, was placed in plastic trays. To avoid hydric stress during transportation, seawater was added to each tray. Simultaneously, seawater was sampled from a nearby site and transported to the lab, where it was filtered using a 0.22 µm nitrocellulose filter to remove all suspended particulate matter. This seawater was used in the acclimation tank and the intertidal chambers. The seagrasses were acclimated at high tide for one weeks with a water temperature of 17°C, matching the temperature at the time of sampling, and with light of 150 µmol.s-1.m-2 of PAR photons [@akbar2020mangrove]. A wave generator was used in the tank to circulate and reoxygenate the water.
 
 ### Experimental design
 
@@ -532,5 +663,169 @@ where $R(990)$, $R(970)$ and $R(950)$ are the reflectance in the infrared at 990
 At the beginning and the end of each diurn low tide (09:00 am and 03:00 pm) leaves samples have been took in both the test and the control. leaves sampled have been stored under -80°C waiting for analysis. Pigment composition and biomass were analyzed using high-performance liquid chromatography (HPLC). The HPLC system (Alliance HPLC 248 System, Waters) was equipped with a reverse-phase C-18 separating column (SunFire C-18 Column, 100Å, 3.5 µm, 2.1 mm x 50 mm, Waters), preceded by a precolumn (VanGuard 3.9 mm x 5 mm, Waters). The system also included a photodiode array detector (2998 PDA) and a fluorimeter (Ex: 425 nm, Em: 655 nm; RF-20A, SHIMADZU).
 
 **Au secours Philippe !!!**
+
+# Results
+
+```{r SST_processing}
+#| cache: true
+#| echo: false
+#| eval: false
+#| warning: false
+
+library(tidyverse)
+library(terra)
+library(ncdf4)
+library(heatwaveR)
+library(Utilities.Package)
+library(reshape2)
+
+
+
+######### NC PLOTTING ################
+
+
+file_path <- "Data/SST/cmems_obs-sst_atl_phy_my_l3s_P1D-m_1729089512246.nc"
+nc <- nc_open(file_path)
+
+# Get the temperature variable (adjust the variable name if different)
+temp_var_name <- "adjusted_sea_surface_temperature"
+temperature_data <- ncvar_get(nc, temp_var_name)
+
+# Get the longitude and latitude variables (adjust variable names if different)
+lon <- ncvar_get(nc, "longitude")
+lat <- ncvar_get(nc, "latitude")
+
+# Compute the mean SST over time at each grid point
+mean_sst_map <- apply(temperature_data, c(1, 2), sd, na.rm = TRUE)
+
+# Convert the 2D array to a data frame for plotting
+mean_sst_df <- melt(mean_sst_map, varnames = c("lon_idx", "lat_idx"), value.name = "mean_sst")
+mean_sst_df$lon <- lon[mean_sst_df$lon_idx]
+mean_sst_df$lat <- lat[mean_sst_df$lat_idx]
+
+# Convert Kelvin to Celsius if necessary
+mean_sst_df$mean_sst_celsius <- mean_sst_df$mean_sst - 273.15
+
+
+
+# Plot the mean SST map
+ggplot() +
+  geom_tile(data = mean_sst_df,  mapping = aes(x = lon, y = lat, fill = mean_sst_celsius)) +
+  geom_polygon(data = poly, mapping = aes(x = x, y = y, group = id), alpha = 0.8)+
+  scale_fill_viridis_c(option = "inferno") +
+  coord_fixed() +
+  labs(title = "Mean Sea Surface Temperature", fill = "Temperature (°C)") +
+  theme_minimal()
+
+
+##### NC opening and processing ######
+
+file_path <- "Data/SST/cmems_obs-sst_atl_phy_my_l3s_P1D-m_1729089512246.nc"
+
+# Open the NetCDF file
+nc <- nc_open(file_path)
+
+# Get the temperature variable (adjust the variable name if different)
+temp_var_name <- "adjusted_sea_surface_temperature"
+temperature_data <- ncvar_get(nc, temp_var_name)
+
+# Get the time variable
+time_data <- ncvar_get(nc, "time")  # Adjust "time" if the name is different
+
+# Get the longitude and latitude variables
+lon <- ncvar_get(nc, "longitude")  # Adjust "longitude" if the name is different
+lat <- ncvar_get(nc, "latitude")   # Adjust "latitude" if the name is different
+
+
+
+# Adjust longitudes if they are in the range [0, 360]
+if (max(lon) > 180) {
+  lon <- ifelse(lon > 180, lon - 360, lon)
+}
+
+# Find the indices of lon and lat within the bounding box
+lon_indices <- which(lon >= lon_min & lon <= lon_max)
+lat_indices <- which(lat >= lat_min & lat <= lat_max)
+
+# Subset the temperature data
+temperature_data_subset <- temperature_data[lon_indices, lat_indices, ]
+
+# Calculate the mean temperature over the spatial dimensions for each time point
+mean_temperature <- apply(temperature_data_subset, 3, mean, na.rm = TRUE)
+
+# Convert time data to POSIXct format (adjust the origin if necessary)
+sst <- data.frame(time = time_data, sst = mean_temperature) %>%
+  mutate(time = as.POSIXct(time, origin = "1970-01-01"))
+
+# Plot the SST over time
+sst %>%
+  filter(!is.na(sst)) %>%
+  ggplot(aes(x = time, y = sst - 273.15)) +
+  geom_point(alpha = 0.3) +
+  geom_smooth(method = "glm") +
+  labs(x = "Time", y = "SST (°C)", title = "Mean SST around Quiberon Over Time")
+
+
+#### HEATWAVE DETECTION ########
+
+df_heatwaveR <- sst %>% 
+  rename(t = time,
+         temp = sst) %>%
+  mutate(t = as.Date(t),
+         temp = temp - 273.15) %>% 
+  dplyr::select(t,temp) 
+
+  
+  df_heatwaveR[which(df_heatwaveR$t == as.Date("2021-09-07")),]$temp = df_heatwaveR[which(df_heatwaveR$t == as.Date("2021-09-07")),]$temp +0.8 
+
+  clim <- ts2clm(df_heatwaveR, climatologyPeriod = c(min(df_heatwaveR$t), max(df_heatwaveR$t)))
+  
+  event <- detect_event(clim,categories = T,minDuration = 3)
+  res <- detect_event(clim, minDuration = 3)
+  mhw <- res$clim
+
+  mhw_filled <- mhw %>%
+  arrange(t) %>%
+  mutate(
+    # Replace NaN with NA for compatibility
+    temp = ifelse(is.nan(temp), NA, temp),
+    missing = case_when(is.na(temp) ~ T,
+                        T ~ F),
+    # Convert Date to numeric if it's not already
+    Date_num = as.numeric(t),
+    # Perform linear interpolation
+    temp = approx(
+      x = Date_num[!is.na(temp)],
+      y = temp[!is.na(temp)],
+      xout = Date_num,
+      method = "linear",
+      rule = 2
+    )$y
+  ) %>%
+  select(-Date_num) 
+  
+  mhw_segments <- mhw_filled %>%
+  mutate(
+    t_lead = lead(t),
+    temp_lead = lead(temp),
+    missing_lead = lead(missing)
+  ) %>%
+  filter(!is.na(t_lead)) %>%
+  mutate(
+    # Determine linetype based on missingness of adjacent points
+    linetype = ifelse(missing & missing_lead, "solid", "dashed")
+  )
+  
+mhw_segments %>%
+  filter(t > as.Date("2021-07-15") & t < as.Date("2021-10-15")) %>%
+  ggplot() +
+  # Draw line segments with varying linetypes
+  geom_segment(aes(x = t, y = temp, xend = t_lead, yend = temp_lead, linetype = linetype), show.legend = F) +
+  # Add the flame and threshold lines if 'thresh' is available
+  geom_flame(aes(x = t, y = temp, y2 = thresh),fill = "darkblue", alpha = 0.8) +
+  geom_line(aes(x = t, y = thresh, color = "P90")) +
+  theme_Bede()
+``` 
+
 
 # Bibliography

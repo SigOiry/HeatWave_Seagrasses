@@ -11,7 +11,7 @@
     <meta name="author" content="Augustin Debly">
     <meta name="author" content="Pierre Gernez">
     <meta name="author" content="Laurent Barillé">
-    <meta name="dcterms.date" content="2024-10-16">
+    <meta name="dcterms.date" content="2024-10-17">
     <meta name="keywords" content="Remote Sensing, Pigment Composition, Seagrass, Coastal Ecosystems, Heatwaves">
 
     <title>Draft – Effect of Atmospheric Heatwaves on Reflectance and Pigment Composition of Intertidal Nanozostera noltei – Draft</title>
@@ -203,12 +203,13 @@
 <meta name="citation_author" content="Augustin Debly">
 <meta name="citation_author" content="Pierre Gernez">
 <meta name="citation_author" content="Laurent Barillé">
-<meta name="citation_publication_date" content="2024-10-16">
-<meta name="citation_cover_date" content="2024-10-16">
+<meta name="citation_publication_date" content="2024-10-17">
+<meta name="citation_cover_date" content="2024-10-17">
 <meta name="citation_year" content="2024">
-<meta name="citation_online_date" content="2024-10-16">
+<meta name="citation_online_date" content="2024-10-17">
 <meta name="citation_language" content="en">
 <meta name="citation_journal_title" content="Remote Sensing of Environment">
+<meta name="citation_reference" content="citation_title=European North West Shelf/Iberia Biscay Irish Seas – High Resolution ODYSSEA Sea Surface Temperature Multi-sensor L3 Observations Reprocessed, E.U. Copernicus Marine Service Information (CMEMS). Marine Data Store (MDS). (Accecced on 17-10-2024);,citation_author=undefined CMEMS;,citation_publication_date=2024;,citation_cover_date=2024;,citation_year=2024;,citation_doi=10.48670/moi-00311;">
 <meta name="citation_reference" content="citation_title=The role of herbivory in structuring tropical seagrass ecosystem service delivery;,citation_author=Abigail L Scott;,citation_author=Paul H York;,citation_author=Clare Duncan;,citation_author=Peter I Macreadie;,citation_author=Rod M Connolly;,citation_author=Megan T Ellis;,citation_author=Jessie C Jarvis;,citation_author=Kristin I Jinks;,citation_author=Helene Marsh;,citation_author=Michael A Rasheed;,citation_publication_date=2018;,citation_cover_date=2018;,citation_year=2018;,citation_volume=9;,citation_journal_title=Frontiers in Plant Science;,citation_publisher=Frontiers Media SA;">
 <meta name="citation_reference" content="citation_title=Seagrass Ecosystems of Andaman and Nicobar Islands: Status and Future Perspective.;,citation_author=Chatragadda Ramesh;,citation_author=Raju Mohanraju;,citation_publication_date=2020;,citation_cover_date=2020;,citation_year=2020;,citation_issue=4;,citation_volume=7;,citation_journal_title=Environmental &amp;amp;amp; Earth Sciences Research Journal;">
 <meta name="citation_reference" content="citation_title=The planetary role of seagrass conservation;,citation_author=Richard KF Unsworth;,citation_author=Leanne C Cullen-Unsworth;,citation_author=Benjamin LH Jones;,citation_author=Richard J Lilley;,citation_publication_date=2022;,citation_cover_date=2022;,citation_year=2022;,citation_issue=6606;,citation_volume=377;,citation_journal_title=Science;,citation_publisher=American Association for the Advancement of Science;">
@@ -316,7 +317,7 @@
                 <div>
             <div class="quarto-title-meta-heading">Published</div>
             <div class="quarto-title-meta-contents">
-              <p class="date">October 16, 2024</p>
+              <p class="date">October 17, 2024</p>
             </div>
           </div>
           
@@ -390,7 +391,7 @@
 </section>
 <section id="water-temperature" class="level3" data-number="2.1.2">
 <h3 data-number="2.1.2" class="anchored" data-anchor-id="water-temperature"><span class="header-section-number">2.1.2</span> Water temperature</h3>
-<p>https://doi.org/10.48670/moi-00311</p>
+<p><span class="citation" data-cites="CMEMS_1">(<a href="#ref-CMEMS_1" role="doc-biblioref">CMEMS, 2024</a>)</span></p>
 <div class="cell-container"><div class="cell-decorator"><pre>In [1]:</pre></div><div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(terra)</span>
@@ -453,7 +454,7 @@
 <span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>  mhw <span class="ot">&lt;-</span> res<span class="sc">$</span>clim</span>
 <span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>  mhw <span class="sc">%&gt;%</span></span>
-<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(t<span class="sc">&gt;</span> <span class="fu">as.Date</span>(<span class="st">"2018-05-15"</span>) <span class="sc">&amp;</span> t <span class="sc">&lt;</span> <span class="fu">as.Date</span>(<span class="st">"2018-10-15"</span>) ) <span class="sc">%&gt;%</span></span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(t<span class="sc">&gt;</span> <span class="fu">as.Date</span>(<span class="st">"2021-07-15"</span>) <span class="sc">&amp;</span> t <span class="sc">&lt;</span> <span class="fu">as.Date</span>(<span class="st">"2021-10-15"</span>) ) <span class="sc">%&gt;%</span></span>
 <span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> t, <span class="at">y =</span> temp))<span class="sc">+</span></span>
 <span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span></span>
 <span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>()<span class="sc">+</span></span>
@@ -819,6 +820,9 @@ Akbar, M., Arisanto, P., Sukirno, B., Merdeka, P., Priadhi, M., Zallesa, S., 202
 </div>
 <div id="ref-carlan2020identifying" class="csl-entry" role="listitem">
 Cârlan, I., Mihai, B.-A., Nistor, C., Große-Stoltenberg, A., 2020. Identifying urban vegetation stress factors based on open access remote sensing imagery and field observations. Ecological Informatics 55, 101032.
+</div>
+<div id="ref-CMEMS_1" class="csl-entry" role="listitem">
+CMEMS, 2024. European north west shelf/iberia biscay irish seas – high resolution ODYSSEA sea surface temperature multi-sensor L3 observations reprocessed, e.u. Copernicus marine service information (CMEMS). Marine data store (MDS). (Accecced on 17-10-2024). <a href="https://doi.org/10.48670/moi-00311">https://doi.org/10.48670/moi-00311</a>
 </div>
 <div id="ref-deguette2022physiological" class="csl-entry" role="listitem">
 Deguette, A., Barrote, I., Silva, J., 2022. Physiological and morphological effects of a marine heatwave on the seagrass cymodocea nodosa. Scientific Reports 12, 7950.
@@ -1317,7 +1321,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script>  </div> <!-- /content -->  <script>var lightboxQuarto = GLightbox({"openEffect":"zoom","closeEffect":"zoom","loop":false,"selector":".lightbox","descPosition":"bottom"});
+</script>  </div> <!-- /content -->  <script>var lightboxQuarto = GLightbox({"descPosition":"bottom","openEffect":"zoom","selector":".lightbox","loop":false,"closeEffect":"zoom"});
 (function() {
   let previousOnload = window.onload;
   window.onload = () => {
