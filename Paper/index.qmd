@@ -134,21 +134,7 @@ if(!file.exists("Data/Biolittoral/Bio-Littoral_Drone/Quadrat_metadata.csv")){
     image_list$lon[i] <- lon_B
   } 
  
- write.csv(imagelist, "Data/Biolittoral/Bio-Littoral_Drone/Quadrat_metadata.csv", row.names = F)
-}else{
-  image_list <- read.csv("Data/Biolittoral/Bio-Littoral_Drone/Quadrat_metadata.csv") %>% 
-    as_tibble()
-}
-
-```
-
-```{r shiny app quadrat images}
-
-library(shiny)
-
-
-# Initialize 'Target_types' column if not already present
-if (!"Target_types" %in% colnames(image_list)) {
+ if (!"Target_types" %in% colnames(image_list)) {
   image_list$Target_types <- NA
 }
 
@@ -235,6 +221,22 @@ server <- function(input, output, session) {
 }
 
 shinyApp(ui = ui, server = server)
+ 
+ write.csv(image_list, "Data/Biolittoral/Bio-Littoral_Drone/Quadrat_metadata.csv", row.names = F)
+}else{
+  image_list <- read.csv("Data/Biolittoral/Bio-Littoral_Drone/Quadrat_metadata.csv") %>% 
+    as_tibble()
+}
+
+```
+
+```{r shiny app quadrat images}
+
+library(shiny)
+
+
+# Initialize 'Target_types' column if not already present
+
 
 
 ```
