@@ -3,8 +3,8 @@
 .RData
 .Ruserdata
 
-Data/MeteoFrance/10km/**
-Data/Biolittoral/Bio-Littoral_Drone/**
+Data/MeteoFrance/10km/*
+Data/Biolittoral/Bio-Littoral_Drone/*
 
-!Data/Biolittoral/Bio-Littoral_Drone/OFB2021_Quadrat_Zost_QBR
-!Data/Biolittoral/Bio-Littoral_Drone/reprocessed_Simon
+!Data/Biolittoral/Bio-Littoral_Drone/OFB2021_Quadrat_Zost_QBR/
+!Data/Biolittoral/Bio-Littoral_Drone/reprocessed_Simon/
