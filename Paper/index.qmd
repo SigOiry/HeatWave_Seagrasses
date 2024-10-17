@@ -113,9 +113,9 @@ Bleaching and browning events of seagrass beds have been observed following epis
 
 library(tidyverse)
 library(exiftoolr)
+library(shiny)
 
-if(!file.exists("Data/Biolittoral/Bio-Littoral_Drone/Quadrat_metadata.csv")){
- image_list <- list.files("Data/Biolittoral/Bio-Littoral_Drone/OFB2021_Quadrat_Zost_QBR", recursive = T, full.names = T) %>% 
+image_list <- list.files("Data/Biolittoral/Bio-Littoral_Drone/OFB2021_Quadrat_Zost_QBR", recursive = T, full.names = T) %>% 
   as_tibble() %>% 
   dplyr::rename(path = "value") %>% 
   dplyr::mutate(filename = gsub(".*/","",path),
@@ -222,28 +222,25 @@ server <- function(input, output, session) {
 
 shinyApp(ui = ui, server = server)
  
- write.csv(image_list, "Data/Biolittoral/Bio-Littoral_Drone/Quadrat_metadata.csv", row.names = F)
-}else{
-  image_list <- read.csv("Data/Biolittoral/Bio-Littoral_Drone/Quadrat_metadata.csv") %>% 
+write.csv(image_list, "Data/Biolittoral/Bio-Littoral_Drone/Quadrat_metadata.csv", row.names = F)
+
+
+```
+
+```{r img_list_text}
+#| cache: true
+#| echo: false
+#| eval: true
+#| warning: false
+
+image_list <- read.csv("../Data/Biolittoral/Bio-Littoral_Drone/Quadrat_metadata.csv") %>% 
     as_tibble()
-}
-
-```
-
-```{r shiny app quadrat images}
-
-library(shiny)
-
-
-# Initialize 'Target_types' column if not already present
-
-
 
 ```
 
 
 
-A fieldtrip, aiming to map a seagrass meadow near Quiberon (France : 46°57'32.0"N, 2°10'37.0"W), occurred in the 10th of September 2021. During this fieldtrip, bleaching of seagrasses have been observed, resulting in the darkening of seagrass leaves over large area of the meadow. During this fieldtrip, drone flight have been performed over two areas of the meadow, using a DJI Matrice 200 carrying a Sequoia Mutlispectral camera. The Sequoia have a total of 4 spectral bands : Green (550 ± 40 nm), Red (660 ± 40 nm), RedEdge (735 ± 10 nm) and Near Infrared (790 ± 40 nm). A total of `r nrow(imagelist)` Ground Control Points (GCP) in the form of georeferenced quadrats pictures have been captured all over the meadow. This allows to determine the type of vegetation, the density and the health status of it visually. Those images have then been splitted in two separate groups : Healthy seagrasses and Bleached seagrasses. This splitting have been performed by visual estimation of the status of the leaf. 
+A fieldtrip, aiming to map a seagrass meadow near Quiberon (France : 46°57'32.0"N, 2°10'37.0"W), occurred in the 10th of September 2021. During this fieldtrip, bleaching of seagrasses have been observed, resulting in the darkening of seagrass leaves over large area of the meadow. During this fieldtrip, drone flight have been performed over two areas of the meadow, using a DJI Matrice 200 carrying a Sequoia Mutlispectral camera. The Sequoia have a total of 4 spectral bands : Green (550 ± 40 nm), Red (660 ± 40 nm), RedEdge (735 ± 10 nm) and Near Infrared (790 ± 40 nm). A total of `r nrow(image_list)` Ground Control Points (GCP) in the form of georeferenced quadrats pictures have been captured all over the meadow. This allows to determine the type of vegetation, the density and the health status of it visually. Those images have then been splitted in two separate groups : Healthy seagrasses and Bleached seagrasses. This splitting have been performed by visual estimation of the status of the leaf. 
 
 ### Air temperature
 
