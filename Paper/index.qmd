@@ -238,9 +238,269 @@ image_list <- read.csv("../Data/Biolittoral/Bio-Littoral_Drone/Quadrat_metadata.
 
 ```
 
+```{r Sites Quiberon}
+#| cache: true
+#| echo: false
+#| eval: false
+#| warning: false
+
+library(tidyverse)
+library(sf)
+library(terra)
+library(MapRs)
+library(nngeo)
+library(smoothr)
+library(rnaturalearth) 
+library(rnaturalearthdata) 
+
+quadrat_sf <- image_list %>% 
+  st_as_sf(coords = c("lon", "lat"), crs = 4326) %>% 
+  mutate(Target_types = case_when(str_detect(Target_types,"Mix") ~ "Other",
+                                  str_detect(Target_types,"Healthy") ~ "Healthy_seagrass",
+                                  str_detect(Target_types,"Bleached") ~ "Bleached_seagrass",
+                                  T ~ "Other")) %>% 
+  dplyr::filter(Target_types %in% c("Bleached_seagrass","Healthy_seagrass"))# Assuming your data is in WGS84 (EPSG: 4326)
 
 
-A fieldtrip, aiming to map a seagrass meadow near Quiberon (France : 46°57'32.0"N, 2°10'37.0"W), occurred in the 10th of September 2021. During this fieldtrip, bleaching of seagrasses have been observed, resulting in the darkening of seagrass leaves over large area of the meadow. During this fieldtrip, drone flight have been performed over two areas of the meadow, using a DJI Matrice 200 carrying a Sequoia Mutlispectral camera. The Sequoia have a total of 4 spectral bands : Green (550 ± 40 nm), Red (660 ± 40 nm), RedEdge (735 ± 10 nm) and Near Infrared (790 ± 40 nm). A total of `r nrow(image_list)` Ground Control Points (GCP) in the form of georeferenced quadrats pictures have been captured all over the meadow. This allows to determine the type of vegetation, the density and the health status of it visually. Those images have then been splitted in two separate groups : Healthy seagrasses and Bleached seagrasses. This splitting have been performed by visual estimation of the status of the leaf. 
+Drone_flight_area <- "Data/shp/Flight_area_drone.shp" %>% 
+  read_sf()
+######  Intertidal mask computing ######
+
+lon_min <- -3.15
+lon_max <- -3.07
+lat_min <- 47.54
+lat_max <- 47.6
+
+poly <- data.frame(
+  x = c(lon_min,lon_max,lon_max,lon_min),
+  y = c(lat_max,lat_max,lat_min,lat_min),
+  id = c(1,1,1,1)
+)
+
+
+# Ensure the polygon is closed by adding the first point at the end if necessary
+if (!all(poly[1, c("x", "y")] == poly[nrow(poly), c("x", "y")])) {
+  poly <- rbind(poly, poly[1, ])
+}
+
+# Create a matrix of coordinates
+coords <- as.matrix(poly[, c("x", "y")])
+
+# Create a list of coordinate matrices (required by st_polygon)
+polygon_list <- list(coords)
+
+# Create an 'sfc' (simple features geometry list column) object with the appropriate CRS
+polygon_sfc <- st_sfc(st_polygon(polygon_list), crs = 4326) %>% 
+  st_transform(32630)
+  # CRS 4326 corresponds to WGS84
+
+# Combine the 'id' with the geometry to create an 'sf' object
+poly_sf <- st_sf(id = unique(poly$id), geometry = polygon_sfc)
+
+
+Low_Tide <- "Data/Sentinel2/S2B_MSIL2A_20230903T110629_N0509_R137_T30TVT_20230903T125637.SAFE" %>% 
+  list.files(pattern = ".jp2", recursive = T, full.names = T) %>% 
+  as_tibble() %>% 
+  rename(path = "value") %>% 
+  dplyr::filter(str_detect(path, "10m"))
+
+High_Tide <- "Data/Sentinel2/S2B_MSIL2A_20240503T112119_N0510_R037_T30TVT_20240503T130006.SAFE" %>% 
+  list.files(pattern = ".jp2", recursive = T, full.names = T) %>% 
+  as_tibble() %>% 
+  rename(path = "value") %>% 
+  dplyr::filter(str_detect(path, "10m"))
+
+RGB_High <- rast(High_Tide$path[6]) %>% 
+  crop(poly_sf)
+RGB_Low <- rast(Low_Tide$path[6]) %>% 
+  crop(poly_sf)
+
+RGB(RGB_High) <- 1:3
+RGB(RGB_Low) <- 1:3
+
+NDVI_comp <- function(df,mask){
+  
+  B4 <- (rast(df$path[4])-1000) %>% 
+    crop(mask)
+  B8 <- (rast(df$path[5])-1000) %>% 
+    crop(mask)
+  
+  ndvi = (B8-B4)/(B8+B4)
+  return(ndvi)
+}
+
+ NDVI_High<- NDVI_comp(High_Tide,poly_sf)
+ NDVI_Low<- NDVI_comp(Low_Tide,poly_sf)
+ 
+ 
+int_mask <- NDVI_High < -0.05 & NDVI_Low > 0.05
+
+values(int_mask)[values(int_mask) == F] <- NA
+
+mask_sf <- as.polygons(int_mask) %>% 
+  st_as_sf() %>% 
+  st_cast("POLYGON") %>% 
+  mutate(area = st_area(geometry)) %>% 
+  dplyr::filter(as.numeric(area) > 6500) %>% 
+  nngeo::st_remove_holes() %>% 
+  smoothr::smooth(method = "ksmooth", smoothness = 3)
+  
+plot(mask_sf)
+
+
+########## Geomgrob ##################"
+
+sovereignty10 <- ne_countries(scale = 10, returnclass = "sf")
+
+world_map <- sovereignty10 %>% 
+  st_as_sf() %>% 
+  dplyr::filter(sovereignt%in%c("Spain","France","Portugal",
+                                "Italy","Andorra",
+                                "United Kingdom",
+                                "Switzerland","Belgium",
+                                "Germany","Luxembourg") ) 
+
+bbox_europe <- st_bbox(c(xmin = -20, ymin = 34,
+                         xmax = 20, ymax = 55) ,
+                       crs = st_crs(world_map) ) 
+
+world_map<-st_make_valid(world_map) 
+
+european_union_map_cropped <- st_crop(world_map, bbox_europe)  %>% 
+  st_transform("+proj=laea +lat_0=52 +lon_0=10 +x_0=4321000 +y_0=3210000 +ellps=GRS80 +units=m +no_defs ")  
+
+
+UnitedKingdom<-sovereignty10 %>% 
+  st_as_sf() %>% 
+  dplyr::filter(sovereignt%in%c("United Kingdom") ) %>% 
+  st_cast("POLYGON") 
+
+bbox_UK <- st_bbox(c(xmin = -20, ymin = 45,
+                         xmax = 20, ymax = 55) ,
+                       crs = st_crs(UnitedKingdom) ) 
+
+UnitedKingdom<-st_make_valid(UnitedKingdom) 
+
+UK_map_cropped <- st_crop(UnitedKingdom, bbox_UK)  %>% 
+  st_transform("+proj=laea +lat_0=52 +lon_0=10 +x_0=4321000 +y_0=3210000 +ellps=GRS80 +units=m +no_defs ") 
+
+Europe_sf<-european_union_map_cropped %>% 
+  dplyr::bind_rows(UK_map_cropped) 
+
+Miniworld_map <- sovereignty10 %>% 
+  st_as_sf()
+
+sf_use_s2(FALSE)
+
+bbox_EU <- st_bbox(c(xmin = -30, ymin = 20,
+                         xmax = 50, ymax = 70) ,
+                       crs = st_crs(Miniworld_map) ) 
+
+MiniEU_map<-st_crop(Miniworld_map, bbox_EU)  %>% 
+  st_transform("+proj=laea +lat_0=52 +lon_0=10 +x_0=4321000 +y_0=3210000 +ellps=GRS80 +units=m +no_defs ")  
+
+
+scaleFUN <- function(x) paste0(sprintf("%.2f", x),"°N")
+  
+Quiberon_Location <- data.frame(
+  lon = mean(c(lon_max,lon_min)),
+  lat = mean(c(lat_max,lat_min)),
+  ID = "Quiberon",
+  Site = " baie de Plouharnel"
+) %>% 
+  st_as_sf(coords=c("lon","lat") )  %>% 
+  st_set_crs("EPSG:4326") %>% 
+  st_transform("+proj=laea +lat_0=52 +lon_0=10 +x_0=4321000 +y_0=3210000 +ellps=GRS80 +units=m +no_defs ")  %>% 
+  dplyr::mutate(lon = sf::st_coordinates(.) [,1],
+                lat = sf::st_coordinates(.) [,2]) %>% 
+  sf::st_set_geometry(NULL)
+
+
+p1  <-
+  ggplot(MiniEU_map) +
+  geom_sf(linewidth=0.5,alpha=0.93,
+          fill="#CFCFCF",colour="grey30")+
+    ggforce::geom_mark_ellipse(data=Quiberon_Location,
+                 aes(x=lon,
+                     y=lat,
+                     label = ID
+                     # description=Site
+                     ) ,
+                 linewidth=0.3,
+                 fill="goldenrod",
+                 show.legend=F,
+                 label.hjust = 0.5,
+                 con.size = 2,
+                 con.colour = "goldenrod4",
+                 label.fontsize = c(15),
+                 alpha=0.8,
+                 expand = unit(2, "mm") , 
+                 radius = unit(2, "mm") , 
+                 label.buffer = unit(5, "mm") ,
+                 label.fill = "grey90")+
+  coord_sf(xlim=c(2600000,4100000) ,
+          ylim=c(1600000,3100000))+
+  theme_Bede_Map()+
+  labs(x="Longitude",
+       y="Latitude")+
+  scale_y_continuous(labels=scaleFUN)+
+  theme(plot.margin = unit(c(0.0,0.0,0.0,0.0), "cm"),
+        axis.title = element_blank(),
+        plot.background = element_rect(fill = "slategray3"),
+        axis.ticks = element_blank(),
+        panel.grid.major = element_blank(),
+        # axis.text.x = element_text(size = 20),
+        # axis.text.y = element_text(size = 20) 
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank() 
+        )
+
+col_sf <- c("Bleached_seagrass" = "darkred", 
+            "Healthy_seagrass" = "darkgreen"
+            # "Other" = "grey"
+            )
+
+p2 <- ggplot() +
+  tidyterra::geom_spatraster_rgb(data = RGB_Low, alpha = 0.5) +
+  geom_sf(data = mask_sf, aes(fill = "Mask"), color = "grey20", linewidth = 0.5) +
+  geom_sf(data = Drone_flight_area, aes(fill = "Drone_Flight_Area"), color = "grey0", size = 2.2, linewidth = 0.5) +
+  geom_sf(data = quadrat_sf, aes(color = Target_types), size = 2.1) +
+  scale_color_manual(
+    values = col_sf,
+    labels = c("Blackened seagrasses", "Healthy seagrasses", "Other"),
+    name = "Quadrats pictures"
+  ) +
+  scale_fill_manual(
+    values = c("Mask" = "grey90", "Drone_Flight_Area" = "grey70"),
+    labels = c("Drone Flight", "Intertidal area"),
+    name = NULL
+  ) +
+  coord_sf(expand = F) +
+  theme_Bede_Map() +
+  guides(
+    fill = guide_legend(order = 2),  # Merge the fill legend
+    color = guide_legend(order = 1)  # Merge the color legend
+  ) +
+  theme(
+    legend.background = element_rect(fill = alpha("white", 0.5)),
+    axis.text.x = element_text(size = 10),
+    axis.text.y = element_text(size = 10),
+
+    legend.box = "vertical",  # Combine legends into one block
+    legend.spacing.y = unit(0.0, 'mm')  # Optional: Change to "right", "bottom", etc., as needed
+  )
+
+
+combined_plot <- ggdraw() +
+  draw_plot(p2) +                    # Main plot
+  draw_plot(p1, x = 0.65, y = 0.05,   # p1 inset (bottom right)
+            width = 0.3, height = 0.3)
+
+ggsave("Paper/Figs/Quiberon_map.png", combined_plot, width = 10, height = 10, dpi = 800)
+
+```
+
+A fieldtrip, aiming to map a seagrass meadow near Quiberon (France : 46°57'32.0"N, 2°10'37.0"W), occurred in the 10th of September 2021. During this fieldtrip, bleaching of seagrasses have been observed, resulting in the darkening of seagrass leaves over large area of the meadow. During this field trip, drone flights were conducted over two areas of the seagrass meadow using a DJI Matrice 200 equipped with a Sequoia Multispectral camera. The Sequoia captures four spectral bands: Green (550 ± 40 nm), Red (660 ± 40 nm), RedEdge (735 ± 10 nm), and Near Infrared (790 ± 40 nm). A total of `r nrow(image_list)` Ground Control Points (GCPs) were collected in the form of georeferenced quadrat images across the meadow. These images allow for visual assessment of vegetation type, density, and health status. The images were then divided into two categories: Healthy seagrasses and Bleached seagrasses, based on a visual estimation of the leaf condition.
 
 ### Air temperature
 
