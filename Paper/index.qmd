@@ -89,6 +89,16 @@ editor_options:
 csl: RSE.csl
 ---
 
+```{r library}
+#| cache: true
+#| echo: false
+#| eval: true
+#| warning: false
+
+library(tidyverse)
+```
+
+
 # Introduction
 
 Intertidal seagrasses play a crucial role in the ecosystem by providing habitats and feeding grounds for various marine species, supporting rich marine biodiversity, and contributing significantly to primary production and carbon sequestration [@unsworth2022planetary ; @sousa2019blue]. These seagrasses are essential in maintaining the health of coastal ecosystems by stabilizing sediments, filtering water, and serving as indicators of environmental changes due to their sensitivity to water quality variations [@zoffoli2021decadal]. The interactions between seagrass meadows and their associated herbivores further enhance the delivery of ecosystem services, including coastal protection and fisheries support [@jankowska2019stabilizing ; @zoffoli2023remote ; @gardner2018global]. Understanding and preserving these ecosystems are vital for maintaining the biodiversity and productivity of coastal regions [@scott2018role ; @ramesh2020seagrass].
@@ -426,17 +436,17 @@ p1  <-
                      label = ID
                      # description=Site
                      ) ,
-                 linewidth=0.3,
+                 linewidth=0.2,
                  fill="goldenrod",
                  show.legend=F,
-                 label.hjust = 0.5,
-                 con.size = 2,
+                 label.hjust = 0.3,
+                 con.size = 1,
                  con.colour = "goldenrod4",
-                 label.fontsize = c(15),
+                 label.fontsize = c(12),
                  alpha=0.8,
-                 expand = unit(2, "mm") , 
-                 radius = unit(2, "mm") , 
-                 label.buffer = unit(5, "mm") ,
+                 expand = unit(1.5, "mm") , 
+                 radius = unit(1.5, "mm") , 
+                 label.buffer = unit(4, "mm") ,
                  label.fill = "grey90")+
   coord_sf(xlim=c(2600000,4100000) ,
           ylim=c(1600000,3100000))+
@@ -444,52 +454,81 @@ p1  <-
   labs(x="Longitude",
        y="Latitude")+
   scale_y_continuous(labels=scaleFUN)+
-  theme(plot.margin = unit(c(0.0,0.0,0.0,0.0), "cm"),
-        axis.title = element_blank(),
-        plot.background = element_rect(fill = "slategray3"),
-        axis.ticks = element_blank(),
-        panel.grid.major = element_blank(),
-        # axis.text.x = element_text(size = 20),
-        # axis.text.y = element_text(size = 20) 
-        axis.text.x = element_blank(),
-        axis.text.y = element_blank() 
-        )
+  # theme(plot.margin = unit(c(0.0,0.0,0.0,0.0), "cm"),
+  #       axis.title = element_blank(),
+  #       axis.ticks = element_blank(),
+  #       panel.grid.major = element_blank(),
+  #       # axis.text.x = element_text(size = 20),
+  #       # axis.text.y = element_text(size = 20) 
+  #       axis.text.x = element_blank(),
+  #       axis.text.y = element_blank() 
+  #       )+
+  theme_void()+
+  theme(plot.background = element_rect(fill = "slategray3"))
 
 col_sf <- c("Bleached_seagrass" = "darkred", 
             "Healthy_seagrass" = "darkgreen"
             # "Other" = "grey"
             )
 
+# Extract x and y ranges
+xlim <- c(lon_min, lon_max)
+ylim <- c(lat_min, lat_max)
+
+# Compute the coordinates for the rectangle (25% to 75% of the ranges)
+xleft   <- xlim[1] + 0.745 * diff(xlim)
+xright  <- xlim[1] + 0.99 * diff(xlim)
+ybottom <- ylim[1] + 0.854 * diff(ylim)
+ytop    <- ylim[1] + 0.975 * diff(ylim)
+
+# Create a rectangle as an sf polygon
+rectangle_coords <- matrix(c(
+  xleft,  ybottom,
+  xleft,  ytop,
+  xright, ytop,
+  xright, ybottom,
+  xleft,  ybottom  # Close the polygon by repeating the first point
+), ncol = 2, byrow = TRUE)
+
+rectangle_sf <- st_polygon(list(rectangle_coords)) %>%
+  st_sfc(crs = st_crs("EPSG:4326")) %>%
+    st_transform("+proj=laea +lat_0=52 +lon_0=10 +x_0=4321000 +y_0=3210000 +ellps=GRS80 +units=m +no_defs ") %>%
+  st_sf()
+
+
 p2 <- ggplot() +
-  tidyterra::geom_spatraster_rgb(data = RGB_Low, alpha = 0.5) +
+  tidyterra::geom_spatraster_rgb(data = RGB_Low) +
   geom_sf(data = mask_sf, aes(fill = "Mask"), color = "grey20", linewidth = 0.5) +
   geom_sf(data = Drone_flight_area, aes(fill = "Drone_Flight_Area"), color = "grey0", size = 2.2, linewidth = 0.5) +
-  geom_sf(data = quadrat_sf, aes(color = Target_types), size = 2.1) +
+  geom_sf(data = quadrat_sf, aes(color = Target_types), size = 2.1)+
+  geom_sf(data = rectangle_sf, fill = "white", alpha = 0.5, color = NA) +
   scale_color_manual(
     values = col_sf,
     labels = c("Blackened seagrasses", "Healthy seagrasses", "Other"),
-    name = "Quadrats pictures"
+    name = NULL
   ) +
   scale_fill_manual(
     values = c("Mask" = "grey90", "Drone_Flight_Area" = "grey70"),
     labels = c("Drone Flight", "Intertidal area"),
-    name = NULL
+    name = NULL  # No title for the fill legend
   ) +
   coord_sf(expand = F) +
   theme_Bede_Map() +
   guides(
-    fill = guide_legend(order = 2),  # Merge the fill legend
-    color = guide_legend(order = 1)  # Merge the color legend
+    fill = guide_legend(order = 2),  # Order the fill legend
+    color = guide_legend(order = 1)  # Order the color legend
   ) +
+  labs(fill = NULL, colour = NULL)+
   theme(
-    legend.background = element_rect(fill = alpha("white", 0.5)),
-    axis.text.x = element_text(size = 10),
-    axis.text.y = element_text(size = 10),
+    legend.background = element_rect(fill = alpha("white", 0)),
+    legend.box = "vertical",  # Stack legends vertically
+    legend.box.just = "left",  # Align the legends to the left
+    legend.spacing.y = unit(0.0, 'mm'),  # Adjust the spacing between items
+    legend.key = element_rect(fill = "white", color = "black"),  # Ensure clear legend keys
+    legend.box.margin = margin(5, 5, 5, 5)
+    )  # Adjust position if needed  )
 
-    legend.box = "vertical",  # Combine legends into one block
-    legend.spacing.y = unit(0.0, 'mm')  # Optional: Change to "right", "bottom", etc., as needed
-  )
-
+# p2
 
 combined_plot <- ggdraw() +
   draw_plot(p2) +                    # Main plot
@@ -500,7 +539,21 @@ ggsave("Paper/Figs/Quiberon_map.png", combined_plot, width = 10, height = 10, dp
 
 ```
 
-A fieldtrip, aiming to map a seagrass meadow near Quiberon (France : 46°57'32.0"N, 2°10'37.0"W), occurred in the 10th of September 2021. During this fieldtrip, bleaching of seagrasses have been observed, resulting in the darkening of seagrass leaves over large area of the meadow. During this field trip, drone flights were conducted over two areas of the seagrass meadow using a DJI Matrice 200 equipped with a Sequoia Multispectral camera. The Sequoia captures four spectral bands: Green (550 ± 40 nm), Red (660 ± 40 nm), RedEdge (735 ± 10 nm), and Near Infrared (790 ± 40 nm). A total of `r nrow(image_list)` Ground Control Points (GCPs) were collected in the form of georeferenced quadrat images across the meadow. These images allow for visual assessment of vegetation type, density, and health status. The images were then divided into two categories: Healthy seagrasses and Bleached seagrasses, based on a visual estimation of the leaf condition.
+```{r Fig Site Quiberon Plot}
+#| cache: false
+#| echo: false
+#| warning: false
+#| fig-cap: Location of the fieldtrip campaign that occured in the 10th of September 2021. The light grey polygons indicates the intertidal zone (Zone between High tide and low tide, that is totally emerged at low tide) and the dark grey polygon indicate the extent of the drone flight. Green dots indicate location of quadrat picture over healthy seagrasses while red dots indicate location of quadrat took over darkened seagrasses. 
+#| label: fig-quiberonMap
+#| fig-width: 10
+#| fig-height: 10
+#| out-width: "100%"
+
+knitr::include_graphics("Figs/Quiberon_map.png")
+```
+
+
+A fieldtrip, aiming to map a seagrass meadow near Quiberon (France : 46°57'32.0"N, 2°10'37.0"W), occurred in the 10th of September 2021 [@fig-quiberonMap]. During this fieldtrip, bleaching of seagrasses have been observed, resulting in the darkening of seagrass leaves over large area of the meadow. During this field trip, drone flights were conducted over two areas of the seagrass meadow using a DJI Matrice 200 equipped with a Sequoia Multispectral camera. The Sequoia captures four spectral bands: Green (550 ± 40 nm), Red (660 ± 40 nm), RedEdge (735 ± 10 nm), and Near Infrared (790 ± 40 nm). A total of `r nrow(image_list)` Ground Control Points (GCPs) were collected in the form of georeferenced quadrat images across the meadow . These images allow for visual assessment of vegetation type, density, and health status. The images were then divided into two categories: Healthy seagrasses and darkened seagrasses, based on a visual estimation of the leaf condition [@fig-quiberonMap].
 
 ### Air temperature
 

@@ -143,7 +143,7 @@
 \urlstyle{same} % disable monospaced font for URLs
 \hypersetup{
   pdftitle={Draft -- Effect of Atmospheric Heatwaves on Reflectance and Pigment Composition of Intertidal Nanozostera noltei -- Draft},
-  pdfauthor={Simon Oiry; Bede Ffinian Rowe Davies; Philippe Rosa; Augustin Debly; Pierre Gernez; Laurent Barillé},
+  pdfauthor={Simon Oiry; Bede Ffinian Rowe Davies; Philippe Rosa; Augustin Debly; Anne-Laure Barillé; Nicolas Harrin; Pierre Gernez; Laurent Barillé},
   pdfkeywords={Remote Sensing, Pigment Composition, Seagrass, Coastal
 Ecosystems, Heatwaves},
   colorlinks=true,
@@ -176,6 +176,14 @@ Pigment Composition of Intertidal \emph{Nanozostera noltei} -- Draft}
 %
 }
 
+\author[2]{Anne-Laure Barillé%
+%
+}
+
+\author[2]{Nicolas Harrin%
+%
+}
+
 \author[1]{Pierre Gernez%
 %
 }
@@ -188,8 +196,12 @@ Pigment Composition of Intertidal \emph{Nanozostera noltei} -- Draft}
 \affiliation[1]{organization={Institut des Substances et Organismes de
 la Mer, ISOMer, Nantes Université, UR 2160, F-44000 Nantes,
 France},,postcodesep={}}
+\affiliation[2]{organization={Bio-littoral, Immeuble Le Nevada, 2 Rue du
+Château de l'Eraudière, 44300 Nantes, France},,postcodesep={}}
 
 \cortext[cor1]{Corresponding author}
+
+
 
 
 
@@ -294,8 +306,45 @@ satellite remote sensing.
 
 \section{Material \& Methods}\label{material-methods}
 
-\subsection{Heatwaves detection and
-characterisation}\label{heatwaves-detection-and-characterisation}
+\subsection{\texorpdfstring{Observation of an \emph{in situ} heatwave
+event over a seagrass
+meadow.}{Observation of an in situ heatwave event over a seagrass meadow.}}\label{observation-of-an-in-situ-heatwave-event-over-a-seagrass-meadow.}
+
+\subsubsection{FieldTrip}\label{fieldtrip}
+
+\phantomsection\label{cell-fig-quiberonMap}
+\begin{figure}[H]
+
+\centering{
+
+\includegraphics[width=1\textwidth,height=\textheight]{Figs/Quiberon_map.png}
+
+}
+
+\caption{\label{fig-quiberonMap}Location of the fieldtrip campaign that
+occured in the 10th of September 2021. The light grey polygons indicates
+the intertidal zone (Zone between High tide and low tide, that is
+totally emerged at low tide) and the dark grey polygon indicate the
+extent of the drone flight. Green dots indicate location of quadrat
+picture over healthy seagrasses while red dots indicate location of
+quadrat took over darkened seagrasses.}
+
+\end{figure}%
+
+A fieldtrip, aiming to map a seagrass meadow near Quiberon (France :
+46°57'32.0''N, 2°10'37.0''W), occurred in the 10th of September 2021.
+During this fieldtrip, bleaching of seagrasses have been observed,
+resulting in the darkening of seagrass leaves over large area of the
+meadow. During this field trip, drone flights were conducted over two
+areas of the seagrass meadow using a DJI Matrice 200 equipped with a
+Sequoia Multispectral camera. The Sequoia captures four spectral bands:
+Green (550 ± 40 nm), Red (660 ± 40 nm), RedEdge (735 ± 10 nm), and Near
+Infrared (790 ± 40 nm). A total of 285 Ground Control Points (GCPs) were
+collected in the form of georeferenced quadrat images across the meadow.
+These images allow for visual assessment of vegetation type, density,
+and health status. The images were then divided into two categories:
+Healthy seagrasses and Bleached seagrasses, based on a visual estimation
+of the leaf condition.
 
 \subsubsection{Air temperature}\label{air-temperature}
 
@@ -316,13 +365,24 @@ Heatwave detection was performed using the HeatwaveR package in R
 \citep{hobday2016hierarchical} to detect heatwave events. The
 climatology for the year was computed using the temperature time series.
 An event was considered a heatwave each time the temperature exceeded
-the 90th percentile of the climatology for five consecutive days. The
+the 90th percentile of the climatology for three consecutive days. The
 severity of each event has been assessed using the methodology proposed
 by \citep{hobday2018categorizing}.
 
 \subsubsection{Water temperature}\label{water-temperature}
 
-\citep{CMEMS_1}
+Sea Surface Temperature (SST) data were downloaded from the Copernicus
+CMEMS platform \citep{CMEMS_1} for the French coast, covering the period
+from 1982 to 2022. Only pixels within an area of 2700 km² around
+Quiberon, Brittany, France (47°29′03″N, 3°07′09″W) were extracted and
+analyzed. This area was large enough to minimize missing values caused
+by cloud cover, yet small enough to avoid being influenced by the
+stability of offshore SST. After the masking step, a daily average of
+the remaining pixels was calculated, resulting in a daily mean SST value
+for the entire time series. Using this daily average since 1982, the SST
+climatology was computed with the HeatwaveR package in R
+\citep{heatwaveR}. The same methodology used to detect air temperature
+events was applied to identify SST events.
 
 \subsection{Experiment}\label{experiment}
 
@@ -331,7 +391,7 @@ seagrasses}\label{sampling-and-acclimation-of-seagrasses}
 
 Seagrass was sampled from a \emph{Nanozostera noltei} (dwarf eelgrass,
 syn. \emph{Zostera noltei}) meadow on Noirmoutier Island, France
-(46°57'32.0''N 2°10'37.0''W) at low tide in June 2024. A home-made inox
+(46°57'32.0''N, 2°10'37.0''W) at low tide in June 2024. A home-made inox
 sampling box was used to sample seagrass from an area of 30 cm by 15 cm
 and 5 cm deep, maintaining the sediment structure and avoiding damage to
 the rhizomes and the leafs of the seagrass (Figure~\ref{fig-design} A).
@@ -517,6 +577,8 @@ photodiode array detector (2998 PDA) and a fluorimeter (Ex: 425 nm, Em:
 655 nm; RF-20A, SHIMADZU).
 
 \textbf{Au secours Philippe !!!}
+
+\section{Results}\label{results}
 
 
 \renewcommand\refname{Bibliography}
