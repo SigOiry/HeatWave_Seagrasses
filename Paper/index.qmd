@@ -110,9 +110,8 @@ Bleaching and darkening events of seagrass beds have been observed following epi
 
 # Material & Methods
 
-## *in situ* observation of seagrass leaves darkening.
-
-### Field campaign
+## Observation of seagrass leaves darkening.
+### Field Observation
 
 ```{r filedtrip Quadrats}
 #| cache: true
@@ -534,7 +533,7 @@ combined_plot <- ggdraw() +
   draw_plot(p1, x = 0.65, y = 0.05,   # p1 inset (bottom right)
             width = 0.3, height = 0.3)
 
-ggsave("Paper/Figs/Quiberon_map.png", combined_plot, width = 10, height = 10, dpi = 800)
+ggsave("Paper/Figs/High_res/Quiberon_map.png", combined_plot, width = 10, height = 10, dpi = 800)
 
 ```
 
@@ -548,7 +547,7 @@ ggsave("Paper/Figs/Quiberon_map.png", combined_plot, width = 10, height = 10, dp
 #| fig-height: 10
 #| out-width: "100%"
 
-knitr::include_graphics("Figs/Quiberon_map.png")
+knitr::include_graphics("Figs/Low_res/Quiberon_map.png")
 ```
 
 A fieldtrip, aiming to map a seagrass meadow near Quiberon (France : 46°57'32.0"N, 2°10'37.0"W), occurred in the 10th of September 2021 [@fig-quiberonMap]. During this fieldtrip, darkening of seagrasses have been observed, resulting in the darkening of seagrass leaves over large area of the meadow [@fig-QuiberonImg C & D]. During this field trip, drone flights were conducted over two areas of the seagrass meadow using a DJI Matrice 200 equipped with a Sequoia Multispectral camera. The Sequoia captures four spectral bands: Green (550 ± 40 nm), Red (660 ± 40 nm), RedEdge (735 ± 10 nm), and Near Infrared (790 ± 40 nm). A total of `r nrow(image_list)` Ground Control Points (GCPs) were collected in the form of georeferenced quadrat images across the meadow . These images allow for visual assessment of vegetation type, density, and health status. The images were then divided into two categories: Healthy seagrasses and darkened seagrasses, based on a visual estimation of the leaf condition [@fig-quiberonMap].
@@ -615,7 +614,7 @@ plot <- ggplot()+
         panel.grid.minor=element_blank(), 
         plot.margin = margin(0, 0, 0, 0, "pt"))
 
-ggsave("Paper/Figs/img_Quiberon.png",plot, width = 3.1, height = 2.05, dpi = 800)
+ggsave("Paper/Figs/High_res/img_Quiberon.png",plot, width = 3.1, height = 2.05, dpi = 800)
 
 ```
 
@@ -629,15 +628,21 @@ ggsave("Paper/Figs/img_Quiberon.png",plot, width = 3.1, height = 2.05, dpi = 800
 #| fig-height: 10
 #| out-width: "100%"
 
-knitr::include_graphics("Figs/img_Quiberon.png")
+knitr::include_graphics("Figs/Low_res/img_Quiberon.png")
 ```
+
+### Satellite Observation
+
+Add S2 paragraph. 
 
 ### Temparature Data and identification of heatwaves
 #### Air temperature
 
 Since January 1, 2024, Meteo France weather data has been freely and openly accessible. Hourly air temperature data (°C) for the French Atlantic and Channel coasts was retrieved using a [custom script](https://github.com/SigOiry/HeatWave_Seagrasses/blob/main/Scripts/MeteoFrance_Extraction.qmd) as no API was available at the time of this study. Weather stations located within 10 kilometers of the coastline were considered, but only those with at least 30 years of data were included to ensure reliable climatological reconstruction. Of the 156 weather stations within 10 kilometers of the coast, only 36 had sufficient data for climatology reconstruction. The hourly data was then aggregated into daily mean temperatures for each station.
 
-Heatwave detection was performed using the HeatwaveR package in R [@heatwaveR]. This package utilizes the methodology proposed by @hobday2016hierarchical to detect heatwave events. The climatology for the year was computed using the temperature time series. An event was considered a heatwave each time the temperature exceeded the 90th percentile of the climatology for three consecutive days. The severity of each event has been assessed using the methodology proposed by @hobday2018categorizing.
+Heatwave detection was performed using the HeatwaveR package in R [@heatwaveR]. This package utilizes the methodology proposed by @hobday2016hierarchical to detect heatwave events. The climatology for the year was computed using the temperature time series. An event was considered a heatwave each time the temperature exceeded the 90th percentile of the climatology for three consecutive days. The severity of each event has been assessed using the methodology proposed by @hobday2018categorizing. Following the methodology of @schlegel2017nearshore, coldspell events corresponding to temperature bellow the percentile 10th of the climatology during 3 consecutives days have also been measured. 
+
+Concerning heatwaves event near Quiberon, this methodology has been apply solely on the nearest weather station of our study site (Lorient-Lann Bihoue, 47°45'46"N 3°26'11"W , more than 395000 observation since the 1st of February 1952).
 
 #### Water temperature
 
@@ -769,7 +774,7 @@ plot <- ggplot()+
         panel.grid.minor=element_blank(), 
         plot.margin = margin(0, 0, 0, 0, "pt"))
 
-ggsave("Paper/Figs/Experimental_design.png",plot, width = 3.025, height = 2.975, dpi = 800)
+ggsave("Paper/Figs/High_res/Experimental_design.png",plot, width = 3.025, height = 2.975, dpi = 800)
 
 ```
 
@@ -783,7 +788,7 @@ ggsave("Paper/Figs/Experimental_design.png",plot, width = 3.025, height = 2.975,
 #| fig-height: 10
 #| out-width: "100%"
 
-knitr::include_graphics("Figs/Experimental_design.png")
+knitr::include_graphics("Figs/Low_res/Experimental_design.png")
 ```
 
 Two intertidal chambers from [ElectricBlue](https://electricblue.eu/intertidal-chamber) were used to simulate tidal cycles and control water temperature during high tide and air temperature during low tide (@fig-design B,C). One chamber served as the control, while the other was used for the experimental treatment. The control chamber was maintained at temperatures representative of the typical seasonal conditions: water temperatures between 18°C and 19°C and air temperatures between 18°C and 23°C, following circadian temperature variability (@fig-Profile left). For the experimental treatment, the air temperature was set to mimic an atmospheric heatwave that occurred over the seagrass meadow of Porh Saint-Guénël, Plouharnel, France (47°35'40.0"N, 3°07'30.0"W) from August 26, 2021, to September 6, 2021. On the first day of the experiment, air temperatures in the experimental chamber were set to range from 23°C at night to 35°C during the day, with a daily increase of 1°C. The water temperature in the experimental chamber was similarly adjusted to reflect the heatwave conditions, starting from the normal seasonal range (18°C) and gradually increasing to simulate the rising temperatures experienced during the heatwave (+0.5°C daily). This setup aimed to replicate the thermal stress experienced by the seagrass meadow during the actual heatwave event (@fig-Profile right).
@@ -995,7 +1000,7 @@ plot_control <- df %>%
 
 plt <- plot_control + plot_treatment
 
-ggsave("Paper/Figs/Chamber_Profils.png",plt, height = 874*4, width = 1911*4, unit= "px")
+ggsave("Paper/Figs/High_res/Chamber_Profils.png",plt, height = 874*4, width = 1911*4, unit= "px")
 ```
 
 ```{r Fig Profiles}
@@ -1008,7 +1013,7 @@ ggsave("Paper/Figs/Chamber_Profils.png",plt, height = 874*4, width = 1911*4, uni
 #| fig-height: 8
 #| out-width: "100%"
 
-knitr::include_graphics("Figs/Chamber_Profils.png")
+knitr::include_graphics("Figs/Low_res/Chamber_Profils.png")
 ```
 
 ### Bio-optical measurmenents over seagrass leaves
@@ -1099,7 +1104,7 @@ mean_sst_df$mean_sst_celsius <- mean_sst_df$mean_sst - 273.15
 # Plot the mean SST map
 ggplot() +
   geom_tile(data = mean_sst_df,  mapping = aes(x = lon, y = lat, fill = mean_sst_celsius)) +
-  geom_polygon(data = poly, mapping = aes(x = x, y = y, group = id), alpha = 0.8)+
+  # geom_polygon(data = poly, mapping = aes(x = x, y = y, group = id), alpha = 0.8)+
   scale_fill_viridis_c(option = "inferno") +
   coord_fixed() +
   labs(title = "Mean Sea Surface Temperature", fill = "Temperature (°C)") +
@@ -1124,8 +1129,10 @@ time_data <- ncvar_get(nc, "time")  # Adjust "time" if the name is different
 lon <- ncvar_get(nc, "longitude")  # Adjust "longitude" if the name is different
 lat <- ncvar_get(nc, "latitude")   # Adjust "latitude" if the name is different
 
-
-
+lon_min <- -3.5
+lon_max <- -2.7
+lat_min <- 47.3
+lat_max <- 47.7
 # Adjust longitudes if they are in the range [0, 360]
 if (max(lon) > 180) {
   lon <- ifelse(lon > 180, lon - 360, lon)
@@ -1204,15 +1211,240 @@ df_heatwaveR <- sst %>%
     linetype = ifelse(missing & missing_lead, "solid", "dashed")
   )
   
-mhw_segments %>%
-  filter(t > as.Date("2021-07-15") & t < as.Date("2021-10-15")) %>%
-  ggplot() +
-  # Draw line segments with varying linetypes
-  geom_segment(aes(x = t, y = temp, xend = t_lead, yend = temp_lead, linetype = linetype), show.legend = F) +
-  # Add the flame and threshold lines if 'thresh' is available
-  geom_flame(aes(x = t, y = temp, y2 = thresh),fill = "darkblue", alpha = 0.8) +
-  geom_line(aes(x = t, y = thresh, color = "P90")) +
-  theme_Bede()
+
 ```
+
+```{r Air_processing}
+#| cache: true
+#| echo: false
+#| eval: false
+#| warning: false
+
+df <- list.files("Data/MeteoFrance/RAW/",pattern = "HOR_departement_56_*", full.names = TRUE) %>% 
+  map(read.delim,
+      sep = ";",
+      .progress = TRUE) %>%
+  list_rbind() %>% 
+  dplyr::select(NOM_USUEL, LAT,LON,,AAAAMMJJHH,`T`, TN, TX, T10, T20, T50,T100) %>% 
+  dplyr::filter(!is.na(`T`)) 
+
+station <- df %>% 
+  group_by(NOM_USUEL) %>% 
+  reframe(Lat = unique(LAT),
+          Lon = unique(LON),
+          n_obs = n())
+
+sovereignty10 <- rnaturalearth::ne_countries(scale = 10, returnclass = "sf")
+
+France_shp <- sovereignty10 %>% 
+  st_as_sf() %>% 
+  dplyr::filter(sovereignt%in%c("France")) 
+
+
+bbox_france <- st_bbox(c(xmin = min(station$Lon),
+                         ymin = min(station$Lat),
+                         xmax = max(station$Lon),
+                         ymax = max(station$Lat)),
+                       crs = st_crs(France_shp)) 
+
+France_map_cropped <- France_shp %>% 
+  st_crop(bbox_france) %>%
+  st_make_valid()
+  
+
+station_shp <- station %>% 
+  st_as_sf(coords=c("Lon","Lat") )  %>% 
+  st_set_crs("EPSG:4326") 
+
+ggplot() +
+  geom_sf(data = France_map_cropped,linewidth=0.5,alpha=0.93,
+          fill="#CFCFCF",colour="grey30")+
+  ggforce::geom_mark_ellipse(data=station,
+                 aes(x=Lon,
+                     y=Lat,
+                     label = paste("n: ", n_obs),
+                     description=NOM_USUEL) ,
+                 linewidth=0.2,
+                 fill="goldenrod",
+                 show.legend=F,
+                 label.hjust = 0.2,
+                 con.size = 1,
+                 con.colour = "goldenrod4",
+                 label.fontsize = c(10,12),
+                 alpha=0.8,
+  expand = unit(1, "mm") , 
+  radius = unit(1, "mm") , 
+  label.buffer = unit(1, "mm") ,
+  label.fill = "grey90")
+  
+df_56 <- df %>% 
+  dplyr::filter(str_detect(NOM_USUEL,"BIHOUE"),
+                !is.na(`T`)) %>% 
+  dplyr::select(NOM_USUEL, LAT,LON,,AAAAMMJJHH,`T`, TN, TX, T10, T20, T50,T100) %>% 
+  mutate(date = as.POSIXct(as.character(AAAAMMJJHH), format = "%Y%m%d%H",tz = "UTC"))
+
+
+ggplot(df_56)+
+  geom_line(aes(x = date, y = `T`))
+
+
+df_heatwaveR <- df_56 %>% 
+  rename(t = date,
+         temp = `T`) %>% 
+  dplyr::select(t,temp) %>% 
+  mutate(t = as.Date(t)) %>% 
+  group_by(t) %>% 
+  reframe(temp = max(temp,na.rm = T))
+
+
+
+clim <- ts2clm(df_heatwaveR, climatologyPeriod = c(min(df_heatwaveR$t), max(df_heatwaveR$t)))
+  
+event <- detect_event(clim,categories = T,minDuration = 2)
+  
+res <- detect_event(clim, minDuration = 2)
+mhw_Air<- res$clim
+
+
+
+# img_before <- readPNG("Data/screenshot_S2/Before_event_quiberon.png") %>%
+  # rasterGrob(interpolate=TRUE)
+
+```
+
+```{r Plotting heatwaves}
+#| cache: true
+#| echo: false
+#| eval: false
+#| warning: false
+
+library(ggplot2)
+library(dplyr)
+library(ggpubr)  # For the 'ggarrange' function if needed
+# Ensure you have the necessary packages installed
+
+# Prepare the SST data
+sst_data <- mhw_segments %>%
+  filter(t > as.Date("2021-08-01") & t < as.Date("2021-10-20")) %>%
+  mutate(variable = "SST")
+
+# Prepare the Air data
+air_data <- mhw_Air %>%
+  filter(t > as.Date("2021-08-01") & t < as.Date("2021-10-20")) %>%
+  mutate(variable = "Air")
+
+# Combine the datasets
+combined_data <- bind_rows(sst_data, air_data)
+
+# Create the combined plot with facets
+Combined_plot <- ggplot() +
+  
+  # Plot the SST data
+  geom_segment(
+    data = sst_data,
+    aes(x = t, y = temp, xend = t_lead, yend = temp_lead, linetype = linetype),
+    show.legend = FALSE
+  ) +
+  geom_flame(
+    data = sst_data,
+    aes(x = t, y = temp, y2 = thresh),
+    fill = "darkblue",
+    alpha = 0.5
+  ) +
+  geom_line(
+    data = sst_data,
+    aes(x = t, y = thresh),
+    color = "darkblue"
+  ) +
+  
+  # Plot the Air data
+  geom_line(
+    data = air_data,
+    aes(x = t, y = temp),
+    color = "black"
+  ) +
+  geom_flame(
+    data = air_data,
+    aes(x = t, y = temp, y2 = thresh),
+    fill = "darkred",
+    alpha = 0.5
+  ) +
+  geom_line(
+    data = air_data,
+    aes(x = t, y = thresh),
+    color = "darkred"
+  ) +
+  geom_vline(xintercept = as.Date("2021-09-01"), linetype = "dashed", linewidth = 1)+
+  geom_vline(xintercept = as.Date("2021-09-10"), linetype = "dashed",linewidth = 1)+
+
+  # Facet the plot to stack them vertically
+  facet_grid(variable ~ ., scales = "free_y") +
+  # Add common elements
+  theme_Bede() +
+  ylab("Temperature (°C)") +
+  xlab("Date of 2021") +
+  theme(
+    strip.text.y = element_text(angle = 0),
+    # Remove x-axis elements from the top plot
+    # axis.text.x = element_blank(),
+    # axis.ticks.x = element_blank(),
+    # axis.title.x = element_blank(),
+    # Adjust spacing between facets
+    panel.spacing = unit(0.1, "lines")
+  )
+
+# Display the combined plot
+print(Combined_plot)
+
+ggsave("Paper/Figs/Sat_SST_Air/Temp_plot.jpg",Combined_plot,height = 1058*2, width = 1920 *2, unit = "px")
+
+```
+
+```{r Combine Temp_plot and S2}
+#| cache: true
+#| echo: false
+#| eval: false
+#| warning: false
+
+library(terra)
+library(tidyverse)
+library(tidyterra)
+
+Temp <- rast("Paper/Figs/Sat_SST_Air/Temp_plot.jpg")
+ext(Temp) <- c(0,3840,0,2116)
+
+before <- rast("Data/imgs/S2_BeforeHeatwave.png")
+ext(before) <- c(-251*3.407407,0,100,621*3.407407)
+
+after <- rast("Data/imgs/S2_afterHeatwave.png")
+ext(after) <- c(3840, 3840 + (251*3.407407),100,621*3.407407)
+
+
+all_plot <- ggplot()+
+  geom_spatraster_rgb(data = Temp,maxcell = 500325 * 20)+
+  geom_spatraster_rgb(data = before)+
+  geom_spatraster_rgb(data = after) + 
+  theme_void()+
+    coord_equal()
+
+ggsave("Paper/Figs/High_res/SST_Air_S2.png",all_plot, width = 10, height = 3.81 , dpi = 800, background = "white")
+
+```
+
+```{r Fig Temp_plot_S2}
+#| cache: false
+#| echo: false
+#| warning: false
+#| fig-cap: Visual inspection of the meadow before (left) and after (right) of both marine heatwave and atmospherical heatwave (center). In the center plot, colored lines show 90th percentile of SST (blue) and air temperature (red), while colored polygons represent Marine heatwave (blue) and atmospherical heatwave (red). Darklines represent air temperature (top) and SST (bottom). 
+#| label: fig-Temp_plot_S2
+#| fig-width: 10
+#| fig-height: 3.81
+#| out-width: "100%"
+
+knitr::include_graphics("Figs/Low_res/SST_Air_S2.png")
+```
+
+
+
 
 # Bibliography

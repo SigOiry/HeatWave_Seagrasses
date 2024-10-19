@@ -129,6 +129,7 @@ stations <- df %>%
   st_as_sf(coords=c("lon","lat") )  %>% 
   st_set_crs("EPSG:4326")
 
+write_sf(stations, "Data/shp/meteo_france_weather_station.shp")
 
 m <- leaflet() %>% 
   addTiles() %>% 
