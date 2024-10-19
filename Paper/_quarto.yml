@@ -11,10 +11,10 @@ format:
     comments:
       hypothesis: true
   docx: 
-    output-file: "Simon_Drone_Paper"
+    output-file: "Simon_Heatwaves_Paper"
   elsevier-pdf: 
     fig-pos: "H"
-    output-file: "Simon_Drone_Paper"
+    output-file: "Simon_Heatwaves_Paper"
 render: 
   - "!*.qmd"
   - "!*.ipynb"
