@@ -1220,6 +1220,8 @@ df_heatwaveR <- sst %>%
 #| eval: false
 #| warning: false
 
+library(sf)
+
 df <- list.files("Data/MeteoFrance/RAW/",pattern = "HOR_departement_56_*", full.names = TRUE) %>% 
   map(read.delim,
       sep = ";",
@@ -1336,14 +1338,19 @@ air_data <- mhw_Air %>%
 # Combine the datasets
 combined_data <- bind_rows(sst_data, air_data)
 
+
+tabcol <- c(line_water = "blue",
+            line_water_thresh ="darkblue",
+            line_air="red",
+            line_air_thresh = "darkred")
 # Create the combined plot with facets
 Combined_plot <- ggplot() +
   
   # Plot the SST data
   geom_segment(
     data = sst_data,
-    aes(x = t, y = temp, xend = t_lead, yend = temp_lead, linetype = linetype),
-    show.legend = FALSE
+    aes(x = t, y = temp, xend = t_lead, yend = temp_lead, linetype = linetype,
+    color = "line_water"),
   ) +
   geom_flame(
     data = sst_data,
@@ -1353,15 +1360,16 @@ Combined_plot <- ggplot() +
   ) +
   geom_line(
     data = sst_data,
-    aes(x = t, y = thresh),
-    color = "darkblue"
+    aes(x = t, y = thresh,
+        color = "line_water_thresh")
+    
   ) +
   
   # Plot the Air data
   geom_line(
     data = air_data,
-    aes(x = t, y = temp),
-    color = "black"
+    aes(x = t, y = temp,
+    color = "line_air")
   ) +
   geom_flame(
     data = air_data,
@@ -1371,26 +1379,38 @@ Combined_plot <- ggplot() +
   ) +
   geom_line(
     data = air_data,
-    aes(x = t, y = thresh),
-    color = "darkred"
+    aes(x = t, y = thresh,
+    color = "line_air_thresh")
   ) +
   geom_vline(xintercept = as.Date("2021-09-01"), linetype = "dashed", linewidth = 1)+
   geom_vline(xintercept = as.Date("2021-09-10"), linetype = "dashed",linewidth = 1)+
-
+  scale_color_manual(values = tabcol,
+                     name = NULL,
+                     label = c("Air Temperature","90th percentile of Air Temperature", "SST","90th percentile of SST"))+
+  
   # Facet the plot to stack them vertically
   facet_grid(variable ~ ., scales = "free_y") +
+  
   # Add common elements
   theme_Bede() +
   ylab("Temperature (°C)") +
   xlab("Date of 2021") +
   theme(
-    strip.text.y = element_text(angle = 0),
-    # Remove x-axis elements from the top plot
-    # axis.text.x = element_blank(),
-    # axis.ticks.x = element_blank(),
-    # axis.title.x = element_blank(),
-    # Adjust spacing between facets
+    strip.text.y = element_blank(),  # Remove facet titles (strip text)
+    strip.text.x = element_blank(),
+    strip.background = element_blank(),
+    legend.position = c(0.9, 0.9),
+    legend.background = element_rect(fill = alpha("white", 0)),
+    legend.box = "vertical",  # Stack legends vertically
+    legend.box.just = "left",  # Align the legends to the left
+    legend.spacing.y = unit(0.0, 'mm'),  # Adjust the spacing between items
+    # legend.key = element_rect(fill = "white", color = "black"),  # Ensure clear legend keys
+    legend.box.margin = margin(5, 5, 5, 5),
+    legend.text = element_text(hjust = 0),
     panel.spacing = unit(0.1, "lines")
+  ) +
+  guides(
+    linetype = "none" 
   )
 
 # Display the combined plot
