@@ -364,10 +364,6 @@ Quiberon.}
 
 \end{figure}%
 
-\subsubsection{Satellite Observation}\label{satellite-observation}
-
-Add S2 paragraph.
-
 \subsubsection{Temparature Data and identification of
 heatwaves}\label{temparature-data-and-identification-of-heatwaves}
 
@@ -416,6 +412,20 @@ for the entire time series. Using this daily average since 1982, the SST
 climatology was computed with the HeatwaveR package in R
 \citep{heatwaveR}. The same methodology used to detect air temperature
 events was applied to identify SST events.
+
+\subsubsection{Satellite Observation}\label{satellite-observation}
+
+Two Sentinel-2 images covering the field trip site
+{[}@fig-quiberonMap{]} were downloaded from the Copernicus platform
+{[}@copernicus\_sentinel2{]}. The first image was taken before the
+heatwave event on September 1, 2021, and the second one after the event
+on September 10, 2021. Both images were acquired at Level-2 processing,
+in surface reflectance, and were orthorectified and atmospherically
+corrected to account for the effects of the atmosphere on reflectance
+values {[}@sen2cor{]}.~
+
+Reflectance value of each GCPs {[}@fig-quiberonMap{]} have been
+exctracted and compared before and after the heatwave event.
 
 \subsection{Laboratory experiment}\label{laboratory-experiment}
 
@@ -614,6 +624,8 @@ fluorimeter (Ex: 425 nm, Em: 655 nm; RF-20A, SHIMADZU).
 
 \section{Results}\label{results}
 
+\subsection{Heatwaves of Quiberon}\label{heatwaves-of-quiberon}
+
 \phantomsection\label{cell-fig-Temp_plot_S2}
 \begin{figure}[H]
 
@@ -629,6 +641,22 @@ heatwave (center). In the center plot, colored lines show 90th
 percentile of SST (blue) and air temperature (red), while colored
 polygons represent Marine heatwave (blue) and atmospherical heatwave
 (red). Darklines represent air temperature (top) and SST (bottom).}
+
+\end{figure}%
+
+\phantomsection\label{cell-fig-S2_comparison}
+\begin{figure}[H]
+
+\centering{
+
+\includegraphics[width=1\textwidth,height=\textheight]{Figs/High_res/S2_Hugo.png}
+
+}
+
+\caption{\label{fig-S2_comparison}Comparison of S2 reflectance before
+and after the heatwaves event for GCP classified has darkened seagrass
+(left) and green seagrass (right) during the fieldtrip of the 10th of
+September 2021.}
 
 \end{figure}%
 
