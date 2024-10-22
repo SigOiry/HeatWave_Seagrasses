@@ -286,23 +286,25 @@ capabilities among populations \citep{winters2011effects}. These events
 intensify other stressors, such as overgrazing and seed burial,
 compromising sexual recruitment \citep{guerrero2020heat}.
 
-Bleaching and darkening events of seagrass beds have been observed
-following episodes of intense heat of both water and air along the
-Brittany coast of France (Pers. obs.) then affecting leaf color, which
-are expected to alter leaf reflectance. Remote sensing is increasingly
-being utilized to monitor marine ecosystems, including seagrass meadows.
-By using spectral indices, such as the Normalized Difference Vegetation
-Index (NDVI) and the Soil-Adjusted Vegetation Index (SAVI), or by
-analyzing specific spectral patterns, remote sensing can effectively
-quantify vegetation health over time
+Remote sensing is increasingly being used to monitor marine ecosystems,
+including seagrass meadows. Spectral indices such as the Normalized
+Difference Vegetation Index (NDVI) and the Soil-Adjusted Vegetation
+Index (SAVI) are effective for quantifying vegetation health over time
 \citep{huete2012vegetation, kloos2021agricultural, carlan2020identifying, akbar2020mangrove}.
-Through the Water Framework Directive and the Marine Strategy Framework
-Directive, Europe is promoting remote sensing techniques for habitat
-mapping, as these methods enable the monitoring of extensive areas over
-time \citep{papathanasopoulou2019satellite}. This study will
-experimentally test the hypothesis that warm events modify the pigment
-composition and reflectance of seagrass, linking these changes with
-satellite remote sensing.
+By analyzing specific spectral patterns, remote sensing can track
+changes in seagrass meadows with high temporal and spatial resolution.
+Europe promotes these techniques through frameworks like the Water
+Framework Directive and the Marine Strategy Framework Directive, which
+advocate for habitat mapping using remote sensing technologies to cover
+large areas and detect long-term trends
+\citep{papathanasopoulou2019satellite}.
+
+This study aims to experimentally test the hypothesis that warm events,
+such as atmospheric heatwaves, alter the pigment composition and
+reflectance of the intertidal seagrass Nanozostera noltei. By linking
+these changes with satellite remote sensing data, the study seeks to
+provide insights into how heatwaves affect seagrass meadows and to
+assess the potential of remote sensing in monitoring these impacts
 
 \section{Material \& Methods}\label{material-methods}
 
@@ -332,11 +334,11 @@ quadrat took over darkened seagrasses.}
 
 A fieldtrip, aiming to map a seagrass meadow near Quiberon (France :
 46°57'32.0''N, 2°10'37.0''W), occurred in the 10th of September 2021
-Figure~\ref{fig-quiberonMap}. During this fieldtrip, darkening of
+(Figure~\ref{fig-quiberonMap}). During this fieldtrip, darkening of
 seagrasses have been observed, resulting in the darkening of seagrass
-leaves over large area of the meadow Figure~\ref{fig-QuiberonImg}.
-During this field trip, drone flights were conducted over two areas of
-the seagrass meadow using a DJI Matrice 200 equipped with a Sequoia
+leaves over large area of the meadow (Figure~\ref{fig-QuiberonImg} C \&
+D). During this field trip, drone flights were conducted over two areas
+of the seagrass meadow using a DJI Matrice 200 equipped with a Sequoia
 Multispectral camera. The Sequoia captures four spectral bands: Green
 (550 ± 40 nm), Red (660 ± 40 nm), RedEdge (735 ± 10 nm), and Near
 Infrared (790 ± 40 nm). A total of 122 Ground Control Points (GCPs) were
@@ -344,7 +346,7 @@ collected in the form of georeferenced quadrat images across the meadow
 . These images allow for visual assessment of vegetation type, density,
 and health status. The images were then divided into two categories:
 green seagrasses and darkened seagrasses, based on a visual estimation
-of the leaf condition Figure~\ref{fig-quiberonMap}.
+of the leaf condition (Figure~\ref{fig-quiberonMap}).
 
 \phantomsection\label{cell-fig-QuiberonImg}
 \begin{figure}[H]
@@ -399,31 +401,37 @@ observation since the 1st of February 1952).
 
 \paragraph{Water temperature}\label{water-temperature}
 
-Sea Surface Temperature (SST) data were downloaded from the Copernicus
-CMEMS platform \citep{CMEMS_1} for the French coast, covering the period
-from 1982 to 2022. Only pixels within an area of 2700 km² around
-Quiberon, Brittany, France (47°29′03″N, 3°07′09″W) were extracted and
-analyzed. This area was large enough to minimize missing values caused
-by cloud cover, yet small enough to avoid being influenced by the
-stability of offshore SST. After the masking step, a daily average of
-the remaining pixels was calculated, resulting in a daily mean SST value
-for the entire time series. Using this daily average since 1982, the SST
-climatology was computed with the HeatwaveR package in R
-\citep{heatwaveR}. The same methodology used to detect air temperature
-events was applied to identify SST events.
+SST data from the Copernicus CMEMS platform were downloaded for the
+French coast near Quiberon (47°29′03″N, 3°07′09″W), covering 1982-2022
+\citep{CMEMS_1}. Only pixels within an area of 2700 km² around Quiberon,
+Brittany, France (47°29′03″N, 3°07′09″W) were extracted and analyzed.
+This area was large enough to minimize missing values caused by cloud
+cover, yet small enough to avoid being influenced by the stability of
+offshore SST. The multi-sensor Level 3S Sea Surface Temperature (SST)
+product the we used is built from nighttime infrared satellite data,
+including sources like ESA SST CCI, C3S, and EUMETSAT. Data from AVHRR,
+ATSR, and SLSTR radiometers are used, but only those with a quality
+level above 4. An intercalibration method ensures consistency, and a
+daily reference SST field is constructed by combining the best data with
+median values from other sources. A large-scale bias correction is
+applied, and daily single-sensor composites are merged into a
+multi-sensor file (L3S), selecting the best sensor for each grid cell. A
+daily average was computed for the time series, and the HeatwaveR
+package \citep{heatwaveR} was used to compute SST climatology and detect
+SST events using the same method as air temperature event detection.
 
 \subsubsection{Satellite Observation}\label{satellite-observation}
 
 Two Sentinel-2 images covering the field trip site
-{[}@fig-quiberonMap{]} were downloaded from the Copernicus platform
-{[}@copernicus\_sentinel2{]}. The first image was taken before the
-heatwave event on September 1, 2021, and the second one after the event
-on September 6, 2021. Both images were acquired at Level-2 processing,
-in surface reflectance, and were orthorectified and atmospherically
-corrected to account for the effects of the atmosphere on reflectance
-values {[}@sen2cor{]}.~
+(Figure~\ref{fig-quiberonMap}) were downloaded from the Copernicus
+platform \citep{copernicus_sentinel2}. The first image was taken before
+the heatwave event on September 1, 2021, and the second one after the
+event on September 6, 2021. Both images were acquired at Level-2
+processing, in surface reflectance, and were orthorectified and
+atmospherically corrected to account for the effects of the atmosphere
+on reflectance values \citep{sen2cor}.
 
-Reflectance value of each GCPs {[}@fig-quiberonMap{]} have been
+Reflectance value of each GCPs (Figure~\ref{fig-quiberonMap}) have been
 exctracted and compared before and after the heatwave event.
 
 \subsection{Laboratory experiment}\label{laboratory-experiment}
@@ -438,20 +446,19 @@ sampling box was used to sample seagrass from an area of 30 cm by 15 cm
 and 5 cm deep, maintaining the sediment structure and avoiding damage to
 the rhizomes and the leafs of the seagrass (Figure~\ref{fig-design} A).
 This sampling box allowed to limitate sampling variability between
-replicates. To minimize stress, the entire system, including seagrass,
-sediment, meiofauna, and macrofauna, was placed in plastic trays
-together in a mesocosm setup, which allowed for the natural interactions
-between components to be maintained and reduced stress on the seagrass.
-To avoid hydric stress during transportation, seawater was added to each
-tray. Simultaneously, seawater was sampled from a nearby site and
-transported to the lab, where it was filtered using a 0.22 µm
-nitrocellulose filter to remove all suspended particulate matter. This
-seawater was used in the acclimation tank and the intertidal chambers.
-The seagrasses were acclimated at high tide for one weeks with a water
-temperature of 17°C, matching the temperature at the time of sampling,
-and with light of 150 µmol.s-1.m-2 of PAR photons
-\citep{akbar2020mangrove}. A wave generator was used in the tank to
-circulate and reoxygenate th
+replicates. The entire system, including seagrass, sediment, meiofauna,
+and macrofauna, was placed in plastic trays together in a mesocosm
+setup, which allowed for the natural interactions between components to
+be maintained and reduced stress on the seagrass. To avoid hydric stress
+during transportation, seawater was added to each tray. Simultaneously,
+seawater was sampled from a nearby site and transported to the lab,
+where it was filtered using a 0.22 µm nitrocellulose filter to remove
+all suspended particulate matter. This seawater was used in the
+acclimation tank and the intertidal chambers. The seagrasses were
+acclimated at high tide for one weeks with a water temperature of 17°C,
+matching the temperature at the time of sampling, and with light of 150
+µmol.s-1.m-2 of PAR photons \citep{akbar2020mangrove}. A wave generator
+was used in the tank to circulate and reoxygenate the water.
 
 \subsubsection{Experimental design}\label{experimental-design}
 
@@ -478,24 +485,58 @@ Two intertidal chambers from
 used to simulate tidal cycles and control water temperature during high
 tide and air temperature during low tide (Figure~\ref{fig-design} B,C).
 One chamber served as the control, while the other was used for the
-experimental treatment. The control chamber was maintained at
-temperatures representative of the typical seasonal conditions: water
-temperatures between 18°C and 19°C and air temperatures between 18°C and
-23°C, following circadian temperature variability
-(Figure~\ref{fig-Profile} left). For the experimental treatment, the air
-temperature was set to mimic an atmospheric heatwave that occurred over
-the seagrass meadow of Quiberon, France (47°35'40.0''N, 3°07'30.0''W)
-from September 2, 2021, to September 6, 2021. On the first day of the
-experiment, air temperatures in the experimental chamber were set to
-range from 23°C at night to 35°C during the day, with a daily increase
-of 1°C. The water temperature in the experimental chamber was similarly
-adjusted to reflect the heatwave conditions, starting from the normal
-seasonal range (18°C) and gradually increasing to simulate the rising
-temperatures experienced during the heatwave (+0.5°C daily). This setup
-aimed to replicate the thermal stress experienced by the seagrass meadow
-during the actual heatwave event (Figure~\ref{fig-Profile} right). The
-experiment stops only when no changes in the reflectance of the
-treatment are observed for 2 consecutive days.
+experimental treatment.
+
+\phantomsection\label{cell-fig-Temperature_Bourgneuf}
+\begin{figure}[H]
+
+\centering{
+
+\includegraphics[width=0.3\textwidth,height=\textheight]{Figs/High_res/Temperature_compare.png}
+
+}
+
+\caption{\label{fig-Temperature_Bourgneuf}Comparison of daily maximum
+temperatures in August measured using an in-situ sensor (blue) and
+retrieved from Meteo France (orange). The solid line in the middle of
+the boxplot represents the median, the two ends of the box represent the
+25th and 75th percentiles, and the whiskers represent values that are no
+more than 1.5 times the interquartile range.}
+
+\end{figure}%
+
+To experimentally apply temperatures that closely mimic those
+experienced by seagrasses in the field, \emph{in situ} temperature
+sensors were placed at the sampling site in Bourgneuf Bay during August
+2024. The daily maximum temperatures recorded by the \emph{in situ}
+sensors were compared to those measured by the nearest weather station
+operated by Meteo France (Figure~\ref{fig-Temperature_Bourgneuf}). On
+average, \emph{in situ} temperatures were 3 ± 3.2°C higher than those
+recorded by Meteo France. Additionally, Meteo France temperatures were
+more stable compared to those from the \emph{in situ} sensor. This
+stability is explained by the fact that Meteo France temperatures are
+measured in a sheltered, shaded location . This offset was used to
+adjust heatwave temperatures measured by Meteo France to reflect the
+conditions experienced by the seagrasses.
+
+The control chamber was maintained at temperatures representative of the
+typical seasonal conditions: water temperatures between 18°C and 19°C
+and air temperatures between 18°C and 23°C, following circadian
+temperature variability (Figure~\ref{fig-Profile} left). For the
+experimental treatment, the air temperature was set to mimic an
+atmospheric heatwave that occurred over the seagrass meadow of Quiberon,
+France (47°35'40.0''N, 3°07'30.0''W) from September 2, 2021, to
+September 6, 2021. On the first day of the experiment, air temperatures
+in the experimental chamber were set to range from 23°C at night to 35°C
+during the day, with a daily increase of 1°C. The water temperature in
+the experimental chamber was similarly adjusted to reflect the heatwave
+conditions, starting from the normal seasonal range (18°C) and gradually
+increasing to simulate the rising temperatures experienced during the
+heatwave (+0.5°C daily). This setup aimed to replicate the thermal
+stress experienced by the seagrass meadow during the actual heatwave
+event (Figure~\ref{fig-Profile} right). The experiment stops only when
+no changes in the reflectance of the treatment are observed for 2
+consecutive days.
 
 \phantomsection\label{cell-fig-Profile}
 \begin{figure}[H]
@@ -630,6 +671,31 @@ fluorimeter (Ex: 425 nm, Em: 655 nm; RF-20A, SH
 
 \subsection{Heatwaves of Quiberon}\label{heatwaves-of-quiberon}
 
+The two cloud-free Sentinel-2 images used in this study are dated 1
+September 2021 and 6 September 2021 (Figure~\ref{fig-S2_comparison} A
+and C, respectively). The Atmospheric Heat Wave (AHW) started on 4
+September and lasted until 7 September, while the Marine Heat Wave (MHW)
+started on 3 September and ended on 8 September 2021
+(Figure~\ref{fig-S2_comparison} B). The AHW has been classified as a
+strong event, and the MHW has been classified as moderate. Even though
+the Sentinel-2 images were captured only a few days after the start of
+the events, darkening of seagrass can already be observed
+(Figure~\ref{fig-S2_comparison} C). The class of Ground Control Points
+(GCPs) acquired in the field on 10 September corresponds to the
+locations of dark patches visible in the images from 6 September. Before
+the event, there were no notable differences in the reflectance of the
+two classes of GCPs (Figure~\ref{fig-S2_comparison} D, left). Both
+spectra show strong absorption at 668 nm (chlorophyll-a), a high
+infrared plateau, and a reflectance peak in the green region of the
+spectrum. In contrast, spectra extracted from the 6 September image show
+clear differences between the two classes of GCPs
+(Figure~\ref{fig-S2_comparison} D, right). GCPs corresponding to green
+seagrass observed in the field maintained a similar spectral shape as
+before the heatwave events. However, GCPs corresponding to darkened
+seagrass observed in the field have lost their high reflectance in the
+green part of the spectrum, and the infrared plateau has decreased
+significantly, now exhibiting a downward slope.
+
 \phantomsection\label{cell-fig-S2_comparison}
 \begin{figure}[H]
 
@@ -658,6 +724,24 @@ respectively) were present during the field survey. The left plot shows
 the reflectance of these GCPs before the heatwave impact, while the
 right plot shows the spectral signature after the heatwaves.The ribbons
 around the lines represent the standard deviation.}
+
+\end{figure}%
+
+\phantomsection\label{cell-fig-NDVI_GLI_SPC}
+\begin{figure}[H]
+
+\centering{
+
+\includegraphics[width=0.8\textwidth,height=\textheight]{Figs/High_res/Compares_Indices_S2.png}
+
+}
+
+\caption{\label{fig-NDVI_GLI_SPC}Comparaison of Sentinel-2 based
+radiometric indices at two different dates, before (2021-09-01) and
+after (2021-09-06) the heatwaves events of Quiberons, for the two
+category of GCPs seen in the filed : Green seagrasses and Darkened
+Seagrasses. SPC stands for Seagrass Percent Covers and it's calculated
+using the equation of \citep{zoffoli2020sentinel}.}
 
 \end{figure}%
 

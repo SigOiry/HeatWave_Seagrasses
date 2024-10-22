@@ -23,7 +23,7 @@ round_any <- function(x, accuracy, f = round) {
 
 # which départements to download
 sel_dep <- c("64","40","33","17","85","44","56","29","22","35","50","14","27","76","80","62","59")
-
+sel_dep = "85"
 # for the map (code INSEE région)
 sel_reg <- "44"
 
