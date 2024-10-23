@@ -14,7 +14,7 @@
 <meta name="author" content="Nicolas Harrin">
 <meta name="author" content="Pierre Gernez">
 <meta name="author" content="Laurent Barillé">
-<meta name="dcterms.date" content="2024-10-22">
+<meta name="dcterms.date" content="2024-10-23">
 <meta name="keywords" content="Remote Sensing, Pigment Composition, Seagrass, Coastal Ecosystems, Heatwaves">
 
 <title>Draft – Effect of Atmospheric Heatwaves on Reflectance and Pigment Composition of Intertidal Nanozostera noltei – Draft</title>
@@ -115,10 +115,10 @@ window.Quarto = {
 <meta name="citation_author" content="Nicolas Harrin">
 <meta name="citation_author" content="Pierre Gernez">
 <meta name="citation_author" content="Laurent Barillé">
-<meta name="citation_publication_date" content="2024-10-22">
-<meta name="citation_cover_date" content="2024-10-22">
+<meta name="citation_publication_date" content="2024-10-23">
+<meta name="citation_cover_date" content="2024-10-23">
 <meta name="citation_year" content="2024">
-<meta name="citation_online_date" content="2024-10-22">
+<meta name="citation_online_date" content="2024-10-23">
 <meta name="citation_language" content="en">
 <meta name="citation_journal_title" content="Remote Sensing of Environment">
 <meta name="citation_reference" content="citation_title=Sen2Cor: Sentinel-2 Atmospheric Correction Processor;,citation_abstract=Sen2Cor is a processor for Sentinel-2 Level-2A product generation and formatting, including atmospheric, terrain, and cirrus correction of Top-Of-Atmosphere Level-1C input data. It provides bottom-of-atmosphere corrected reflectance images in various formats.;,citation_author=European Space Agency;,citation_publication_date=2024;,citation_cover_date=2024;,citation_year=2024;,citation_publisher=European Space Agency (ESA); https://step.esa.int/main/third-party-plugins-2/sen2cor/;">
@@ -242,7 +242,7 @@ window.Quarto = {
                 <div>
             <div class="quarto-title-meta-heading">Published</div>
             <div class="quarto-title-meta-contents">
-              <p class="date">October 22, 2024</p>
+              <p class="date">October 23, 2024</p>
             </div>
           </div>
           
@@ -293,7 +293,11 @@ window.Quarto = {
   </ul></li>
   <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results"><span class="header-section-number">3</span> Results</a>
   <ul class="collapse">
-  <li><a href="#heatwaves-of-quiberon" id="toc-heatwaves-of-quiberon" class="nav-link" data-scroll-target="#heatwaves-of-quiberon"><span class="header-section-number">3.1</span> Heatwaves of Quiberon</a></li>
+  <li><a href="#heatwaves-of-quiberon" id="toc-heatwaves-of-quiberon" class="nav-link" data-scroll-target="#heatwaves-of-quiberon"><span class="header-section-number">3.1</span> Heatwaves of Quiberon</a>
+  <ul class="collapse">
+  <li><a href="#spectral-inspection" id="toc-spectral-inspection" class="nav-link" data-scroll-target="#spectral-inspection"><span class="header-section-number">3.1.1</span> Spectral inspection</a></li>
+  <li><a href="#radiometric-indices-comparison" id="toc-radiometric-indices-comparison" class="nav-link" data-scroll-target="#radiometric-indices-comparison"><span class="header-section-number">3.1.2</span> Radiometric indices comparison</a></li>
+  </ul></li>
   </ul></li>
   <li><a href="#bibliography" id="toc-bibliography" class="nav-link" data-scroll-target="#bibliography"><span class="header-section-number">4</span> Bibliography</a></li>
   </ul>
@@ -439,18 +443,24 @@ NDVI = \frac{R(840)-R(668)}{R(840)+R(668)}
 \tag{1}\]</span></span></p>
 <p>where <span class="math inline">\(R(840)\)</span> and <span class="math inline">\(R(668)\)</span> are the reflectance at 840 nm and 668 nm respectively.</p>
 <ul>
-<li>The Green Leaf Index (GLI, <span class="citation" data-cites="louhaichi2001spatially">Louhaichi et al. (<a href="#ref-louhaichi2001spatially" role="doc-biblioref">2001</a>)</span>), as a measurement of the greenness of seagrass leafs (<a href="#eq-gli" class="quarto-xref">Equation&nbsp;2</a>)</li>
+<li>The Seagrass Percent Covers, developed by <span class="citation" data-cites="zoffoli2020sentinel">Zoffoli et al. (<a href="#ref-zoffoli2020sentinel" role="doc-biblioref">2020</a>)</span>, used to assess proportion of seagrass inside of a pixel (<a href="#eq-spc" class="quarto-xref">Equation&nbsp;2</a>):</li>
+</ul>
+<p><span id="eq-spc"><span class="math display">\[
+SPC = 172.06 \times NDVI - 22.18
+\tag{2}\]</span></span></p>
+<ul>
+<li>The Green Leaf Index (GLI, <span class="citation" data-cites="louhaichi2001spatially">Louhaichi et al. (<a href="#ref-louhaichi2001spatially" role="doc-biblioref">2001</a>)</span>), as a measurement of the greenness of seagrass leafs (<a href="#eq-gli" class="quarto-xref">Equation&nbsp;3</a>)</li>
 </ul>
 <p><span id="eq-gli"><span class="math display">\[
 GLI = \frac{[R(550)-R(668)]+[R(550)-R(450)]}{(2 \times R(550) )+ R(668) + R(450) }
-\tag{2}\]</span></span></p>
+\tag{3}\]</span></span></p>
 <p>where <span class="math inline">\(R(550)\)</span> and <span class="math inline">\(R(450)\)</span> are the reflectance in green at 550 nm and in the blue at 450 nm, respectively.</p>
 <ul>
 <li>The Mid-Infrared Water Absorption Index (MIWAI), proposed here and designed to measure water absorption at 970 nm (<strong>REF</strong>), estimates the difference between the reflectance at 970 nm and a linear interpolation of the reflectance values at 950 and 990 nm. This interpolation represents the expected reflectance value in the absence of water.</li>
 </ul>
 <p><span id="eq-MIWAI"><span class="math display">\[
 MIWAI = 0.5 \times [R(990)+R(950)]-R(970)
-\tag{3}\]</span></span></p>
+\tag{4}\]</span></span></p>
 <p>where <span class="math inline">\(R(990)\)</span>, <span class="math inline">\(R(970)\)</span> and <span class="math inline">\(R(950)\)</span> are the reflectance in the infrared at 990, 970 and 950 nm, respectively.</p>
 <blockquote class="blockquote">
 <h4 id="multispectral-imagery-measurement" data-number="2.2.3.2" class="anchored"><span class="header-section-number">2.2.3.2</span> Multispectral imagery measurement</h4>
@@ -469,35 +479,44 @@ MIWAI = 0.5 \times [R(990)+R(950)]-R(970)
 <h1 data-number="3"><span class="header-section-number">3</span> Results</h1>
 <section id="heatwaves-of-quiberon" class="level2" data-number="3.1">
 <h2 data-number="3.1" class="anchored" data-anchor-id="heatwaves-of-quiberon"><span class="header-section-number">3.1</span> Heatwaves of Quiberon</h2>
-<p>The two cloud-free Sentinel-2 images used in this study are dated 1 September 2021 and 6 September 2021 (<a href="#fig-S2_comparison" class="quarto-xref">Figure&nbsp;6</a> A and C, respectively). The Atmospheric Heat Wave (AHW) started on 4 September and lasted until 7 September, while the Marine Heat Wave (MHW) started on 3 September and ended on 8 September 2021 (<a href="#fig-S2_comparison" class="quarto-xref">Figure&nbsp;6</a> B). The AHW has been classified as a strong event, and the MHW has been classified as moderate. Even though the Sentinel-2 images were captured only a few days after the start of the events, darkening of seagrass can already be observed (<a href="#fig-S2_comparison" class="quarto-xref">Figure&nbsp;6</a> C). The class of Ground Control Points (GCPs) acquired in the field on 10 September corresponds to the locations of dark patches visible in the images from 6 September. Before the event, there were no notable differences in the reflectance of the two classes of GCPs (<a href="#fig-S2_comparison" class="quarto-xref">Figure&nbsp;6</a> D, left). Both spectra show strong absorption at 668 nm (chlorophyll-a), a high infrared plateau, and a reflectance peak in the green region of the spectrum. In contrast, spectra extracted from the 6 September image show clear differences between the two classes of GCPs (<a href="#fig-S2_comparison" class="quarto-xref">Figure&nbsp;6</a> D, right). GCPs corresponding to green seagrass observed in the field maintained a similar spectral shape as before the heatwave events. However, GCPs corresponding to darkened seagrass observed in the field have lost their high reflectance in the green part of the spectrum, and the infrared plateau has decreased significantly, now exhibiting a downward slope.</p>
+<section id="spectral-inspection" class="level3" data-number="3.1.1">
+<h3 data-number="3.1.1" class="anchored" data-anchor-id="spectral-inspection"><span class="header-section-number">3.1.1</span> Spectral inspection</h3>
+<p>The Sentinel-2 images used in this study are dated from the 1st of September 2021 and the 6th of September 2021 (<a href="#fig-S2_comparison" class="quarto-xref">Figure&nbsp;6</a> A and C, respectively). The Atmospheric Heat Wave (AHW) started on 4 September and lasted until 7 September, while the Marine Heat Wave (MHW) started on 3 September and ended on 8 September 2021 (<a href="#fig-S2_comparison" class="quarto-xref">Figure&nbsp;6</a> B). The AHW has been classified as a strong event, and the MHW has been classified as moderate. Even though the Sentinel-2 of the 6th of September was captured only a few days after the start of the events, darkening of seagrass can already be observed in the true-color composition (<a href="#fig-S2_comparison" class="quarto-xref">Figure&nbsp;6</a> C). Before the event, all GCPs appeared green un the images, with similar reflectance spectra, regardless of the class attributed to the GCPs on the field (<a href="#fig-S2_comparison" class="quarto-xref">Figure&nbsp;6</a> A and D left). Their reflectance spectra showed a peak at 560 nm (in the green part of the spectra), low values at 665 nm, corresponding to the strong absorption by chlorophyll-a and a high infrared plateau (&gt; 705 nm). However, GCPs classified as dark seagrass during the fieldtrip, showed significant differences in reflectance spectral shape compared to GCPs classified as green seagrass on the 10th of September, with corresponding differences in the true color composition (<a href="#fig-S2_comparison" class="quarto-xref">Figure&nbsp;6</a> C and D right). In fact these dark seagrass GCPs were affected by extreme events, which altered their color and impacted the satellite reflectance (<a href="#fig-S2_comparison" class="quarto-xref">Figure&nbsp;6</a> C). The reflectance spectra over dark seagrass were characterized by the loss of the reflectance peak at 560 nm and a decrease in the infared plateau, which was observed as a steady increasing slope up to 940 nm.</p>
 <div id="cell-fig-S2_comparison" class="cell">
 <div class="cell-output-display">
 <div id="fig-S2_comparison" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-S2_comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="Figs/Low_res/Heatwaves_S2_plot.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Figure&nbsp;6: Spectral Comparison of Sentinel-2 Signatures (D) of Ground Control Points (GCPs) Before (A) and After (B) Heatwave Events (C) ; A : RGB color composition of the Sentinel-2 image from September 1, 2021. The points correspond to GCPs collected on September 10, 2021 Figure&nbsp;1 ; B : Detection of heatwave events based on both Air Temperature and Sea Surface Temperature. The solid line represents the daily average temperature, while the dashed line indicates the 90th percentile of the climatology. When the daily average exceeds the 90th percentile for three consecutive days, the event is classified as a heatwave (colored polygons). The two vertical dashed lines represent the acquisition dates of the two Sentinel-2 images ; C : RGB color composition of the Sentinel-2 image from September 6, 2021. The points correspond to GCPs collected on September 10, 2021 Figure&nbsp;1 ; D : Average spectral signatures of GCPs where dark and green seagrasses (blue and gold lines, respectively) were present during the field survey. The left plot shows the reflectance of these GCPs before the heatwave impact, while the right plot shows the spectral signature after the heatwaves.The ribbons around the lines represent the standard deviation."><img src="Figs/Low_res/Heatwaves_S2_plot.png" class="img-fluid figure-img" style="width:100.0%"></a>
+<a href="Figs/Low_res/Heatwaves_S2_plot.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Figure&nbsp;6: Spectral Comparison of Sentinel-2 Reflectance (D) over Ground Control Points (GCPs) Before (A) and During (B) Heatwave Events (C); A: RGB color composition of the Sentinel-2 image on the 1st of September 2021. The points correspond to GCPs collected on September 10, 2021 Figure&nbsp;1; B: Detection of heatwave events based on both Air Temperature and Sea Surface Temperature (SST). The solid line represents the daily average temperature, while the dashed line indicates the 90th percentile of the climatology. Colored polygons identidy heatwaves (marine in blue and atmospherical in red). The two vertical dashed lines represent the acquisition dates of the two Sentinel-2 images used in this analysis ; C : RGB color composition of the Sentinel-2 image on the 6th of September 2021. The points correspond to GCPs collected on September 10, 2021 Figure&nbsp;1 ; D : Average spectral signatures of GCPs where dark and green seagrasses (blue and gold lines, respectively) were identified during the field survey. The left plot shows the reflectance of these GCPs before the heatwave impact, while the right plot shows the spectral signature during the heatwaves. The ribbons around the lines represent the standard deviation."><img src="Figs/Low_res/Heatwaves_S2_plot.png" class="img-fluid figure-img" style="width:100.0%"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-S2_comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;6: Spectral Comparison of Sentinel-2 Signatures (D) of Ground Control Points (GCPs) Before (A) and After (B) Heatwave Events (C) ; A : RGB color composition of the Sentinel-2 image from September 1, 2021. The points correspond to GCPs collected on September 10, 2021 <a href="#fig-quiberonMap" class="quarto-xref">Figure&nbsp;1</a> ; B : Detection of heatwave events based on both Air Temperature and Sea Surface Temperature. The solid line represents the daily average temperature, while the dashed line indicates the 90th percentile of the climatology. When the daily average exceeds the 90th percentile for three consecutive days, the event is classified as a heatwave (colored polygons). The two vertical dashed lines represent the acquisition dates of the two Sentinel-2 images ; C : RGB color composition of the Sentinel-2 image from September 6, 2021. The points correspond to GCPs collected on September 10, 2021 <a href="#fig-quiberonMap" class="quarto-xref">Figure&nbsp;1</a> ; D : Average spectral signatures of GCPs where dark and green seagrasses (blue and gold lines, respectively) were present during the field survey. The left plot shows the reflectance of these GCPs before the heatwave impact, while the right plot shows the spectral signature after the heatwaves.The ribbons around the lines represent the standard deviation.
+Figure&nbsp;6: Spectral Comparison of Sentinel-2 Reflectance (D) over Ground Control Points (GCPs) Before (A) and During (B) Heatwave Events (C); A: RGB color composition of the Sentinel-2 image on the 1st of September 2021. The points correspond to GCPs collected on September 10, 2021 <a href="#fig-quiberonMap" class="quarto-xref">Figure&nbsp;1</a>; B: Detection of heatwave events based on both Air Temperature and Sea Surface Temperature (SST). The solid line represents the daily average temperature, while the dashed line indicates the 90th percentile of the climatology. Colored polygons identidy heatwaves (marine in blue and atmospherical in red). The two vertical dashed lines represent the acquisition dates of the two Sentinel-2 images used in this analysis ; C : RGB color composition of the Sentinel-2 image on the 6th of September 2021. The points correspond to GCPs collected on September 10, 2021 <a href="#fig-quiberonMap" class="quarto-xref">Figure&nbsp;1</a> ; D : Average spectral signatures of GCPs where dark and green seagrasses (blue and gold lines, respectively) were identified during the field survey. The left plot shows the reflectance of these GCPs before the heatwave impact, while the right plot shows the spectral signature during the heatwaves. The ribbons around the lines represent the standard deviation.
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
+</section>
+<section id="radiometric-indices-comparison" class="level3" data-number="3.1.2">
+<h3 data-number="3.1.2" class="anchored" data-anchor-id="radiometric-indices-comparison"><span class="header-section-number">3.1.2</span> Radiometric indices comparison</h3>
+<p>Using Sentinel-2 reflectance values extracted from GCPs before and during the events, radiometric indices were calculated and compared. Column A of <a href="#fig-NDVI_GLI_SPC" class="quarto-xref">Figure&nbsp;7</a>, which represents indices from GCPs classified as green seagrass during the field trip on September 10th (i.e., seagrass not affected by the heatwave events), shows no notable differences before or during the event, regardless of the index. However, Column B of <a href="#fig-NDVI_GLI_SPC" class="quarto-xref">Figure&nbsp;7</a> shows significant differences in the indices of GCPs classified as darkened seagrass during the same field trip (i.e., seagrass affected by the heatwave events).</p>
+<p>The NDVI dropped from a median of 0.61 to 0.40, while also becoming less variable (standard deviation decreasing from 0.09 to 0.06) (<a href="#fig-NDVI_GLI_SPC" class="quarto-xref">Figure&nbsp;7</a> B1). Although the seagrass density remained consistent before and during the event, the drop in NDVI affected the retrieved Seagrass Percent Cover (SPC) values (<a href="#fig-NDVI_GLI_SPC" class="quarto-xref">Figure&nbsp;7</a> B2). The SPC decreased from a median of 83% before the event to 48% during the event. A similar trend is observed with the GLI, which dropped from a median of 0.15 before the event to 0.02 after the event (<a href="#fig-NDVI_GLI_SPC" class="quarto-xref">Figure&nbsp;7</a> B3).</p>
+<p>Interestingly, the density of seagrass that remained green after the event (median SPC = 65%; <a href="#fig-NDVI_GLI_SPC" class="quarto-xref">Figure&nbsp;7</a> A2) was initially lower than the density of seagrass that darkened (median SPC = 85%; <a href="#fig-NDVI_GLI_SPC" class="quarto-xref">Figure&nbsp;7</a> B2).</p>
 <div id="cell-fig-NDVI_GLI_SPC" class="cell">
 <div class="cell-output-display">
 <div id="fig-NDVI_GLI_SPC" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-NDVI_GLI_SPC-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="Figs/High_res/Compares_Indices_S2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="Figure&nbsp;7: Comparaison of Sentinel-2 based radiometric indices at two different dates, before (2021-09-01) and after (2021-09-06) the heatwaves events of Quiberons, for the two category of GCPs seen in the filed : Green seagrasses and Darkened Seagrasses. SPC stands for Seagrass Percent Covers and it’s calculated using the equation of @zoffoli2020sentinel."><img src="Figs/High_res/Compares_Indices_S2.png" class="img-fluid figure-img" style="width:80.0%"></a>
+<a href="Figs/Low_res/Compares_Indices_S2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="Figure&nbsp;7: Comparaison of Sentinel-2 based radiometric indices at two different dates, before (2021-09-01, green) and after (2021-09-06, red) the heatwaves events of Quiberons, for the two category of GCPs seen in the filed : Green seagrasses (Column A) and Darkened Seagrasses (Column B). The Normalised Difference Vegetation Index (1-NDVI) has been computed using the Equation&nbsp;1, the Seagrass Percent Cover (2-SPC) with the Equation&nbsp;2 and the Green Leaf Index (3-GLI) using Equation&nbsp;3,"><img src="Figs/Low_res/Compares_Indices_S2.png" class="img-fluid figure-img" style="width:80.0%"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-NDVI_GLI_SPC-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;7: Comparaison of Sentinel-2 based radiometric indices at two different dates, before (2021-09-01) and after (2021-09-06) the heatwaves events of Quiberons, for the two category of GCPs seen in the filed : Green seagrasses and Darkened Seagrasses. SPC stands for Seagrass Percent Covers and it’s calculated using the equation of <span class="citation" data-cites="zoffoli2020sentinel">Zoffoli et al. (<a href="#ref-zoffoli2020sentinel" role="doc-biblioref">2020</a>)</span>.
+Figure&nbsp;7: Comparaison of Sentinel-2 based radiometric indices at two different dates, before (2021-09-01, green) and after (2021-09-06, red) the heatwaves events of Quiberons, for the two category of GCPs seen in the filed : Green seagrasses (Column A) and Darkened Seagrasses (Column B). The Normalised Difference Vegetation Index (1-NDVI) has been computed using the <a href="#eq-ndvi" class="quarto-xref">Equation&nbsp;1</a>, the Seagrass Percent Cover (2-SPC) with the <a href="#eq-spc" class="quarto-xref">Equation&nbsp;2</a> and the Green Leaf Index (3-GLI) using <a href="#eq-gli" class="quarto-xref">Equation&nbsp;3</a>,
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
+</section>
 </section>
 </section>
 <section id="bibliography" class="level1 unnumbered" data-number="4">
@@ -609,7 +628,7 @@ Zoffoli, M.L., Gernez, P., Rosa, P., Le Bris, A., Brando, V.E., Barillé, A.-L.,
   title = {Draft -\/- {Effect} of {Atmospheric} {Heatwaves} on
     {Reflectance} and {Pigment} {Composition} of {Intertidal}
     {*Nanozostera} Noltei* -\/- {Draft}},
-  date = {2024-10-22},
+  date = {2024-10-23},
   langid = {en},
   abstract = {To be written}
 }
@@ -1042,7 +1061,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
-<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","loop":false,"openEffect":"zoom","descPosition":"bottom","selector":".lightbox"});
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","openEffect":"zoom","selector":".lightbox","loop":false,"descPosition":"bottom"});
 (function() {
   let previousOnload = window.onload;
   window.onload = () => {

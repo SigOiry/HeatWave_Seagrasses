@@ -6,6 +6,8 @@
 Data/MeteoFrance/10km/*
 Data/Biolittoral/Bio-Littoral_Drone/*
 Data/Sentinel2/*
+Data/Litto3D/*
 
 !Data/Biolittoral/Bio-Littoral_Drone/OFB2021_Quadrat_Zost_QBR/
 !Data/Biolittoral/Bio-Littoral_Drone/reprocessed_Simon/
+!Data/Litto3D/Litto_10m_merged_32630.tif
