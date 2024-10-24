@@ -143,7 +143,7 @@
 \urlstyle{same} % disable monospaced font for URLs
 \hypersetup{
   pdftitle={Draft -- Effect of Atmospheric Heatwaves on Reflectance and Pigment Composition of Intertidal Nanozostera noltei -- Draft},
-  pdfauthor={Simon Oiry; Bede Ffinian Rowe Davies; Philippe Rosa; Augustin Debly; Anne-Laure Barillé; Nicolas Harrin; Pierre Gernez; Laurent Barillé},
+  pdfauthor={Simon Oiry; Bede Ffinian Rowe Davies; Philippe Rosa; Augustin Debly; Maria Laura Zoffoli; Anne-Laure Barillé; Nicolas Harin; Pierre Gernez; Laurent Barillé},
   pdfkeywords={Remote Sensing, Pigment Composition, Seagrass, Coastal
 Ecosystems, Heatwaves},
   colorlinks=true,
@@ -176,11 +176,15 @@ Pigment Composition of Intertidal \emph{Nanozostera noltei} -- Draft}
 %
 }
 
-\author[2]{Anne-Laure Barillé%
+\author[2]{Maria Laura Zoffoli%
 %
 }
 
-\author[2]{Nicolas Harrin%
+\author[3]{Anne-Laure Barillé%
+%
+}
+
+\author[3]{Nicolas Harin%
 %
 }
 
@@ -196,10 +200,14 @@ Pigment Composition of Intertidal \emph{Nanozostera noltei} -- Draft}
 \affiliation[1]{organization={Institut des Substances et Organismes de
 la Mer, ISOMer, Nantes Université, UR 2160, F-44000 Nantes,
 France},,postcodesep={}}
-\affiliation[2]{organization={Bio-littoral, Immeuble Le Nevada, 2 Rue du
+\affiliation[2]{organization={Consiglio Nazionale delle Ricerche,
+Istituto di Scienze Marine (CNR-ISMAR), 00133 Rome,
+Italy},,postcodesep={}}
+\affiliation[3]{organization={Bio-littoral, Immeuble Le Nevada, 2 Rue du
 Château de l'Eraudière, 44300 Nantes, France},,postcodesep={}}
 
 \cortext[cor1]{Corresponding author}
+
 
 
 
@@ -433,6 +441,41 @@ on reflectance values \citep{sen2cor}.
 
 Reflectance value of each GCPs (Figure~\ref{fig-quiberonMap}) have been
 exctracted and compared before and after the heatwave event.
+
+\subsubsection{Emersion Time of
+Seagrasses}\label{emersion-time-of-seagrasses}
+
+To estimate the emersion time of seagrasses during low tide, both
+bathymetric and tidal data are required.
+
+\paragraph{Bathymetry}\label{bathymetry}
+
+Bathymetry data for the study site were obtained from the ``Service
+Hydrographique et Océanographique de la Marine''
+\citep{shom_bathymetry_litto3d_bzh_2018_2021}. The reference ``zero'' of
+this product is based on the NGF/IGN69, which refers to the mean sea
+level recorded at the Marseille tide gauge between 1885 and 1897. This
+reference is known as the Terrestrial Altimetric Zero.
+
+\paragraph{Tides}\label{tides}
+
+Tidal data for the heatwave events at the study site were downloaded
+from the Intergovernmental Oceanographic Commission data portal
+\citep{ioc_sea_level_lecy}, for the nearest tide gauge located at Le
+Conquet. The ``zero'' for this dataset corresponds to the lowest
+astronomical tide, also known as the Hydrographic Zero.
+
+\paragraph{Reference intercalibration of both
+dataset}\label{reference-intercalibration-of-both-dataset}
+
+Since the altitude references of these two datasets differ, a correction
+factor must be applied to adjust the reference of one dataset to match
+the other. The SHOM annually provides a document called ``Références
+Altimétriques Marines'' \citep[RAM,][]{shom_ram_2022}, which includes
+correction factors for each seaport along the French coastline. These
+factors allow, among other things, the conversion of the Terrestrial
+Altimetric Zero to the Hydrographic Zero. For Le Conquet, the correction
+factor is 2.850 meters.
 
 \subsection{Laboratory experiment}\label{laboratory-experiment}
 
@@ -747,31 +790,26 @@ represent the standard deviation.}
 \subsubsection{Radiometric indices
 comparison}\label{radiometric-indices-comparison}
 
-Using Sentinel-2 reflectance values extracted from GCPs before and
-during the events, radiometric indices were calculated and compared.
-Column A of Figure~\ref{fig-NDVI_GLI_SPC}, which represents indices from
-GCPs classified as green seagrass during the field trip on September
-10th (i.e., seagrass not affected by the heatwave events), shows no
-notable differences before or during the event, regardless of the index.
-However, Column B of Figure~\ref{fig-NDVI_GLI_SPC} shows significant
-differences in the indices of GCPs classified as darkened seagrass
-during the same field trip (i.e., seagrass affected by the heatwave
-events).
-
-The NDVI dropped from a median of 0.61 to 0.40, while also becoming less
-variable (standard deviation decreasing from 0.09 to 0.06)
-(Figure~\ref{fig-NDVI_GLI_SPC} B1). Although the seagrass density
-remained consistent before and during the event, the drop in NDVI
-affected the retrieved Seagrass Percent Cover (SPC) values
-(Figure~\ref{fig-NDVI_GLI_SPC} B2). The SPC decreased from a median of
-83\% before the event to 48\% during the event. A similar trend is
-observed with the GLI, which dropped from a median of 0.15 before the
-event to 0.02 after the event (Figure~\ref{fig-NDVI_GLI_SPC} B3).
-
-Interestingly, the density of seagrass that remained green after the
-event (median SPC = 65\%; Figure~\ref{fig-NDVI_GLI_SPC} A2) was
-initially lower than the density of seagrass that darkened (median SPC =
-85\%; Figure~\ref{fig-NDVI_GLI_SPC} B2).
+Using Sentinel-2 data, the spectral indices (NDVI and GLI) and SPC
+estimated for pixels unaffected by the heatwave showed no significant
+differences before or during the event (Figure~\ref{fig-NDVI_GLI_SPC},
+left column) In contrast, seagrass darkened by the heatwave exhibited a
+significant decrease in both index values and SPC
+(Figure~\ref{fig-NDVI_GLI_SPC}, right column). In this case, the NDVI
+dropped by approximately 34\%, from a median of 0.61 to 0.40, while also
+becoming more homogeneous (the standard deviation decreased from 0.09 to
+0.06) (Figure~\ref{fig-NDVI_GLI_SPC} B). Although the heatwave did not
+affect the observed seagrass density in the field, the drop in NDVI led
+to an underestimation of satellite-based SPC, from 83 to 48\%
+(Figure~\ref{fig-NDVI_GLI_SPC} D). The GLI, the index that reflects the
+greenness of leaves, was the most affected by the event, with an
+important reduction from a median of 0.15 to 0.02 during the event
+(Figure~\ref{fig-NDVI_GLI_SPC} F). Interestingly, when comparing the
+initial seagrass density of both targets (i.e., seagrass density before
+the event) pixels affected by the heatwave (median SPC = 65\%;
+{[}Figure~\ref{fig-NDVI_GLI_SPC} C green) were denser than the those
+remained unchanged (median SPC = 85\%; {[}Figure~\ref{fig-NDVI_GLI_SPC}
+D green).
 
 \phantomsection\label{cell-fig-NDVI_GLI_SPC}
 \begin{figure}[H]
@@ -785,11 +823,29 @@ initially lower than the density of seagrass that darkened (median SPC =
 \caption{\label{fig-NDVI_GLI_SPC}Comparaison of Sentinel-2 based
 radiometric indices at two different dates, before (2021-09-01, green)
 and after (2021-09-06, red) the heatwaves events of Quiberons, for the
-two category of GCPs seen in the filed : Green seagrasses (Column A) and
-Darkened Seagrasses (Column B). The Normalised Difference Vegetation
-Index (1-NDVI) has been computed using the Equation~\ref{eq-ndvi}, the
-Seagrass Percent Cover (2-SPC) with the Equation~\ref{eq-spc} and the
-Green Leaf Index (3-GLI) using Equation~\ref{eq-gli},}
+two category of GCPs seen in the filed : Green seagrasses (i.e seagrass
+not affected by the event, Left Column) and Darkened Seagrasses (i.e
+seagrass affected by the event, Right column). The Normalised Difference
+Vegetation Index (NDVI) has been computed using the
+Equation~\ref{eq-ndvi}, the Seagrass Percent Cover (SPC) with the
+Equation~\ref{eq-spc} and the Green Leaf Index (GLI) using
+Equation~\ref{eq-gli},}
+
+\end{figure}%
+
+\phantomsection\label{cell-fig-Map_darkening_Bathy}
+\begin{figure}[H]
+
+\centering{
+
+\includegraphics[width=1\textwidth,height=\textheight]{Figs/Low_res/Map_darkening_Bathy.png}
+
+}
+
+\caption{\label{fig-Map_darkening_Bathy}Map of the Darkening of
+seagrasses during the heatwave events of September 2021 in Quiberon. A:
+1m bathymetry isobar (golden line); B: Result of the detection of
+darkened seagrass patches (Blue plolygons)}
 
 \end{figure}%
 
