@@ -316,168 +316,7 @@ assess the potential of remote sensing in monitoring these impacts
 
 \section{Material \& Methods}\label{material-methods}
 
-\subsection{Observation of seagrass leaves
-darkening.}\label{observation-of-seagrass-leaves-darkening.}
-
-\subsubsection{Field Observation}\label{field-observation}
-
-\phantomsection\label{cell-fig-quiberonMap}
-\begin{figure}[H]
-
-\centering{
-
-\includegraphics[width=1\textwidth,height=\textheight]{Figs/Low_res/Quiberon_map.png}
-
-}
-
-\caption{\label{fig-quiberonMap}Location of the fieldtrip campaign that
-occured in the 10th of September 2021. The light grey polygons indicates
-the intertidal zone (Zone between High tide and low tide, that is
-totally emerged at low tide) and the dark grey polygon indicate the
-extent of the drone flight. Green dots indicate location of quadrat
-picture over green seagrasses while red dots indicate location of
-quadrat took over darkened seagrasses.}
-
-\end{figure}%
-
-A fieldtrip, aiming to map a seagrass meadow near Quiberon (France :
-46°57'32.0''N, 2°10'37.0''W), occurred in the 10th of September 2021
-(Figure~\ref{fig-quiberonMap}). During this fieldtrip, darkening of
-seagrasses have been observed, resulting in the darkening of seagrass
-leaves over large area of the meadow (Figure~\ref{fig-QuiberonImg} C \&
-D). During this field trip, drone flights were conducted over two areas
-of the seagrass meadow using a DJI Matrice 200 equipped with a Sequoia
-Multispectral camera. The Sequoia captures four spectral bands: Green
-(550 ± 40 nm), Red (660 ± 40 nm), RedEdge (735 ± 10 nm), and Near
-Infrared (790 ± 40 nm). A total of 122 Ground Control Points (GCPs) were
-collected in the form of georeferenced quadrat images across the meadow
-. These images allow for visual assessment of vegetation type, density,
-and health status. The images were then divided into two categories:
-green seagrasses and darkened seagrasses, based on a visual estimation
-of the leaf condition (Figure~\ref{fig-quiberonMap}).
-
-\phantomsection\label{cell-fig-QuiberonImg}
-\begin{figure}[H]
-
-\centering{
-
-\includegraphics[width=1\textwidth,height=\textheight]{Figs/Low_res/img_Quiberon.png}
-
-}
-
-\caption{\label{fig-QuiberonImg}Illustrations of the two health
-conditions of seagrasses observed in the field. A: Global view of a
-green green meadow; B: Quadrat images of green seagrasses; C: Quadrat
-images of darkened seagrasses; D: Global view of an darkened meadow. All
-images were taken on September 10th, 2021, in Quiberon.}
-
-\end{figure}%
-
-\subsubsection{Temparature Data and identification of
-heatwaves}\label{temparature-data-and-identification-of-heatwaves}
-
-\paragraph{Air temperature}\label{air-temperature}
-
-Since January 1, 2024, Meteo France weather data has been freely and
-openly accessible. Hourly air temperature data (°C) for the French
-Atlantic and Channel coasts was retrieved using a
-\href{https://github.com/SigOiry/HeatWave_Seagrasses/blob/main/Scripts/MeteoFrance_Extraction.qmd}{custom
-script} as no API was available at the time of this study. Weather
-stations located within 10 kilometers of the coastline were considered,
-but only those with at least 30 years of data were included to ensure
-reliable climatological reconstruction. Of the 156 weather stations
-within 10 kilometers of the coast, only 36 had sufficient data for
-climatology reconstruction. The hourly data was then aggregated into
-daily mean temperatures for each station.
-
-Heatwave detection was performed using the HeatwaveR package in R
-\citep{heatwaveR}. This package utilizes the methodology proposed by
-\citep{hobday2016hierarchical} to detect heatwave events. The
-climatology for the year was computed using the temperature time series.
-An event was considered a heatwave each time the temperature exceeded
-the 90th percentile of the climatology for three consecutive days. The
-severity of each event has been assessed using the methodology proposed
-by \citep{hobday2018categorizing}. Following the methodology of
-\citep{schlegel2017nearshore}, coldspell events corresponding to
-temperature bellow the percentile 10th of the climatology during 3
-consecutives days have also been measured.
-
-Concerning heatwaves event near Quiberon, this methodology has been
-apply solely on the nearest weather station of our study site
-(Lorient-Lann Bihoue, 47°45'46''N 3°26'11''W , more than 395000
-observation since the 1st of February 1952).
-
-\paragraph{Water temperature}\label{water-temperature}
-
-SST data from the Copernicus CMEMS platform were downloaded for the
-French coast near Quiberon (47°29′03″N, 3°07′09″W), covering 1982-2022
-\citep{CMEMS_1}. Only pixels within an area of 2700 km² around Quiberon,
-Brittany, France (47°29′03″N, 3°07′09″W) were extracted and analyzed.
-This area was large enough to minimize missing values caused by cloud
-cover, yet small enough to avoid being influenced by the stability of
-offshore SST. The multi-sensor Level 3S Sea Surface Temperature (SST)
-product the we used is built from nighttime infrared satellite data,
-including sources like ESA SST CCI, C3S, and EUMETSAT. Data from AVHRR,
-ATSR, and SLSTR radiometers are used, but only those with a quality
-level above 4. An intercalibration method ensures consistency, and a
-daily reference SST field is constructed by combining the best data with
-median values from other sources. A large-scale bias correction is
-applied, and daily single-sensor composites are merged into a
-multi-sensor file (L3S), selecting the best sensor for each grid cell. A
-daily average was computed for the time series, and the HeatwaveR
-package \citep{heatwaveR} was used to compute SST climatology and detect
-SST events using the same method as air temperature event detection.
-
-\subsubsection{Satellite Observation}\label{satellite-observation}
-
-Two Sentinel-2 images covering the field trip site
-(Figure~\ref{fig-quiberonMap}) were downloaded from the Copernicus
-platform \citep{copernicus_sentinel2}. The first image was taken before
-the heatwave event on September 1, 2021, and the second one after the
-event on September 6, 2021. Both images were acquired at Level-2
-processing, in surface reflectance, and were orthorectified and
-atmospherically corrected to account for the effects of the atmosphere
-on reflectance values \citep{sen2cor}.
-
-Reflectance value of each GCPs (Figure~\ref{fig-quiberonMap}) have been
-exctracted and compared before and after the heatwave event.
-
-\subsubsection{Emersion Time of
-Seagrasses}\label{emersion-time-of-seagrasses}
-
-To estimate the emersion time of seagrasses during low tide, both
-bathymetric and tidal data are required.
-
-\paragraph{Bathymetry}\label{bathymetry}
-
-Bathymetry data for the study site were obtained from the ``Service
-Hydrographique et Océanographique de la Marine''
-\citep{shom_bathymetry_litto3d_bzh_2018_2021}. The reference ``zero'' of
-this product is based on the NGF/IGN69, which refers to the mean sea
-level recorded at the Marseille tide gauge between 1885 and 1897. This
-reference is known as the Terrestrial Altimetric Zero.
-
-\paragraph{Tides}\label{tides}
-
-Tidal data for the heatwave events at the study site were downloaded
-from the Intergovernmental Oceanographic Commission data portal
-\citep{ioc_sea_level_lecy}, for the nearest tide gauge located at Le
-Conquet. The ``zero'' for this dataset corresponds to the lowest
-astronomical tide, also known as the Hydrographic Zero.
-
-\paragraph{Reference intercalibration of both
-dataset}\label{reference-intercalibration-of-both-dataset}
-
-Since the altitude references of these two datasets differ, a correction
-factor must be applied to adjust the reference of one dataset to match
-the other. The SHOM annually provides a document called ``Références
-Altimétriques Marines'' \citep[RAM,][]{shom_ram_2022}, which includes
-correction factors for each seaport along the French coastline. These
-factors allow, among other things, the conversion of the Terrestrial
-Altimetric Zero to the Hydrographic Zero. For Le Conquet, the correction
-factor is 2.850 meters.
-
-\subsection{Laboratory experiment}\label{laboratory-experiment}
+\subsection{Laboratory Experiment}\label{laboratory-experiment}
 
 \subsubsection{Sampling and acclimation of
 seagrasses}\label{sampling-and-acclimation-of-seagrasses}
@@ -535,7 +374,7 @@ experimental treatment.
 
 \centering{
 
-\includegraphics[width=0.3\textwidth,height=\textheight]{Figs/High_res/Temperature_compare.png}
+\includegraphics[width=0.8\textwidth,height=\textheight]{Figs/High_res/Temperature_compare.png}
 
 }
 
@@ -685,8 +524,8 @@ infrared at 990, 970 and 950 nm, respectively.
 
 \begin{quote}
 \mbox{}%
-\paragraph{Multispectral imagery
-measurement}\label{multispectral-imagery-measurement}
+\paragraph{WILL BE REMOVED - Multispectral imagery
+measurement}\label{will-be-removed---multispectral-imagery-measurement}
 
 Parallel to hyperspectral measurements, multispectral images were taken
 at the beginning and end of each diurnal low tide (09:00 am and 03:00
@@ -722,11 +561,208 @@ fluorimeter (Ex: 425 nm, Em: 655 nm; RF-20A, SH
 
 \textbf{Au secours Philippe !!!}
 
+\subsection{Observation of seagrass leaves
+darkening.}\label{observation-of-seagrass-leaves-darkening.}
+
+\subsubsection{Field Observation}\label{field-observation}
+
+\phantomsection\label{cell-fig-quiberonMap}
+\begin{figure}[H]
+
+\centering{
+
+\includegraphics[width=1\textwidth,height=\textheight]{Figs/Low_res/Quiberon_map.png}
+
+}
+
+\caption{\label{fig-quiberonMap}Location of the fieldtrip campaign that
+occured in the 10th of September 2021. The light grey polygons indicates
+the intertidal zone (Zone between High tide and low tide, that is
+totally emerged at low tide) and the dark grey polygon indicate the
+extent of the drone flight. Green dots indicate location of quadrat
+picture over green seagrasses while red dots indicate location of
+quadrat took over darkened seagrasses.}
+
+\end{figure}%
+
+A fieldtrip, aiming to map a seagrass meadow near Quiberon (France :
+46°57'32.0''N, 2°10'37.0''W), occurred in the 10th of September 2021
+(Figure~\ref{fig-quiberonMap}). During this fieldtrip, darkening of
+seagrasses have been observed, resulting in the darkening of seagrass
+leaves over large area of the meadow (Figure~\ref{fig-QuiberonImg} C \&
+D). During this field trip, drone flights were conducted over two areas
+of the seagrass meadow using a DJI Matrice 200 equipped with a Sequoia
+Multispectral camera. The Sequoia captures four spectral bands: Green
+(550 ± 40 nm), Red (660 ± 40 nm), RedEdge (735 ± 10 nm), and Near
+Infrared (790 ± 40 nm). A total of 122 Ground Control Points (GCPs) were
+collected in the form of georeferenced quadrat images across the meadow
+. These images allow for visual assessment of vegetation type, density,
+and health status. The images were then divided into two categories:
+green seagrasses and darkened seagrasses, based on a visual estimation
+of the leaf condition (Figure~\ref{fig-quiberonMap}).
+
+\phantomsection\label{cell-fig-QuiberonImg}
+\begin{figure}[H]
+
+\centering{
+
+\includegraphics[width=1\textwidth,height=\textheight]{Figs/Low_res/img_Quiberon.png}
+
+}
+
+\caption{\label{fig-QuiberonImg}Illustrations of the two health
+conditions of seagrasses observed in the field. A: Global view of a
+green green meadow; B: Quadrat images of green seagrasses; C: Quadrat
+images of darkened seagrasses; D: Global view of an darkened meadow. All
+images were taken on September 10th, 2021, in Quiberon.}
+
+\end{figure}%
+
+\subsubsection{Temparature Data and identification of
+heatwaves}\label{temparature-data-and-identification-of-heatwaves}
+
+\paragraph{Air temperature}\label{air-temperature}
+
+Since January 1, 2024, Meteo France weather data has been freely and
+openly accessible. Hourly air temperature data (°C) for the French
+Atlantic and Channel coasts was retrieved using a
+\href{https://github.com/SigOiry/HeatWave_Seagrasses/blob/main/Scripts/MeteoFrance_Extraction.qmd}{custom
+script} as no API was available at the time of this study. Weather
+stations located within 10 kilometers of the coastline were considered,
+but only those with at least 30 years of data were included to ensure
+reliable climatological reconstruction. Of the 156 weather stations
+within 10 kilometers of the coast, only 36 had sufficient data for
+climatology reconstruction. The hourly data was then aggregated into
+daily mean temperatures for each station.
+
+Heatwave detection was performed using the HeatwaveR package in R
+\citep{heatwaveR}. This package utilizes the methodology proposed by
+\citep{hobday2016hierarchical} to detect heatwave events. The
+climatology for the year was computed using the temperature time series.
+An event was considered a heatwave each time the temperature exceeded
+the 90th percentile of the climatology for three consecutive days. The
+severity of each event has been assessed using the methodology proposed
+by \citep{hobday2018categorizing}. Following the methodology of
+\citep{schlegel2017nearshore}, coldspell events corresponding to
+temperature bellow the percentile 10th of the climatology during 3
+consecutives days have also been measured.
+
+Concerning heatwaves event near Quiberon, this methodology has been
+apply solely on the nearest weather station of our study site
+(Lorient-Lann Bihoue, 47°45'46''N 3°26'11''W , more than 395000
+observation since the 1st of February 1952).
+
+\paragraph{Water temperature}\label{water-temperature}
+
+SST data from the Copernicus CMEMS platform were downloaded for the
+French coast near Quiberon (47°29′03″N, 3°07′09″W), covering 1982-2022
+\citep{CMEMS_1}. Only pixels within an area of 2700 km² around Quiberon,
+Brittany, France (47°29′03″N, 3°07′09″W) were extracted and analyzed.
+This area was large enough to minimize missing values caused by cloud
+cover, yet small enough to avoid being influenced by the stability of
+offshore SST. The multi-sensor Level 3S Sea Surface Temperature (SST)
+product the we used is built from nighttime infrared satellite data,
+including sources like ESA SST CCI, C3S, and EUMETSAT. Data from AVHRR,
+ATSR, and SLSTR radiometers are used, but only those with a quality
+level above 4. An intercalibration method ensures consistency, and a
+daily reference SST field is constructed by combining the best data with
+median values from other sources. A large-scale bias correction is
+applied, and daily single-sensor composites are merged into a
+multi-sensor file (L3S), selecting the best sensor for each grid cell. A
+daily average was computed for the time series, and the HeatwaveR
+package \citep{heatwaveR} was used to compute SST climatology and detect
+SST events using the same method as air temperature event detection.
+
+\subsubsection{Satellite Observation}\label{satellite-observation}
+
+Two Sentinel-2 images covering the field trip site
+(Figure~\ref{fig-quiberonMap}) were downloaded from the Copernicus
+platform \citep{copernicus_sentinel2}. The first image was taken before
+the heatwave event on September 1, 2021, and the second one after the
+event on September 6, 2021. Both images were acquired at Level-2
+processing, in surface reflectance, and were orthorectified and
+atmospherically corrected to account for the effects of the atmosphere
+on reflectance values \citep{sen2cor}.
+
+Reflectance value of each GCPs (Figure~\ref{fig-quiberonMap}) have been
+exctracted and compared before and after the heatwave event.
+
+\subsubsection{Emersion Time of
+Seagrasses}\label{emersion-time-of-seagrasses}
+
+To estimate the emersion time of seagrasses during low tide, both
+bathymetric and tidal data are required.
+
+\paragraph{Bathymetry}\label{bathymetry}
+
+Bathymetry data for the study site were obtained from the ``Service
+Hydrographique et Océanographique de la Marine''
+\citep{shom_bathymetry_litto3d_bzh_2018_2021}. Litto3D® is a continuous
+land-sea elevation database providing a three-dimensional representation
+of ground shape and position along the coastal fringe of French
+territory, acquired through airborne bathymetric lidar over the sea and
+airborne topographic lidar up to 2 km inland, and is available as a
+gridded digital terrain model. This dataset is The reference ``zero'' of
+this product is based on the NGF/IGN69, which refers to the mean sea
+level recorded at the Marseille tide gauge between 1885 and 1897. This
+reference is known as the Terrestrial Altimetric Zero.
+
+\paragraph{Tides}\label{tides}
+
+Tidal data for the heatwave events at the study site were downloaded
+from the Intergovernmental Oceanographic Commission data portal
+\citep{ioc_sea_level_lecy}, for the nearest tide gauge located at Le
+Conquet. The ``zero'' for this dataset corresponds to the lowest
+astronomical tide, also known as the Hydrographic Zero.
+
+\paragraph{Reference intercalibration of both
+dataset}\label{reference-intercalibration-of-both-dataset}
+
+Since the altitude references of these two datasets differ, a correction
+factor must be applied to adjust the reference of one dataset to match
+the other. The SHOM annually provides a document called ``Références
+Altimétriques Marines'' \citep[RAM,][]{shom_ram_2022}, which includes
+correction factors for each seaport along the French coastline. These
+factors allow, among other things, the conversion of the Terrestrial
+Altimetric Zero to the Hydrographic Zero. For Le Conquet, the correction
+factor is 2.850 meters.
+
+\paragraph{Emersion time of each pixels of the Digital Elevation
+Model}\label{emersion-time-of-each-pixels-of-the-digital-elevation-model}
+
+Once the tidal and bathymetric datasets are aligned to the same
+reference, water height can be directly compared to ground elevation.
+For each pixel in the DEM, the elevation was compared to water height
+across all time points during the heatwave event. Instances when the
+water level fell below the pixel's elevation were summed to calculate
+the total emergence time for each pixel.
+
 \section{Results}\label{results}
+
+\subsection{Laboratory Experiment}\label{laboratory-experiment-1}
+
+\subsubsection{Spectral inspection}\label{spectral-inspection}
+
+\phantomsection\label{cell-fig-Exp_Spectra}
+\begin{figure}[H]
+
+\centering{
+
+\includegraphics[width=1\textwidth,height=\textheight]{Figs/Low_res/plot_Spectra_exp.png}
+
+}
+
+\caption{\label{fig-Exp_Spectra}Hyperspectral Reflectance signature
+collected during the three days of the experiment for both the Control
+(Left) and the Treatment (Right). A min-max standardization has been
+applied to each individual spectrum. Temperature profiles applied to
+both scenarios are shown in Figure~\ref{fig-Profile}.}
+
+\end{figure}%
 
 \subsection{Heatwaves of Quiberon}\label{heatwaves-of-quiberon}
 
-\subsubsection{Spectral inspection}\label{spectral-inspection}
+\subsubsection{Spectral inspection}\label{spectral-inspection-1}
 
 The Sentinel-2 images used in this study are dated from the 1st of
 September 2021 and the 6th of September 2021
@@ -833,6 +869,18 @@ Equation~\ref{eq-gli},}
 
 \end{figure}%
 
+\subsubsection{Mapping of the seagrass
+darkening}\label{mapping-of-the-seagrass-darkening}
+
+Using the \textbf{EquationExperimental}, we can detect seagrass patches
+that have darkened. Following the heatwave events, a total of 20.64
+hectares of seagrass darkened, with the largest affected patch covering
+nearly 3 hectares. Overall, 19 \% of the total seagrass meadow area
+showed signs of darkening between the 1st and 6th of September 2021.
+Comparing the spatial distribution of darkened patches with the site's
+bathymetry reveals that 97.3 \% of darkened areas are located at above
+3.9 meters of bathymetry Figure~\ref{fig-Map_darkening_Bathy}.
+
 \phantomsection\label{cell-fig-Map_darkening_Bathy}
 \begin{figure}[H]
 
@@ -846,6 +894,31 @@ Equation~\ref{eq-gli},}
 seagrasses during the heatwave events of September 2021 in Quiberon. A:
 1m bathymetry isobar (golden line); B: Result of the detection of
 darkened seagrass patches (Blue plolygons)}
+
+\end{figure}%
+
+Additionally, analysis of bathymetry data to determine seagrass emersion
+time shows a clear relationship between the time seagrass is exposed to
+air and its darkening. During the heatwave, no significant darkening
+occurred with daily exposure below 13 hours. However, when exposure
+reached 13 hours or more per day, seagrasses began to darken, peaking at
+around 14.5 hours of daily exposure Figure~\ref{fig-GAM_Emersion}.
+
+\phantomsection\label{cell-fig-GAM_Emersion}
+\begin{figure}[H]
+
+\centering{
+
+\includegraphics[width=1\textwidth,height=\textheight]{Figs/Low_res/GAM_emersion.png}
+
+}
+
+\caption{\label{fig-GAM_Emersion}Relative change in the Green Leaf Index
+(GLI) before and during heatwave events as a function of the daily
+emergence time of seagrasses. The line represents a Generalized Linear
+Model (GLM) prediction, and the shaded area indicates the standard
+error. Shaded points represent raw data, with each point corresponding
+to a single pixel.}
 
 \end{figure}%
 

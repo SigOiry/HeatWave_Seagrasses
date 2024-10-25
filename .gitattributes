@@ -1,3 +1,5 @@
 Data/MeteoFrance/** filter=lfs diff=lfs merge=lfs -text
 
 Data/Biolittoral/Bio-Littoral_Drone/reprocessed_Simon/** filter=lfs diff=lfs merge=lfs -text
+
+Data/df_experiment.csv filter=lfs diff=lfs merge=lfs -text
