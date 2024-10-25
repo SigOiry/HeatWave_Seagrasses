@@ -1272,7 +1272,6 @@ HW6 <- MapRs::clean_spectra(HW6, batch_size = 100)
 #| eval: false
 #| warning: false
 
-
 Rad <- MapRs::Open_library("Data/Radiance_Referances") %>% 
   mutate(Date = ymd_hms(paste0("2024-08-21 ",substr(Spectra,1,2) %>%  gsub("[^0-9]", "", .),":00:00"))) %>%
   group_by(Date, Wavelength) %>% 
@@ -1381,7 +1380,8 @@ write.csv(df, "Data/df_experiment.csv", row.names = F)
 
 ### Spectral inspection
 
-
+Hyperspectral signatures were acquired throughout the experiment for both the Control and Treatment groups. In the Control group, reflectance remained relatively stable over time, with minimal changes in intensity and shape. The slight variations in spectral shape observed in this group are due to water evaporation during each low tide. Initially, the sample is very wet at the start of low tide but dries progressively, reaching peak dryness just before the tide rises again. This variation in water content induces variations in the reflectance spectra. Overall, the reflectance spectra for the Control group displayed a peak at 560 nm (in the green region), low values at 665 nm (indicative of strong chlorophyll-a absorption), and a high infrared plateau (>705 nm) [@fig-Exp_Spectra, left]. 
+In contrast to the Control group, the Treatment group shows more pronounced changes in reflectance over time. Initially, at the start of the experiment (T0), reflectance values are comparable to those measured in the Control group, particularly in the visible region, with a notable peak around 560 nm (green region) and a distinct trough at 665 nm, indicating chlorophyll-a absorption. From T24 onward, reflectance tends to decrease across all wavelengths, especially in the green (560 nm) and near-infrared regions (>705 nm). By T48, the near-infrared reflectance stabilizes at levels similar to those observed at T24. However, in the green region, the drop in reflectance continues slightly. Additionally, there is a slight increase in reflectance in the red region (665 nm) between T24 and T48, which may be associated with a reduction in chlorophyll-a concentration [@fig-Exp_Spectra, right]. 
 
 
 ```{r Plot Spectra}
@@ -1445,6 +1445,7 @@ ggsave("Paper/Figs/Low_res/plot_Spectra_exp.png", plot_Spectra_exp, height = 5, 
 
 knitr::include_graphics("Figs/Low_res/plot_Spectra_exp.png")
 ```
+
 ## Heatwaves of Quiberon
 ### Spectral inspection
 
