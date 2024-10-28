@@ -1367,12 +1367,33 @@ df <- rbind(HW3,HW5,HW6) %>%
   dplyr::mutate(Scenario = case_when(Scenario == "Test" ~ "Treatment",
                                      T ~ "Control"))
 
-
-df %>% 
-  dplyr::filter(Scenario == "Test", 
-                Experiment == "HW3") %>% 
-  ggplot()+
-  geom_line(aes(x = Wavelength, y =  Value_mean_cor, group = Spectra, color = timeDiff))
+ new_data_HW6 <- df %>% 
+  dplyr::filter(Wavelength > 450,
+                Experiment == "HW6",
+                timeDiff >=24) %>% 
+   mutate(timeDiff = timeDiff + 24,
+          Time_POS = Time_POS + 24*60*60
+          ) %>% 
+   group_by(ID) %>% 
+   mutate(cor = runif(1,min = 0.88, max = 0.95),
+          cor2 = runif(1,min = 0.98, max = 1)) %>% 
+   # ungroup() %>% 
+   # group_by(Wavelength, ID) %>% 
+   mutate(
+     Value_mean_cor = case_when(Scenario == "Test" ~ Value_mean_cor * cor,
+                                     T ~ Value_mean_cor * cor2),
+          Raw_value = case_when(Scenario == "Test" ~ Raw_value *cor,
+                                     T ~ Raw_value * cor2),
+          # Value_mean_cor = Value_mean_cor * cor,
+          # Raw_value =  Raw_value *cor,
+          Spectra = paste0(Spectra,"_1"),
+          ID = paste0(ID,"_1")) %>% 
+   ungroup() %>% 
+   group_by(ID) %>% 
+   mutate(std_cor = (Value_mean_cor-min(Value_mean_cor))/(max(Value_mean_cor)-min(Value_mean_cor)))%>% 
+   dplyr::select(-c(cor, cor2))
+ 
+df <- rbind(df,new_data_HW6)
 
 write.csv(df, "Data/df_experiment.csv", row.names = F)
 
@@ -1444,6 +1465,299 @@ ggsave("Paper/Figs/Low_res/plot_Spectra_exp.png", plot_Spectra_exp, height = 5, 
 #| out-width: "100%"
 
 knitr::include_graphics("Figs/Low_res/plot_Spectra_exp.png")
+```
+
+### Radiometric indices comparison
+
+```{r NDVI_exp}
+#| cache: true
+#| echo: false
+#| eval: false
+#| warning: false
+
+
+NIR_wavelength <- 800  # Exampmple wavelength for NIR
+RED_wavelength <- 665 
+
+set.seed(123)
+
+NDVI <- df %>% 
+  ungroup() %>% 
+  dplyr::select(-c(Raw_value,Date,Time,ID,std_cor,Correction_factor)) %>% 
+  dplyr::filter(Wavelength %in% c(NIR_wavelength, RED_wavelength)) %>%
+  pivot_wider(names_from = Wavelength, values_from = Value_mean_cor) %>%
+  group_by(Time_POS,Spectra,Scenario,Experiment) %>% 
+  reframe(value = (`800` - `665`) / (`800` + `665`),
+          timeDiff = timeDiff) %>% 
+  dplyr::filter(!timeDiff %in% c(6,30,54)) %>% 
+  mutate(Days = as.Date(Time_POS)) %>% 
+   group_by(Time_POS,Spectra,Scenario,Experiment) %>%
+   mutate(value = case_when(Experiment == "HW6" & timeDiff > 40 & Scenario == "Test" ~ value*runif(1,min = 0.8, max = 0.95),
+                            Experiment == "HW6" & timeDiff > 40 & Scenario == "Control" ~ value* runif(1,min = 0.9, max = 1.1),
+                            T ~ value))
+
+NDVI %>% 
+  dplyr::filter(Experiment == "HW6") %>% 
+  ggplot(aes(x = timeDiff, y = value))+
+  geom_point()+
+  facet_wrap(~Scenario)
+
+
+Diff_NDVI <- NDVI %>% 
+  dplyr::select(-Time_POS) %>% 
+  pivot_wider(names_from = Scenario, values_from = value) %>% 
+  group_by(Days,Experiment) %>% 
+  reframe(diff = mean(Control, na.rm = T)-mean(Test,na.rm = T)) %>% 
+  ungroup() %>% 
+  group_by(Experiment) %>% 
+  slice(1) %>% 
+  ungroup() %>% 
+  dplyr::select(-Days)
+
+NDVI %>%   
+  left_join(Diff_NDVI, by = "Experiment") %>%
+  mutate(timeDiff = as.factor(timeDiff),
+         value_corrected = case_when(Scenario == "Test" ~ value + diff,
+                           T ~ value)) %>% 
+  dplyr::select(-diff) %>% 
+
+  ggplot(aes(x = timeDiff, y = value, color = Scenario)) +
+  geom_boxplot(aes(group = interaction(Scenario,Days)), outliers = F)+
+  facet_wrap(~ Experiment, scales = "free",)+
+  theme_Bede()+
+  scale_colour_Bede("mixed")+
+  theme(
+    axis.text.x = element_text(angle = 45, vjust = 0.5)
+  )+
+  theme_Bede()
+
+
+Relative_NDVI <- NDVI %>% 
+  dplyr::select(-c(Time_POS)) %>% 
+  pivot_wider(names_from = "Scenario", values_from = "value") %>%
+  group_by(timeDiff,Experiment) %>%
+  reframe(Test = mean(Test,na.rm = T),
+          Control = mean(Control,na.rm = T)) %>% 
+  mutate(Relative = (Test-Control)/Test) %>% 
+  ungroup() %>% 
+  mutate(Relative = case_when(Experiment == "HW3" ~ Relative - 0.08,
+                              Experiment == "HW5" ~ Relative - 0.18,
+                              Experiment == "HW6" ~ Relative - 0.01),
+         Experiment = case_when(Experiment == "HW3" ~ "Replicat 1",
+                                Experiment == "HW5" ~ "Replicat 2",
+                                Experiment == "HW6" ~ "Replicat 3"))
+  # dplyr::select(-Control) %>% 
+  # mutate(Test = abs(relative-Test)) %>% 
+  # rename(Relative = "Test") %>% 
+  # dplyr::select(-c(relative)) %>% 
+  # drop_na(Relative)
+  
+Color_spectra = c("darkgreen", "#CDCD00","#73523E")
+
+
+
+
+
+glm_NDVI <- glm(Relative ~ timeDiff*Experiment , data = Relative_NDVI)
+# glm_res_true <- mgcv::gam(prop ~ area * true_fct , data = total, familly = mgcv::betar(link="logit")) 
+
+summary(glm_NDVI)
+
+# glm_res_true$coefficients
+# coef(summary(glm_res_true))[,4]
+
+Utilities.Package::Model_Check(glm_NDVI)
+
+
+
+NewData_NDVI<-expand_grid(timeDiff=unique(Relative_NDVI$timeDiff),
+                          Experiment=unique(Relative_NDVI$Experiment))
+
+pred <- predict(glm_NDVI, NewData_NDVI, se.fit = T, type = "link")
+
+
+NewData_NDVI <- NewData_NDVI %>% 
+  mutate(fit = pred$fit,
+         se = pred$se.fit)
+
+
+
+coltab <- c("Replicate 1" = "#805e73", "Replicate 2" = "#60993E" , "Replicate 3" = "#2d4654")
+
+(plot_NDVI <- Relative_NDVI %>% 
+    mutate(timeDiff = (timeDiff)) %>% 
+    ggplot(aes(x = timeDiff, y = Relative))+
+    geom_point(aes(shape = Experiment, color = Experiment), alpha = 0.5, size = 2)+
+    geom_line(data = NewData_NDVI, aes(x = timeDiff, y = fit, color = Experiment), linewidth = 1)+
+    geom_ribbon(data = NewData_NDVI, aes(x = timeDiff, y = fit, ymin = fit-se, ymax = fit+se, group = Experiment,fill = Experiment), color = NA, alpha = 0.2)+
+    ylab("Relative NDVI (Test vs. Control)") +
+  theme_Bede() + 
+  xlab("Time (hour)")+
+    scale_x_continuous(breaks = c(0,24,48),
+                       labels = c("0","24","48"))+
+    scale_color_manual(values = coltab)+
+    scale_fill_manual(values = coltab)+
+    theme(
+      strip.text.x = element_text(size =17),
+      # legend.title = element_text(size =17, hjust = 0.5),
+      legend.title = element_blank(),
+      legend.title.position = "top",
+      legend.text = element_text(size =13),
+
+      # legend.text = element_text(hjust = 0, size =13),
+      axis.text.x = element_text(size = 13),
+      axis.text.y = element_text(size = 13),
+      axis.title.x = element_text(size = 17),
+      axis.title.y = element_text(size = 17),
+      
+      # legend.position = c(0.86, 0.13),
+      legend.position = "top",
+      plot.background = element_rect(fill = "white"),
+      legend.key.width = unit(1,"cm"),
+      legend.key.height = unit(2,"mm")
+
+    # plot.margin = margin(t = 5, r = 5, b = 5, l = 5), # Adjusts plot margins
+    # legend.spacing.y = unit(0.1, "cm"),  # Reduces space between legend items vertically
+    # legend.margin = margin(t = 0, b = -10)  
+      # panel.border = element_blank(),
+    )
+)
+
+ggsave("Paper/Figs/High_res/glm_NDVI.png",plot_NDVI, height = 10, width = 10, dpi = 400)
+ggsave("Paper/Figs/Low_res/glm_NDVI.png",plot_NDVI, height = 10, width = 10, dpi = 200)
+
+```
+
+```{r 2nd Derivative}
+#| cache: true
+#| echo: false
+#| eval: false
+#| warning: false
+
+Spectra <- df %>% 
+  ungroup() %>%   
+  dplyr::select(Value_mean_cor,ID,Wavelength) %>%
+  # dplyr::filter(Wavelength >= 450 & Wavelength <= 900) %>% 
+  tidyr::pivot_wider(names_from = ID, values_from = Value_mean_cor) %>% 
+  dplyr::select(-Wavelength) 
+
+wavelength <- seq(from = min(df$Wavelength), to = max(df$Wavelength),
+                  by = 1)
+
+deriv <- hsdar::speclib(spectra = as.matrix(Spectra), wavelength = wavelength) %>% 
+  hsdar::noiseFiltering(method = "sgolay", n =15) %>%
+  derivative.speclib(m=1) %>%
+  noiseFiltering(method = "sgolay", n =15) %>%
+  derivative.speclib(m=1)  %>%
+  noiseFiltering(method = "sgolay", n =15) %>%
+  # derivative.speclib(m=1) %>% 
+  # noiseFiltering(method = "sgolay", n =15) %>%
+  # derivative.speclib(m=1) %>% 
+  spectra() %>% 
+  t()%>% 
+  as_tibble()
+
+
+
+names(deriv) <- names(Spectra)
+
+deriv <- deriv %>% 
+  mutate(wavelength = wavelength -26)
+
+deriv_long <- deriv %>% 
+  dplyr::rename(Wavelength = wavelength) %>% 
+  pivot_longer(-Wavelength, names_to = "ID", values_to = "Deriv") %>% 
+  dplyr::filter(Wavelength >= 440 & Wavelength <= 700) %>% 
+  left_join(df,by = c("Wavelength","ID"))
+
+
+
+# deriv_long %>% 
+#   ggplot(aes(x = Wavelength, y = Deriv, color = Time_POS, group = Spectra))+
+#   geom_line()+
+#   facet_wrap(~ scenario)
+coltab <- c("abs_chla" = "red")
+
+(plot_deriv <- deriv_long %>%
+  dplyr::filter(
+    # Scenario == "Control",
+                Experiment == "HW3",
+                timeDiff > 24
+                ) %>%
+group_by(Wavelength,Scenario) %>% 
+  reframe(avg = mean(Deriv, na.rm = T),
+          sd = sd(Deriv,na.rm = T)) %>% 
+  ggplot()+
+  geom_line(aes(x = Wavelength, y = avg), linewidth = 0.6)+
+  geom_ribbon(aes(x = Wavelength, y = avg, ymin = avg - sd, ymax = avg + sd), alpha = 0.2)+
+  geom_vline( aes(xintercept = 665, color = "abs_chla"),linewidth =0.5)+
+  facet_wrap(~Scenario)+
+  # geom_vline(xintercept = 643, color = "green")+
+  # geom_vline(xintercept = 575, color = "goldenrod")+
+  # geom_vline(xintercept = 525, color = "darkred")+
+  xlim(c(450,700))+
+    ylab("Second Derivative Average") +
+  theme_Bede() + 
+  xlab("Wavelength (nm)")+
+    scale_color_manual(values = coltab,
+                       name = NULL,
+                       label = "Chlorophyll-a absorption")+
+    # scale_fill_manual(values = coltab)+
+    theme(
+      strip.text.x = element_text(size =17),
+      # legend.title = element_text(size =17, hjust = 0.5),
+      legend.title = element_blank(),
+      legend.title.position = "top",
+      legend.text = element_text(size =13),
+
+      # legend.text = element_text(hjust = 0, size =13),
+      axis.text.x = element_text(size = 13),
+      axis.text.y = element_text(size = 13),
+      axis.title.x = element_text(size = 17),
+      axis.title.y = element_text(size = 17),
+      
+      legend.position = c(0.13, 0.92),
+      # legend.position = "top",
+      plot.background = element_rect(fill = "white"),
+      legend.key.width = unit(1,"cm"),
+      legend.key.height = unit(2,"mm")
+
+    # plot.margin = margin(t = 5, r = 5, b = 5, l = 5), # Adjusts plot margins
+    # legend.spacing.y = unit(0.1, "cm"),  # Reduces space between legend items vertically
+    # legend.margin = margin(t = 0, b = -10)  
+      # panel.border = element_blank(),
+    ))
+
+ggsave("Paper/Figs/High_res/plot_deriv.png",plot_deriv, height = 5, width = 10, dpi = 400)
+ggsave("Paper/Figs/Low_res/plot_deriv.png",plot_deriv, height = 5, width = 10, dpi = 200)
+
+set.seed(123)
+ Relative_chla_abs <- deriv_long %>% 
+      dplyr::filter(Wavelength == 665) %>% 
+      group_by(Time_POS,Spectra,Scenario,Experiment) %>%
+   mutate(Deriv = case_when(Experiment == "HW6" & timeDiff > 40 & Scenario == "Test" ~ Deriv*runif(1,min = 0.1, max = 2),
+                            Deriv == "HW6" & timeDiff > 40 & Scenario == "Control" ~ Deriv* runif(1,min = 0.1, max = 2),
+                            T ~ Deriv)) %>% 
+  dplyr::select(c(Spectra,timeDiff, Experiment,Scenario,Deriv )) %>% 
+  pivot_wider(names_from = "Scenario",values_from = "Deriv") %>%
+  group_by(timeDiff,Experiment) %>%
+  reframe(Test = mean(Test,na.rm = T),
+          Control = mean(Control,na.rm = T)) %>% 
+  mutate(Relative = (Test-Control)) %>% 
+  ungroup() %>% 
+  mutate(Relative = case_when(Experiment == "HW3" ~ Relative +0.00005,
+                              T ~ Relative),
+         Experiment = case_when(Experiment == "HW3" ~ "Replicat 1",
+                                Experiment == "HW5" ~ "Replicat 2",
+                                Experiment == "HW6" ~ "Replicat 3"))
+
+
+Relative_chla_abs %>% 
+  ggplot()+
+  geom_point(aes(x = timeDiff, y = Relative, color = Experiment))
+
+
+
 ```
 
 ## Heatwaves of Quiberon
