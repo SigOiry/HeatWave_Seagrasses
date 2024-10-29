@@ -7,7 +7,7 @@ img_list <- "Data/Sentinel2/" %>%
   list.files(recursive = T, full.names = T ,pattern = ".SAFE", include.dirs = T) %>% 
   as_tibble() %>% 
   rename(path = "value") %>% 
-  dplyr::filter(str_detect(path,"20210906") | str_detect(path,"20240919"))
+  dplyr::filter(str_detect(path,"20210906"))
 
 msk <- read_sf("Data/shp/mask_seagrasses.shp")
 
@@ -51,14 +51,13 @@ Slope_Green_red3 <- function(img){
 }
 
 
-
-NDVI_IR <- function(img){
-  a <- (((img$B05)-(img$B04))/((img$B05)+(img$B04)))
-  return(c(indice = "NDVI_IR", raster = a))
+SDI <- function(img){
+  a <- ((((img$B05)-(img$B04))-((img$B03)-(img$B02)))/(((img$B05)+(img$B04))+((img$B03)-(img$B02))))
+  return(c(indice = "SDI", raster = a))
 }
 
 
-indices <- c(NDVI, IRslope, Darkening1, Green_red,Slope_Green_red,Slope_Green_red2,NDVI_IR,Slope_Green_red3)
+indices <- c(NDVI, IRslope, Darkening1, Green_red,Slope_Green_red,Slope_Green_red2,Slope_Green_red3, SDI)
 
 
 for(i in 1:nrow(img_list)){

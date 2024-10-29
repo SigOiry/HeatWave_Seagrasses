@@ -311,6 +311,7 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#spectral-inspection" id="toc-spectral-inspection" class="nav-link" data-scroll-target="#spectral-inspection"><span class="header-section-number">3.1.1</span> Spectral inspection</a></li>
   <li><a href="#radiometric-indices-comparison" id="toc-radiometric-indices-comparison" class="nav-link" data-scroll-target="#radiometric-indices-comparison"><span class="header-section-number">3.1.2</span> Radiometric indices comparison</a></li>
+  <li><a href="#buidling-the-seagrass-darkening-radiometric-index" id="toc-buidling-the-seagrass-darkening-radiometric-index" class="nav-link" data-scroll-target="#buidling-the-seagrass-darkening-radiometric-index"><span class="header-section-number">3.1.3</span> Buidling the Seagrass Darkening radiometric index</a></li>
   </ul></li>
   <li><a href="#heatwaves-of-quiberon" id="toc-heatwaves-of-quiberon" class="nav-link" data-scroll-target="#heatwaves-of-quiberon"><span class="header-section-number">3.2</span> Heatwaves of Quiberon</a>
   <ul class="collapse">
@@ -545,6 +546,13 @@ Figure&nbsp;7: Second Derivative of the Control and the Treatment (A) and evolut
 </div>
 </div>
 </div>
+</section>
+<section id="buidling-the-seagrass-darkening-radiometric-index" class="level3" data-number="3.1.3">
+<h3 data-number="3.1.3" class="anchored" data-anchor-id="buidling-the-seagrass-darkening-radiometric-index"><span class="header-section-number">3.1.3</span> Buidling the Seagrass Darkening radiometric index</h3>
+<p>Based on these evolution of spectral feature of seagrasses exposed to extreme events, a radiometric index of the darkening of seagrass can be made. Darkening of seagrasses is not only characterized by a drop in reflectance in the green regions but also by a significant drop in the red edge part of the electromagnetic spectra (<a href="#fig-Exp_Spectral_indices" class="quarto-xref">Figure&nbsp;7</a>).</p>
+<p><strong>TRY1 :</strong> <span id="eq-SDI"><span class="math display">\[
+\text{SDI} = \frac{\left( R(705) - R(665) \right) - \left( R(560) - R(450) \right)}{R(705) + R(665) + R(560) + R(450)}
+\tag{5}\]</span></span></p>
 </section>
 </section>
 <section id="heatwaves-of-quiberon" class="level2" data-number="3.2">
@@ -1171,7 +1179,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
-<script>var lightboxQuarto = GLightbox({"selector":".lightbox","loop":false,"closeEffect":"zoom","descPosition":"bottom","openEffect":"zoom"});
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","selector":".lightbox","openEffect":"zoom","loop":false,"descPosition":"bottom"});
 (function() {
   let previousOnload = window.onload;
   window.onload = () => {
