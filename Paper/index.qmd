@@ -2088,9 +2088,6 @@ plot_labeled <- ggplot()+
 
 ggsave("Paper/Figs/High_res/merged_indices.png",plot_labeled, height = 10, width = 10, dpi = 400)
 
-
-
-
 ```
 
 The second derivative of the spectral signature for both Control and Treatment groups was computed, highlighting key absorption features. Figure @fig-Exp_Spectral_indices A shows the average second derivative for the Control group (top) and the Treatment group (bottom) over the experiment's duration. Clear differences emerge between the two groups: the Control group exhibits more variability, reflecting more pronounced spectral features, whereas the Treatment group shows less variability, indicating fewer absorption features in its spectral signature. The peak absorption for both groups occurs at 665 nm, with values of $1.63 \times 10^{-4}$ for the Control group and $8.08 \times 10^{-5}$ for the Treatment group—a reduction of 50.31% by the experiment's end. 
