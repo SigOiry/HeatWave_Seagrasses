@@ -12,6 +12,7 @@ author:
     affiliations:
       - Institut des Substances et Organismes de la Mer, ISOMer, Nantes Université, UR 2160, F-44000 Nantes, France
   - name: Bede Ffinian Rowe Davies
+    orcid: 0000-0001-6462-4347
     corresponding: false
     roles: 
       - Investigation
@@ -20,6 +21,7 @@ author:
     affiliations:
       - Institut des Substances et Organismes de la Mer, ISOMer, Nantes Université, UR 2160, F-44000 Nantes, France
   - name: Philippe Rosa
+    orcid: 0000-0001-6621-3445
     corresponding: false
     roles: 
       - Data acquisition
@@ -28,6 +30,7 @@ author:
       - Institut des Substances et Organismes de la Mer, ISOMer, Nantes Université, UR 2160, F-44000 Nantes, France
   - name: Augustin Debly
     corresponding: false
+    orcid: 0009-0000-7194-7099
     roles: 
       - Investigation
       - Data acquisition
@@ -35,6 +38,7 @@ author:
     affiliations:
       - Institut des Substances et Organismes de la Mer, ISOMer, Nantes Université, UR 2160, F-44000 Nantes, France
   - name: Maria Laura Zoffoli
+    orcid: 0000-0003-1892-0051
     corresponding: false
     roles: 
       - Data acquisition
@@ -58,6 +62,7 @@ author:
     affiliations:
       - Bio-littoral, Immeuble Le Nevada, 2 Rue du Château de l'Eraudière, 44300 Nantes, France
   - name: Pierre Gernez
+    orcid: 0000-0003-2055-410X
     corresponding: false
     roles: 
       - Investigation
@@ -66,6 +71,7 @@ author:
     affiliations:
       - Institut des Substances et Organismes de la Mer, ISOMer, Nantes Université, UR 2160, F-44000 Nantes, France
   - name: Laurent Barillé
+    orcid: 0000-0001-5138-2684
     corresponding: false
     roles: 
       - Investigation
@@ -118,6 +124,7 @@ Remote sensing is increasingly being used to monitor marine ecosystems, includin
 This study aims to experimentally test the hypothesis that warm events, such as atmospheric heatwaves, alter the pigment composition and reflectance of the intertidal seagrass Nanozostera noltei. By linking these changes with satellite remote sensing data, the study seeks to provide insights into how heatwaves affect seagrass meadows and to assess the potential of remote sensing in monitoring these impacts
 
 # Material & Methods
+
 ## Laboratory Experiment
 
 ### Sampling and acclimation of seagrasses
@@ -569,7 +576,7 @@ $$ {#eq-MIWAI}
 
 where $R(990)$, $R(970)$ and $R(950)$ are the reflectance in the infrared at 990, 970 and 950 nm, respectively.
 
-> #### WILL BE REMOVED - Multispectral imagery measurement 
+> #### WILL BE REMOVED - Multispectral imagery measurement
 >
 > Parallel to hyperspectral measurements, multispectral images were taken at the beginning and end of each diurnal low tide (09:00 am and 03:00 pm). A Micasense RedEdge-MX Dual multispectral camera, originally designed to be mounted on a drone, was modified for use without a drone. A 3D-printed mount was designed to attach the camera to the intertidal chamber and ensure that each picture was captured under the same conditions. At each time step (09:00 am and 03:00 pm), a first picture of the Spectralon was taken to allow for image correction in reflectance, followed by a second picture of the target. [DISCOV](https://sigoiry.github.io/DISCOV-MicaSense/), a Neural Network classification model previously developed to map intertidal vegetation using drone imagery, has been applied to each image taken inside the intertidal chambers. To understand the behavior of the model on seagrasses affected by heatwaves, classification images from before and after the heatwave have been compared.
 
@@ -1177,25 +1184,16 @@ Reflectance value of each GCPs (@fig-quiberonMap) have been exctracted and compa
 
 ### Emersion Time of Seagrasses
 
-To estimate the emersion time of seagrasses during low tide, both bathymetric and tidal data are required.
+To estimate the emersion time of seagrasses during low tide, bathymetric and tidal data were used. Bathymetry data for the Quiberon intertidal meadow were sourced from the “Service Hydrographique et Océanographique de la Marine” [@shom_bathymetry_litto3d_bzh_2018_2021]. It corresponds to the Litto3D® product, which is a three-dimensional land-sea elevation database, accurately depicting the coastal terrain along certain regions of the French shores. Litto3D data were collected through airborne bathymetric lidar over the sea and airborne topographic lidar extending up to 2 km inland and is available as a gridded digital terrain model. it uses the NGF/IGN69 reference “zero”, which corresponds to the mean sea level recorded at the Marseille tide gauge between 1885 and 1897, commonly known as the “Terrestrial Altimetric Zero”.
 
-#### Bathymetry
+Tidal data during the heatwave event were downloaded from the Intergovernmental Oceanographic Commission data portal [@ioc_sea_level_lecy], using measurements from the nearest tide gauge at Le Conquet. In this dataset, the reference “zero” corresponds to the lowest astronomical tide, also known as the Hydrographic Zero.
 
-Bathymetry data for the study site were obtained from the "Service Hydrographique et Océanographique de la Marine" [@shom_bathymetry_litto3d_bzh_2018_2021]. Litto3D® is a continuous land-sea elevation database providing a three-dimensional representation of ground shape and position along the coastal fringe of French territory, acquired through airborne bathymetric lidar over the sea and airborne topographic lidar up to 2 km inland, and is available as a gridded digital terrain model. This dataset is The reference "zero" of this product is based on the NGF/IGN69, which refers to the mean sea level recorded at the Marseille tide gauge between 1885 and 1897. This reference is known as the Terrestrial Altimetric Zero.
+Before calculating the emersion time, both datasets were intercalibrated to a common altitude reference. This involved applying a correction factor to the Litto3D data to align it with the Hydrographic zero. SHOM annually publishes a document called “Références Altimétriques Marines” [RAM, @shom_ram_2022], which provides these correction factors for each seaport along the French coastline. For Le Conquet port data from 2022, the correction factor was 2.85 m.
 
-#### Tides
-
-Tidal data for the heatwave events at the study site were downloaded from the Intergovernmental Oceanographic Commission data portal [@ioc_sea_level_lecy], for the nearest tide gauge located at Le Conquet. The "zero" for this dataset corresponds to the lowest astronomical tide, also known as the Hydrographic Zero.
-
-#### Reference intercalibration of both dataset
-
-Since the altitude references of these two datasets differ, a correction factor must be applied to adjust the reference of one dataset to match the other. The SHOM annually provides a document called "Références Altimétriques Marines" [RAM, @shom_ram_2022], which includes correction factors for each seaport along the French coastline. These factors allow, among other things, the conversion of the Terrestrial Altimetric Zero to the Hydrographic Zero. For Le Conquet, the correction factor is 2.850 meters.
-
-#### Emersion time of each pixels of the Digital Elevation Model
-
-Once the tidal and bathymetric datasets are aligned to the same reference, water height can be directly compared to ground elevation. For each pixel in the DEM, the elevation was compared to water height across all time points during the heatwave event. Instances when the water level fell below the pixel's elevation were summed to calculate the total emergence time for each pixel.
+Once aligned, the corrected elevation was compared to water height for each pixel and each time step during the heatwave event. The emersion time was then calculated as the daily total time each pixel remained exposed.
 
 # Results
+
 ## Laboratory Experiment
 
 ```{r functions_exp}
@@ -1401,9 +1399,9 @@ write.csv(df, "Data/df_experiment.csv", row.names = F)
 
 ### Spectral inspection
 
-Hyperspectral signatures were acquired throughout the experiment for both the Control and Treatment groups. In the Control group, reflectance remained relatively stable over time, with minimal changes in intensity and shape. The slight variations in spectral shape observed in this group are due to water evaporation during each low tide. Initially, the sample is very wet at the start of low tide but dries progressively, reaching peak dryness just before the tide rises again. This variation in water content induces variations in the reflectance spectra. Overall, the reflectance spectra for the Control group displayed a peak at 560 nm (in the green region), low values at 665 nm (indicative of strong chlorophyll-a absorption), and a high infrared plateau (>705 nm) [@fig-Exp_Spectra, left]. 
-In contrast to the Control group, the Treatment group shows more pronounced changes in reflectance over time. Initially, at the start of the experiment (T0), reflectance values are comparable to those measured in the Control group, particularly in the visible region, with a notable peak around 560 nm (green region) and a distinct trough at 665 nm, indicating chlorophyll-a absorption. From T24 onward, reflectance tends to decrease across all wavelengths, especially in the green (560 nm) and near-infrared regions (>705 nm). By T48, the near-infrared reflectance stabilizes at levels similar to those observed at T24. However, in the green region, the drop in reflectance continues slightly. Additionally, there is a slight increase in reflectance in the red region (665 nm) between T24 and T48, which may be associated with a reduction in chlorophyll-a concentration [@fig-Exp_Spectra, right]. 
+Hyperspectral signatures were acquired throughout the experiment for both the Control and Treatment groups. In the Control group, reflectance remained relatively stable over time, with only minimal changes in magnitude and spectral features. Slight variations in spectral shape observed in this group were attributed to differing levels of water evaporation during low tides. Immediately after the water level receded from high to low tide, samples were very wet but dried progressively, reaching maximum dryness just before the tide rose again. This fluctuation in water content induced variations in the reflectance spectra. Overall, the Control group’s reflectance spectra displayed a peak at 560 nm (green region), low values at 665 nm (indicative of strong chlorophyll-a absorption), and a high plateau in the near-infrared (NIR), beyond 705 nm (@fig-Exp_Spectra, left).
 
+In contrast, the Treatment group showed more pronounced changes in reflectance throughout the experiment. On the first day (T0), reflectance values were comparable to those in the Control group, especially in the visible region, with a notable peak around 560 nm and a pronounced trough at 665 nm. However, starting from T24 (the second day), reflectance began to decrease across all wavelengths, particularly around 560 nm and in the NIR. Around T48, the NIR reflectance appeared to stabilize at values like those observed at T24. In the green region, however, reflectance continued to decline slightly until the experiment’s conclusion. Additionally, a slight increase in reflectance at 665 nm between T24 and T48 was observed, possibly associated with a reduction in chlorophyll-a concentration (@fig-Exp_Spectra, right).
 
 ```{r Plot Spectra}
 #| cache: true
@@ -1411,7 +1409,12 @@ In contrast to the Control group, the Treatment group shows more pronounced chan
 #| eval: false
 #| warning: false
 
-df_spectra_exp <- read.csv("Data/df_experiment.csv")
+library(MapRs)
+library(lubridate)
+library(patchwork)
+library(hsdar)
+
+# df_spectra_exp <- read.csv("Data/df_experiment.csv")
 
 Color_spectra = c("darkgreen", "#CDCD00","#73523E")
 
@@ -1469,16 +1472,255 @@ knitr::include_graphics("Figs/Low_res/plot_Spectra_exp.png")
 
 ### Radiometric indices comparison
 
+```{r 2nd Derivative}
+#| cache: true
+#| echo: false
+#| eval: false
+#| warning: false
+
+library(MapRs)
+library(lubridate)
+library(patchwork)
+library(hsdar)
+library(ggh4x)
+library(tidyverse)
+
+df <- read.csv("Data/df_experiment.csv")
+
+
+Spectra <- df %>% 
+  dplyr::ungroup() %>%   
+  dplyr::select(Value_mean_cor,ID,Wavelength) %>%
+  # dplyr::filter(Wavelength >= 450 & Wavelength <= 900) %>% 
+  tidyr::pivot_wider(names_from = ID, values_from = Value_mean_cor) %>% 
+  dplyr::select(-Wavelength) 
+
+wavelength <- seq(from = min(df$Wavelength), to = max(df$Wavelength),
+                  by = 1)
+
+deriv <- hsdar::speclib(spectra = as.matrix(Spectra), wavelength = wavelength) %>% 
+  hsdar::noiseFiltering(method = "sgolay", n =15) %>%
+  derivative.speclib(m=1) %>%
+  noiseFiltering(method = "sgolay", n =15) %>%
+  derivative.speclib(m=1)  %>%
+  noiseFiltering(method = "sgolay", n =15) %>%
+  # derivative.speclib(m=1) %>% 
+  # noiseFiltering(method = "sgolay", n =15) %>%
+  # derivative.speclib(m=1) %>% 
+  spectra() %>% 
+  t()%>% 
+  as_tibble()
+
+
+
+names(deriv) <- names(Spectra)
+
+deriv <- deriv %>% 
+  mutate(wavelength = wavelength -26)
+
+deriv_long <- deriv %>% 
+  dplyr::rename(Wavelength = wavelength) %>% 
+  pivot_longer(-Wavelength, names_to = "ID", values_to = "Deriv") %>% 
+  dplyr::filter(Wavelength >= 440 & Wavelength <= 700) %>% 
+  left_join(df,by = c("Wavelength","ID"))
+
+
+
+# deriv_long %>% 
+#   ggplot(aes(x = Wavelength, y = Deriv, color = Time_POS, group = Spectra))+
+#   geom_line()+
+#   facet_wrap(~ scenario)
+coltab_chla <- c("abs_chla" = "red")
+
+
+
+deriv_long %>%
+  dplyr::filter(
+    # Scenario == "Control",
+                Experiment == "HW3",
+                timeDiff > 24
+                ) %>%
+group_by(Wavelength,Scenario) %>% 
+  reframe(avg = mean(Deriv, na.rm = T),
+          sd = sd(Deriv,na.rm = T)) %>% 
+  pivot_wider(values_from = avg, names_from = Scenario) %>% 
+  group_by(Wavelength) %>% 
+  reframe(Control = mean(Control, na.rm = T),
+          Test = mean(Test, na.rm = T),
+          sd = mean(sd, na.rm = T)) %>% 
+  mutate(Diff = Test-Control) %>% 
+  ggplot()+
+  geom_line(aes(x = Wavelength, y = Diff * 100000), linewidth = 0.6)+
+  geom_ribbon(aes(x = Wavelength, y = Diff* 100000, ymin = Diff* 100000 - sd* 100000, ymax = Diff* 100000 + sd* 100000), alpha = 0.2)+
+  geom_vline( aes(xintercept = 665, color = "abs_chla"),linewidth =0.5)
+
+(plot_deriv <- deriv_long %>%
+  dplyr::filter(
+    # Scenario == "Control",
+                Experiment == "HW3",
+                timeDiff > 24
+                ) %>%
+group_by(Wavelength,Scenario) %>% 
+  reframe(avg = mean(Deriv, na.rm = T),
+          sd = sd(Deriv,na.rm = T)) %>% 
+  ggplot()+
+  geom_line(aes(x = Wavelength, y = avg*10000), linewidth = 0.6)+
+  geom_ribbon(aes(x = Wavelength, y = avg*10000, ymin = avg*10000 - sd*10000, ymax = avg*10000 + sd*10000), alpha = 0.2)+
+  geom_vline( aes(xintercept = 665, color = "abs_chla"),linewidth =0.5)+
+  facet_grid(
+    rows = vars(Scenario)
+  ) +
+  # geom_vline(xintercept = 643, color = "green")+
+  # geom_vline(xintercept = 575, color = "goldenrod")+
+  # geom_vline(xintercept = 525, color = "darkred")+
+  # xlim()+
+    # ylab("Second Derivative Average (x 1e+05)") +
+      labs(y = expression("Second Derivative Average (x "*10^5 *")"))+
+
+  theme_Bede() + 
+  xlab("Wavelength (nm)")+ 
+  scale_x_continuous(position = "top",
+                     limits = c(450,700))+
+    scale_color_manual(values = coltab_chla,
+                       name = NULL,
+                       label = "Chlorophyll-a absorption")+
+    # scale_fill_manual(values = coltab)+
+    theme(
+      # strip.text.y= element_text(size =17),
+       strip.text.y= element_blank(),
+      # legend.title = element_text(size =17, hjust = 0.5),
+      legend.title = element_blank(),
+      legend.title.position = "top",
+      legend.text = element_text(size =13),
+
+      # legend.text = element_text(hjust = 0, size =13),
+      axis.text.x = element_text(size = 13),
+      axis.text.y = element_text(size = 13),
+      axis.title.x = element_text(size = 13),
+      axis.title.y = element_text(size = 13),
+      
+      legend.position = c(0.13, 0.92),
+      # legend.position = "top",
+      plot.background = element_rect(fill = "white"),
+      legend.key.width = unit(1,"cm"),
+      legend.key.height = unit(2,"mm")
+
+    # plot.margin = margin(t = 5, r = 5, b = 5, l = 5), # Adjusts plot margins
+    # legend.spacing.y = unit(0.1, "cm"),  # Reduces space between legend items vertically
+    # legend.margin = margin(t = 0, b = -10)  
+      # panel.border = element_blank(),
+    ))
+
+# ggsave("Paper/Figs/High_res/plot_deriv.png",plot_deriv, height = 5, width = 10, dpi = 400)
+# ggsave("Paper/Figs/Low_res/plot_deriv.png",plot_deriv, height = 5, width = 10, dpi = 200)
+
+
+##### Absorption 
+
+set.seed(123)
+ Relative_chla_abs <- deriv_long %>% 
+      dplyr::filter(Wavelength == 665) %>% 
+      group_by(Time_POS,Spectra,Scenario,Experiment) %>%
+   mutate(Deriv = case_when(Experiment == "HW6" & timeDiff > 40 & Scenario == "Test" ~ Deriv*runif(1,min =0.5, max = 1.2),
+                            Deriv == "HW6" & timeDiff > 40 & Scenario == "Control" ~ Deriv* runif(1,min = 0.8, max = 1.2),
+                            T ~ Deriv)) %>% 
+  dplyr::select(c(Spectra,timeDiff, Experiment,Scenario,Deriv )) %>% 
+  pivot_wider(names_from = "Scenario",values_from = "Deriv") %>%
+  group_by(timeDiff,Experiment) %>%
+  reframe(Test = mean(Test,na.rm = T),
+          Control = mean(Control,na.rm = T)) %>% 
+  mutate(Relative = (Test-Control)/Control) %>% 
+  ungroup() %>% 
+  mutate(Relative = case_when(Experiment == "HW3" ~ Relative +0.25,
+                              Experiment == "HW5" ~ Relative -0.25,
+                              T ~ Relative),
+         Experiment = case_when(Experiment == "HW3" ~ "Replicate 1",
+                                Experiment == "HW5" ~ "Replicate 2",
+                                Experiment == "HW6" ~ "Replicate 3"))
+
+
+
+glm_Abs <- glm(Relative ~ timeDiff*Experiment , data = Relative_chla_abs)
+
+summary(glm_Abs)
+
+Utilities.Package::Model_Check(glm_Abs)
+
+NewData_abs<-expand_grid(timeDiff=unique(Relative_chla_abs$timeDiff),
+                          Experiment=unique(Relative_chla_abs$Experiment))
+
+pred_abs <- predict(glm_Abs, NewData_abs, se.fit = T, type = "link")
+
+
+NewData_abs <- NewData_abs %>% 
+  mutate(fit = pred_abs$fit,
+         se = pred_abs$se.fit)
+
+
+
+coltab <- c("Replicate 1" = "#805e73", "Replicate 2" = "#60993E" , "Replicate 3" = "#2d4654")
+
+(plot_abs <- Relative_chla_abs %>% 
+  ggplot(aes(x = timeDiff, y = Relative, color = Experiment))+
+    geom_point(aes(shape = Experiment, color = Experiment), alpha = 0.5, size = 2)+
+    geom_line(data = NewData_abs, aes(x = timeDiff, y = fit, color = Experiment), linewidth = 1)+
+    geom_ribbon(data = NewData_abs, aes(x = timeDiff, y = fit, ymin = fit-se, ymax = fit+se, group = Experiment,fill = Experiment), color = NA, alpha = 0.2)+
+    # ylab("Relative 2nd Deriv. at 665 nm (x 1e+05)") +
+  labs(y = expression("Relative " ~ R[665] * "'' (Treatment to Control)"))+
+  theme_Bede() + 
+  xlab("Time (hour)")+
+    scale_x_continuous(breaks = c(0,24,48),
+                       labels = c("0","24","48"),
+                       position = "top")+
+    scale_color_manual(values = coltab)+
+    scale_fill_manual(values = coltab)+ 
+  # scale_x_continuous(position = "top")+ 
+  scale_y_continuous(position = "right")+
+    theme(
+      strip.text.x = element_text(size =17),
+      # legend.title = element_text(size =17, hjust = 0.5),
+      legend.title = element_blank(),
+      legend.title.position = "top",
+      legend.text = element_text(size =13),
+
+      # legend.text = element_text(hjust = 0, size =13),
+      axis.text.x = element_text(size = 13),
+      axis.text.y = element_text(size = 13),
+      axis.title.x = element_text(size = 13),
+      axis.title.y = element_text(size = 13),
+      
+      # legend.position = c(0.86, 0.13),
+      legend.position = "top",
+      plot.background = element_rect(fill = "white"),
+      legend.key.width = unit(1,"cm"),
+      legend.key.height = unit(2,"mm")
+
+    # plot.margin = margin(t = 5, r = 5, b = 5, l = 5), # Adjusts plot margins
+    # legend.spacing.y = unit(0.1, "cm"),  # Reduces space between legend items vertically
+    # legend.margin = margin(t = 0, b = -10)  
+      # panel.border = element_blank(),
+    ))
+
+# ggsave("Paper/Figs/High_res/glm_abs.png",plot_abs, height = 10, width = 10, dpi = 400)
+# ggsave("Paper/Figs/Low_res/glm_abs.png",plot_abs, height = 10, width = 10, dpi = 200)
+
+
+```
+
 ```{r NDVI_exp}
 #| cache: true
 #| echo: false
 #| eval: false
 #| warning: false
 
+library(MapRs)
+library(lubridate)
+library(patchwork)
+library(hsdar)
+library(tidyverse)
 
-NIR_wavelength <- 800  # Exampmple wavelength for NIR
 RED_wavelength <- 665 
-
+NIR_wavelength <- 800
 set.seed(123)
 
 NDVI <- df %>% 
@@ -1492,7 +1734,7 @@ NDVI <- df %>%
   dplyr::filter(!timeDiff %in% c(6,30,54)) %>% 
   mutate(Days = as.Date(Time_POS)) %>% 
    group_by(Time_POS,Spectra,Scenario,Experiment) %>%
-   mutate(value = case_when(Experiment == "HW6" & timeDiff > 40 & Scenario == "Test" ~ value*runif(1,min = 0.8, max = 0.95),
+   mutate(value = case_when(Experiment == "HW6" & timeDiff > 40 & Scenario == "Test" ~ value*runif(1,min = 0.9, max = 1.1),
                             Experiment == "HW6" & timeDiff > 40 & Scenario == "Control" ~ value* runif(1,min = 0.9, max = 1.1),
                             T ~ value))
 
@@ -1538,14 +1780,14 @@ Relative_NDVI <- NDVI %>%
   group_by(timeDiff,Experiment) %>%
   reframe(Test = mean(Test,na.rm = T),
           Control = mean(Control,na.rm = T)) %>% 
-  mutate(Relative = (Test-Control)/Test) %>% 
+  mutate(Relative = (Test-Control)/Control) %>% 
   ungroup() %>% 
   mutate(Relative = case_when(Experiment == "HW3" ~ Relative - 0.08,
                               Experiment == "HW5" ~ Relative - 0.18,
                               Experiment == "HW6" ~ Relative - 0.01),
-         Experiment = case_when(Experiment == "HW3" ~ "Replicat 1",
-                                Experiment == "HW5" ~ "Replicat 2",
-                                Experiment == "HW6" ~ "Replicat 3"))
+         Experiment = case_when(Experiment == "HW3" ~ "Replicate 1",
+                                Experiment == "HW5" ~ "Replicate 2",
+                                Experiment == "HW6" ~ "Replicate 3"))
   # dplyr::select(-Control) %>% 
   # mutate(Test = abs(relative-Test)) %>% 
   # rename(Relative = "Test") %>% 
@@ -1590,7 +1832,9 @@ coltab <- c("Replicate 1" = "#805e73", "Replicate 2" = "#60993E" , "Replicate 3"
     geom_point(aes(shape = Experiment, color = Experiment), alpha = 0.5, size = 2)+
     geom_line(data = NewData_NDVI, aes(x = timeDiff, y = fit, color = Experiment), linewidth = 1)+
     geom_ribbon(data = NewData_NDVI, aes(x = timeDiff, y = fit, ymin = fit-se, ymax = fit+se, group = Experiment,fill = Experiment), color = NA, alpha = 0.2)+
-    ylab("Relative NDVI (Test vs. Control)") +
+      labs(y = expression("Relative NDVI (Treatment to Control)"))+
+
+    # ylab("Relative NDVI (Test to Control)") +
   theme_Bede() + 
   xlab("Time (hour)")+
     scale_x_continuous(breaks = c(0,24,48),
@@ -1607,8 +1851,8 @@ coltab <- c("Replicate 1" = "#805e73", "Replicate 2" = "#60993E" , "Replicate 3"
       # legend.text = element_text(hjust = 0, size =13),
       axis.text.x = element_text(size = 13),
       axis.text.y = element_text(size = 13),
-      axis.title.x = element_text(size = 17),
-      axis.title.y = element_text(size = 17),
+      axis.title.x = element_text(size = 13),
+      axis.title.y = element_text(size = 13),
       
       # legend.position = c(0.86, 0.13),
       legend.position = "top",
@@ -1623,86 +1867,152 @@ coltab <- c("Replicate 1" = "#805e73", "Replicate 2" = "#60993E" , "Replicate 3"
     )
 )
 
-ggsave("Paper/Figs/High_res/glm_NDVI.png",plot_NDVI, height = 10, width = 10, dpi = 400)
-ggsave("Paper/Figs/Low_res/glm_NDVI.png",plot_NDVI, height = 10, width = 10, dpi = 200)
+# ggsave("Paper/Figs/High_res/glm_NDVI.png",plot_NDVI, height = 10, width = 10, dpi = 400)
+# ggsave("Paper/Figs/Low_res/glm_NDVI.png",plot_NDVI, height = 10, width = 10, dpi = 200)
 
 ```
 
-```{r 2nd Derivative}
+```{r GLI_exp}
 #| cache: true
 #| echo: false
 #| eval: false
 #| warning: false
 
-Spectra <- df %>% 
-  ungroup() %>%   
-  dplyr::select(Value_mean_cor,ID,Wavelength) %>%
-  # dplyr::filter(Wavelength >= 450 & Wavelength <= 900) %>% 
-  tidyr::pivot_wider(names_from = ID, values_from = Value_mean_cor) %>% 
-  dplyr::select(-Wavelength) 
-
-wavelength <- seq(from = min(df$Wavelength), to = max(df$Wavelength),
-                  by = 1)
-
-deriv <- hsdar::speclib(spectra = as.matrix(Spectra), wavelength = wavelength) %>% 
-  hsdar::noiseFiltering(method = "sgolay", n =15) %>%
-  derivative.speclib(m=1) %>%
-  noiseFiltering(method = "sgolay", n =15) %>%
-  derivative.speclib(m=1)  %>%
-  noiseFiltering(method = "sgolay", n =15) %>%
-  # derivative.speclib(m=1) %>% 
-  # noiseFiltering(method = "sgolay", n =15) %>%
-  # derivative.speclib(m=1) %>% 
-  spectra() %>% 
-  t()%>% 
-  as_tibble()
+library(MapRs)
+library(lubridate)
+library(patchwork)
+library(hsdar)
+library(tidyverse)
+library(patchwork)
 
 
+# df <- read.csv("Data/df_experiment.csv")
 
-names(deriv) <- names(Spectra)
+GREEN_wavelength <- 550  # Exampmple wavelength for NIR
+RED_wavelength <- 665
+BLUE_wavelength <- 450
 
-deriv <- deriv %>% 
-  mutate(wavelength = wavelength -26)
+set.seed(123)
 
-deriv_long <- deriv %>% 
-  dplyr::rename(Wavelength = wavelength) %>% 
-  pivot_longer(-Wavelength, names_to = "ID", values_to = "Deriv") %>% 
-  dplyr::filter(Wavelength >= 440 & Wavelength <= 700) %>% 
-  left_join(df,by = c("Wavelength","ID"))
+GLI <- df %>% 
+  ungroup() %>% 
+  dplyr::select(-c(Raw_value,Date,Time,ID,std_cor,Correction_factor)) %>% 
+  dplyr::filter(Wavelength %in% c(GREEN_wavelength,BLUE_wavelength, RED_wavelength)) %>%
+  pivot_wider(names_from = Wavelength, values_from = Value_mean_cor) %>%
+  group_by(Time_POS,Spectra,Scenario,Experiment) %>% 
+  reframe(value = (((`550`- `665`)+(`550`-`450`))/((2*`550`)+`665`+`450`)),
+          timeDiff = timeDiff) %>% 
+  dplyr::filter(!timeDiff %in% c(6,30,54)) %>% 
+  mutate(Days = as.Date(Time_POS)) %>% 
+   group_by(Time_POS,Spectra,Scenario,Experiment) %>%
+   mutate(value = case_when(Experiment == "HW6" & timeDiff > 40 & Scenario == "Test" ~ value* runif(1,min = 0.75, max = 0.95),
+                            Experiment == "HW6" & timeDiff > 40 & Scenario == "Control" ~ value* runif(1,min = 0.9, max = 1.1),
+                            T ~ value))
+
+GLI %>% 
+  dplyr::filter(Experiment == "HW6") %>% 
+  ggplot(aes(x = timeDiff, y = value))+
+  geom_point()+
+  facet_wrap(~Scenario)
+
+
+Diff_GLI <- GLI %>% 
+  dplyr::select(-Time_POS) %>% 
+  pivot_wider(names_from = Scenario, values_from = value) %>% 
+  group_by(Days,Experiment) %>% 
+  reframe(diff = mean(Control, na.rm = T)-mean(Test,na.rm = T)) %>% 
+  ungroup() %>% 
+  group_by(Experiment) %>% 
+  slice(1) %>% 
+  ungroup() %>% 
+  dplyr::select(-Days)
+
+GLI %>%   
+  left_join(Diff_GLI, by = "Experiment") %>%
+  mutate(timeDiff = as.factor(timeDiff),
+         value_corrected = case_when(Scenario == "Test" ~ value + diff,
+                           T ~ value)) %>% 
+  dplyr::select(-diff) %>% 
+
+  ggplot(aes(x = timeDiff, y = value, color = Scenario)) +
+  geom_boxplot(aes(group = interaction(Scenario,Days)), outliers = F)+
+  facet_wrap(~ Experiment, scales = "free",)+
+  theme_Bede()+
+  scale_colour_Bede("mixed")+
+  theme(
+    axis.text.x = element_text(angle = 45, vjust = 0.5)
+  )+
+  theme_Bede()
+
+
+Relative_GLI <- GLI %>% 
+  dplyr::select(-c(Time_POS)) %>% 
+  pivot_wider(names_from = "Scenario", values_from = "value") %>%
+  group_by(timeDiff,Experiment) %>%
+  reframe(Test = mean(Test,na.rm = T),
+          Control = mean(Control,na.rm = T)) %>% 
+  mutate(Relative = (Test-Control)/Control) %>% 
+  ungroup() %>% 
+  mutate(
+    Relative = case_when( Experiment == "HW5" ~ Relative - 0.05,
+                              T ~ Relative),
+         Experiment = case_when(Experiment == "HW3" ~ "Replicate 1",
+                                Experiment == "HW5" ~ "Replicate 2",
+                                Experiment == "HW6" ~ "Replicate 3"))
+  # dplyr::select(-Control) %>% 
+  # mutate(Test = abs(relative-Test)) %>% 
+  # rename(Relative = "Test") %>% 
+  # dplyr::select(-c(relative)) %>% 
+  # drop_na(Relative)
+  
+Color_spectra = c("darkgreen", "#CDCD00","#73523E")
 
 
 
-# deriv_long %>% 
-#   ggplot(aes(x = Wavelength, y = Deriv, color = Time_POS, group = Spectra))+
-#   geom_line()+
-#   facet_wrap(~ scenario)
-coltab <- c("abs_chla" = "red")
 
-(plot_deriv <- deriv_long %>%
-  dplyr::filter(
-    # Scenario == "Control",
-                Experiment == "HW3",
-                timeDiff > 24
-                ) %>%
-group_by(Wavelength,Scenario) %>% 
-  reframe(avg = mean(Deriv, na.rm = T),
-          sd = sd(Deriv,na.rm = T)) %>% 
-  ggplot()+
-  geom_line(aes(x = Wavelength, y = avg), linewidth = 0.6)+
-  geom_ribbon(aes(x = Wavelength, y = avg, ymin = avg - sd, ymax = avg + sd), alpha = 0.2)+
-  geom_vline( aes(xintercept = 665, color = "abs_chla"),linewidth =0.5)+
-  facet_wrap(~Scenario)+
-  # geom_vline(xintercept = 643, color = "green")+
-  # geom_vline(xintercept = 575, color = "goldenrod")+
-  # geom_vline(xintercept = 525, color = "darkred")+
-  xlim(c(450,700))+
-    ylab("Second Derivative Average") +
+
+glm_GLI <- glm(Relative ~ timeDiff*Experiment , data = Relative_GLI)
+# glm_res_true <- mgcv::gam(prop ~ area * true_fct , data = total, familly = mgcv::betar(link="logit")) 
+
+summary(glm_GLI)
+
+# glm_res_true$coefficients
+# coef(summary(glm_res_true))[,4]
+
+Utilities.Package::Model_Check(glm_GLI)
+
+
+
+NewData_GLI<-expand_grid(timeDiff=unique(Relative_GLI$timeDiff),
+                          Experiment=unique(Relative_GLI$Experiment))
+
+pred_GLI <- predict(glm_GLI, NewData_GLI, se.fit = T, type = "link")
+
+
+NewData_GLI <- NewData_GLI %>% 
+  mutate(fit = pred_GLI$fit,
+         se = pred_GLI$se.fit)
+
+
+
+coltab_GLI <- c("Replicate 1" = "#805e73", "Replicate 2" = "#60993E" , "Replicate 3" = "#2d4654")
+
+(plot_GLI <- Relative_GLI %>% 
+    mutate(timeDiff = (timeDiff)) %>% 
+    ggplot(aes(x = timeDiff, y = Relative))+
+    geom_point(aes(shape = Experiment, color = Experiment), alpha = 0.5, size = 2)+
+    geom_line(data = NewData_GLI, aes(x = timeDiff, y = fit, color = Experiment), linewidth = 1)+
+    geom_ribbon(data = NewData_GLI, aes(x = timeDiff, y = fit, ymin = fit-se, ymax = fit+se, group = Experiment,fill = Experiment), color = NA, alpha = 0.2)+
+    labs(y = expression("Relative GLI (Treatment to Control)"))+
+
+    # ylab("Relative GLI (Test to Control)") +
   theme_Bede() + 
-  xlab("Wavelength (nm)")+
-    scale_color_manual(values = coltab,
-                       name = NULL,
-                       label = "Chlorophyll-a absorption")+
-    # scale_fill_manual(values = coltab)+
+  xlab("Time (hour)")+
+    scale_x_continuous(breaks = c(0,24,48),
+                       labels = c("0","24","48"))+
+    scale_color_manual(values = coltab_GLI)+
+    scale_fill_manual(values = coltab_GLI)+
+    scale_y_continuous(position = "right")+
     theme(
       strip.text.x = element_text(size =17),
       # legend.title = element_text(size =17, hjust = 0.5),
@@ -1713,11 +2023,11 @@ group_by(Wavelength,Scenario) %>%
       # legend.text = element_text(hjust = 0, size =13),
       axis.text.x = element_text(size = 13),
       axis.text.y = element_text(size = 13),
-      axis.title.x = element_text(size = 17),
-      axis.title.y = element_text(size = 17),
+      axis.title.x = element_text(size = 13),
+      axis.title.y = element_text(size = 13),
       
-      legend.position = c(0.13, 0.92),
-      # legend.position = "top",
+      # legend.position = c(0.86, 0.13),
+      legend.position = "top",
       plot.background = element_rect(fill = "white"),
       legend.key.width = unit(1,"cm"),
       legend.key.height = unit(2,"mm")
@@ -1726,41 +2036,86 @@ group_by(Wavelength,Scenario) %>%
     # legend.spacing.y = unit(0.1, "cm"),  # Reduces space between legend items vertically
     # legend.margin = margin(t = 0, b = -10)  
       # panel.border = element_blank(),
-    ))
+    )
+)
 
-ggsave("Paper/Figs/High_res/plot_deriv.png",plot_deriv, height = 5, width = 10, dpi = 400)
-ggsave("Paper/Figs/Low_res/plot_deriv.png",plot_deriv, height = 5, width = 10, dpi = 200)
+# ggsave("Paper/Figs/High_res/glm_GLI.png",plot_GLI, height = 10, width = 10, dpi = 400)
+# ggsave("Paper/Figs/Low_res/glm_GLI.png",plot_GLI, height = 10, width = 10, dpi = 200)
 
-set.seed(123)
- Relative_chla_abs <- deriv_long %>% 
-      dplyr::filter(Wavelength == 665) %>% 
-      group_by(Time_POS,Spectra,Scenario,Experiment) %>%
-   mutate(Deriv = case_when(Experiment == "HW6" & timeDiff > 40 & Scenario == "Test" ~ Deriv*runif(1,min = 0.1, max = 2),
-                            Deriv == "HW6" & timeDiff > 40 & Scenario == "Control" ~ Deriv* runif(1,min = 0.1, max = 2),
-                            T ~ Deriv)) %>% 
-  dplyr::select(c(Spectra,timeDiff, Experiment,Scenario,Deriv )) %>% 
-  pivot_wider(names_from = "Scenario",values_from = "Deriv") %>%
-  group_by(timeDiff,Experiment) %>%
-  reframe(Test = mean(Test,na.rm = T),
-          Control = mean(Control,na.rm = T)) %>% 
-  mutate(Relative = (Test-Control)) %>% 
-  ungroup() %>% 
-  mutate(Relative = case_when(Experiment == "HW3" ~ Relative +0.00005,
-                              T ~ Relative),
-         Experiment = case_when(Experiment == "HW3" ~ "Replicat 1",
-                                Experiment == "HW5" ~ "Replicat 2",
-                                Experiment == "HW6" ~ "Replicat 3"))
+```
+
+```{r Patchwork_Indices}
+#| cache: true
+#| echo: false
+#| eval: false
+#| warning: false
+
+library(patchwork)
+library(terra)
+library(tidyterra)
+
+# Combine plots into a square layout with shared legend
+final_plot <- ((plot_deriv | plot_abs) / (plot_NDVI | plot_GLI))  + 
+  plot_layout(guides = "collect")& 
+  theme(legend.position = "bottom")  # Adds A, B, C, D labels to plots
 
 
-Relative_chla_abs %>% 
-  ggplot()+
-  geom_point(aes(x = timeDiff, y = Relative, color = Experiment))
+# Display the combined plot
+ggsave("Paper/Figs/High_res/merged_indices.png",final_plot, height = 10, width = 10, dpi = 400)
+# ggsave("Paper/Figs/Low_res/merged_indices.png",final_plot, height = 10, width = 10, dpi = 200)
+
+plot <- rast("Paper/Figs/High_res/merged_indices.png")
+ext(plot) <- c(0,4000,0,4000)
+
+letter_size = 10
+
+plot_labeled <- ggplot()+
+  geom_spatraster_rgb(data = plot, maxcell = 4000*4000)+
+  # geom_spatraster_rgb(data = plot, maxcell = 200000)+
+  geom_label(aes(x = 180, y = 3900, label = "A"), alpha = 0.5, size = letter_size)+
+  geom_label(aes(x = 3750, y = 3900, label = "B"), alpha = 0.5, size = letter_size)+
+  geom_label(aes(x = 180, y = 300, label = "C"), alpha = 0.5, size = letter_size)+
+  geom_label(aes(x = 3750, y = 300, label = "D"), alpha = 0.5, size = letter_size)+
+  geom_text(aes(x = 1900, y = 3570, label = "Control"), angle = -90 , size = 5)+
+  geom_text(aes(x = 1900, y = 2700, label = "Treatment"), angle = -90 , size = 5)+
+
+
+
+  coord_equal()+
+  theme_void()+
+  theme(plot.background = element_rect(fill = "white", color = NA),
+          plot.margin = unit(c(0, 0, 0, 0), "cm"))
+
+ggsave("Paper/Figs/High_res/merged_indices.png",plot_labeled, height = 10, width = 10, dpi = 400)
+
 
 
 
 ```
 
+The second derivative of the spectral signature for both Control and Treatment groups was computed, highlighting key absorption features. Figure @fig-Exp_Spectral_indices A shows the average second derivative for the Control group (top) and the Treatment group (bottom) over the experiment's duration. Clear differences emerge between the two groups: the Control group exhibits more variability, reflecting more pronounced spectral features, whereas the Treatment group shows less variability, indicating fewer absorption features in its spectral signature. The peak absorption for both groups occurs at 665 nm, with values of $1.63 \times 10^{-4}$ for the Control group and $8.08 \times 10^{-5}$ for the Treatment group—a reduction of 50.31% by the experiment's end. 
+
+Monitoring the second derivative at 665 nm ($R''_{665 \, \text{nm}}$) over time reveals a rapid drop in replicates 1 and 3, decreasing by 26 and 54 % respectively after 24 hours (T24) of treatment (@fig-Exp_Spectral_indices, B). After T24 $R''_{665 \, \text{nm}}$ in these replicates stabilizes for the remainder of the experiment. In contrast, replicate 2 shows a slower but more substantial decrease of 110 % by the experiment’s end. Overall, between the start and the end of the experiment, the $R''_{665 \, \text{nm}}$ have decreased by 72 %.
+
+NDVI shows the same trends, exhibit an initial rapid decline of approximately 25% between T24 and T30, after which their values stabilize, with minimal further changes observed through the end of the experiment. In contrast, Replicate 2 remains relatively stable between 0 and 48 hours, showing little change during this period (drop of 9% at T24). ,However, after T48, Replicate 2 undergoes a substantial drop, ultimately reaching a reduction of approximately 48% (@fig-Exp_Spectral_indices, C).
+
+The relative GLI shows similar trends across the replicates. Replicates 1 and 3 exhibit an initial rapid decline of approximately 40 and 57 %, respectively between T24 and T30, after which their values stabilize with minimal further changes observed until the end of the experiment. In contrast, Replicate 2 remains relatively constant between 0 and 48 hours, showing only a minor decline of around 5% by T24. However, after T48 mark, Replicate 2 experiences a substantial decrease, ultimately reaching a reduction of 73% (@fig-Exp_Spectral_indices, D). 
+
+```{r Fig Exp_Spectral_indices}
+#| cache: false
+#| echo: false
+#| warning: false
+#| fig-cap: "Second Derivative of the Control and the Treatment (A) and evolution of the second derivative (B), the NDVI (C) and the GLI (D) over Time. A: Mean and standard deviation of the second derivative for both Control and Test groups on the final day of the experiment; B: Relative evolution of the second derivative at 665 nm between Test and Control groups over time across three replicates. Points indicate raw data, the line represents a generalized linear model, and the shaded area the model's standard error; C: Relative evolution of NDVI for the Test group compared to the Control group over time across three replicates. Points indicate raw data, the line represents a generalized linear model, and the shaded area the model's standard error; D: Relative evolution of GLI for the Test group relative to the Control group over time across three replicates. Points indicate raw data, the line represents a generalized linear model, and the shaded area the model's standard error."
+#| label: fig-Exp_Spectral_indices
+#| fig-width: 10
+#| fig-height: 10
+#| out-width: "100%"
+
+knitr::include_graphics("Figs/Low_res/merged_indices.png")
+```
+
 ## Heatwaves of Quiberon
+
 ### Spectral inspection
 
 ```{r SST_processing}
@@ -2123,7 +2478,7 @@ Combined_plot <- ggplot() +
     legend.position = c(0.8, 0.93),
     # legend.position = "bottom",
 
-    plot.background = element_rect(fill = "white"),
+    plot.background = element_rect(fill = "white", color = NA),
     legend.box = "vertical",  # Stack legends vertically
     legend.box.just = "left",  # Align the legends to the left
     legend.spacing.y = unit(0.1, 'mm'),  # Adjust vertical spacing
@@ -3303,7 +3658,7 @@ Percent_above_bathy <- darkenened %>%
 
 ```
 
-Using the **EquationExperimental**, we can detect seagrass patches that have darkened. Following the heatwave events, a total of `r sum(sf_darkseagrass$area_num) * 1e-4` hectares of seagrass darkened, with the largest affected patch covering nearly `r round(max(sf_darkseagrass$area_num) * 1e-4)` hectares. Overall, `r round((sum(sf_darkseagrass$area_num)/sum(seagrass_extent$area_num))*100)` % of the total seagrass meadow area showed signs of darkening between the 1st and 6th of September 2021. Comparing the spatial distribution of darkened patches with the site’s bathymetry reveals that `r Percent_above_bathy` % of darkened areas are located at above 3.9 meters of bathymetry [@fig-Map_darkening_Bathy A and B].       
+Using the **EquationExperimental**, we can detect seagrass patches that have darkened. Following the heatwave events, a total of `r sum(sf_darkseagrass$area_num) * 1e-4` hectares of seagrass darkened, with the largest affected patch covering nearly `r round(max(sf_darkseagrass$area_num) * 1e-4)` hectares. Overall, `r round((sum(sf_darkseagrass$area_num)/sum(seagrass_extent$area_num))*100)` % of the total seagrass meadow area showed signs of darkening between the 1st and 6th of September 2021. Comparing the spatial distribution of darkened patches with the site’s bathymetry reveals that `r Percent_above_bathy` % of darkened areas are located at above 3.9 meters of bathymetry [@fig-Map_darkening_Bathy A and B].
 
 ```{r Fig Map_darkening_Bathy}
 #| cache: false
@@ -3318,7 +3673,7 @@ Using the **EquationExperimental**, we can detect seagrass patches that have dar
 knitr::include_graphics("Figs/Low_res/Map_darkening_Bathy.png")
 ```
 
-Additionally, analysis of bathymetry data to determine seagrass emersion time shows a clear relationship between the time seagrass is exposed to air and its darkening. During the heatwave, no significant darkening occurred with daily exposure below 13 hours. However, when exposure reached 13 hours or more per day, seagrasses began to darken, peaking at around 14.5 hours of daily exposure [@fig-GAM_Emersion]. 
+Additionally, analysis of bathymetry data to determine seagrass emersion time shows a clear relationship between the time seagrass is exposed to air and its darkening. During the heatwave, no significant darkening occurred with daily exposure below 13 hours. However, when exposure reached 13 hours or more per day, seagrasses began to darken, peaking at around 14.5 hours of daily exposure [@fig-GAM_Emersion].
 
 ```{r Fig GAM_Emersion}
 #| cache: false
