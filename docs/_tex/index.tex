@@ -855,11 +855,46 @@ reflectance in the green regions but also by a significant drop in the
 red edge part of the electromagnetic spectra
 (Figure~\ref{fig-Exp_Spectral_indices}).
 
-\textbf{TRY1 :} \begin{equation}\phantomsection\label{eq-SDI}{
-\text{SDI} = \frac{\left( R(705) - R(665) \right) - \left( R(560) - R(450) \right)}{R(705) + R(665) + R(560) + R(450)}
+The Seagrass Darkening Index (SDI) is proposed here :
+
+\begin{equation}\phantomsection\label{eq-SDI}{
+\text{SDI} = \left[ R(560) +  0.64  \cdot (R(842) - R(560)) \right] - R(740)
 }\end{equation}
 
-\subsection{Heatwaves of Quiberon}\label{heatwaves-of-quiberon}
+Where \(R(560)\), \(R(740)\) and \(R(842)\) are the reflectances at 560,
+740 and 842 nm respectively. This Wavelength have been chosen to match
+the spectral resolution of satellite such as Sentinel-2, making this
+index usable to map darkening events using satellites. the SDI has been
+design to be a binary classifiers, where negative values indicates green
+seagrasses and positive values indicates darkened seagrasses.
+
+\phantomsection\label{cell-fig-SDI_exp}
+\begin{figure}[H]
+
+\centering{
+
+\includegraphics[width=1\textwidth,height=\textheight]{Figs/Low_res/PLOT_SDI_exp.png}
+
+}
+
+\caption{\label{fig-SDI_exp}Development and Application of the Seagrass
+Darkening Index (SDI). The left panel displays the average reflectance
+values for both the Control and Treatment groups on the final day of the
+experiment. Shaded areas represent the standard deviation of
+reflectance, while markers indicate the spectral bands used to construct
+the SDI. The right panel shows the application of the SDI for both
+groups on the last day of the experiment.}
+
+\end{figure}%
+
+Applied to reflectance data collected during the experiment, the SDI
+indicated distinct differences between the Control and Treatment groups.
+At the end of the experiment (i.e.~when seagrasses in the Treatment
+group had visibly darkened), the median SDI of the Control group was
+-0.003, with only 3\% of samples displaying a positive SDI value. In
+contrast, the Treatment group exhibited a median SDI of 0.01, with no
+samples showing a negative SDI value (Figure~\ref{fig-SDI_exp}, right).
+\#\# Heatwaves of Quiberon
 
 \subsubsection{Spectral inspection}\label{spectral-inspection-1}
 
@@ -971,14 +1006,15 @@ Equation~\ref{eq-gli},}
 \subsubsection{Mapping of the seagrass
 darkening}\label{mapping-of-the-seagrass-darkening}
 
-Using the \textbf{EquationExperimental}, we can detect seagrass patches
-that have darkened. Following the heatwave events, a total of 20.64
+Using the Equation~\ref{eq-SDI}, we can detect seagrass patches that
+have darkened. Following the heatwave events, a total of 26.8999039
 hectares of seagrass darkened, with the largest affected patch covering
-nearly 3 hectares. Overall, 19 \% of the total seagrass meadow area
+nearly 8 hectares. Overall, 25 \% of the total seagrass meadow area
 showed signs of darkening between the 1st and 6th of September 2021.
 Comparing the spatial distribution of darkened patches with the site's
-bathymetry reveals that 97.3 \% of darkened areas are located at above
-3.9 meters of bathymetry Figure~\ref{fig-Map_darkening_Bathy}.
+bathymetry reveals that 94.6 \% of darkened areas are located at above
+3.8 meters of bathymetry (Figure~\ref{fig-Map_darkening_Bathy}, A and
+B).
 
 \phantomsection\label{cell-fig-Map_darkening_Bathy}
 \begin{figure}[H]
@@ -991,7 +1027,7 @@ bathymetry reveals that 97.3 \% of darkened areas are located at above
 
 \caption{\label{fig-Map_darkening_Bathy}Map of the Darkening of
 seagrasses during the heatwave events of September 2021 in Quiberon. A:
-1m bathymetry isobar (golden line); B: Result of the detection of
+3.9 m bathymetry isobar (golden line); B: Result of the detection of
 darkened seagrass patches (Blue plolygons)}
 
 \end{figure}%
@@ -999,9 +1035,9 @@ darkened seagrass patches (Blue plolygons)}
 Additionally, analysis of bathymetry data to determine seagrass emersion
 time shows a clear relationship between the time seagrass is exposed to
 air and its darkening. During the heatwave, no significant darkening
-occurred with daily exposure below 13 hours. However, when exposure
-reached 13 hours or more per day, seagrasses began to darken, peaking at
-around 14.5 hours of daily exposure Figure~\ref{fig-GAM_Emersion}.
+occurred with daily exposure below 13.5 hours. However, when exposure
+reached 13.5 hours or more per day, seagrasses began to darken, peaking
+at around 14.5 hours of daily exposure (Figure~\ref{fig-GAM_Emersion}).
 
 \phantomsection\label{cell-fig-GAM_Emersion}
 \begin{figure}[H]
@@ -1012,12 +1048,11 @@ around 14.5 hours of daily exposure Figure~\ref{fig-GAM_Emersion}.
 
 }
 
-\caption{\label{fig-GAM_Emersion}Relative change in the Green Leaf Index
-(GLI) before and during heatwave events as a function of the daily
-emergence time of seagrasses. The line represents a Generalized Linear
-Model (GLM) prediction, and the shaded area indicates the standard
-error. Shaded points represent raw data, with each point corresponding
-to a single pixel.}
+\caption{\label{fig-GAM_Emersion}Seagrass Darkening Index as a function
+of the daily emergence time of seagrasses. The line represents a
+Generalized Linear Model (GLM) prediction, and the shaded area indicates
+the standard error. Shaded points represent raw data, with each point
+corresponding to a single pixel.}
 
 \end{figure}%
 

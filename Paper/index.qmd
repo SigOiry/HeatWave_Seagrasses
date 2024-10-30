@@ -2115,11 +2115,212 @@ knitr::include_graphics("Figs/Low_res/merged_indices.png")
 
 Based on these evolution of spectral feature of seagrasses exposed to extreme events, a radiometric index of the darkening of seagrass can be made. Darkening of seagrasses is not only characterized by a drop in reflectance in the green regions but also by a significant drop in the red edge part of the electromagnetic spectra (@fig-Exp_Spectral_indices). 
 
-**TRY1 :** 
+The Seagrass Darkening Index (SDI) is proposed here :
+
 $$
-\text{SDI} = \frac{\left( R(705) - R(665) \right) - \left( R(560) - R(450) \right)}{R(705) + R(665) + R(560) + R(450)}
+\text{SDI} = \left[ R(560) +  0.64  \cdot (R(842) - R(560)) \right] - R(740)
 $$ {#eq-SDI}
 
+Where $R(560)$, $R(740)$ and $R(842)$ are the reflectances at 560, 740 and 842 nm respectively. This Wavelength have been chosen to match the spectral resolution of satellite such as Sentinel-2, making this index usable to map darkening events using satellites. the SDI has been design to be a binary classifiers, where negative values indicates green seagrasses and positive values indicates darkened seagrasses. 
+
+```{r SDI_exp}
+#| cache: true
+#| echo: false
+#| eval: false
+#| warning: false
+
+library(MapRs)
+library(lubridate)
+library(patchwork)
+library(hsdar)
+library(tidyverse)
+
+RED_wavelength <- 665 
+RE_wavelength <- 705
+GREEN_wavelength <- 560
+
+SRF_S2 <-  readxl::read_xlsx("Data/SRF_S2.xlsx") %>% 
+  dplyr::rename(Wavelength = "SR_WL")
+
+data_to_join <- df %>% 
+  dplyr::select(ID,Spectra,Scenario,Time_POS,timeDiff,Experiment)
+
+resampled <- df %>% 
+  dplyr::select(c(ID,Wavelength,Value_mean_cor )) %>% 
+  left_join(SRF_S2, by = "Wavelength") %>% 
+  group_by(ID) %>% 
+  reframe(B1 = sum(Value_mean_cor * SRF_B1)/sum(SRF_B1),
+          B2 = sum(Value_mean_cor * SRF_B2)/sum(SRF_B2),
+          B3 = sum(Value_mean_cor * SRF_B3)/sum(SRF_B3),
+          B4 = sum(Value_mean_cor * SRF_B4)/sum(SRF_B4),
+          B5 = sum(Value_mean_cor * SRF_B5)/sum(SRF_B5),
+          B6 = sum(Value_mean_cor * SRF_B6)/sum(SRF_B6),
+          B7 = sum(Value_mean_cor * SRF_B7)/sum(SRF_B7),
+          B8 = sum(Value_mean_cor * SRF_B8)/sum(SRF_B8),
+          B8A = sum(Value_mean_cor  * SRF_B8A)/sum(SRF_B8A),
+          B9 = sum(Value_mean_cor  * SRF_B9)/sum(SRF_B9),
+          B10 = sum(Value_mean_cor  * SRF_B10)/sum(SRF_B10),
+          B11 = sum(Value_mean_cor  * SRF_B11)/sum(SRF_B11),
+          B12 = sum(Value_mean_cor  * SRF_B12)/sum(SRF_B12)) %>% 
+  pivot_longer(-ID, names_to = "bands", values_to = "R_S2") %>% 
+  mutate(Wavelength = case_when(bands == "B1" ~ 443,
+                                bands == "B2" ~ 490,
+                                bands == "B3" ~ 560,
+                                bands == "B4" ~ 665,
+                                bands == "B5" ~ 705,
+                                bands == "B6" ~ 740,
+                                bands == "B7" ~ 783,
+                                bands == "B8" ~ 842,
+                                bands == "B8A" ~ 865,
+                                bands == "B9" ~ 945,
+                                bands == "B10" ~ 1375,
+                                bands == "B11" ~ 1610,
+                                bands == "B12" ~ 2190,
+                                T ~ NA)) %>% 
+  left_join(data_to_join, by = "ID") %>% 
+  distinct()
+
+resampled_avg <- resampled %>% 
+  dplyr::filter(timeDiff > 40 & Experiment != "HW6") %>% 
+  group_by(Wavelength,Scenario) %>% 
+  reframe(avg_S2  = mean(R_S2, na.rm = T),
+          sd_S2  = sd(R_S2, na.rm = T))
+
+SDI <- resampled %>% 
+  dplyr::filter(timeDiff > 40 & Experiment != "HW6") %>%
+  mutate(Days = as.Date(Time_POS)) %>% 
+  dplyr::select(-c(bands,Time_POS, Spectra, Days)) %>% 
+    pivot_wider(names_from = Wavelength, values_from = R_S2) %>% 
+  mutate(interpolation = (`560`+ ((740-560)/(842-560))*(`842`-`560`)),
+         SDI = (interpolation -`740`)) 
+
+
+
+Control_to_keep = SDI %>% 
+  dplyr::filter(timeDiff < 20 & Scenario == "Control")
+
+plot_df = SDI %>% 
+   dplyr::filter(timeDiff > 40 & Experiment != "HW6") %>% 
+  rbind(Control_to_keep)
+
+plot_df %>% 
+  group_by(Scenario) %>% 
+  reframe(median = median(SDI))
+
+plot_df %>% 
+  dplyr::filter(Scenario == "Test",
+                SDI <0)
+
+
+coltab_sp <- c(Control = "darkgreen", Test = "brown")
+
+(SDI_boxplot <- plot_df %>% 
+  # dplyr::filter(Scenario == "Control") %>% 
+  dplyr::filter(timeDiff > 40) %>% 
+  ggplot()+
+  geom_boxplot(aes(x = Scenario, y = SDI, color = Scenario), show.legend = F, outliers = F)+
+    geom_hline(yintercept = 0, linetype = 5)+
+  scale_color_manual(values = coltab_sp)+
+  ylab("Seagrass Darkening Index (SDI)")+
+  theme_Bede() + 
+  scale_y_continuous(position = "right")+
+
+    theme(
+      strip.text.x = element_text(size =17),
+      legend.title = element_blank(),
+      legend.title.position = "top",
+      legend.text = element_text(size =13),
+      axis.text.x = element_text(size = 13),
+      axis.text.y = element_text(size = 13),
+      axis.title.x = element_text(size = 13),
+      axis.title.y = element_text(size = 13),
+      legend.position = "top",
+      plot.background = element_rect(fill = "white"),
+      legend.key.width = unit(1,"cm"),
+      legend.key.height = unit(2,"mm")
+    )
+)
+  df_avg_sp <- df %>% 
+  dplyr::filter(timeDiff > 40 & Experiment != "HW6") %>% 
+  group_by(Wavelength, Scenario) %>% 
+  reframe(mean_val = mean(Value_mean_cor+0.1, na.rm = T),
+         sd_val = sd(Value_mean_cor+0.1,na.rm = T)) 
+
+shape_plot <- df_avg_sp %>% 
+  dplyr::filter(Wavelength %in% c(560,842,740))
+
+(plot_spectra <- df_avg_sp %>% 
+  ggplot()+
+  geom_line(aes(x = Wavelength, y = mean_val, color = Scenario))+
+  geom_ribbon(aes(x = Wavelength, y = mean_val, ymin = mean_val - sd_val, ymax = mean_val + sd_val, fill = Scenario), color = NA, alpha = 0.2)+
+  geom_point(data = shape_plot, aes(x = Wavelength, y = mean_val, shape = as.character(Wavelength)), size = 4)+
+
+  labs(y = "Reflectance")+
+
+    # ylab("Relative GLI (Test to Control)") +
+  theme_Bede() + 
+  xlab("Wavelength (nm)")+
+    # scale_x_continuous(breaks = c(0,24,48),
+    #                    labels = c("0","24","48"))+
+    scale_color_manual(values = coltab_sp,
+                       labels = c("Control","Treatment"),
+                      name = NULL)+
+    scale_fill_manual(values = coltab_sp,
+                       labels = c("Control","Treatment"),
+                      name = NULL)+
+    scale_shape_discrete(labels = c("B03","B06","B08"),
+                         name = "Sentinel-2 bands: ")+
+    # scale_y_continuous(position = "right")+
+    theme(
+      strip.text.x = element_text(size =17),
+      # legend.title = element_text(size =17),
+      legend.title = element_blank(),
+      # legend.title.position = "top",
+      legend.text = element_text(size =13),
+
+      # legend.text = element_text(hjust = 0, size =13),
+      axis.text.x = element_text(size = 13),
+      axis.text.y = element_text(size = 13),
+      axis.title.x = element_text(size = 13),
+      axis.title.y = element_text(size = 13),
+      
+      # legend.position = c(0.86, 0.13),
+      legend.position = "top",
+      plot.background = element_rect(fill = "white"),
+      legend.key.width = unit(1,"cm"),
+      legend.key.height = unit(2,"mm"),
+
+    # plot.margin = margin(t = 5, r = 5, b = 5, l = 5), # Adjusts plot margins
+    legend.spacing.y = unit(0.1, "cm"),  # Reduces space between legend items vertically
+    legend.margin = margin(t = 0, b = -10)
+      # panel.border = element_blank(),
+    )
+)
+
+(plot_SDI <- ((plot_spectra | SDI_boxplot))  + 
+  plot_layout(guides = "collect")& 
+  theme(legend.position = "bottom") )
+
+
+ggsave("Paper/Figs/High_res/PLOT_SDI_exp.png",plot_SDI, width = 10, height = 5, dpi = 400)
+ggsave("Paper/Figs/Low_res/PLOT_SDI_exp.png",plot_SDI, width = 10, height = 5, dpi = 200)
+
+```
+
+```{r Fig SDI_exp}
+#| cache: false
+#| echo: false
+#| warning: false
+#| fig-cap: "Development and Application of the Seagrass Darkening Index (SDI). The left panel displays the average reflectance values for both the Control and Treatment groups on the final day of the experiment. Shaded areas represent the standard deviation of reflectance, while markers indicate the spectral bands used to construct the SDI. The right panel shows the application of the SDI for both groups on the last day of the experiment."
+#| label: fig-SDI_exp
+#| fig-width: 10
+#| fig-height: 5
+#| out-width: "100%"
+
+knitr::include_graphics("Figs/Low_res/PLOT_SDI_exp.png")
+```
+
+Applied to reflectance data collected during the experiment, the SDI indicated distinct differences between the Control and Treatment groups. At the end of the experiment (i.e. when seagrasses in the Treatment group had visibly darkened), the median SDI of the Control group was -0.003, with only 3% of samples displaying a positive SDI value. In contrast, the Treatment group exhibited a median SDI of 0.01, with no samples showing a negative SDI value (@fig-SDI_exp, right).
 ## Heatwaves of Quiberon
 
 ### Spectral inspection
@@ -2918,23 +3119,28 @@ names(after) <- paste0("B",c(1:12))
 before_corr <- before - 1000
 NDVI_before = ((before_corr$B8)-(before_corr$B4))/((before_corr$B8)+(before_corr$B4))
 GLI_before =  ((before_corr$B3-before_corr$B4)+(before_corr$B3-before_corr$B2)) / ((2*before_corr$B3) + before_corr$B4+before_corr$B2)
+SDI_before = (before_corr$B3+ ((740-560)/(842-560))*(before_corr$B8-before_corr$B3)) - before_corr$B6
 
 
 after_corr <- after - 1000
 NDVI_after = ((after_corr$B8)-(after_corr$B4))/((after_corr$B8)+(after_corr$B4))
-
 GLI_after =  ((after_corr$B3-after_corr$B4)+(after_corr$B3-after_corr$B2)) / ((2*after_corr$B3) + after_corr$B4+after_corr$B2)
+SDI_after = (after_corr$B3+ ((740-560)/(842-560))*(after_corr$B8-after_corr$B3)) - after_corr$B6
+
 
 names(NDVI_after) <- "NDVI_after"
 names(NDVI_before) <- "NDVI_before"
 names(GLI_after) <- "GLI_after"
 names(GLI_before) <- "GLI_before"
+names(SDI_after) <- "SDI_after"
+names(SDI_before) <- "SDI_before"
 
+seagrass_mask <- read_sf("Data/shp/mask_seagrasses.shp")
 
-stk <- c(NDVI_before,NDVI_after,GLI_before,GLI_after) %>% 
+stk <- c(NDVI_before,NDVI_after,GLI_before,GLI_after,SDI_before,SDI_after) %>% 
   crop(seagrass_mask,mask = T) 
 
-writeRaster(stk,"Data/Sentinel2/Before_after_indices_meadowCropped.tif")
+writeRaster(stk,"Data/Sentinel2/Before_after_indices_meadowCropped.tif", overwrite = T)
 
 ############### Litto3D ################# 
 filelist_litto <- list.files("Data/Litto3D", pattern = "IGN69.asc", recursive = T, full.names = T) %>% 
@@ -2973,7 +3179,9 @@ litto_10m <- terra::resample(b_32630_cropped, stk$NDVI_before, method = "average
 names(litto_10m) = "bathy"
 
 writeRaster(litto_10m, "Data/Litto3D/Litto_10m_merged_32630.tif", overwrite = T)
-litto_10m <- rast("Data/Litto3D/Litto_10m_merged_32630.tif")
+
+litto_10m <- rast("Data/Litto3D/Litto_10m_merged_32630.tif") %>% 
+  crop(seagrass_mask, mask = T)
 # Create contour lines (specify the contour interval or levels)
 contours = terra::as.contour(b_32630_cropped, levels = seq(0,8,by = 0.1))
 
@@ -3002,13 +3210,13 @@ ggplot() +
 
 
 
-rast_darkening <- stk_litto  %>% 
-  dplyr::select(c(x,y,diff_GLI)) %>% 
+rast_darkening_SDI <- stk_litto  %>% 
+  dplyr::select(c(x,y,SDI_after)) %>% 
   rast(type = "xyz", crs = "EPSG:32630") 
 
-writeRaster(rast_darkening, "Output/diff_gli.tif", overwrite = T)
+writeRaster(rast_darkening_SDI, "Output/SDI_after.tif", overwrite = T)
   
-dark_seagrass <- rast_darkening > 0.18
+dark_seagrass <- rast_darkening_SDI >=0
 
 values(dark_seagrass)[values(dark_seagrass)==F] = NA
 
@@ -3021,7 +3229,7 @@ sf_darkseagrass <- as.polygons(dark_seagrass) %>%
   smoothr::smooth(method = "ksmooth", smoothness = 2)
 
 
-write_sf(sf_darkseagrass,"Output/darkening_patches.shp")
+write_sf(sf_darkseagrass,"Output/darkening_patches_SDI.shp")
 plot(sf_darkseagrass)
 
 ```
@@ -3341,7 +3549,8 @@ for (i in 1:nrow(litto_10m_df)) {
 }
 
 litto_cropped <- litto_10m_df %>% 
-  rast(type = "xyz", crs = crs("EPSG:32630"))
+  rast(type = "xyz", crs = crs("EPSG:32630"))%>% 
+  crop(seagrass_mask, mask = T)
 
 stk_all <- c(stk,litto_cropped) %>% 
   mutate(diff_GLI = GLI_before-GLI_after) %>% 
@@ -3355,7 +3564,9 @@ stk_all_df <- stk_all %>%
   # as_tibble() %>% 
   mutate(diff_GLI = GLI_before - GLI_after,
          percentage_GLI =  ((GLI_before - GLI_after)/ GLI_before)*100,
-         emersion_per_day = (emersion_time/60)/4)%>% 
+         emersion_per_day = (emersion_time/60)/4, 
+         SDI_after = (SDI_after / 1000)+0.1, 
+         SDI_before = (SDI_before / 1000)+0.1)%>% 
   as.data.frame()
 
 stk_all_df_gam <- stk_all_df %>% 
@@ -3363,26 +3574,36 @@ stk_all_df_gam <- stk_all_df %>%
                 !(percentage_GLI < 25 & emersion_per_day > 14.5),
                 emersion_per_day < 16)
 
-stk_all_df_gam %>% 
-  # dplyr::filter(NDVI_before > 0.5) %>% 
-  ggplot(aes(x = emersion_per_day, y = diff))+
+stk_all_df_gam_sdi <- stk_all_df %>% 
+  dplyr::filter(NDVI_before > 0.5,
+                # !(percentage_GLI < 25 & emersion_per_day > 14.5),
+                emersion_per_day < 16)
+# 
+# stk_all_df_gam %>% 
+#   # dplyr::filter(NDVI_before > 0.5) %>% 
+#   ggplot(aes(x = emersion_per_day, y = diff))+
+#   # geom_density2d()
+#   geom_point()
+
+stk_all_df_gam_sdi %>% 
+  ggplot(aes(x = emersion_per_day, y = SDI_after))+
   # geom_density2d()
   geom_point()
 
   
   
 
-gam_model <- mgcv::gam(percentage_GLI ~ s(emersion_per_day,
+gam_model <- mgcv::gam(SDI_after ~ s(emersion_per_day,
                                           k=6
                                           ), 
                        
                  family = gaussian(),
-                 data = stk_all_df_gam)
+                 data = stk_all_df_gam_sdi)
 
 # Utilities.Package::Model_Check(gam_model)
 
 
-NewData<-expand_grid(emersion_per_day=unique(stk_all_df_gam$emersion_per_day))
+NewData<-expand_grid(emersion_per_day=unique(stk_all_df_gam_sdi$emersion_per_day))
 
 pred <- predict(gam_model, NewData, se.fit = T, type = "link")
 
@@ -3394,9 +3615,10 @@ NewData <- NewData %>%
 (plot_GAM <- ggplot(NewData)+
   geom_line(data = NewData, aes(x = emersion_per_day, y = fit), linewidth = 1)+
   geom_ribbon(data = NewData, aes(x = emersion_per_day, y = fit, ymin = fit- se, ymax = fit + se ), alpha = 0.2)+
-  ylab("Relative change of the GLI (%)")+
+  ylab("Seagrass Darkening Index")+
   xlab("Emerged time per day (hour)")+
-  geom_point(data = stk_all_df_gam , aes(x = emersion_per_day , y = percentage_GLI), alpha = 0.05)+
+  geom_point(data = stk_all_df_gam_sdi , aes(x = emersion_per_day , y = SDI_after), alpha = 0.05)+
+    geom_hline(yintercept = 0)+
   theme_Bede()+
   xlim(c(10,15))+
   theme(axis.text.x = element_text(size = 15),
@@ -3618,7 +3840,7 @@ plt_combine <- ggplot()+
   geom_spatraster_rgb(data = plt1, maxcell = ext(plt1)[2]*ext(plt1)[4])+
   coord_sf(expand = F)+
   theme_void()+
-  theme( plot.background = element_rect(fill = "white"))
+  theme( plot.background = element_rect(fill = "white", color = NA))
      
 
 ggsave("Paper/Figs/High_res/Map_darkening_Bathy.png",plt_combine, width = 10, height = 9.35, dpi = 400)
@@ -3635,7 +3857,7 @@ library(sf)
 library(terra)
 library(tidyverse)
 
-sf_darkseagrass <- read_sf("../Output/darkening_patches.shp") %>% 
+sf_darkseagrass <- read_sf("../Output/darkening_patches_SDI.shp") %>% 
   mutate(area = st_area(geometry),
          area_num = as.numeric(area))
 
@@ -3643,17 +3865,16 @@ seagrass_extent <-  read_sf("../Data/shp/mask_seagrasses.shp") %>%
   mutate(area = st_area(geometry),
          area_num = as.numeric(area))
 
-tresh <- 
 
 rast_all <- rast("../Data/Stack_all_variables.tif") %>% 
   as.data.frame(xy = T) %>% 
   as_tibble()
 
 darkenened <- rast_all %>% 
-  dplyr::filter(diff_GLI > 0.18)
+  dplyr::filter(SDI_after > 0)
 
 Percent_above_bathy <- darkenened %>% 
-  mutate(Above = case_when(bathy > 3.9 ~ T,
+  mutate(Above = case_when(bathy > 3.8 ~ T,
                            T ~ F)) %>% 
   group_by(Above) %>% 
   reframe(nobs = n()) %>% 
@@ -3664,13 +3885,13 @@ Percent_above_bathy <- darkenened %>%
 
 ```
 
-Using the **EquationExperimental**, we can detect seagrass patches that have darkened. Following the heatwave events, a total of `r sum(sf_darkseagrass$area_num) * 1e-4` hectares of seagrass darkened, with the largest affected patch covering nearly `r round(max(sf_darkseagrass$area_num) * 1e-4)` hectares. Overall, `r round((sum(sf_darkseagrass$area_num)/sum(seagrass_extent$area_num))*100)` % of the total seagrass meadow area showed signs of darkening between the 1st and 6th of September 2021. Comparing the spatial distribution of darkened patches with the site’s bathymetry reveals that `r Percent_above_bathy` % of darkened areas are located at above 3.9 meters of bathymetry [@fig-Map_darkening_Bathy A and B].
+Using the @eq-SDI, we can detect seagrass patches that have darkened. Following the heatwave events, a total of `r round(sum(sf_darkseagrass$area_num) * 1e-4, 2)` hectares of seagrass darkened, with the largest affected patch covering nearly `r round(max(sf_darkseagrass$area_num) * 1e-4)` hectares. Overall, `r round((sum(sf_darkseagrass$area_num)/sum(seagrass_extent$area_num))*100)` % of the total seagrass meadow area showed signs of darkening between the 1st and 6th of September 2021. Comparing the spatial distribution of darkened patches with the site’s bathymetry reveals that `r Percent_above_bathy` % of darkened areas are located at above 3.8 meters of bathymetry (@fig-Map_darkening_Bathy, A and B).
 
 ```{r Fig Map_darkening_Bathy}
 #| cache: false
 #| echo: false
 #| warning: false
-#| fig-cap: "Map of the Darkening of seagrasses during the heatwave events of September 2021 in Quiberon. A: 1m bathymetry isobar (golden line); B: Result of the detection of darkened seagrass patches (Blue plolygons)"
+#| fig-cap: "Map of the Darkening of seagrasses during the heatwave events of September 2021 in Quiberon. A: 3.9 m bathymetry isobar (golden line); B: Result of the detection of darkened seagrass patches (Blue plolygons)"
 #| label: fig-Map_darkening_Bathy
 #| fig-width: 10
 #| fig-height: 9.35
@@ -3679,13 +3900,13 @@ Using the **EquationExperimental**, we can detect seagrass patches that have dar
 knitr::include_graphics("Figs/Low_res/Map_darkening_Bathy.png")
 ```
 
-Additionally, analysis of bathymetry data to determine seagrass emersion time shows a clear relationship between the time seagrass is exposed to air and its darkening. During the heatwave, no significant darkening occurred with daily exposure below 13 hours. However, when exposure reached 13 hours or more per day, seagrasses began to darken, peaking at around 14.5 hours of daily exposure [@fig-GAM_Emersion].
+Additionally, analysis of bathymetry data to determine seagrass emersion time shows a clear relationship between the time seagrass is exposed to air and its darkening. During the heatwave, no significant darkening occurred with daily exposure below 13.5 hours. However, when exposure reached 13.5 hours or more per day, seagrasses began to darken, peaking at around 14.5 hours of daily exposure (@fig-GAM_Emersion).
 
 ```{r Fig GAM_Emersion}
 #| cache: false
 #| echo: false
 #| warning: false
-#| fig-cap: "Relative change in the Green Leaf Index (GLI) before and during heatwave events as a function of the daily emergence time of seagrasses. The line represents a Generalized Linear Model (GLM) prediction, and the shaded area indicates the standard error. Shaded points represent raw data, with each point corresponding to a single pixel."
+#| fig-cap: "Seagrass Darkening Index as a function of the daily emergence time of seagrasses. The line represents a Generalized Linear Model (GLM) prediction, and the shaded area indicates the standard error. Shaded points represent raw data, with each point corresponding to a single pixel."
 #| label: fig-GAM_Emersion
 #| fig-width: 10
 #| fig-height: 5

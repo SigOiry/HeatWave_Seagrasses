@@ -7,7 +7,7 @@ img_list <- "Data/Sentinel2/" %>%
   list.files(recursive = T, full.names = T ,pattern = ".SAFE", include.dirs = T) %>% 
   as_tibble() %>% 
   rename(path = "value") %>% 
-  dplyr::filter(str_detect(path,"20210906"))
+  dplyr::filter(str_detect(path,"20210906") | str_detect(path, "20210814"))
 
 msk <- read_sf("Data/shp/mask_seagrasses.shp")
 
@@ -46,29 +46,56 @@ Slope_Green_red2 <- function(img){
 }
 
 Slope_Green_red3 <- function(img){
-  a <- (((img$B03)-(img$B04))/((img$B03)+(img$B04))) * 1/(0.2-((img$B05)/10000))
+  a <- (((img$B03)-(img$B04))/((img$B03)+(img$B04))) * 1/(0.2-(img$B05))
   return(c(indice = "Slope_Green_red3", raster = a))
 }
 
+Slope_Green_red4 <- function(img){
+  a <- 1.1* (((img$B03)-(img$B04))/((img$B03)+(img$B04))) * 1/(0.1-(img$B05))
+  return(c(indice = "Slope_Green_red4", raster = a))
+}
 
-SDI <- function(img){
-  a <- ((((img$B05)-(img$B04))-((img$B03)-(img$B02)))/(((img$B05)+(img$B04))+((img$B03)-(img$B02))))
-  return(c(indice = "SDI", raster = a))
+Slope_Green_red5 <- function(img){
+  a <- (((img$B03)-(img$B04))/((img$B03)+(img$B04))) * 1/(0.15-(img$B05))
+  return(c(indice = "Slope_Green_red5", raster = a))
 }
 
 
-indices <- c(NDVI, IRslope, Darkening1, Green_red,Slope_Green_red,Slope_Green_red2,Slope_Green_red3, SDI)
+
+compare_to_interSDI <- function(img){
+  a <- ((((img$B05)-(img$B04))-((img$B03)-(img$B02)))/(((img$B05)+(img$B04))+((img$B03)+(img$B02))))
+  return(c(indice = "SDI", raster = a))
+}
+
+aSDI <- function(img){
+  a <- (((((img$B05)-(img$B04))+((img$B03)-(img$B02)))/3)/(((img$B05)+(img$B04))+((img$B03)+(img$B02))))
+  return(c(indice = "aSDI", raster = a))
+}
+
+NDSI <- function(img){
+  a <- ((img$B05)-(((img$B04)+(img$B03)+(img$B02))/3))/((img$B05)+(((img$B04)+(img$B03)+(img$B02))/3))
+  return(c(indice = "NDSI", raster = a))
+}
+
+DSDI <- function(img){
+  a <- ((img$B08)-(img$B05))/((img$B03+(img$B04)))
+  return(c(indice = "DSDI", raster = a))
+}
+
+SDI_2 <- function(img){
+  a <- (img$B03+ ((740-560)/(842-560))*(img$B08-img$B03)) - img$B06
+  return(c(indice = "SDI_2", raster = a))
+}
+
+
+indices <- c(SDI_2)
 
 
 for(i in 1:nrow(img_list)){
   
-  if(str_detect(img_list$path[i],"20210906")){
-    img <- Read_S2(img_list$path[i]) %>% 
-      terra::crop(msk, mask = T) 
-  }else{
-    img <- Read_S2(img_list$path[i]) 
-  }
-  
+    img <- Read_S2(img_list$path[i]) %>%
+      terra::crop(msk, mask = T)
+
   
   # img_std <- img %>% as.data.frame(xy = T) %>% 
   #   pivot_longer(-c(x,y), names_to = "bands",values_to = "values") %>% 
