@@ -1,5 +1,6 @@
 ---
-title: Draft -- Effect of Atmospheric Heatwaves on Reflectance and Pigment Composition of Intertidal *Nanozostera noltei*  -- Draft
+title: Effect of Marine and Atmospheric Heatwaves on Reflectance and Pigment Composition of Intertidal *Nanozostera noltei*
+shorttitle: Effect of heatwaves on seagrasses
 author:
   - name: Simon Oiry
     orcid: 0000-0001-7161-5246
@@ -85,13 +86,16 @@ keywords:
   - Seagrass
   - Coastal Ecosystems
   - Heatwaves 
-abstract: |
-  To be written
+abstract:
+  This study investigates the impact of marine and atmospheric heatwaves on the pigment composition and reflectance of the intertidal seagrass Nanozostera noltei. Seagrasses are critical to coastal ecosystems, providing habitat, stabilizing sediments, and aiding carbon sequestration. Climate change has increased the frequency and intensity of heatwaves, potentially threatening seagrass health. In this experiment, we exposed N. noltei samples to controlled heatwave conditions and used hyperspectral radiometry to assess changes in spectral signatures over time. Results revealed that heatwaves induce significant declines in seagrass reflectance, particularly in the green and near-infrared regions, linked to pigment degradation. Key vegetation indices, such as the Normalized Difference Vegetation Index (NDVI) and Green Leaf Index (GLI), also displayed marked reductions under heatwave stress, with NDVI values decreasing by up to 34% and GLI by 57%. A novel Seagrass Darkening Index (SDI) was developed to quantify seagrass darkening, showing a strong correlation with heatwave exposure. This research suggests that spectral monitoring can effectively track the early impacts of heatwaves on seagrasses, providing a valuable tool for remote sensing-based habitat assessment. Satellite observations confirmed these findings, showing widespread seagrass darkening during heatwave events in Quiberon, France. This work highlights the need for continuous monitoring of seagrass meadows under the current climate regime, underscoring the potential of remote sensing in capturing rapid environmental changes in intertidal zones.
 plain-language-summary: |
   To be written
 key-points:
-  - An intertidal vegetation classifier has been built to be used across different study sites without losing classification accuracy. 
-  - Neural Network made to accuratly discriminates intertidal seagrasses from green algae (chlorophyceae)
+  - Heatwaves significantly reduce seagrass reflectance and pigment composition.
+  - Novel Seagrass Darkening Index quantifies stress-induced color changes in seagrasses.
+  - Hyperspectral radiometry reveals detailed spectral responses to thermal stress in seagrass.
+  - Remote sensing proves effective in monitoring seagrass health during extreme events.
+  - Findings highlight rapid impacts of heatwaves on seagrasses.
 date: last-modified
 citation:
   container-title: Remote Sensing of Environment
@@ -130,8 +134,6 @@ This study aims to experimentally test the hypothesis that warm events, such as 
 ### Sampling and acclimation of seagrasses
 
 Seagrass was sampled from a *Nanozostera noltei* (dwarf eelgrass, syn. *Zostera noltei*) meadow on Noirmoutier Island, France (46°57'32.0"N, 2°10'37.0"W) at low tide in June 2024. A home-made inox sampling box was used to sample seagrass from an area of 30 cm by 15 cm and 5 cm deep, maintaining the sediment structure and avoiding damage to the rhizomes and the leafs of the seagrass (@fig-design A). This sampling box allowed to limitate sampling variability between replicates. The entire system, including seagrass, sediment, meiofauna, and macrofauna, was placed in plastic trays together in a mesocosm setup, which allowed for the natural interactions between components to be maintained and reduced stress on the seagrass. To avoid hydric stress during transportation, seawater was added to each tray. Simultaneously, seawater was sampled from a nearby site and transported to the lab, where it was filtered using a 0.22 µm nitrocellulose filter to remove all suspended particulate matter. This seawater was used in the acclimation tank and the intertidal chambers. The seagrasses were acclimated at high tide for one weeks with a water temperature of 17°C, matching the temperature at the time of sampling, and with light of 150 µmol.s-1.m-2 of PAR photons [@akbar2020mangrove]. A wave generator was used in the tank to circulate and reoxygenate the water.
-
-### Experimental design
 
 ```{r pictures design}
 #| cache: true
@@ -217,6 +219,7 @@ ggsave("Paper/Figs/High_res/Experimental_design.png",plot, width = 3.025, height
 knitr::include_graphics("Figs/Low_res/Experimental_design.png")
 ```
 
+### Experimental design
 Two intertidal chambers from [ElectricBlue](https://electricblue.eu/intertidal-chamber) were used to simulate tidal cycles and control water temperature during high tide and air temperature during low tide (@fig-design B,C). One chamber served as the control, while the other was used for the experimental treatment.
 
 ```{r in situ temperature Bourgneuf}
@@ -307,6 +310,7 @@ meandiff <- df_Temp %>%
 #| fig-width: 10
 #| fig-height: 10
 #| out-width: "80%"
+
 
 knitr::include_graphics("Figs/High_res/Temperature_compare.png")
 ```
@@ -541,7 +545,6 @@ knitr::include_graphics("Figs/Low_res/Chamber_Profils.png")
 ### Bio-optical measurmenents over seagrass leaves
 
 #### Hyperspectral measurements
-
 Throughout the experiment, hyperspectral signatures of both the control and treatment seagrasses were taken using an ASD HandHeld 2 equipped with a fiber optic, allowing measurements to be taken directly inside the chamber without opening it. Automatic spectra acquisition has been done using the [RS3 softaware](https://www.malvernpanalytical.com/en/learn/knowledge-center/user-manuals/rs3-software-user-manual) developed by the intrument manufacturer. An average of five reflectance spectrum ($R(\lambda)$), each with an integration time of 544 ms, was taken every minute. Every 10 minutes, the fiber optic was switched from one benthic chamber to the other, in order to measure reflectance in both treatment and control. Because light conditions were controlled inside of the chambers, reflectance calibration of the instrument was performed only each morning at the very first moment of low tide using a Spectralon white reference with 99% Lambertian reflectivity.
 
 The second derivative of $R$ was calculated to retrieve absorption features and compare their variability over time. Two radiometric indices were also monitored throughout the experiment :
@@ -1193,7 +1196,6 @@ Before calculating the emersion time, both datasets were intercalibrated to a co
 Once aligned, the corrected elevation was compared to water height for each pixel and each time step during the heatwave event. The emersion time was then calculated as the daily total time each pixel remained exposed.
 
 # Results
-
 ## Laboratory Experiment
 
 ```{r functions_exp}
@@ -2321,6 +2323,7 @@ knitr::include_graphics("Figs/Low_res/PLOT_SDI_exp.png")
 ```
 
 Applied to reflectance data collected during the experiment, the SDI indicated distinct differences between the Control and Treatment groups. At the end of the experiment (i.e. when seagrasses in the Treatment group had visibly darkened), the median SDI of the Control group was -0.003, with only 3% of samples displaying a positive SDI value. In contrast, the Treatment group exhibited a median SDI of 0.01, with no samples showing a negative SDI value (@fig-SDI_exp, right).
+
 ## Heatwaves of Quiberon
 
 ### Spectral inspection

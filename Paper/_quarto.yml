@@ -3,18 +3,23 @@ project:
   output-dir: "../docs"
 execute:
   freeze: auto
-
 format:
   html: 
     toc: true
-    theme: spacelab
+    theme: cosmo
     comments:
       hypothesis: true
-  docx: 
+  apaquarto-docx: 
     output-file: "Simon_Heatwaves_Paper"
-  elsevier-pdf: 
+    floatsintext: true
+    numbered-lines: true
+  apaquarto-pdf: 
     fig-pos: "H"
     output-file: "Simon_Heatwaves_Paper"
+    floatsintext: true
+    numbered-lines: true
+    documentmode: doc
+    nocorrespondence: true
 render: 
   - "!*.qmd"
   - "!*.ipynb"
