@@ -16,7 +16,7 @@ library(stars)
 
 ```{r data opening}
 
-df <- list.files("Data/MeteoFrance/RAW/",pattern = "HOR_departement_85_*", full.names = TRUE) %>% 
+df <- list.files("Data/MeteoFrance/RAW/",pattern = "HOR_departement_56_*", full.names = TRUE) %>% 
   map(read.delim,
       sep = ";",
       .progress = TRUE) %>%
@@ -39,7 +39,7 @@ selected_site <- df_date %>%
   pull(NOM_USUEL)
 
 df_sub <- df %>% 
-  dplyr::filter(NOM_USUEL == selected_site,
+  dplyr::filter(NOM_USUEL == "LORIENT-LANN BIHOUE",
                 !is.na(`T`)) %>% 
   dplyr::select(NOM_USUEL, LAT,LON,,AAAAMMJJHH,`T`, TN, TX, T10, T20, T50,T100) %>% 
   mutate(date = as.POSIXct(as.character(AAAAMMJJHH), format = "%Y%m%d%H",tz = "UTC"))
@@ -67,7 +67,7 @@ df_heatwaveR <- df_sub %>%
 
   
 
-  clim <- ts2clm(df_heatwaveR, climatologyPeriod = c("1949-01-01", "2024-06-23"))
+  clim <- ts2clm(df_heatwaveR, climatologyPeriod = c(min(df_heatwaveR$t), max(df_heatwaveR$t)))
   
   event <- detect_event(clim,categories = T,minDuration = 3)
   
@@ -100,22 +100,29 @@ intensity_heatwave <- event %>%
 df_heatwaves <- rbind(freq_heatwave,intensity_heatwave) %>% 
   pivot_wider(names_from = data, values_from = value)
 
-coeff=30
-ggplot(df_heatwaves, aes(x=as.numeric(year))) +
-  geom_point( aes(y=Frequency), color = "blue") +
-  geom_smooth( aes(y=Frequency), color = "blue",method = "gam")+
-  geom_point( aes(y=Intensity / coeff), color = "red") +
-  geom_smooth( aes(y=Intensity / coeff), color = "red",method = "gam")+
-  scale_y_continuous(
-    
-    # Features of the first axis
-    name = "Frequency",
-    
-    # Add a second axis and specify its features
-    sec.axis = sec_axis(~.*coeff, name="Intensity")
-  )+
-  theme_Bede()
+# coeff=30
+# ggplot(df_heatwaves, aes(x=as.numeric(year))) +
+#   geom_point( aes(y=Frequency), color = "blue") +
+#   geom_smooth( aes(y=Frequency), color = "blue",method = "gam")+
+#   geom_point( aes(y=Intensity / coeff), color = "red") +
+#   geom_smooth( aes(y=Intensity / coeff), color = "red",method = "gam")+
+#   scale_y_continuous(
+#     
+#     # Features of the first axis
+#     name = "Frequency",
+#     
+#     # Add a second axis and specify its features
+#     sec.axis = sec_axis(~.*coeff, name="Intensity")
+#   )+
+#   theme_Bede()
 
+
+df_frequency_HW <- df_heatwaves %>% 
+  dplyr::filter()
+
+(heatwaves_frequency <- ggplot(df_heatwaves, aes(x=as.numeric(year)))+
+  geom_point(aes(y=Frequency), color = "darkred")
+)
 ```
 
 ```{r cold spells}

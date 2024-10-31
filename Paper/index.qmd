@@ -3906,7 +3906,7 @@ Additionally, analysis of bathymetry data to determine seagrass emersion time sh
 #| cache: false
 #| echo: false
 #| warning: false
-#| fig-cap: "Seagrass Darkening Index as a function of the daily emergence time of seagrasses. The line represents a Generalized Linear Model (GLM) prediction, and the shaded area indicates the standard error. Shaded points represent raw data, with each point corresponding to a single pixel."
+#| fig-cap: "Seagrass Darkening Index as a function of the daily emergence time of seagrasses. The line represents a Generalized Additive Model (GAM) prediction, and the shaded area indicates the standard error. Shaded points represent raw data, with each point corresponding to a single pixel of the meadow."
 #| label: fig-GAM_Emersion
 #| fig-width: 10
 #| fig-height: 5
@@ -3914,5 +3914,9 @@ Additionally, analysis of bathymetry data to determine seagrass emersion time sh
 
 knitr::include_graphics("Figs/Low_res/GAM_emersion.png")
 ```
+
+
+# Discussion 
+
 
 # Bibliography
