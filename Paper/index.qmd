@@ -221,6 +221,7 @@ knitr::include_graphics("Figs/Low_res/Experimental_design.png")
 ```
 
 ### Experimental design
+
 Two intertidal chambers from [ElectricBlue](https://electricblue.eu/intertidal-chamber) were used to simulate tidal cycles and control water temperature during high tide and air temperature during low tide (@fig-design B,C). One chamber served as the control, while the other was used for the experimental treatment.
 
 ```{r in situ temperature Bourgneuf}
@@ -546,6 +547,7 @@ knitr::include_graphics("Figs/Low_res/Chamber_Profils.png")
 ### Bio-optical measurmenents over seagrass leaves
 
 #### Hyperspectral measurements
+
 Throughout the experiment, hyperspectral signatures of both the control and treatment seagrasses were taken using an ASD HandHeld 2 equipped with a fiber optic, allowing measurements to be taken directly inside the chamber without opening it. Automatic spectra acquisition has been done using the [RS3 softaware](https://www.malvernpanalytical.com/en/learn/knowledge-center/user-manuals/rs3-software-user-manual) developed by the instrument manufacturer. An average of five reflectance spectrum ($R(\lambda)$), each with an integration time of 544 ms, was taken every minute. Every 10 minutes, the fiber optic was switched from one benthic chamber to the other, in order to measure reflectance in both treatment and control. Because light conditions were controlled inside of the chambers, reflectance calibration of the instrument was performed only each morning at the very first moment of low tide using a Spectralon white reference with 99% Lambertian reflectivity.
 
 The second derivative of $R$ was calculated to retrieve absorption features and compare their variability over time. Two radiometric indices were also monitored throughout the experiment :
@@ -1189,6 +1191,7 @@ Before calculating the emersion time, both datasets were intercalibrated to a co
 Once aligned, the corrected elevation was compared to water height for each pixel and each time step during the heatwave event. The emersion time was then calculated as the daily total time each pixel remained exposed.
 
 # Results
+
 ## Laboratory Experiment
 
 ```{r functions_exp}
@@ -2085,13 +2088,13 @@ ggsave("Paper/Figs/High_res/merged_indices.png",plot_labeled, height = 10, width
 
 ```
 
-The second derivative of the spectral signature for both Control and Treatment groups was computed, highlighting key absorption features. Figure @fig-Exp_Spectral_indices A shows the average second derivative for the Control group (top) and the Treatment group (bottom) over the experiment's duration. Clear differences emerge between the two groups: the Control group exhibits more variability, reflecting more pronounced spectral features, whereas the Treatment group shows less variability, indicating fewer absorption features in its spectral signature. The maximum absorption for both groups occurs at 665 nm, with values of $1.63 \times 10^{-4}$ for the Control group and $8.08 \times 10^{-5}$ for the Treatment group—a reduction of 50.31% by the experiment's end. 
+The second derivative of the spectral signature for both Control and Treatment groups was computed, highlighting key absorption features. Figure @fig-Exp_Spectral_indices A shows the average second derivative for the Control group (top) and the Treatment group (bottom) over the experiment's duration. Clear differences emerge between the two groups: the Control group exhibits more variability, reflecting more pronounced spectral features, whereas the Treatment group shows less variability, indicating fewer absorption features in its spectral signature. The maximum absorption for both groups occurs at 665 nm, with values of $1.63 \times 10^{-4}$ for the Control group and $8.08 \times 10^{-5}$ for the Treatment group—a reduction of 50.31% by the experiment's end.
 
 Monitoring the second derivative at 665 nm ($R''_{665 \, \text{nm}}$) over time reveals a rapid drop in replicates 1 and 3, decreasing by 26 and 54 % respectively after 24 hours (T24) of treatment (@fig-Exp_Spectral_indices, B). After T24 $R''_{665 \, \text{nm}}$ in these replicates stabilizes for the remainder of the experiment. In contrast, replicate 2 shows a slower but more substantial decrease of 110 % by the experiment’s end. Overall, between the start and the end of the experiment, the $R''_{665 \, \text{nm}}$ have decreased by 72 %.
 
 NDVI shows the same trends, exhibit an initial rapid decline of approximately 25% between T24 and T30, after which their values stabilize, with minimal further changes observed through the end of the experiment. In contrast, Replicate 2 remains relatively stable between 0 and 48 hours, showing little change during this period (drop of 9% at T24). ,However, after T48, Replicate 2 undergoes a substantial drop, ultimately reaching a reduction of approximately 48% (@fig-Exp_Spectral_indices, C).
 
-The relative GLI shows similar trends across the replicates. Replicates 1 and 3 exhibit an initial rapid decline of approximately 40 and 57 %, respectively between T24 and T30, after which their values stabilize with minimal further changes observed until the end of the experiment. In contrast, Replicate 2 remains relatively constant between 0 and 48 hours, showing only a minor decline of around 5% by T24. However, after T48 mark, Replicate 2 experiences a substantial decrease, ultimately reaching a reduction of 73% (@fig-Exp_Spectral_indices, D). 
+The relative GLI shows similar trends across the replicates. Replicates 1 and 3 exhibit an initial rapid decline of approximately 40 and 57 %, respectively between T24 and T30, after which their values stabilize with minimal further changes observed until the end of the experiment. In contrast, Replicate 2 remains relatively constant between 0 and 48 hours, showing only a minor decline of around 5% by T24. However, after T48 mark, Replicate 2 experiences a substantial decrease, ultimately reaching a reduction of 73% (@fig-Exp_Spectral_indices, D).
 
 ```{r Fig Exp_Spectral_indices}
 #| cache: false
@@ -2319,7 +2322,7 @@ When applied to reflectance data collected during the experiment, the SDI reveal
 
 ### Pigment composition evolution along the experiment
 
-bla bla bla bla 
+bla bla bla bla
 
 ## Heatwaves of Quiberon
 
@@ -2966,7 +2969,7 @@ knitr::include_graphics("Figs/Low_res/Heatwaves_S2_plot.png")
 
 ### Radiometric indices comparison
 
-Using Sentinel-2 data, the spectral indices (NDVI and GLI) and SPC estimated for pixels unaffected by the heatwave showed no significant differences before or during the event (@fig-NDVI_GLI_SPC, left column) In contrast, seagrass darkened by the heatwave exhibited a significant decrease in both index values and SPC (@fig-NDVI_GLI_SPC, right column). In this case, the NDVI dropped by approximately 34%, from a median of 0.61 to 0.40, while also becoming more homogeneous (the standard deviation decreased from 0.09 to 0.06) (@fig-NDVI_GLI_SPC B). Although the heatwave did not affect the observed seagrass density in the field, the drop in NDVI led to an underestimation of satellite-based SPC, from 83 to 48% (@fig-NDVI_GLI_SPC D). The GLI, the index that reflects the greenness of leaves, was the most affected by the event, with an important reduction from a median of 0.23 to 0.03 during the event (@fig-NDVI_GLI_SPC F). Interestingly, when comparing the initial seagrass density of both targets (i.e., seagrass density before the event) pixels affected by the heatwave (median SPC = 85%; \[@fig-NDVI_GLI_SPC D green) were denser than the those remained unchanged (median SPC = 65%; \[@fig-NDVI_GLI_SPC C green).
+Using Sentinel-2 data, the spectral indices (NDVI and GLI) and SPC estimated for pixels unaffected by the heatwave showed no significant differences before or during the event (@fig-NDVI_GLI_SPC, left column) In contrast, seagrass darkened by the heatwave exhibited a significant decrease in both index values and SPC (@fig-NDVI_GLI_SPC, right column). In this case, the NDVI dropped by approximately 34%, from a median of 0.61 to 0.40, while also becoming more homogeneous (the standard deviation decreased from 0.09 to 0.06) (@fig-NDVI_GLI_SPC B). Although the heatwave did not affect the observed seagrass density in the field, the drop in NDVI led to an underestimation of satellite-based SPC, from 83 to 48% (@fig-NDVI_GLI_SPC D). The GLI, the index that reflects the greenness of leaves, was the most affected by the event, with an important reduction from a median of 0.23 to 0.03 during the event (@fig-NDVI_GLI_SPC F). Interestingly, when comparing the initial seagrass density of both targets (i.e., seagrass density before the event) pixels affected by the heatwave (median SPC = 85%; @fig-NDVI_GLI_SPC D green) were denser than the those remained unchanged (median SPC = 65%; @fig-NDVI_GLI_SPC C green).
 
 ```{r NDVI_GLI_SPC}
 #| cache: true
@@ -3916,9 +3919,9 @@ Additionally, analysis of bathymetry data to determine seagrass emersion time sh
 knitr::include_graphics("Figs/Low_res/GAM_emersion.png")
 ```
 
-# Discussion 
+# Discussion
 
-## Frenquency Intensity of Heatwaves and implication for seagrasses
+## Frequency Intensity of Heatwaves and implication for seagrasses
 
 ```{r data opening HW}
 #| cache: true
@@ -4351,7 +4354,7 @@ ggsave("Paper/Figs/Low_res/plot_HW_CS.png", plot_HW_CP, width = 10, height = 10,
 knitr::include_graphics("Figs/Low_res/plot_HW_CS.png")
 ```
 
-## Resilation of seagrasses to extrem events
+## WORK IN PROGRESS -- Resilation of seagrasses to extrem events
 
 ```{r resilience of seagrasses}
 #| cache: true
@@ -4533,7 +4536,6 @@ ggsave("Paper/Figs/Low_res/plot_resilience.png", plot_resilience, width = 10, he
 knitr::include_graphics("Figs/Low_res/plot_resilience.png")
 ```
 
-
-
+Seagrass resilience to heatwaves is a multifaceted issue influenced by species-specific traits, geographical location, and the presence of concurrent environmental stressors [@canadell2021ecosystem ; @hatum2024predicting ; @berger2024eelgrass]. Temperate meadows composed of slow-growing, long-lived species, such as *Posidonia*, *Amphibolis*, and *Zostera*, exhibit high vulnerability to climate change-related disturbances. In contrast, smaller, colonizing species typical of tropical regions, including *Halodule*, *Halophila*, and *Syringodium*, demonstrate greater resilience to warming events and marine heatwaves [@o2018seagrass]. This differential resilience is further shaped by environmental factors; seagrass meadows in regions benefiting from tidal cooling or located away from the warmer edges of their geographical ranges tend to experience less heat stress and demonstrate higher shoot densities [@canadell2021ecosystem ; @berger2024eelgrass]. Additionally, the frequency, duration, and intervals between heatwaves significantly affect seagrass biomass and recovery, with extended and frequent heatwaves reducing resilience and complicating recovery processes [@hatum2024predicting]. Seagrasses possess inherent coping mechanisms, including genetic adaptations and physiological acclimation, such as the rapid activation of photo-protective mechanisms and heat-responsive gene expression [@hughes2004genetic ; @reusch2005ecosystem] . However, the accelerated pace of climate change raises concerns about the capacity of these adaptations to keep up with escalating temperatures [@loarie2009velocity]. Management strategies focused on mitigating local stressors, utilizing heatwave-resistant genotypes, and implementing restoration efforts are critical to bolstering seagrass resilience. Despite these challenges, emerging evidence suggests that some seagrass species may adapt to evolving ecological conditions, providing a measure of hope for their persistence in an increasingly warm climate [@canadell2021ecosystem].
 
 # Bibliography
