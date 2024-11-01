@@ -215,6 +215,8 @@
 <meta name="citation_language" content="en">
 <meta name="citation_journal_title" content="Remote Sensing of Environment">
 <meta name="citation_reference" content="citation_title=Ecosystem collapse and climate change;,citation_author=Josep G Canadell;,citation_author=Robert B Jackson;,citation_publication_date=2021;,citation_cover_date=2021;,citation_year=2021;">
+<meta name="citation_reference" content="citation_title=A sentinel watching over inter-tidal seagrass phenology across Western Europe and North Africa;,citation_author=Bede Ffinian Rowe Davies;,citation_author=Simon Oiry;,citation_author=Philippe Rosa;,citation_author=Maria Laura Zoffoli;,citation_author=Ana I Sousa;,citation_author=Oliver R Thomas;,citation_author=Dan A Smale;,citation_author=Melanie C Austen;,citation_author=Lauren Biermann;,citation_author=Martin J Attrill;,citation_author=others;,citation_publication_date=2024;,citation_cover_date=2024;,citation_year=2024;,citation_issue=1;,citation_doi=10.1038/s43247-024-01543-z;,citation_volume=5;,citation_journal_title=Communications Earth &amp;amp;amp; Environment;,citation_publisher=Nature Publishing Group UK London;">
+<meta name="citation_reference" content="citation_title=Intertidal seagrass extent from Sentinel-2 time-series show distinct trajectories in Western Europe;,citation_author=Bede Ffinian Rowe Davies;,citation_author=Simon Oiry;,citation_author=Philippe Rosa;,citation_author=Maria Laura Zoffoli;,citation_author=Ana I Sousa;,citation_author=Oliver R Thomas;,citation_author=Dan A Smale;,citation_author=Melanie C Austen;,citation_author=Lauren Biermann;,citation_author=Martin J Attrill;,citation_author=others;,citation_publication_date=2024;,citation_cover_date=2024;,citation_year=2024;,citation_doi=10.1016/j.rse.2024.114340;,citation_volume=312;,citation_journal_title=Remote Sensing of Environment;,citation_publisher=Elsevier;">
 <meta name="citation_reference" content="citation_title=Ecosystem recovery after climatic extremes enhanced by genotypic diversity;,citation_author=Thorsten BH Reusch;,citation_author=Anneli Ehlers;,citation_author=August Hämmerli;,citation_author=Boris Worm;,citation_publication_date=2005;,citation_cover_date=2005;,citation_year=2005;,citation_issue=8;,citation_doi=10.1073/pnas.0500008102;,citation_volume=102;,citation_journal_title=Proceedings of the National Academy of Sciences;,citation_publisher=National Acad Sciences;">
 <meta name="citation_reference" content="citation_title=The velocity of climate change;,citation_author=Scott R Loarie;,citation_author=Philip B Duffy;,citation_author=Healy Hamilton;,citation_author=Gregory P Asner;,citation_author=Christopher B Field;,citation_author=David D Ackerly;,citation_publication_date=2009;,citation_cover_date=2009;,citation_year=2009;,citation_issue=7276;,citation_volume=462;,citation_journal_title=Nature;,citation_publisher=Nature Publishing Group UK London;">
 <meta name="citation_reference" content="citation_title=Genetic diversity enhances the resistance of a seagrass ecosystem to disturbance;,citation_author=A Randall Hughes;,citation_author=John J Stachowicz;,citation_publication_date=2004;,citation_cover_date=2004;,citation_year=2004;,citation_issue=24;,citation_doi=10.1073/pnas.0402642101;,citation_volume=101;,citation_journal_title=Proceedings of the National Academy of Sciences;,citation_publisher=National Acad Sciences;">
@@ -4034,6 +4036,7 @@ Figure&nbsp;12: Seagrass Darkening Index as a function of the daily emergence ti
 <li>lack of literature about atmospheric heatwaves and intertidal seagrasses</li>
 <li>Relation between the exposure time and the impact of the heatwave</li>
 </ul>
+<p>Although extensive research exists on marine heatwaves’ effects on subtidal seagrasses, little attention has been given to intertidal regions. This study initiates an exploration of how intertidal seagrasses respond to the dual influence of marine and atmospheric heatwaves, underscoring the need for further investigation in this underexplored area.</p>
 <section id="frequency-intensity-of-heatwaves-and-implication-for-seagrasses" class="level2" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="frequency-intensity-of-heatwaves-and-implication-for-seagrasses"><span class="header-section-number">4.1</span> Frequency Intensity of Heatwaves and implication for seagrasses</h2>
 <div class="cell-container"><div class="cell-decorator"><pre>In [45]:</pre></div><div class="cell">
@@ -4611,9 +4614,346 @@ Figure&nbsp;14: Comparison of the seagrass percent cover before (left), during (
 </div>
 </div>
 </div></div>
+<div class="cell-container"><div class="cell-decorator"><pre>In [53]:</pre></div><div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rvest)</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(terra)</span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>Tide_info<span class="ot">&lt;-</span><span class="cf">function</span>(<span class="at">coords=</span><span class="cn">NA</span>,<span class="at">tide_date=</span><span class="cn">NA</span>){</span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>  data_coord<span class="ot">&lt;-</span><span class="fu">list.files</span>(<span class="st">"./"</span>, <span class="at">pattern=</span><span class="st">"station_coordinate.csv"</span>,<span class="at">full.names =</span> T,<span class="at">recursive =</span> T)</span>
+<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">length</span>(data_coord)<span class="sc">==</span><span class="dv">1</span>) {</span>
+<span id="cb55-9"><a href="#cb55-9" aria-hidden="true" tabindex="-1"></a>    station_coordinate<span class="ot">&lt;-</span><span class="fu">read.csv</span>(data_coord)</span>
+<span id="cb55-10"><a href="#cb55-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb55-11"><a href="#cb55-11" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb55-12"><a href="#cb55-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">exists</span>(<span class="st">"station_coordinate"</span>)<span class="sc">==</span><span class="cn">FALSE</span>) {</span>
+<span id="cb55-13"><a href="#cb55-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb55-14"><a href="#cb55-14" aria-hidden="true" tabindex="-1"></a>    url_stat<span class="ot">&lt;-</span><span class="st">"http://www.ioc-sealevelmonitoring.org/list.php?operator=&amp;showall=all&amp;output=general"</span></span>
+<span id="cb55-15"><a href="#cb55-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">download.file</span>(url_stat, <span class="at">destfile =</span> <span class="st">"scrapedpage_stat.html"</span>,<span class="at">quiet=</span>T)</span>
+<span id="cb55-16"><a href="#cb55-16" aria-hidden="true" tabindex="-1"></a>    webpage_stat <span class="ot">&lt;-</span> <span class="fu">read_html</span>(<span class="st">"scrapedpage_stat.html"</span>)</span>
+<span id="cb55-17"><a href="#cb55-17" aria-hidden="true" tabindex="-1"></a>    stat_table<span class="ot">&lt;-</span>rvest<span class="sc">::</span><span class="fu">html_text</span>(rvest<span class="sc">::</span><span class="fu">html_nodes</span>(webpage_stat,<span class="st">'td'</span>))</span>
+<span id="cb55-18"><a href="#cb55-18" aria-hidden="true" tabindex="-1"></a>    stat_table<span class="ot">&lt;-</span>stat_table[<span class="sc">-</span><span class="fu">length</span>(stat_table)]</span>
+<span id="cb55-19"><a href="#cb55-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb55-20"><a href="#cb55-20" aria-hidden="true" tabindex="-1"></a>    stat_table<span class="ot">&lt;-</span>stat_table[<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">19</span>)]</span>
+<span id="cb55-21"><a href="#cb55-21" aria-hidden="true" tabindex="-1"></a>    name_stat_table<span class="ot">&lt;-</span>stat_table[<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)]</span>
+<span id="cb55-22"><a href="#cb55-22" aria-hidden="true" tabindex="-1"></a>    name_stat_table<span class="ot">&lt;-</span><span class="fu">unlist</span>(<span class="fu">strsplit</span>(name_stat_table,<span class="st">"</span><span class="sc">\r\r\n\t\t\t\t</span><span class="st">"</span>))</span>
+<span id="cb55-23"><a href="#cb55-23" aria-hidden="true" tabindex="-1"></a>    name_stat_table[<span class="dv">8</span>]<span class="ot">&lt;-</span><span class="st">"Last_Observation_Time_in_GMT"</span></span>
+<span id="cb55-24"><a href="#cb55-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(name_stat_table)) {</span>
+<span id="cb55-25"><a href="#cb55-25" aria-hidden="true" tabindex="-1"></a>      name_stat_table[i]<span class="ot">&lt;-</span><span class="fu">gsub</span>(<span class="st">" "</span>,<span class="st">"_"</span>,  name_stat_table[i])</span>
+<span id="cb55-26"><a href="#cb55-26" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb55-27"><a href="#cb55-27" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb55-28"><a href="#cb55-28" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb55-29"><a href="#cb55-29" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb55-30"><a href="#cb55-30" aria-hidden="true" tabindex="-1"></a>    stat_table<span class="ot">&lt;-</span>stat_table[<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)]</span>
+<span id="cb55-31"><a href="#cb55-31" aria-hidden="true" tabindex="-1"></a>    stat_table<span class="ot">&lt;-</span><span class="fu">as.data.frame</span>(<span class="fu">matrix</span>(stat_table,<span class="at">ncol=</span><span class="dv">11</span>,<span class="at">byrow =</span> T))</span>
+<span id="cb55-32"><a href="#cb55-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">names</span>(stat_table)<span class="ot">&lt;-</span>name_stat_table</span>
+<span id="cb55-33"><a href="#cb55-33" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb55-34"><a href="#cb55-34" aria-hidden="true" tabindex="-1"></a>    stat_table<span class="ot">&lt;-</span>stat_table[<span class="fu">which</span>((<span class="fu">nchar</span>(stat_table<span class="sc">$</span>Code)<span class="sc">==</span><span class="dv">4</span>)<span class="sc">|</span>(<span class="fu">nchar</span>(stat_table<span class="sc">$</span>Code)<span class="sc">==</span><span class="dv">5</span>)),]</span>
+<span id="cb55-35"><a href="#cb55-35" aria-hidden="true" tabindex="-1"></a>    <span class="co"># stat_table&lt;-stat_table[which(stat_table$Connection=="ftp"),]</span></span>
+<span id="cb55-36"><a href="#cb55-36" aria-hidden="true" tabindex="-1"></a>    stat_table<span class="sc">$</span>Last_Observation_Time_in_GMT<span class="ot">&lt;-</span><span class="fu">substr</span>(stat_table<span class="sc">$</span>Last_Observation_Time_in_GMT,<span class="dv">7</span>,<span class="fu">nchar</span>(stat_table<span class="sc">$</span>Last_Observation_Time_in_GMT))</span>
+<span id="cb55-37"><a href="#cb55-37" aria-hidden="true" tabindex="-1"></a>    stat_table<span class="ot">&lt;-</span>stat_table[<span class="fu">which</span>((stat_table<span class="sc">$</span>Last_Observation_Time_in_GMT<span class="sc">!=</span><span class="st">"-down-"</span>)),]</span>
+<span id="cb55-38"><a href="#cb55-38" aria-hidden="true" tabindex="-1"></a>    stat_table<span class="ot">&lt;-</span>stat_table[<span class="fu">which</span>((stat_table<span class="sc">$</span>Last_Observation_Time_in_GMT<span class="sc">!=</span><span class="st">"-maintenance-"</span>)),]</span>
+<span id="cb55-39"><a href="#cb55-39" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb55-40"><a href="#cb55-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(stat_table)) {</span>
+<span id="cb55-41"><a href="#cb55-41" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb55-42"><a href="#cb55-42" aria-hidden="true" tabindex="-1"></a>      <span class="fu">print</span>(<span class="fu">paste0</span>(i,<span class="st">"/"</span>,<span class="fu">nrow</span>(stat_table),<span class="st">" station: "</span>,stat_table<span class="sc">$</span>Code[i]))</span>
+<span id="cb55-43"><a href="#cb55-43" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb55-44"><a href="#cb55-44" aria-hidden="true" tabindex="-1"></a>      url_coord<span class="ot">&lt;-</span><span class="fu">paste0</span>(<span class="st">"http://www.ioc-sealevelmonitoring.org/station.php?code="</span>,stat_table<span class="sc">$</span>Code[i])</span>
+<span id="cb55-45"><a href="#cb55-45" aria-hidden="true" tabindex="-1"></a>      <span class="fu">download.file</span>(url_coord, <span class="at">destfile =</span> <span class="st">"scrapedpage_coord.html"</span>,<span class="at">quiet=</span>T)</span>
+<span id="cb55-46"><a href="#cb55-46" aria-hidden="true" tabindex="-1"></a>      webpage <span class="ot">&lt;-</span> <span class="fu">read_html</span>(<span class="st">"scrapedpage_coord.html"</span>)</span>
+<span id="cb55-47"><a href="#cb55-47" aria-hidden="true" tabindex="-1"></a>      stat_coord<span class="ot">&lt;-</span><span class="fu">as.character</span>(rvest<span class="sc">::</span><span class="fu">html_text</span>(rvest<span class="sc">::</span><span class="fu">html_nodes</span>(webpage,<span class="st">'tr'</span>)))</span>
+<span id="cb55-48"><a href="#cb55-48" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb55-49"><a href="#cb55-49" aria-hidden="true" tabindex="-1"></a>      lat<span class="ot">&lt;-</span>stat_coord[<span class="fu">which</span>(<span class="fu">substr</span>(stat_coord,<span class="dv">1</span>,<span class="dv">8</span>)<span class="sc">==</span><span class="st">"Latitude"</span>)]</span>
+<span id="cb55-50"><a href="#cb55-50" aria-hidden="true" tabindex="-1"></a>      long<span class="ot">&lt;-</span>stat_coord[<span class="fu">which</span>(<span class="fu">substr</span>(stat_coord,<span class="dv">1</span>,<span class="dv">9</span>)<span class="sc">==</span><span class="st">"Longitude"</span>)]</span>
+<span id="cb55-51"><a href="#cb55-51" aria-hidden="true" tabindex="-1"></a>      lat<span class="ot">&lt;-</span><span class="fu">gsub</span>(<span class="st">"Latitude . "</span>,<span class="st">""</span>,lat)</span>
+<span id="cb55-52"><a href="#cb55-52" aria-hidden="true" tabindex="-1"></a>      long<span class="ot">&lt;-</span><span class="fu">gsub</span>(<span class="st">"Longitude . "</span>,<span class="st">""</span>,long)</span>
+<span id="cb55-53"><a href="#cb55-53" aria-hidden="true" tabindex="-1"></a>      stat_table<span class="sc">$</span>long[i]<span class="ot">&lt;-</span>long</span>
+<span id="cb55-54"><a href="#cb55-54" aria-hidden="true" tabindex="-1"></a>      stat_table<span class="sc">$</span>lat[i]<span class="ot">&lt;-</span>lat</span>
+<span id="cb55-55"><a href="#cb55-55" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb55-56"><a href="#cb55-56" aria-hidden="true" tabindex="-1"></a>      station_coordinate<span class="ot">&lt;-</span>stat_table</span>
+<span id="cb55-57"><a href="#cb55-57" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb55-58"><a href="#cb55-58" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb55-59"><a href="#cb55-59" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb55-60"><a href="#cb55-60" aria-hidden="true" tabindex="-1"></a>    <span class="co"># return(station_coordinate)</span></span>
+<span id="cb55-61"><a href="#cb55-61" aria-hidden="true" tabindex="-1"></a>    <span class="fu">write.csv</span>(station_coordinate,<span class="st">"./station_coordinate.csv"</span>)</span>
+<span id="cb55-62"><a href="#cb55-62" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb55-63"><a href="#cb55-63" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb55-64"><a href="#cb55-64" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb55-65"><a href="#cb55-65" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb55-66"><a href="#cb55-66" aria-hidden="true" tabindex="-1"></a>  sr<span class="ot">&lt;-</span><span class="fu">crs</span>(<span class="st">'+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs'</span>)</span>
+<span id="cb55-67"><a href="#cb55-67" aria-hidden="true" tabindex="-1"></a>  <span class="co"># coord_centroid&lt;-data.frame(x=(c(xmax(roi)+xmin(roi), ymax(roi)+ymin(roi))/2)[1],</span></span>
+<span id="cb55-68"><a href="#cb55-68" aria-hidden="true" tabindex="-1"></a>  <span class="co">#                            y=(c(xmax(roi)+xmin(roi), ymax(roi)+ymin(roi))/2)[2])</span></span>
+<span id="cb55-69"><a href="#cb55-69" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb55-70"><a href="#cb55-70" aria-hidden="true" tabindex="-1"></a>  <span class="co"># coordinates(coord_centroid)&lt;- ~x+y</span></span>
+<span id="cb55-71"><a href="#cb55-71" aria-hidden="true" tabindex="-1"></a>  <span class="co"># crs(coord_centroid)&lt;-crs(roi)</span></span>
+<span id="cb55-72"><a href="#cb55-72" aria-hidden="true" tabindex="-1"></a>  <span class="co"># </span></span>
+<span id="cb55-73"><a href="#cb55-73" aria-hidden="true" tabindex="-1"></a>  <span class="co"># roi &lt;- spTransform(coord_centroid, sr)</span></span>
+<span id="cb55-74"><a href="#cb55-74" aria-hidden="true" tabindex="-1"></a>  <span class="co"># coord_centroid&lt;-c(xmax(roi)+xmin(roi), ymax(roi)+ymin(roi))/2</span></span>
+<span id="cb55-75"><a href="#cb55-75" aria-hidden="true" tabindex="-1"></a>  <span class="co"># </span></span>
+<span id="cb55-76"><a href="#cb55-76" aria-hidden="true" tabindex="-1"></a>  dist_roi_Tide<span class="ot">&lt;-</span><span class="fu">data.frame</span>(</span>
+<span id="cb55-77"><a href="#cb55-77" aria-hidden="true" tabindex="-1"></a>    <span class="at">code_tide=</span>station_coordinate<span class="sc">$</span>Code,</span>
+<span id="cb55-78"><a href="#cb55-78" aria-hidden="true" tabindex="-1"></a>    <span class="at">Name_station=</span>station_coordinate<span class="sc">$</span>Location,</span>
+<span id="cb55-79"><a href="#cb55-79" aria-hidden="true" tabindex="-1"></a>    <span class="at">dist=</span><span class="cn">NA</span></span>
+<span id="cb55-80"><a href="#cb55-80" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb55-81"><a href="#cb55-81" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb55-82"><a href="#cb55-82" aria-hidden="true" tabindex="-1"></a>  coord_centroid <span class="ot">=</span> coords</span>
+<span id="cb55-83"><a href="#cb55-83" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb55-84"><a href="#cb55-84" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(station_coordinate)) {</span>
+<span id="cb55-85"><a href="#cb55-85" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb55-86"><a href="#cb55-86" aria-hidden="true" tabindex="-1"></a>    dist_roi_Tide<span class="sc">$</span>dist[i]<span class="ot">&lt;-</span><span class="fu">sqrt</span>(((coord_centroid[<span class="dv">2</span>]<span class="sc">-</span>station_coordinate<span class="sc">$</span>long[i])<span class="sc">^</span><span class="dv">2</span>)<span class="sc">+</span>(coord_centroid[<span class="dv">1</span>]<span class="sc">-</span>station_coordinate<span class="sc">$</span>lat[i])<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb55-87"><a href="#cb55-87" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb55-88"><a href="#cb55-88" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb55-89"><a href="#cb55-89" aria-hidden="true" tabindex="-1"></a>  site_name_selected<span class="ot">&lt;-</span>dist_roi_Tide[<span class="fu">which</span>(dist_roi_Tide<span class="sc">$</span>dist<span class="sc">==</span><span class="fu">min</span>(dist_roi_Tide<span class="sc">$</span>dist)),]</span>
+<span id="cb55-90"><a href="#cb55-90" aria-hidden="true" tabindex="-1"></a>  site_id<span class="ot">&lt;-</span>site_name_selected<span class="sc">$</span>code_tide[<span class="dv">1</span>]</span>
+<span id="cb55-91"><a href="#cb55-91" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb55-92"><a href="#cb55-92" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb55-93"><a href="#cb55-93" aria-hidden="true" tabindex="-1"></a>  tide_date_wrong<span class="ot">&lt;-</span><span class="fu">as.POSIXct</span>(tide_date, <span class="at">format =</span> <span class="st">"%Y-%m-%d"</span>)</span>
+<span id="cb55-94"><a href="#cb55-94" aria-hidden="true" tabindex="-1"></a>  tide_date_true<span class="ot">&lt;-</span>tide_date_wrong<span class="sc">+</span> (<span class="dv">60</span><span class="sc">*</span><span class="dv">60</span><span class="sc">*</span><span class="dv">24</span>)</span>
+<span id="cb55-95"><a href="#cb55-95" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb55-96"><a href="#cb55-96" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb55-97"><a href="#cb55-97" aria-hidden="true" tabindex="-1"></a>  <span class="co"># site_id&lt;-"batr"</span></span>
+<span id="cb55-98"><a href="#cb55-98" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb55-99"><a href="#cb55-99" aria-hidden="true" tabindex="-1"></a>  url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"http://www.ioc-sealevelmonitoring.org/bgraph.php?code="</span>,site_id,<span class="st">"&amp;output=tab&amp;period=1&amp;endtime="</span>,tide_date_true)</span>
+<span id="cb55-100"><a href="#cb55-100" aria-hidden="true" tabindex="-1"></a>  <span class="fu">download.file</span>(url, <span class="at">destfile =</span> <span class="st">"scrapedpage.html"</span>,<span class="at">quiet=</span>T)</span>
+<span id="cb55-101"><a href="#cb55-101" aria-hidden="true" tabindex="-1"></a>  webpage <span class="ot">&lt;-</span> <span class="fu">read_html</span>(<span class="st">"scrapedpage.html"</span>)</span>
+<span id="cb55-102"><a href="#cb55-102" aria-hidden="true" tabindex="-1"></a>  tidal_RAW<span class="ot">&lt;-</span>rvest<span class="sc">::</span><span class="fu">html_text</span>(rvest<span class="sc">::</span><span class="fu">html_nodes</span>(webpage,<span class="st">'td'</span>))</span>
+<span id="cb55-103"><a href="#cb55-103" aria-hidden="true" tabindex="-1"></a>  Tide_table<span class="ot">&lt;-</span><span class="fu">as.data.frame</span>(<span class="fu">matrix</span>(tidal_RAW,<span class="at">ncol=</span><span class="dv">2</span>, <span class="at">byrow =</span> T))</span>
+<span id="cb55-104"><a href="#cb55-104" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(Tide_table)<span class="ot">&lt;-</span>Tide_table[<span class="dv">1</span>,]</span>
+<span id="cb55-105"><a href="#cb55-105" aria-hidden="true" tabindex="-1"></a>  Tide_table<span class="ot">&lt;-</span>Tide_table[<span class="sc">-</span><span class="dv">1</span>,]</span>
+<span id="cb55-106"><a href="#cb55-106" aria-hidden="true" tabindex="-1"></a>  Tide_table<span class="sc">$</span><span class="st">`</span><span class="at">Time (UTC)</span><span class="st">`</span><span class="ot">&lt;-</span><span class="fu">as.POSIXct</span>(Tide_table<span class="sc">$</span><span class="st">`</span><span class="at">Time (UTC)</span><span class="st">`</span>, <span class="at">tryFormats =</span> <span class="fu">c</span>(<span class="st">"%Y-%m-%d %H:%M:%OS"</span>,</span>
+<span id="cb55-107"><a href="#cb55-107" aria-hidden="true" tabindex="-1"></a>                                                                              <span class="st">"%Y/%m/%d %H:%M:%OS"</span>,</span>
+<span id="cb55-108"><a href="#cb55-108" aria-hidden="true" tabindex="-1"></a>                                                                              <span class="st">"%Y-%m-%d %H:%M"</span>,</span>
+<span id="cb55-109"><a href="#cb55-109" aria-hidden="true" tabindex="-1"></a>                                                                              <span class="st">"%Y/%m/%d %H:%M"</span>,</span>
+<span id="cb55-110"><a href="#cb55-110" aria-hidden="true" tabindex="-1"></a>                                                                              <span class="st">"%Y-%m-%d"</span>,</span>
+<span id="cb55-111"><a href="#cb55-111" aria-hidden="true" tabindex="-1"></a>                                                                              <span class="st">"%Y/%m/%d"</span>,</span>
+<span id="cb55-112"><a href="#cb55-112" aria-hidden="true" tabindex="-1"></a>                                                                              <span class="st">"%Y%m%d %H:%M:%OS3"</span>,</span>
+<span id="cb55-113"><a href="#cb55-113" aria-hidden="true" tabindex="-1"></a>                                                                              <span class="st">"%Y%m%d %H:%M"</span>,</span>
+<span id="cb55-114"><a href="#cb55-114" aria-hidden="true" tabindex="-1"></a>                                                                              <span class="st">"%Y%m%d"</span>))</span>
+<span id="cb55-115"><a href="#cb55-115" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb55-116"><a href="#cb55-116" aria-hidden="true" tabindex="-1"></a>  Tide_table_aggregate <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(<span class="fu">as.numeric</span>(Tide_table[,<span class="dv">2</span>]), </span>
+<span id="cb55-117"><a href="#cb55-117" aria-hidden="true" tabindex="-1"></a>                                    <span class="fu">list</span>(<span class="at">fiveMin=</span><span class="fu">cut</span>(Tide_table<span class="sc">$</span><span class="st">`</span><span class="at">Time (UTC)</span><span class="st">`</span>, <span class="st">"10 mins"</span>)),</span>
+<span id="cb55-118"><a href="#cb55-118" aria-hidden="true" tabindex="-1"></a>                                    mean)</span>
+<span id="cb55-119"><a href="#cb55-119" aria-hidden="true" tabindex="-1"></a>  <span class="co"># # Tide_table_aggregate$x&lt;-round(Tide_table_aggregate$x,3)</span></span>
+<span id="cb55-120"><a href="#cb55-120" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Tide_table_aggregate$fiveMin&lt;-as.POSIXct(Tide_table_aggregate$fiveMin, tryFormats = c("%Y-%m-%d %H:%M:%S",</span></span>
+<span id="cb55-121"><a href="#cb55-121" aria-hidden="true" tabindex="-1"></a>  <span class="co">#                                                                                       "%Y/%m/%d %H:%M:%S",</span></span>
+<span id="cb55-122"><a href="#cb55-122" aria-hidden="true" tabindex="-1"></a>  <span class="co">#                                                                                       "%Y-%m-%d %H:%M",</span></span>
+<span id="cb55-123"><a href="#cb55-123" aria-hidden="true" tabindex="-1"></a>  <span class="co">#                                                                                       "%Y/%m/%d %H:%M",</span></span>
+<span id="cb55-124"><a href="#cb55-124" aria-hidden="true" tabindex="-1"></a>  <span class="co">#                                                                                       "%Y-%m-%d",</span></span>
+<span id="cb55-125"><a href="#cb55-125" aria-hidden="true" tabindex="-1"></a>  <span class="co">#                                                                                       "%Y/%m/%d",</span></span>
+<span id="cb55-126"><a href="#cb55-126" aria-hidden="true" tabindex="-1"></a>  <span class="co">#                                                                                       "%Y%m%d %H:%M:%S",</span></span>
+<span id="cb55-127"><a href="#cb55-127" aria-hidden="true" tabindex="-1"></a>  <span class="co">#                                                                                       "%Y%m%d %H:%M",</span></span>
+<span id="cb55-128"><a href="#cb55-128" aria-hidden="true" tabindex="-1"></a>  <span class="co">#                                                                                       "%Y%m%d"))</span></span>
+<span id="cb55-129"><a href="#cb55-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-130"><a href="#cb55-130" aria-hidden="true" tabindex="-1"></a>  Tide_table_aggregate<span class="sc">$</span>smooth<span class="ot">&lt;-</span>signal<span class="sc">::</span><span class="fu">sgolayfilt</span>(Tide_table_aggregate<span class="sc">$</span>x,<span class="at">n=</span><span class="dv">15</span>)</span>
+<span id="cb55-131"><a href="#cb55-131" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb55-132"><a href="#cb55-132" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Tide_table_aggregate$first_diff&lt;- ave(Tide_table_aggregate$smooth , Tide_table_aggregate$fiveMin , FUN=function(i) c(NA,diff(i)))</span></span>
+<span id="cb55-133"><a href="#cb55-133" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb55-134"><a href="#cb55-134" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb55-135"><a href="#cb55-135" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb55-136"><a href="#cb55-136" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb55-137"><a href="#cb55-137" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>(<span class="fu">nrow</span>(Tide_table_aggregate)<span class="sc">-</span><span class="dv">1</span>)) {</span>
+<span id="cb55-138"><a href="#cb55-138" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb55-139"><a href="#cb55-139" aria-hidden="true" tabindex="-1"></a>    a<span class="ot">&lt;-</span><span class="fu">as.numeric</span>(Tide_table_aggregate[i,<span class="dv">3</span>])<span class="sc">-</span><span class="fu">as.numeric</span>(Tide_table_aggregate[i<span class="sc">+</span><span class="dv">1</span>,<span class="dv">3</span>])</span>
+<span id="cb55-140"><a href="#cb55-140" aria-hidden="true" tabindex="-1"></a>    <span class="co"># a&lt;-round(a,digits = 2)</span></span>
+<span id="cb55-141"><a href="#cb55-141" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb55-142"><a href="#cb55-142" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (i<span class="sc">==</span><span class="dv">1</span>) {</span>
+<span id="cb55-143"><a href="#cb55-143" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb55-144"><a href="#cb55-144" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (a<span class="sc">&gt;</span><span class="dv">0</span>) {</span>
+<span id="cb55-145"><a href="#cb55-145" aria-hidden="true" tabindex="-1"></a>        Tide_type<span class="ot">&lt;-</span><span class="st">"jusant"</span></span>
+<span id="cb55-146"><a href="#cb55-146" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb55-147"><a href="#cb55-147" aria-hidden="true" tabindex="-1"></a>      }<span class="cf">else</span>{</span>
+<span id="cb55-148"><a href="#cb55-148" aria-hidden="true" tabindex="-1"></a>        Tide_type<span class="ot">&lt;-</span><span class="st">"flot"</span></span>
+<span id="cb55-149"><a href="#cb55-149" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb55-150"><a href="#cb55-150" aria-hidden="true" tabindex="-1"></a>    }<span class="cf">else</span>{</span>
+<span id="cb55-151"><a href="#cb55-151" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb55-152"><a href="#cb55-152" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (a<span class="sc">&gt;</span><span class="dv">0</span> <span class="sc">&amp;</span> Tide_type<span class="sc">==</span><span class="st">"flot"</span> ) {</span>
+<span id="cb55-153"><a href="#cb55-153" aria-hidden="true" tabindex="-1"></a>        Tide_table_aggregate[i,<span class="dv">4</span>]<span class="ot">&lt;-</span><span class="st">"HT"</span></span>
+<span id="cb55-154"><a href="#cb55-154" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb55-155"><a href="#cb55-155" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (a<span class="sc">&lt;</span><span class="dv">0</span> <span class="sc">&amp;</span> Tide_type<span class="sc">==</span><span class="st">"jusant"</span> ){</span>
+<span id="cb55-156"><a href="#cb55-156" aria-hidden="true" tabindex="-1"></a>        Tide_table_aggregate[i,<span class="dv">4</span>]<span class="ot">&lt;-</span><span class="st">"LT"</span></span>
+<span id="cb55-157"><a href="#cb55-157" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb55-158"><a href="#cb55-158" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (a<span class="sc">&gt;</span><span class="dv">0</span>) {</span>
+<span id="cb55-159"><a href="#cb55-159" aria-hidden="true" tabindex="-1"></a>        Tide_type<span class="ot">&lt;-</span><span class="st">"jusant"</span></span>
+<span id="cb55-160"><a href="#cb55-160" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb55-161"><a href="#cb55-161" aria-hidden="true" tabindex="-1"></a>      }<span class="cf">else</span>{</span>
+<span id="cb55-162"><a href="#cb55-162" aria-hidden="true" tabindex="-1"></a>        Tide_type<span class="ot">&lt;-</span><span class="st">"flot"</span></span>
+<span id="cb55-163"><a href="#cb55-163" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb55-164"><a href="#cb55-164" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb55-165"><a href="#cb55-165" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb55-166"><a href="#cb55-166" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb55-167"><a href="#cb55-167" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb55-168"><a href="#cb55-168" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(Tide_table_aggregate)<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="st">'date'</span>,<span class="st">'water_height'</span>,<span class="st">"smooth"</span>,<span class="st">'tide_step'</span>)</span>
+<span id="cb55-169"><a href="#cb55-169" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb55-170"><a href="#cb55-170" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb55-171"><a href="#cb55-171" aria-hidden="true" tabindex="-1"></a>  Tide_table_aggregate<span class="sc">$</span>date1 <span class="ot">&lt;-</span> <span class="fu">as.character</span>(Tide_table_aggregate<span class="sc">$</span>date) <span class="sc">%&gt;%</span> </span>
+<span id="cb55-172"><a href="#cb55-172" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.POSIXct</span>(<span class="at">format =</span> <span class="st">"%Y-%m-%d %H:%M:%S"</span>)</span>
+<span id="cb55-173"><a href="#cb55-173" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb55-174"><a href="#cb55-174" aria-hidden="true" tabindex="-1"></a>  Tide_table_aggregate<span class="sc">$</span>date1[<span class="dv">1</span>]<span class="ot">&lt;-</span> <span class="fu">as.character</span>(Tide_table_aggregate<span class="sc">$</span>date[<span class="dv">1</span>]) <span class="sc">%&gt;%</span> </span>
+<span id="cb55-175"><a href="#cb55-175" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.POSIXct</span>(<span class="at">format =</span> <span class="st">"%Y-%m-%d %H:%M:%S"</span>)</span>
+<span id="cb55-176"><a href="#cb55-176" aria-hidden="true" tabindex="-1"></a>  Tide_table_aggregate<span class="sc">$</span>date1[<span class="fu">nrow</span>(Tide_table_aggregate)]<span class="ot">&lt;-</span> <span class="fu">as.character</span>(Tide_table_aggregate<span class="sc">$</span>date[<span class="fu">nrow</span>(Tide_table_aggregate)]) <span class="sc">%&gt;%</span> </span>
+<span id="cb55-177"><a href="#cb55-177" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.POSIXct</span>(<span class="at">format =</span> <span class="st">"%Y-%m-%d %H:%M:%S"</span>)</span>
+<span id="cb55-178"><a href="#cb55-178" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb55-179"><a href="#cb55-179" aria-hidden="true" tabindex="-1"></a>  Tide_table_aggregate <span class="ot">&lt;-</span> Tide_table_aggregate <span class="sc">%&gt;%</span> </span>
+<span id="cb55-180"><a href="#cb55-180" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>date) <span class="sc">%&gt;%</span> </span>
+<span id="cb55-181"><a href="#cb55-181" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="at">date =</span> <span class="st">"date1"</span>)</span>
+<span id="cb55-182"><a href="#cb55-182" aria-hidden="true" tabindex="-1"></a>  BMPM<span class="ot">&lt;-</span>Tide_table_aggregate[<span class="fu">which</span>(<span class="fu">is.na</span>(Tide_table_aggregate[,<span class="dv">4</span>])<span class="sc">==</span><span class="cn">FALSE</span>),]</span>
+<span id="cb55-183"><a href="#cb55-183" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb55-184"><a href="#cb55-184" aria-hidden="true" tabindex="-1"></a>  plot_tide<span class="ot">&lt;-</span><span class="fu">ggplot</span>(<span class="at">data=</span>Tide_table_aggregate,<span class="fu">aes</span>(<span class="at">x=</span>date,<span class="at">y=</span>water_height))<span class="sc">+</span></span>
+<span id="cb55-185"><a href="#cb55-185" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>()</span>
+<span id="cb55-186"><a href="#cb55-186" aria-hidden="true" tabindex="-1"></a>    <span class="co"># geom_vline(xintercept = as.POSIXct(BMPM$date,tryFormats = c("%Y-%m-%d %H:%M:%OS",</span></span>
+<span id="cb55-187"><a href="#cb55-187" aria-hidden="true" tabindex="-1"></a>    <span class="co">#                                                             "%Y/%m/%d %H:%M:%OS",</span></span>
+<span id="cb55-188"><a href="#cb55-188" aria-hidden="true" tabindex="-1"></a>    <span class="co">#                                                             "%Y-%m-%d %H:%M",</span></span>
+<span id="cb55-189"><a href="#cb55-189" aria-hidden="true" tabindex="-1"></a>    <span class="co">#                                                             "%Y/%m/%d %H:%M",</span></span>
+<span id="cb55-190"><a href="#cb55-190" aria-hidden="true" tabindex="-1"></a>    <span class="co">#                                                             "%Y-%m-%d",</span></span>
+<span id="cb55-191"><a href="#cb55-191" aria-hidden="true" tabindex="-1"></a>    <span class="co">#                                                             "%Y/%m/%d",</span></span>
+<span id="cb55-192"><a href="#cb55-192" aria-hidden="true" tabindex="-1"></a>    <span class="co">#                                                             "%Y%m%d %H:%M:%OS3",</span></span>
+<span id="cb55-193"><a href="#cb55-193" aria-hidden="true" tabindex="-1"></a>    <span class="co">#                                                             "%Y%m%d %H:%M",</span></span>
+<span id="cb55-194"><a href="#cb55-194" aria-hidden="true" tabindex="-1"></a>    <span class="co">#                                                             "%Y%m%d")), linetype="dotted", </span></span>
+<span id="cb55-195"><a href="#cb55-195" aria-hidden="true" tabindex="-1"></a>    <span class="co">#            color = "blue", size=1.5)</span></span>
+<span id="cb55-196"><a href="#cb55-196" aria-hidden="true" tabindex="-1"></a>    <span class="co"># </span></span>
+<span id="cb55-197"><a href="#cb55-197" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb55-198"><a href="#cb55-198" aria-hidden="true" tabindex="-1"></a>  out<span class="ot">&lt;-</span><span class="fu">list</span>()</span>
+<span id="cb55-199"><a href="#cb55-199" aria-hidden="true" tabindex="-1"></a>  out<span class="sc">$</span>site<span class="ot">&lt;-</span>site_name_selected</span>
+<span id="cb55-200"><a href="#cb55-200" aria-hidden="true" tabindex="-1"></a>  out<span class="sc">$</span>tide<span class="ot">&lt;-</span>BMPM</span>
+<span id="cb55-201"><a href="#cb55-201" aria-hidden="true" tabindex="-1"></a>  out<span class="sc">$</span>df_tide<span class="ot">&lt;-</span>Tide_table_aggregate[,<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">4</span>)]</span>
+<span id="cb55-202"><a href="#cb55-202" aria-hidden="true" tabindex="-1"></a>  out<span class="sc">$</span>tide_plot<span class="ot">&lt;-</span>plot_tide</span>
+<span id="cb55-203"><a href="#cb55-203" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb55-204"><a href="#cb55-204" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(out)</span>
+<span id="cb55-205"><a href="#cb55-205" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb55-206"><a href="#cb55-206" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div>
+<div class="cell-container"><div class="cell-decorator"><pre>In [54]:</pre></div><div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Utilities.Package)</span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(heatwaveR)</span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a><span class="do">#### Spring tides</span></span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>dates <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"2021-09-04"</span>, <span class="st">"2021-09-05"</span>,<span class="st">"2021-09-06"</span>,<span class="st">"2021-09-07"</span>)</span>
+<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a>coords <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">47.586782</span>, <span class="sc">-</span><span class="fl">3.121514</span>)</span>
+<span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-10"><a href="#cb56-10" aria-hidden="true" tabindex="-1"></a>seagrass_mask <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(<span class="st">"Data/shp/mask_seagrasses.shp"</span>)</span>
+<span id="cb56-11"><a href="#cb56-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-12"><a href="#cb56-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(dates)){</span>
+<span id="cb56-13"><a href="#cb56-13" aria-hidden="true" tabindex="-1"></a>  tide_data <span class="ot">&lt;-</span> <span class="fu">Tide_info</span>(<span class="at">coords =</span> coords, <span class="at">tide_date =</span> dates[i])</span>
+<span id="cb56-14"><a href="#cb56-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb56-15"><a href="#cb56-15" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(i <span class="sc">==</span> <span class="dv">1</span>){</span>
+<span id="cb56-16"><a href="#cb56-16" aria-hidden="true" tabindex="-1"></a>    df_tide <span class="ot">=</span> tide_data<span class="sc">$</span>tide <span class="sc">%&gt;%</span> </span>
+<span id="cb56-17"><a href="#cb56-17" aria-hidden="true" tabindex="-1"></a>      <span class="fu">as_tibble</span>()</span>
+<span id="cb56-18"><a href="#cb56-18" aria-hidden="true" tabindex="-1"></a>  }<span class="cf">else</span>{</span>
+<span id="cb56-19"><a href="#cb56-19" aria-hidden="true" tabindex="-1"></a>    df_tide <span class="ot">=</span> <span class="fu">rbind</span>(df_tide,tide_data<span class="sc">$</span>tide)</span>
+<span id="cb56-20"><a href="#cb56-20" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb56-21"><a href="#cb56-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-22"><a href="#cb56-22" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb56-23"><a href="#cb56-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-24"><a href="#cb56-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-25"><a href="#cb56-25" aria-hidden="true" tabindex="-1"></a>litto_10m_df <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="st">"Data/Litto3D/Litto_10m_merged_32630.tif"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb56-26"><a href="#cb56-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>(<span class="at">xy=</span>T) <span class="sc">%&gt;%</span> </span>
+<span id="cb56-27"><a href="#cb56-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">emersion_time =</span> <span class="cn">NA</span>,</span>
+<span id="cb56-28"><a href="#cb56-28" aria-hidden="true" tabindex="-1"></a>         <span class="at">submerged_time =</span> <span class="cn">NA</span>)</span>
+<span id="cb56-29"><a href="#cb56-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-30"><a href="#cb56-30" aria-hidden="true" tabindex="-1"></a>tidal_df <span class="ot">&lt;-</span> df_tide <span class="sc">%&gt;%</span> </span>
+<span id="cb56-31"><a href="#cb56-31" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(date,smooth) <span class="sc">%&gt;%</span></span>
+<span id="cb56-32"><a href="#cb56-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">complete</span>(<span class="at">date =</span> <span class="fu">seq</span>(<span class="fu">min</span>(date), <span class="fu">max</span>(date), <span class="at">by =</span> <span class="st">"1 min"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb56-33"><a href="#cb56-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">smooth =</span> zoo<span class="sc">::</span><span class="fu">na.approx</span>(smooth, <span class="at">na.rm =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb56-34"><a href="#cb56-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-35"><a href="#cb56-35" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(litto_10m_df)) {</span>
+<span id="cb56-36"><a href="#cb56-36" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb56-37"><a href="#cb56-37" aria-hidden="true" tabindex="-1"></a>  df_emerged <span class="ot">&lt;-</span> tidal_df <span class="sc">%&gt;%</span> </span>
+<span id="cb56-38"><a href="#cb56-38" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(smooth <span class="sc">&lt;</span> litto_10m_df<span class="sc">$</span>bathy[i])</span>
+<span id="cb56-39"><a href="#cb56-39" aria-hidden="true" tabindex="-1"></a>  df_submerged <span class="ot">&lt;-</span> tidal_df <span class="sc">%&gt;%</span> </span>
+<span id="cb56-40"><a href="#cb56-40" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(smooth <span class="sc">&gt;</span> litto_10m_df<span class="sc">$</span>bathy[i])</span>
+<span id="cb56-41"><a href="#cb56-41" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb56-42"><a href="#cb56-42" aria-hidden="true" tabindex="-1"></a>  litto_10m_df<span class="sc">$</span>emersion_time[i] <span class="ot">&lt;-</span> (<span class="fu">nrow</span>(df_emerged))<span class="sc">+</span><span class="dv">1</span></span>
+<span id="cb56-43"><a href="#cb56-43" aria-hidden="true" tabindex="-1"></a>  litto_10m_df<span class="sc">$</span>submerged_time[i] <span class="ot">&lt;-</span> (<span class="fu">nrow</span>(df_submerged))<span class="sc">+</span><span class="dv">1</span></span>
+<span id="cb56-44"><a href="#cb56-44" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb56-45"><a href="#cb56-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-46"><a href="#cb56-46" aria-hidden="true" tabindex="-1"></a>litto_cropped_ST <span class="ot">&lt;-</span> litto_10m_df <span class="sc">%&gt;%</span> </span>
+<span id="cb56-47"><a href="#cb56-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rast</span>(<span class="at">type =</span> <span class="st">"xyz"</span>, <span class="at">crs =</span> <span class="fu">crs</span>(<span class="st">"EPSG:32630"</span>))<span class="sc">%&gt;%</span> </span>
+<span id="cb56-48"><a href="#cb56-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">crop</span>(seagrass_mask, <span class="at">mask =</span> T)</span>
+<span id="cb56-49"><a href="#cb56-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-50"><a href="#cb56-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-51"><a href="#cb56-51" aria-hidden="true" tabindex="-1"></a><span class="do">#### Neap Tide </span></span>
+<span id="cb56-52"><a href="#cb56-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-53"><a href="#cb56-53" aria-hidden="true" tabindex="-1"></a>dates <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"2021-09-29"</span>, <span class="st">"2021-09-30"</span>,<span class="st">"2021-10-01"</span>,<span class="st">"2021-10-02"</span>)</span>
+<span id="cb56-54"><a href="#cb56-54" aria-hidden="true" tabindex="-1"></a>coords <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">47.586782</span>, <span class="sc">-</span><span class="fl">3.121514</span>)</span>
+<span id="cb56-55"><a href="#cb56-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-56"><a href="#cb56-56" aria-hidden="true" tabindex="-1"></a>seagrass_mask <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(<span class="st">"Data/shp/mask_seagrasses.shp"</span>)</span>
+<span id="cb56-57"><a href="#cb56-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-58"><a href="#cb56-58" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(dates)){</span>
+<span id="cb56-59"><a href="#cb56-59" aria-hidden="true" tabindex="-1"></a>  tide_data <span class="ot">&lt;-</span> <span class="fu">Tide_info</span>(<span class="at">coords =</span> coords, <span class="at">tide_date =</span> dates[i])</span>
+<span id="cb56-60"><a href="#cb56-60" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb56-61"><a href="#cb56-61" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(i <span class="sc">==</span> <span class="dv">1</span>){</span>
+<span id="cb56-62"><a href="#cb56-62" aria-hidden="true" tabindex="-1"></a>    df_tide <span class="ot">=</span> tide_data<span class="sc">$</span>tide <span class="sc">%&gt;%</span> </span>
+<span id="cb56-63"><a href="#cb56-63" aria-hidden="true" tabindex="-1"></a>      <span class="fu">as_tibble</span>()</span>
+<span id="cb56-64"><a href="#cb56-64" aria-hidden="true" tabindex="-1"></a>  }<span class="cf">else</span>{</span>
+<span id="cb56-65"><a href="#cb56-65" aria-hidden="true" tabindex="-1"></a>    df_tide <span class="ot">=</span> <span class="fu">rbind</span>(df_tide,tide_data<span class="sc">$</span>tide)</span>
+<span id="cb56-66"><a href="#cb56-66" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb56-67"><a href="#cb56-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-68"><a href="#cb56-68" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb56-69"><a href="#cb56-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-70"><a href="#cb56-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-71"><a href="#cb56-71" aria-hidden="true" tabindex="-1"></a>litto_10m_df <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="st">"Data/Litto3D/Litto_10m_merged_32630.tif"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb56-72"><a href="#cb56-72" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>(<span class="at">xy=</span>T) <span class="sc">%&gt;%</span> </span>
+<span id="cb56-73"><a href="#cb56-73" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">emersion_time =</span> <span class="cn">NA</span>,</span>
+<span id="cb56-74"><a href="#cb56-74" aria-hidden="true" tabindex="-1"></a>         <span class="at">submerged_time =</span> <span class="cn">NA</span>)</span>
+<span id="cb56-75"><a href="#cb56-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-76"><a href="#cb56-76" aria-hidden="true" tabindex="-1"></a>tidal_df <span class="ot">&lt;-</span> df_tide <span class="sc">%&gt;%</span> </span>
+<span id="cb56-77"><a href="#cb56-77" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(date,smooth) <span class="sc">%&gt;%</span></span>
+<span id="cb56-78"><a href="#cb56-78" aria-hidden="true" tabindex="-1"></a>  <span class="fu">complete</span>(<span class="at">date =</span> <span class="fu">seq</span>(<span class="fu">min</span>(date), <span class="fu">max</span>(date), <span class="at">by =</span> <span class="st">"1 min"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb56-79"><a href="#cb56-79" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">smooth =</span> zoo<span class="sc">::</span><span class="fu">na.approx</span>(smooth, <span class="at">na.rm =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb56-80"><a href="#cb56-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-81"><a href="#cb56-81" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(litto_10m_df)) {</span>
+<span id="cb56-82"><a href="#cb56-82" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb56-83"><a href="#cb56-83" aria-hidden="true" tabindex="-1"></a>  df_emerged <span class="ot">&lt;-</span> tidal_df <span class="sc">%&gt;%</span> </span>
+<span id="cb56-84"><a href="#cb56-84" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(smooth <span class="sc">&lt;</span> litto_10m_df<span class="sc">$</span>bathy[i])</span>
+<span id="cb56-85"><a href="#cb56-85" aria-hidden="true" tabindex="-1"></a>  df_submerged <span class="ot">&lt;-</span> tidal_df <span class="sc">%&gt;%</span> </span>
+<span id="cb56-86"><a href="#cb56-86" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(smooth <span class="sc">&gt;</span> litto_10m_df<span class="sc">$</span>bathy[i])</span>
+<span id="cb56-87"><a href="#cb56-87" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb56-88"><a href="#cb56-88" aria-hidden="true" tabindex="-1"></a>  litto_10m_df<span class="sc">$</span>emersion_time[i] <span class="ot">&lt;-</span> (<span class="fu">nrow</span>(df_emerged))<span class="sc">+</span><span class="dv">1</span></span>
+<span id="cb56-89"><a href="#cb56-89" aria-hidden="true" tabindex="-1"></a>  litto_10m_df<span class="sc">$</span>submerged_time[i] <span class="ot">&lt;-</span> (<span class="fu">nrow</span>(df_submerged))<span class="sc">+</span><span class="dv">1</span></span>
+<span id="cb56-90"><a href="#cb56-90" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb56-91"><a href="#cb56-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-92"><a href="#cb56-92" aria-hidden="true" tabindex="-1"></a>litto_cropped_NT <span class="ot">&lt;-</span> litto_10m_df <span class="sc">%&gt;%</span> </span>
+<span id="cb56-93"><a href="#cb56-93" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rast</span>(<span class="at">type =</span> <span class="st">"xyz"</span>, <span class="at">crs =</span> <span class="fu">crs</span>(<span class="st">"EPSG:32630"</span>))<span class="sc">%&gt;%</span> </span>
+<span id="cb56-94"><a href="#cb56-94" aria-hidden="true" tabindex="-1"></a>  <span class="fu">crop</span>(seagrass_mask, <span class="at">mask =</span> T)</span>
+<span id="cb56-95"><a href="#cb56-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-96"><a href="#cb56-96" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(litto_cropped_NT) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"bathy_NT"</span>,<span class="st">"Emersion_NT"</span>,<span class="st">"Submersion_NT"</span>)</span>
+<span id="cb56-97"><a href="#cb56-97" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(litto_cropped_ST) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"bathy_ST"</span>,<span class="st">"Emersion_ST"</span>,<span class="st">"Submersion_ST"</span>)</span>
+<span id="cb56-98"><a href="#cb56-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-99"><a href="#cb56-99" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(litto_cropped_NT, litto_cropped_ST) <span class="sc">%&gt;%</span> </span>
+<span id="cb56-100"><a href="#cb56-100" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb56-101"><a href="#cb56-101" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb56-102"><a href="#cb56-102" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> (Emersion_NT<span class="sc">/</span><span class="dv">60</span>)<span class="sc">/</span><span class="dv">4</span>, <span class="at">y =</span>(Emersion_ST<span class="sc">/</span><span class="dv">60</span>)<span class="sc">/</span><span class="dv">4</span>))<span class="sc">+</span></span>
+<span id="cb56-103"><a href="#cb56-103" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Submersion time during Neap tides (Hours)"</span>)<span class="sc">+</span></span>
+<span id="cb56-104"><a href="#cb56-104" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Submersion time during Spring tides (Hours)"</span>)<span class="sc">+</span></span>
+<span id="cb56-105"><a href="#cb56-105" aria-hidden="true" tabindex="-1"></a>  <span class="co"># scale_x_discrete(breaks = c("No", "Yes"))+</span></span>
+<span id="cb56-106"><a href="#cb56-106" aria-hidden="true" tabindex="-1"></a>   <span class="fu">theme_Bede_Map</span>()<span class="sc">+</span></span>
+<span id="cb56-107"><a href="#cb56-107" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb56-108"><a href="#cb56-108" aria-hidden="true" tabindex="-1"></a>      <span class="co"># strip.text.x = element_text(size =17),</span></span>
+<span id="cb56-109"><a href="#cb56-109" aria-hidden="true" tabindex="-1"></a>      <span class="co"># legend.title = element_text(size =17),</span></span>
+<span id="cb56-110"><a href="#cb56-110" aria-hidden="true" tabindex="-1"></a>      <span class="at">legend.title =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb56-111"><a href="#cb56-111" aria-hidden="true" tabindex="-1"></a>      <span class="co"># legend.title.position = "top",</span></span>
+<span id="cb56-112"><a href="#cb56-112" aria-hidden="true" tabindex="-1"></a>      <span class="at">legend.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span><span class="dv">15</span>),</span>
+<span id="cb56-113"><a href="#cb56-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-114"><a href="#cb56-114" aria-hidden="true" tabindex="-1"></a>      <span class="co"># legend.text = element_text(hjust = 0, size =13),</span></span>
+<span id="cb56-115"><a href="#cb56-115" aria-hidden="true" tabindex="-1"></a>      <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">13</span>),</span>
+<span id="cb56-116"><a href="#cb56-116" aria-hidden="true" tabindex="-1"></a>      <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">13</span>),</span>
+<span id="cb56-117"><a href="#cb56-117" aria-hidden="true" tabindex="-1"></a>      <span class="at">axis.title.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">15</span>),</span>
+<span id="cb56-118"><a href="#cb56-118" aria-hidden="true" tabindex="-1"></a>      <span class="at">axis.title.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">15</span>),</span>
+<span id="cb56-119"><a href="#cb56-119" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb56-120"><a href="#cb56-120" aria-hidden="true" tabindex="-1"></a>      <span class="co"># legend.position = c(0.86, 0.13),</span></span>
+<span id="cb56-121"><a href="#cb56-121" aria-hidden="true" tabindex="-1"></a>      <span class="co"># legend.position = "top",</span></span>
+<span id="cb56-122"><a href="#cb56-122" aria-hidden="true" tabindex="-1"></a>      <span class="at">plot.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">"white"</span>)</span>
+<span id="cb56-123"><a href="#cb56-123" aria-hidden="true" tabindex="-1"></a>      <span class="co"># legend.key.width = unit(1,"cm"),</span></span>
+<span id="cb56-124"><a href="#cb56-124" aria-hidden="true" tabindex="-1"></a>      <span class="co"># legend.key.height = unit(8,"mm")</span></span>
+<span id="cb56-125"><a href="#cb56-125" aria-hidden="true" tabindex="-1"></a>      <span class="co"># panel.border = element_blank(),</span></span>
+<span id="cb56-126"><a href="#cb56-126" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div>
 <p>Seagrass resilience to heatwaves is a multifaceted issue influenced by species-specific traits, geographical location, and the presence of concurrent environmental stressors <span class="citation" data-cites="canadell2021ecosystem hatum2024predicting berger2024eelgrass">(<a href="#ref-berger2024eelgrass" role="doc-biblioref">Berger et al., 2024</a>; <a href="#ref-canadell2021ecosystem" role="doc-biblioref">Canadell and Jackson, 2021</a>; <a href="#ref-hatum2024predicting" role="doc-biblioref">Hatum et al., 2024</a>)</span>. Temperate meadows composed of slow-growing, long-lived species, such as <em>Posidonia</em>, <em>Amphibolis</em>, and <em>Zostera</em>, exhibit high vulnerability to climate change-related disturbances. In contrast, smaller, colonizing species typical of tropical regions, including <em>Halodule</em>, <em>Halophila</em>, and <em>Syringodium</em>, demonstrate greater resilience to warming events and marine heatwaves <span class="citation" data-cites="o2018seagrass">(<a href="#ref-o2018seagrass" role="doc-biblioref">O’Brien et al., 2018</a>)</span>.</p>
+<p>Furthermore, tidal ranges in temperate regions are generally more pronounced than in tropical areas, reaching over 10 meters in Mont Saint Michel Bay, France. This variation is a key factor for intertidal seagrasses, which are exposed to air for varying durations depending on their position within the intertidal zone and the tidal amplitude. During neap tides, seagrasses in the upper intertidal zone may have only brief periods of submersion or, in some cases, remain emerged, increasing their susceptibility to extreme atmospheric events. Conversely, seagrasses in the lower intertidal zone may experience extended emersion periods, making them more exposed to extreme marine events. Effects of both marine and atmospheric heatwaves can therefore be amplified by the tidal amplitude at the moment the event occurred. Intertidal seagrass species, such as <em>Nanozostera noltei</em>, also exhibit distinct phenological patterns throughout the year, which become more pronounced at higher latitudes <span class="citation" data-cites="davies2024sentinel davies2024intertidal">(<a href="#ref-davies2024sentinel" role="doc-biblioref">Davies et al., 2024a</a>, <a href="#ref-davies2024intertidal" role="doc-biblioref">2024b</a>)</span>. The timing of extreme events can significantly impact meadow resilience, particularly if they occur during early developmental stages or after the biomass peak has been reached and leaf senescence has begun.</p>
 <ul>
-<li>Tides in temperate regions are more pronounced and so seagrasses are more exposed to atmospheric events whereas in tropical -&gt; no tides no effect the atmo. furethemore, in temperate regions, seagrass have a marked phenology that is less pronounced towards lower latitudes.</li>
+<li>Sediment Heatwaves</li>
 </ul>
 <p>This differential resilience is further shaped by environmental factors; seagrass meadows in regions benefiting from tidal cooling or located away from the warmer edges of their geographical ranges tend to experience less heat stress and demonstrate higher shoot densities <span class="citation" data-cites="canadell2021ecosystem berger2024eelgrass">(<a href="#ref-berger2024eelgrass" role="doc-biblioref">Berger et al., 2024</a>; <a href="#ref-canadell2021ecosystem" role="doc-biblioref">Canadell and Jackson, 2021</a>)</span>. Additionally, the frequency, duration, and intervals between heatwaves significantly affect seagrass biomass and recovery, with extended and frequent heatwaves reducing resilience and complicating recovery processes <span class="citation" data-cites="hatum2024predicting">(<a href="#ref-hatum2024predicting" role="doc-biblioref">Hatum et al., 2024</a>)</span>. Seagrasses possess inherent coping mechanisms, including genetic adaptations and physiological acclimation, such as the rapid activation of photo-protective mechanisms and heat-responsive gene expression <span class="citation" data-cites="hughes2004genetic reusch2005ecosystem">(<a href="#ref-hughes2004genetic" role="doc-biblioref">Hughes and Stachowicz, 2004</a>; <a href="#ref-reusch2005ecosystem" role="doc-biblioref">Reusch et al., 2005</a>)</span> . However, the accelerated pace of climate change raises concerns about the capacity of these adaptations to keep up with escalating temperatures <span class="citation" data-cites="loarie2009velocity">(<a href="#ref-loarie2009velocity" role="doc-biblioref">Loarie et al., 2009</a>)</span>. Management strategies focused on mitigating local stressors, utilizing heatwave-resistant genotypes, and implementing restoration efforts are critical to bolstering seagrass resilience. Despite these challenges, emerging evidence suggests that some seagrass species may adapt to evolving ecological conditions, providing a measure of hope for their persistence in an increasingly warm climate <span class="citation" data-cites="canadell2021ecosystem">(<a href="#ref-canadell2021ecosystem" role="doc-biblioref">Canadell and Jackson, 2021</a>)</span>.</p>
 </section>
@@ -4635,6 +4975,12 @@ Cârlan, I., Mihai, B.-A., Nistor, C., Große-Stoltenberg, A., 2020. Identifying
 </div>
 <div id="ref-CMEMS_1" class="csl-entry" role="listitem">
 CMEMS, 2024. European north west shelf/iberia biscay irish seas – high resolution ODYSSEA sea surface temperature multi-sensor L3 observations reprocessed, e.u. Copernicus marine service information (CMEMS). Marine data store (MDS). (Accessed on 17-10-2024). <a href="https://doi.org/10.48670/moi-00311">https://doi.org/10.48670/moi-00311</a>
+</div>
+<div id="ref-davies2024sentinel" class="csl-entry" role="listitem">
+Davies, B.F.R., Oiry, S., Rosa, P., Zoffoli, M.L., Sousa, A.I., Thomas, O.R., Smale, D.A., Austen, M.C., Biermann, L., Attrill, M.J., others, 2024a. A sentinel watching over inter-tidal seagrass phenology across western europe and north africa. Communications Earth &amp; Environment 5, 382. <a href="https://doi.org/10.1038/s43247-024-01543-z">https://doi.org/10.1038/s43247-024-01543-z</a>
+</div>
+<div id="ref-davies2024intertidal" class="csl-entry" role="listitem">
+Davies, B.F.R., Oiry, S., Rosa, P., Zoffoli, M.L., Sousa, A.I., Thomas, O.R., Smale, D.A., Austen, M.C., Biermann, L., Attrill, M.J., others, 2024b. Intertidal seagrass extent from sentinel-2 time-series show distinct trajectories in western europe. Remote Sensing of Environment 312, 114340. <a href="https://doi.org/10.1016/j.rse.2024.114340">https://doi.org/10.1016/j.rse.2024.114340</a>
 </div>
 <div id="ref-deguette2022physiological" class="csl-entry" role="listitem">
 Deguette, A., Barrote, I., Silva, J., 2022. Physiological and morphological effects of a marine heatwave on the seagrass cymodocea nodosa. Scientific Reports 12, 7950.
@@ -5169,7 +5515,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script>  </div> <!-- /content -->  <script>var lightboxQuarto = GLightbox({"openEffect":"zoom","loop":false,"selector":".lightbox","closeEffect":"zoom","descPosition":"bottom"});
+</script>  </div> <!-- /content -->  <script>var lightboxQuarto = GLightbox({"openEffect":"zoom","closeEffect":"zoom","loop":false,"selector":".lightbox","descPosition":"bottom"});
 (function() {
   let previousOnload = window.onload;
   window.onload = () => {

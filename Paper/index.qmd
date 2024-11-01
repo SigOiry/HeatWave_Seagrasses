@@ -3924,6 +3924,8 @@ knitr::include_graphics("Figs/Low_res/GAM_emersion.png")
 - lack of literature about atmospheric heatwaves and intertidal seagrasses
 - Relation between the exposure time and the impact of the heatwave
 
+Although extensive research exists on marine heatwaves' effects on subtidal seagrasses, little attention has been given to intertidal regions. This study initiates an exploration of how intertidal seagrasses respond to the dual influence of marine and atmospheric heatwaves, underscoring the need for further investigation in this underexplored area.
+
 ## Frequency Intensity of Heatwaves and implication for seagrasses
 
 ```{r data opening HW}
@@ -4539,9 +4541,367 @@ ggsave("Paper/Figs/Low_res/plot_resilience.png", plot_resilience, width = 10, he
 knitr::include_graphics("Figs/Low_res/plot_resilience.png")
 ```
 
+
+```{r function Tide_info2}
+#| cache: true
+#| echo: false
+#| eval: false
+#| warning: false
+
+library(rvest)
+library(sf)
+library(terra)
+Tide_info<-function(coords=NA,tide_date=NA){
+  
+  
+  data_coord<-list.files("./", pattern="station_coordinate.csv",full.names = T,recursive = T)
+  if (length(data_coord)==1) {
+    station_coordinate<-read.csv(data_coord)
+    
+  }
+  if (exists("station_coordinate")==FALSE) {
+    
+    url_stat<-"http://www.ioc-sealevelmonitoring.org/list.php?operator=&showall=all&output=general"
+    download.file(url_stat, destfile = "scrapedpage_stat.html",quiet=T)
+    webpage_stat <- read_html("scrapedpage_stat.html")
+    stat_table<-rvest::html_text(rvest::html_nodes(webpage_stat,'td'))
+    stat_table<-stat_table[-length(stat_table)]
+    
+    stat_table<-stat_table[-c(1:19)]
+    name_stat_table<-stat_table[c(1:10)]
+    name_stat_table<-unlist(strsplit(name_stat_table,"\r\r\n\t\t\t\t"))
+    name_stat_table[8]<-"Last_Observation_Time_in_GMT"
+    for (i in 1:length(name_stat_table)) {
+      name_stat_table[i]<-gsub(" ","_",  name_stat_table[i])
+      
+    }
+    
+    
+    stat_table<-stat_table[-c(1:10)]
+    stat_table<-as.data.frame(matrix(stat_table,ncol=11,byrow = T))
+    names(stat_table)<-name_stat_table
+    
+    stat_table<-stat_table[which((nchar(stat_table$Code)==4)|(nchar(stat_table$Code)==5)),]
+    # stat_table<-stat_table[which(stat_table$Connection=="ftp"),]
+    stat_table$Last_Observation_Time_in_GMT<-substr(stat_table$Last_Observation_Time_in_GMT,7,nchar(stat_table$Last_Observation_Time_in_GMT))
+    stat_table<-stat_table[which((stat_table$Last_Observation_Time_in_GMT!="-down-")),]
+    stat_table<-stat_table[which((stat_table$Last_Observation_Time_in_GMT!="-maintenance-")),]
+    
+    for (i in 1:nrow(stat_table)) {
+      
+      print(paste0(i,"/",nrow(stat_table)," station: ",stat_table$Code[i]))
+      
+      url_coord<-paste0("http://www.ioc-sealevelmonitoring.org/station.php?code=",stat_table$Code[i])
+      download.file(url_coord, destfile = "scrapedpage_coord.html",quiet=T)
+      webpage <- read_html("scrapedpage_coord.html")
+      stat_coord<-as.character(rvest::html_text(rvest::html_nodes(webpage,'tr')))
+      
+      lat<-stat_coord[which(substr(stat_coord,1,8)=="Latitude")]
+      long<-stat_coord[which(substr(stat_coord,1,9)=="Longitude")]
+      lat<-gsub("Latitude . ","",lat)
+      long<-gsub("Longitude . ","",long)
+      stat_table$long[i]<-long
+      stat_table$lat[i]<-lat
+      
+      station_coordinate<-stat_table
+      
+      
+    }
+    # return(station_coordinate)
+    write.csv(station_coordinate,"./station_coordinate.csv")
+  }
+  
+  
+  
+  sr<-crs('+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs')
+  # coord_centroid<-data.frame(x=(c(xmax(roi)+xmin(roi), ymax(roi)+ymin(roi))/2)[1],
+  #                            y=(c(xmax(roi)+xmin(roi), ymax(roi)+ymin(roi))/2)[2])
+  
+  # coordinates(coord_centroid)<- ~x+y
+  # crs(coord_centroid)<-crs(roi)
+  # 
+  # roi <- spTransform(coord_centroid, sr)
+  # coord_centroid<-c(xmax(roi)+xmin(roi), ymax(roi)+ymin(roi))/2
+  # 
+  dist_roi_Tide<-data.frame(
+    code_tide=station_coordinate$Code,
+    Name_station=station_coordinate$Location,
+    dist=NA
+  )
+  
+  coord_centroid = coords
+  
+  for (i in 1:nrow(station_coordinate)) {
+    
+    dist_roi_Tide$dist[i]<-sqrt(((coord_centroid[2]-station_coordinate$long[i])^2)+(coord_centroid[1]-station_coordinate$lat[i])^2)
+  }
+  
+  site_name_selected<-dist_roi_Tide[which(dist_roi_Tide$dist==min(dist_roi_Tide$dist)),]
+  site_id<-site_name_selected$code_tide[1]
+  
+  
+  tide_date_wrong<-as.POSIXct(tide_date, format = "%Y-%m-%d")
+  tide_date_true<-tide_date_wrong+ (60*60*24)
+  
+  
+  # site_id<-"batr"
+  
+  url <- paste0("http://www.ioc-sealevelmonitoring.org/bgraph.php?code=",site_id,"&output=tab&period=1&endtime=",tide_date_true)
+  download.file(url, destfile = "scrapedpage.html",quiet=T)
+  webpage <- read_html("scrapedpage.html")
+  tidal_RAW<-rvest::html_text(rvest::html_nodes(webpage,'td'))
+  Tide_table<-as.data.frame(matrix(tidal_RAW,ncol=2, byrow = T))
+  names(Tide_table)<-Tide_table[1,]
+  Tide_table<-Tide_table[-1,]
+  Tide_table$`Time (UTC)`<-as.POSIXct(Tide_table$`Time (UTC)`, tryFormats = c("%Y-%m-%d %H:%M:%OS",
+                                                                              "%Y/%m/%d %H:%M:%OS",
+                                                                              "%Y-%m-%d %H:%M",
+                                                                              "%Y/%m/%d %H:%M",
+                                                                              "%Y-%m-%d",
+                                                                              "%Y/%m/%d",
+                                                                              "%Y%m%d %H:%M:%OS3",
+                                                                              "%Y%m%d %H:%M",
+                                                                              "%Y%m%d"))
+  
+  Tide_table_aggregate <- aggregate(as.numeric(Tide_table[,2]), 
+                                    list(fiveMin=cut(Tide_table$`Time (UTC)`, "10 mins")),
+                                    mean)
+  # # Tide_table_aggregate$x<-round(Tide_table_aggregate$x,3)
+  # Tide_table_aggregate$fiveMin<-as.POSIXct(Tide_table_aggregate$fiveMin, tryFormats = c("%Y-%m-%d %H:%M:%S",
+  #                                                                                       "%Y/%m/%d %H:%M:%S",
+  #                                                                                       "%Y-%m-%d %H:%M",
+  #                                                                                       "%Y/%m/%d %H:%M",
+  #                                                                                       "%Y-%m-%d",
+  #                                                                                       "%Y/%m/%d",
+  #                                                                                       "%Y%m%d %H:%M:%S",
+  #                                                                                       "%Y%m%d %H:%M",
+  #                                                                                       "%Y%m%d"))
+
+  Tide_table_aggregate$smooth<-signal::sgolayfilt(Tide_table_aggregate$x,n=15)
+  
+  # Tide_table_aggregate$first_diff<- ave(Tide_table_aggregate$smooth , Tide_table_aggregate$fiveMin , FUN=function(i) c(NA,diff(i)))
+  
+  
+  
+  
+  for (i in 1:(nrow(Tide_table_aggregate)-1)) {
+    
+    a<-as.numeric(Tide_table_aggregate[i,3])-as.numeric(Tide_table_aggregate[i+1,3])
+    # a<-round(a,digits = 2)
+    
+    if (i==1) {
+      
+      if (a>0) {
+        Tide_type<-"jusant"
+        
+      }else{
+        Tide_type<-"flot"
+      }
+    }else{
+      
+      if (a>0 & Tide_type=="flot" ) {
+        Tide_table_aggregate[i,4]<-"HT"
+      }
+      if (a<0 & Tide_type=="jusant" ){
+        Tide_table_aggregate[i,4]<-"LT"
+      }
+      if (a>0) {
+        Tide_type<-"jusant"
+        
+      }else{
+        Tide_type<-"flot"
+      }
+      
+    }
+    
+  }
+  names(Tide_table_aggregate)<-c('date','water_height',"smooth",'tide_step')
+  
+  
+  Tide_table_aggregate$date1 <- as.character(Tide_table_aggregate$date) %>% 
+    as.POSIXct(format = "%Y-%m-%d %H:%M:%S")
+  
+  Tide_table_aggregate$date1[1]<- as.character(Tide_table_aggregate$date[1]) %>% 
+    as.POSIXct(format = "%Y-%m-%d %H:%M:%S")
+  Tide_table_aggregate$date1[nrow(Tide_table_aggregate)]<- as.character(Tide_table_aggregate$date[nrow(Tide_table_aggregate)]) %>% 
+    as.POSIXct(format = "%Y-%m-%d %H:%M:%S")
+  
+  Tide_table_aggregate <- Tide_table_aggregate %>% 
+    dplyr::select(-date) %>% 
+    rename(date = "date1")
+  BMPM<-Tide_table_aggregate[which(is.na(Tide_table_aggregate[,4])==FALSE),]
+  
+  plot_tide<-ggplot(data=Tide_table_aggregate,aes(x=date,y=water_height))+
+    geom_line()
+    # geom_vline(xintercept = as.POSIXct(BMPM$date,tryFormats = c("%Y-%m-%d %H:%M:%OS",
+    #                                                             "%Y/%m/%d %H:%M:%OS",
+    #                                                             "%Y-%m-%d %H:%M",
+    #                                                             "%Y/%m/%d %H:%M",
+    #                                                             "%Y-%m-%d",
+    #                                                             "%Y/%m/%d",
+    #                                                             "%Y%m%d %H:%M:%OS3",
+    #                                                             "%Y%m%d %H:%M",
+    #                                                             "%Y%m%d")), linetype="dotted", 
+    #            color = "blue", size=1.5)
+    # 
+ 
+  out<-list()
+  out$site<-site_name_selected
+  out$tide<-BMPM
+  out$df_tide<-Tide_table_aggregate[,c(1,2,4)]
+  out$tide_plot<-plot_tide
+  
+  return(out)
+  
+}
+
+
+```
+
+```{r GAM Bathy to Emersion NeapvsSpring}
+#| cache: true
+#| echo: false
+#| eval: false
+#| warning: false
+
+library(tidyverse)
+library(Utilities.Package)
+library(heatwaveR)
+
+#### Spring tides
+
+dates <- c("2021-09-04", "2021-09-05","2021-09-06","2021-09-07")
+coords <- c(47.586782, -3.121514)
+
+seagrass_mask <- read_sf("Data/shp/mask_seagrasses.shp")
+
+for(i in 1:length(dates)){
+  tide_data <- Tide_info(coords = coords, tide_date = dates[i])
+  
+  if(i == 1){
+    df_tide = tide_data$tide %>% 
+      as_tibble()
+  }else{
+    df_tide = rbind(df_tide,tide_data$tide)
+  }
+
+}
+
+
+litto_10m_df <- rast("Data/Litto3D/Litto_10m_merged_32630.tif") %>% 
+  as.data.frame(xy=T) %>% 
+  mutate(emersion_time = NA,
+         submerged_time = NA)
+
+tidal_df <- df_tide %>% 
+  dplyr::select(date,smooth) %>%
+  complete(date = seq(min(date), max(date), by = "1 min")) %>%
+  mutate(smooth = zoo::na.approx(smooth, na.rm = FALSE))
+
+for (i in 1:nrow(litto_10m_df)) {
+  
+  df_emerged <- tidal_df %>% 
+    dplyr::filter(smooth < litto_10m_df$bathy[i])
+  df_submerged <- tidal_df %>% 
+    dplyr::filter(smooth > litto_10m_df$bathy[i])
+  
+  litto_10m_df$emersion_time[i] <- (nrow(df_emerged))+1
+  litto_10m_df$submerged_time[i] <- (nrow(df_submerged))+1
+}
+
+litto_cropped_ST <- litto_10m_df %>% 
+  rast(type = "xyz", crs = crs("EPSG:32630"))%>% 
+  crop(seagrass_mask, mask = T)
+
+
+#### Neap Tide 
+
+dates <- c("2021-09-29", "2021-09-30","2021-10-01","2021-10-02")
+coords <- c(47.586782, -3.121514)
+
+seagrass_mask <- read_sf("Data/shp/mask_seagrasses.shp")
+
+for(i in 1:length(dates)){
+  tide_data <- Tide_info(coords = coords, tide_date = dates[i])
+  
+  if(i == 1){
+    df_tide = tide_data$tide %>% 
+      as_tibble()
+  }else{
+    df_tide = rbind(df_tide,tide_data$tide)
+  }
+
+}
+
+
+litto_10m_df <- rast("Data/Litto3D/Litto_10m_merged_32630.tif") %>% 
+  as.data.frame(xy=T) %>% 
+  mutate(emersion_time = NA,
+         submerged_time = NA)
+
+tidal_df <- df_tide %>% 
+  dplyr::select(date,smooth) %>%
+  complete(date = seq(min(date), max(date), by = "1 min")) %>%
+  mutate(smooth = zoo::na.approx(smooth, na.rm = FALSE))
+
+for (i in 1:nrow(litto_10m_df)) {
+  
+  df_emerged <- tidal_df %>% 
+    dplyr::filter(smooth < litto_10m_df$bathy[i])
+  df_submerged <- tidal_df %>% 
+    dplyr::filter(smooth > litto_10m_df$bathy[i])
+  
+  litto_10m_df$emersion_time[i] <- (nrow(df_emerged))+1
+  litto_10m_df$submerged_time[i] <- (nrow(df_submerged))+1
+}
+
+litto_cropped_NT <- litto_10m_df %>% 
+  rast(type = "xyz", crs = crs("EPSG:32630"))%>% 
+  crop(seagrass_mask, mask = T)
+
+names(litto_cropped_NT) <- c("bathy_NT","Emersion_NT","Submersion_NT")
+names(litto_cropped_ST) <- c("bathy_ST","Emersion_ST","Submersion_ST")
+
+c(litto_cropped_NT, litto_cropped_ST) %>% 
+  as.data.frame() %>% 
+  ggplot()+
+  geom_point(aes(x = (Emersion_NT/60)/4, y =(Emersion_ST/60)/4))+
+  xlab("Submersion time during Neap tides (Hours)")+
+  ylab("Submersion time during Spring tides (Hours)")+
+  # scale_x_discrete(breaks = c("No", "Yes"))+
+   theme_Bede_Map()+
+  theme(
+      # strip.text.x = element_text(size =17),
+      # legend.title = element_text(size =17),
+      legend.title = element_blank(),
+      # legend.title.position = "top",
+      legend.text = element_text(size =15),
+
+      # legend.text = element_text(hjust = 0, size =13),
+      axis.text.x = element_text(size = 13),
+      axis.text.y = element_text(size = 13),
+      axis.title.x = element_text(size = 15),
+      axis.title.y = element_text(size = 15),
+      
+      # legend.position = c(0.86, 0.13),
+      # legend.position = "top",
+      plot.background = element_rect(fill = "white")
+      # legend.key.width = unit(1,"cm"),
+      # legend.key.height = unit(8,"mm")
+      # panel.border = element_blank(),
+    )
+
+```
+
 Seagrass resilience to heatwaves is a multifaceted issue influenced by species-specific traits, geographical location, and the presence of concurrent environmental stressors [@canadell2021ecosystem ; @hatum2024predicting ; @berger2024eelgrass]. Temperate meadows composed of slow-growing, long-lived species, such as *Posidonia*, *Amphibolis*, and *Zostera*, exhibit high vulnerability to climate change-related disturbances. In contrast, smaller, colonizing species typical of tropical regions, including *Halodule*, *Halophila*, and *Syringodium*, demonstrate greater resilience to warming events and marine heatwaves [@o2018seagrass]. 
 
-- Tides in temperate regions are more pronounced and so seagrasses are more exposed to atmospheric events whereas in tropical -> no tides no effect the atmo. furethemore, in temperate regions, seagrass have a marked phenology that is less pronounced towards lower latitudes. 
+Furthermore, tidal ranges in temperate regions are generally more pronounced than in tropical areas, reaching over 10 meters in Mont Saint Michel Bay, France. This variation is a key factor for intertidal seagrasses, which are exposed to air for varying durations depending on their position within the intertidal zone and the tidal amplitude. During neap tides, seagrasses in the upper intertidal zone may have only brief periods of submersion or, in some cases, remain emerged, increasing their susceptibility to extreme atmospheric events. Conversely, seagrasses in the lower intertidal zone may experience extended emersion periods, making them more exposed to extreme marine events. Effects of both marine and atmospheric heatwaves can therefore be amplified by the tidal amplitude at the moment the event occurred. 
+Intertidal seagrass species, such as *Nanozostera noltei*, also exhibit distinct phenological patterns throughout the year, which become more pronounced at higher latitudes [@davies2024sentinel; @davies2024intertidal]. The timing of extreme events can significantly impact meadow resilience, particularly if they occur during early developmental stages or after the biomass peak has been reached and leaf senescence has begun.
+
+
+
+- Sediment Heatwaves
+
 
 This differential resilience is further shaped by environmental factors; seagrass meadows in regions benefiting from tidal cooling or located away from the warmer edges of their geographical ranges tend to experience less heat stress and demonstrate higher shoot densities [@canadell2021ecosystem ; @berger2024eelgrass]. Additionally, the frequency, duration, and intervals between heatwaves significantly affect seagrass biomass and recovery, with extended and frequent heatwaves reducing resilience and complicating recovery processes [@hatum2024predicting]. Seagrasses possess inherent coping mechanisms, including genetic adaptations and physiological acclimation, such as the rapid activation of photo-protective mechanisms and heat-responsive gene expression [@hughes2004genetic ; @reusch2005ecosystem] . However, the accelerated pace of climate change raises concerns about the capacity of these adaptations to keep up with escalating temperatures [@loarie2009velocity]. Management strategies focused on mitigating local stressors, utilizing heatwave-resistant genotypes, and implementing restoration efforts are critical to bolstering seagrass resilience. Despite these challenges, emerging evidence suggests that some seagrass species may adapt to evolving ecological conditions, providing a measure of hope for their persistence in an increasingly warm climate [@canadell2021ecosystem].
 
