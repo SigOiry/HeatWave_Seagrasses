@@ -83,6 +83,11 @@ ggplot(aes(x = t, y = temp))+
 
 ```{r frequency of heatwaves as define in Perkins and Alexander (2013)}
 
+library(tidyverse)
+library(heatwaveR)
+library(mgcv)
+library(Utilities.Package)
+
 freq_heatwave <- event %>% 
   mutate(year = substr(as.character(date_start),1,4)) %>% 
   group_by(year) %>% 
@@ -117,12 +122,123 @@ df_heatwaves <- rbind(freq_heatwave,intensity_heatwave) %>%
 #   theme_Bede()
 
 
-df_frequency_HW <- df_heatwaves %>% 
-  dplyr::filter()
+df_freq_HW <- df_heatwaves %>% 
+  dplyr::select(-Intensity) %>% 
+  mutate(year = as.numeric(year))
 
-(heatwaves_frequency <- ggplot(df_heatwaves, aes(x=as.numeric(year)))+
-  geom_point(aes(y=Frequency), color = "darkred")
+gam_freq_HW <- mgcv::gam(Frequency ~ s(year,
+                                       k=3), 
+                 # family = poisson(),
+                 data = df_freq_HW)
+
+Utilities.Package::Model_Check(gam_freq_HW)
+
+
+NewData_freq_HW<-expand_grid(year=unique(df_freq_HW$year))
+
+pred_freq_HW <- predict(gam_freq_HW, NewData_freq_HW, se.fit = T, type = "link")
+
+
+NewData_freq_HW <- NewData_freq_HW %>% 
+  mutate(fit = pred_freq_HW$fit,
+         se = pred_freq_HW$se.fit)
+
+(heatwaves_frequency <- ggplot(df_freq_HW, aes(x=year))+
+  geom_point(aes(y=Frequency), color = "darkred", alpha = 0.3)+
+    geom_line(data = NewData_freq_HW, aes(x = year, y = fit),color = "darkred")+
+    geom_ribbon(data = NewData_freq_HW, aes(x = year, y = fit, ymin = fit-se, ymax = fit+se),color = NA ,fill = "darkred",alpha = 0.2)+
+    ylab(expression("Frequency of atmospheric heatwaves (year"^"-1" * ")"))+
+    xlab(expression("Years"))+
+    scale_x_continuous(position = "top")+
+    theme_Bede()+
+    # scale_fill_manual(values = coltab)+
+    theme(
+      # strip.text.y= element_text(size =17),
+       strip.text.y= element_blank(),
+      # legend.title = element_text(size =17, hjust = 0.5),
+      legend.title = element_blank(),
+      legend.title.position = "top",
+      legend.text = element_text(size =13),
+
+      # legend.text = element_text(hjust = 0, size =13),
+      axis.text.x = element_text(size = 13),
+      axis.text.y = element_text(size = 13),
+      axis.title.x = element_text(size = 13),
+      axis.title.y = element_text(size = 13),
+      
+      legend.position = c(0.13, 0.92),
+      # legend.position = "top",
+      plot.background = element_rect(fill = "white"),
+      legend.key.width = unit(1,"cm"),
+      legend.key.height = unit(2,"mm")
+
+    # plot.margin = margin(t = 5, r = 5, b = 5, l = 5), # Adjusts plot margins
+    # legend.spacing.y = unit(0.1, "cm"),  # Reduces space between legend items vertically
+    # legend.margin = margin(t = 0, b = -10)  
+      # panel.border = element_blank(),
+    )
 )
+
+
+df_Int_HW <- df_heatwaves %>% 
+  dplyr::select(-Frequency) %>% 
+  mutate(year = as.numeric(year))
+
+gam_Int_HW <- mgcv::gam(Intensity ~ s(year,
+                                       k=3), 
+                 # family = poisson(),
+                 data = df_Int_HW)
+
+Utilities.Package::Model_Check(gam_Int_HW)
+
+
+NewData_Int_HW<-expand_grid(year=unique(df_Int_HW$year))
+
+pred_Int_HW <- predict(gam_Int_HW, NewData_Int_HW, se.fit = T, type = "link")
+
+
+NewData_Int_HW <- NewData_Int_HW %>% 
+  mutate(fit = pred_Int_HW$fit,
+         se = pred_Int_HW$se.fit)
+
+(heatwaves_Intensity <- ggplot(df_Int_HW, aes(x=year))+
+  geom_point(aes(y=Intensity), color = "darkred", alpha = 0.3)+
+    geom_line(data = NewData_Int_HW, aes(x = year, y = fit),color = "darkred")+
+    geom_ribbon(data = NewData_Int_HW, aes(x = year, y = fit, ymin = fit-se, ymax = fit+se),color = NA ,fill = "darkred",alpha = 0.2)+
+    ylab(expression("Cumulative intensity of atmospheric heatwaves (°C)"))+
+    xlab(expression("Years"))+
+    scale_y_continuous(position = "right")+
+    scale_x_continuous(position = "top")+
+
+    theme_Bede()+
+    # scale_fill_manual(values = coltab)+
+    theme(
+      # strip.text.y= element_text(size =17),
+       strip.text.y= element_blank(),
+      # legend.title = element_text(size =17, hjust = 0.5),
+      legend.title = element_blank(),
+      legend.title.position = "top",
+      legend.text = element_text(size =13),
+
+      # legend.text = element_text(hjust = 0, size =13),
+      axis.text.x = element_text(size = 13),
+      axis.text.y = element_text(size = 13),
+      axis.title.x = element_text(size = 13),
+      axis.title.y = element_text(size = 13),
+      
+      legend.position = c(0.13, 0.92),
+      # legend.position = "top",
+      plot.background = element_rect(fill = "white"),
+      legend.key.width = unit(1,"cm"),
+      legend.key.height = unit(2,"mm")
+
+    # plot.margin = margin(t = 5, r = 5, b = 5, l = 5), # Adjusts plot margins
+    # legend.spacing.y = unit(0.1, "cm"),  # Reduces space between legend items vertically
+    # legend.margin = margin(t = 0, b = -10)  
+      # panel.border = element_blank(),
+    )
+)
+
 ```
 
 ```{r cold spells}
@@ -152,42 +268,142 @@ intensity_coldspells <- event_cold %>%
   group_by(year) %>% 
   reframe(value = sum(intensity_cumulative)) %>% 
   mutate(data = "Intensity") %>% 
-  mutate(value = sqrt(value*value))
+  mutate(value = value)
 
 df_coldspells <- rbind(freq_coldspells,intensity_coldspells) %>% 
   pivot_wider(names_from = data, values_from = value)
 
-coeff=15
-ggplot(df_coldspells, aes(x=as.numeric(year))) +
-  geom_point( aes(y=Frequency), color = "blue") +
-  geom_smooth( aes(y=Frequency), color = "blue",method = "gam")+
-  geom_point( aes(y=Intensity / coeff), color = "red") +
-  geom_smooth( aes(y=Intensity / coeff), color = "red",method = "gam")+
-  scale_y_continuous(
-    
-    # Features of the first axis
-    name = "Frequency",
-    
-    # Add a second axis and specify its features
-    sec.axis = sec_axis(~.*coeff, name="Intensity")
-  )
 
 
+df_freq_CS <- df_coldspells %>% 
+  dplyr::select(-Intensity) %>% 
+  mutate(year = as.numeric(year))
 
-ggplot(freq_coldspells, aes(x = as.numeric(year), y = n))+
-  geom_point()+
-  geom_smooth(method = "gam")+
-  theme_Bede()
+gam_freq_CS <- mgcv::gam(Frequency ~ s(year,
+                                       k=3), 
+                 # family = poisson(),
+                 data = df_freq_CS)
 
-ggplot(intensity_coldspells, aes(x = as.numeric(year), y = intensity))+
-  geom_point()+
-  geom_smooth(method = "gam")+
-  scale_y_reverse()+
-  theme_Bede()
+Utilities.Package::Model_Check(gam_freq_CS)
 
+
+NewData_freq_CS<-expand_grid(year=unique(df_freq_CS$year))
+
+pred_freq_CS <- predict(gam_freq_CS, NewData_freq_CS, se.fit = T, type = "link")
+
+
+NewData_freq_CS <- NewData_freq_CS %>% 
+  mutate(fit = pred_freq_CS$fit,
+         se = pred_freq_CS$se.fit)
+
+(coldspells_frequency <- ggplot(df_freq_CS, aes(x=year))+
+  geom_point(aes(y=Frequency), color = "darkblue", alpha = 0.3)+
+    geom_line(data = NewData_freq_CS, aes(x = year, y = fit),color = "darkblue")+
+    geom_ribbon(data = NewData_freq_CS, aes(x = year, y = fit, ymin = fit-se, ymax = fit+se),color = NA ,fill = "darkblue",alpha = 0.2)+
+    ylab(expression("Frequency of atmospheric heatwaves (year"^"-1" * ")"))+
+    xlab(expression("Years"))+
+    # scale_x_continuous(position = "top")+
+    theme_Bede()+
+    # scale_fill_manual(values = coltab)+
+    theme(
+      # strip.text.y= element_text(size =17),
+       strip.text.y= element_blank(),
+      # legend.title = element_text(size =17, hjust = 0.5),
+      legend.title = element_blank(),
+      legend.title.position = "top",
+      legend.text = element_text(size =13),
+
+      # legend.text = element_text(hjust = 0, size =13),
+      axis.text.x = element_text(size = 13),
+      axis.text.y = element_text(size = 13),
+      axis.title.x = element_text(size = 13),
+      axis.title.y = element_text(size = 13),
+      
+      legend.position = c(0.13, 0.92),
+      # legend.position = "top",
+      plot.background = element_rect(fill = "white"),
+      legend.key.width = unit(1,"cm"),
+      legend.key.height = unit(2,"mm")
+
+    # plot.margin = margin(t = 5, r = 5, b = 5, l = 5), # Adjusts plot margins
+    # legend.spacing.y = unit(0.1, "cm"),  # Reduces space between legend items vertically
+    # legend.margin = margin(t = 0, b = -10)  
+      # panel.border = element_blank(),
+    )
+)
+
+
+df_Int_CS <- df_coldspells %>% 
+  dplyr::select(-Frequency) %>% 
+  mutate(year = as.numeric(year))
+
+gam_Int_CS <- mgcv::gam(Intensity ~ s(year,
+                                       k=3), 
+                 # family = poisson(),
+                 data = df_Int_CS)
+
+Utilities.Package::Model_Check(gam_Int_CS)
+
+
+NewData_Int_CS<-expand_grid(year=unique(df_Int_CS$year))
+
+pred_Int_CS <- predict(gam_Int_CS, NewData_Int_CS, se.fit = T, type = "link")
+
+
+NewData_Int_CS <- NewData_Int_CS %>% 
+  mutate(fit = pred_Int_CS$fit,
+         se = pred_Int_CS$se.fit)
+
+(coldspells_Intensity <- ggplot(df_Int_CS, aes(x=year))+
+  geom_point(aes(y=Intensity), color = "darkblue", alpha = 0.3)+
+    geom_line(data = NewData_Int_CS, aes(x = year, y = fit),color = "darkblue")+
+    geom_ribbon(data = NewData_Int_CS, aes(x = year, y = fit, ymin = fit-se, ymax = fit+se),color = NA ,fill = "darkblue",alpha = 0.2)+
+    ylab(expression("Cumulative intensity of atmospheric heatwaves (°C)"))+
+    xlab(expression("Years"))+
+    scale_y_continuous(position = "right")+
+    # scale_x_continuous(position = "top")+
+
+    theme_Bede()+
+    # scale_fill_manual(values = coltab)+
+    theme(
+      # strip.text.y= element_text(size =17),
+       strip.text.y= element_blank(),
+      # legend.title = element_text(size =17, hjust = 0.5),
+      legend.title = element_blank(),
+      legend.title.position = "top",
+      legend.text = element_text(size =13),
+
+      # legend.text = element_text(hjust = 0, size =13),
+      axis.text.x = element_text(size = 13),
+      axis.text.y = element_text(size = 13),
+      axis.title.x = element_text(size = 13),
+      axis.title.y = element_text(size = 13),
+      
+      legend.position = c(0.13, 0.92),
+      # legend.position = "top",
+      plot.background = element_rect(fill = "white"),
+      legend.key.width = unit(1,"cm"),
+      legend.key.height = unit(2,"mm")
+
+    # plot.margin = margin(t = 5, r = 5, b = 5, l = 5), # Adjusts plot margins
+    # legend.spacing.y = unit(0.1, "cm"),  # Reduces space between legend items vertically
+    # legend.margin = margin(t = 0, b = -10)  
+      # panel.border = element_blank(),
+    )
+)
 
 
 ```
+
+```{r}
+
+
+(plot_HW_CP <- ((heatwaves_frequency | heatwaves_Intensity) / (coldspells_frequency | coldspells_Intensity))  + 
+  plot_layout(guides = "collect")& 
+  theme(legend.position = "bottom")
+)
+```
+
 
 ```{r}
 

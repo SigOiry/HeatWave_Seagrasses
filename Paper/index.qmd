@@ -2783,7 +2783,8 @@ result <- GCP %>%
   as_tibble() %>%
   bind_cols(as_tibble(extracted_values_combined)) %>% 
   pivot_longer(-c(path,filename,Target_types,ID), names_to = "Band",values_to = "values") %>% 
-  mutate(Raster = case_when(str_detect(Band,"raster1") ~ "Before",
+  mutate(values = values - 1000,
+         Raster = case_when(str_detect(Band,"raster1") ~ "Before",
                             T ~ "After"),
          Band = gsub(".*_","",Band))
 
@@ -2815,7 +2816,7 @@ NDVI <- result_cleaned %>%
   dplyr::select(filename ,Raster,Wavelength, values) %>% 
   dplyr::filter(Wavelength == 664 | Wavelength == 832) %>% 
   pivot_wider(names_from = Wavelength, values_from = values) %>% 
-  mutate(NDVI = ((`832`-1000) - (`664`- 1000))/((`832`-1000) + (`664`-1000))) %>% 
+  mutate(NDVI = ((`832`) - (`664`))/((`832`) + (`664`))) %>% 
   dplyr::select(filename,Raster,NDVI)
 
 GLI <- result_cleaned %>% 
@@ -2965,7 +2966,7 @@ knitr::include_graphics("Figs/Low_res/Heatwaves_S2_plot.png")
 
 ### Radiometric indices comparison
 
-Using Sentinel-2 data, the spectral indices (NDVI and GLI) and SPC estimated for pixels unaffected by the heatwave showed no significant differences before or during the event (@fig-NDVI_GLI_SPC, left column) In contrast, seagrass darkened by the heatwave exhibited a significant decrease in both index values and SPC (@fig-NDVI_GLI_SPC, right column). In this case, the NDVI dropped by approximately 34%, from a median of 0.61 to 0.40, while also becoming more homogeneous (the standard deviation decreased from 0.09 to 0.06) (@fig-NDVI_GLI_SPC B). Although the heatwave did not affect the observed seagrass density in the field, the drop in NDVI led to an underestimation of satellite-based SPC, from 83 to 48% (@fig-NDVI_GLI_SPC D). The GLI, the index that reflects the greenness of leaves, was the most affected by the event, with an important reduction from a median of 0.15 to 0.02 during the event (@fig-NDVI_GLI_SPC F). Interestingly, when comparing the initial seagrass density of both targets (i.e., seagrass density before the event) pixels affected by the heatwave (median SPC = 65%; \[@fig-NDVI_GLI_SPC C green) were denser than the those remained unchanged (median SPC = 85%; \[@fig-NDVI_GLI_SPC D green).
+Using Sentinel-2 data, the spectral indices (NDVI and GLI) and SPC estimated for pixels unaffected by the heatwave showed no significant differences before or during the event (@fig-NDVI_GLI_SPC, left column) In contrast, seagrass darkened by the heatwave exhibited a significant decrease in both index values and SPC (@fig-NDVI_GLI_SPC, right column). In this case, the NDVI dropped by approximately 34%, from a median of 0.61 to 0.40, while also becoming more homogeneous (the standard deviation decreased from 0.09 to 0.06) (@fig-NDVI_GLI_SPC B). Although the heatwave did not affect the observed seagrass density in the field, the drop in NDVI led to an underestimation of satellite-based SPC, from 83 to 48% (@fig-NDVI_GLI_SPC D). The GLI, the index that reflects the greenness of leaves, was the most affected by the event, with an important reduction from a median of 0.23 to 0.03 during the event (@fig-NDVI_GLI_SPC F). Interestingly, when comparing the initial seagrass density of both targets (i.e., seagrass density before the event) pixels affected by the heatwave (median SPC = 85%; \[@fig-NDVI_GLI_SPC D green) were denser than the those remained unchanged (median SPC = 65%; \[@fig-NDVI_GLI_SPC C green).
 
 ```{r NDVI_GLI_SPC}
 #| cache: true
@@ -2983,9 +2984,9 @@ df_all_indice <- read.csv("Data/Sentinel2/df_all_spectra_GCP.csv") %>%
   dplyr::select(c(filename, Target_types,Raster,NDVI,GLI,SPC)) %>%
   mutate(sum = NDVI + GLI + SPC) %>% 
   dplyr::distinct(sum, .keep_all = T) %>% 
-  dplyr::select(!sum) %>% 
+  dplyr::select(-sum) %>% 
     dplyr::filter(NDVI > 0 ) %>% 
-  mutate(GLI = GLI *2) %>% 
+  # mutate(GLI = GLI *2) %>% 
   pivot_longer(c(NDVI,SPC,GLI), names_to = "Indices", values_to = "values") %>% 
   mutate(date = case_when(Raster == "After" ~ ("2021-09-06"), 
                           T ~ ("2021-09-01")),
@@ -3915,8 +3916,624 @@ Additionally, analysis of bathymetry data to determine seagrass emersion time sh
 knitr::include_graphics("Figs/Low_res/GAM_emersion.png")
 ```
 
-
 # Discussion 
+
+## Frenquency Intensity of Heatwaves and implication for seagrasses
+
+```{r data opening HW}
+#| cache: true
+#| echo: false
+#| eval: false
+#| warning: false
+
+
+df <- list.files("Data/MeteoFrance/RAW/",pattern = "HOR_departement_56_*", full.names = TRUE) %>% 
+  map(read.delim,
+      sep = ";",
+      .progress = TRUE) %>%
+  list_rbind() %>% 
+  dplyr::select(NOM_USUEL, LAT,LON,,AAAAMMJJHH,`T`, TN, TX, T10, T20, T50,T100) %>% 
+  dplyr::filter(!is.na(`T`))
+```
+
+```{r first process HW}
+#| cache: true
+#| echo: false
+#| eval: false
+#| warning: false
+
+df_date <- df  %>% 
+  mutate(date = as.POSIXct(strptime(AAAAMMJJHH, format = "%Y%m%d%H"))) %>% 
+  group_by(NOM_USUEL) %>% 
+  reframe(min_date = min(date,na.rm = T),
+          max_date = max(date,na.rm = T),
+          n = n())
+
+selected_site <- df_date %>% 
+  filter(n ==max(n)) %>% 
+  pull(NOM_USUEL)
+
+df_sub <- df %>% 
+  dplyr::filter(NOM_USUEL == "LORIENT-LANN BIHOUE",
+                !is.na(`T`)) %>% 
+  dplyr::select(NOM_USUEL, LAT,LON,,AAAAMMJJHH,`T`, TN, TX, T10, T20, T50,T100) %>% 
+  mutate(date = as.POSIXct(as.character(AAAAMMJJHH), format = "%Y%m%d%H",tz = "UTC"))
+
+
+ggplot(df_sub)+
+  # geom_hex(aes(x = date, y = `T`), bins = 10)+
+  geom_line(aes(x = date, y = `T`))+
+  ylab("Temperature (°C)")+
+  xlab("Date")+
+  theme_Bede()+
+  theme(axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        axis.title.x = element_text(size = 20),
+        axis.title.y = element_text(size = 20))
+
+df_heatwaveR <- df_sub %>% 
+  rename(t = date,
+         temp = `T`) %>% 
+  dplyr::select(t,temp) %>% 
+  mutate(t = as.Date(t)) %>% 
+  group_by(t) %>% 
+  reframe(temp = max(temp,na.rm = T)) %>% 
+  dplyr::filter(t > as.Date("1948-12-31"))
+
+  
+
+  clim <- ts2clm(df_heatwaveR, climatologyPeriod = c(min(df_heatwaveR$t), max(df_heatwaveR$t)))
+  
+  event <- detect_event(clim,categories = T,minDuration = 3)
+  
+  res <- detect_event(clim, minDuration = 3)
+  mhw <- res$clim
+  
+  mhw %>%
+    filter(t> as.Date("2022-01-01") ) %>%
+ggplot(aes(x = t, y = temp))+
+    geom_line() +
+  geom_flame(aes(y2 = thresh))
+```
+
+```{r frequency of heatwaves as define in Perkins and Alexander (2013)}
+#| cache: true
+#| echo: false
+#| eval: false
+#| warning: false
+
+
+library(tidyverse)
+library(heatwaveR)
+library(mgcv)
+library(Utilities.Package)
+
+freq_heatwave <- event %>% 
+  mutate(year = substr(as.character(date_start),1,4)) %>% 
+  group_by(year) %>% 
+  reframe(value = n()) %>% 
+  mutate(data = "Frequency")
+
+intensity_heatwave <- event %>% 
+  mutate(year = substr(as.character(date_start),1,4)) %>% 
+  group_by(year) %>% 
+  reframe(value = sum(intensity_cumulative)) %>% 
+  mutate(data = "Intensity") %>% 
+  mutate(value = sqrt(value*value))
+
+
+df_heatwaves <- rbind(freq_heatwave,intensity_heatwave) %>% 
+  pivot_wider(names_from = data, values_from = value)
+
+# coeff=30
+# ggplot(df_heatwaves, aes(x=as.numeric(year))) +
+#   geom_point( aes(y=Frequency), color = "blue") +
+#   geom_smooth( aes(y=Frequency), color = "blue",method = "gam")+
+#   geom_point( aes(y=Intensity / coeff), color = "red") +
+#   geom_smooth( aes(y=Intensity / coeff), color = "red",method = "gam")+
+#   scale_y_continuous(
+#     
+#     # Features of the first axis
+#     name = "Frequency",
+#     
+#     # Add a second axis and specify its features
+#     sec.axis = sec_axis(~.*coeff, name="Intensity")
+#   )+
+#   theme_Bede()
+
+
+df_freq_HW <- df_heatwaves %>% 
+  dplyr::select(-Intensity) %>% 
+  mutate(year = as.numeric(year))
+
+gam_freq_HW <- mgcv::gam(Frequency ~ s(year,
+                                       k=3), 
+                 # family = poisson(),
+                 data = df_freq_HW)
+
+Utilities.Package::Model_Check(gam_freq_HW)
+
+
+NewData_freq_HW<-expand_grid(year=unique(df_freq_HW$year))
+
+pred_freq_HW <- predict(gam_freq_HW, NewData_freq_HW, se.fit = T, type = "link")
+
+
+NewData_freq_HW <- NewData_freq_HW %>% 
+  mutate(fit = pred_freq_HW$fit,
+         se = pred_freq_HW$se.fit)
+
+(heatwaves_frequency <- ggplot(df_freq_HW, aes(x=year))+
+  geom_point(aes(y=Frequency), color = "darkred", alpha = 0.3)+
+    geom_line(data = NewData_freq_HW, aes(x = year, y = fit),color = "darkred")+
+    geom_ribbon(data = NewData_freq_HW, aes(x = year, y = fit, ymin = fit-se, ymax = fit+se),color = NA ,fill = "darkred",alpha = 0.2)+
+    ylab(expression("Frequency of atmospheric heatwaves (year"^"-1" * ")"))+
+    xlab(expression("Years"))+
+    scale_x_continuous(position = "top")+
+    theme_Bede()+
+    # scale_fill_manual(values = coltab)+
+    theme(
+      # strip.text.y= element_text(size =17),
+       strip.text.y= element_blank(),
+      # legend.title = element_text(size =17, hjust = 0.5),
+      legend.title = element_blank(),
+      legend.title.position = "top",
+      legend.text = element_text(size =13),
+
+      # legend.text = element_text(hjust = 0, size =13),
+      axis.text.x = element_text(size = 13),
+      axis.text.y = element_text(size = 13),
+      axis.title.x = element_text(size = 13),
+      axis.title.y = element_text(size = 13),
+      
+      legend.position = c(0.13, 0.92),
+      # legend.position = "top",
+      plot.background = element_rect(fill = "white", color =NA) ,
+      legend.key.width = unit(1,"cm"),
+      legend.key.height = unit(2,"mm")
+
+    # plot.margin = margin(t = 5, r = 5, b = 5, l = 5), # Adjusts plot margins
+    # legend.spacing.y = unit(0.1, "cm"),  # Reduces space between legend items vertically
+    # legend.margin = margin(t = 0, b = -10)  
+      # panel.border = element_blank(),
+    )
+)
+
+
+df_Int_HW <- df_heatwaves %>% 
+  dplyr::select(-Frequency) %>% 
+  mutate(year = as.numeric(year))
+
+gam_Int_HW <- mgcv::gam(Intensity ~ s(year,
+                                       k=3), 
+                 # family = poisson(),
+                 data = df_Int_HW)
+
+Utilities.Package::Model_Check(gam_Int_HW)
+
+
+NewData_Int_HW<-expand_grid(year=unique(df_Int_HW$year))
+
+pred_Int_HW <- predict(gam_Int_HW, NewData_Int_HW, se.fit = T, type = "link")
+
+
+NewData_Int_HW <- NewData_Int_HW %>% 
+  mutate(fit = pred_Int_HW$fit,
+         se = pred_Int_HW$se.fit)
+
+(heatwaves_Intensity <- ggplot(df_Int_HW, aes(x=year))+
+  geom_point(aes(y=Intensity), color = "darkred", alpha = 0.3)+
+    geom_line(data = NewData_Int_HW, aes(x = year, y = fit),color = "darkred")+
+    geom_ribbon(data = NewData_Int_HW, aes(x = year, y = fit, ymin = fit-se, ymax = fit+se),color = NA ,fill = "darkred",alpha = 0.2)+
+    ylab(expression("Cumulative intensity of atmospheric heatwaves (°C)"))+
+    xlab(expression("Years"))+
+    scale_y_continuous(position = "right")+
+    scale_x_continuous(position = "top")+
+
+    theme_Bede()+
+    # scale_fill_manual(values = coltab)+
+    theme(
+      # strip.text.y= element_text(size =17),
+       strip.text.y= element_blank(),
+      # legend.title = element_text(size =17, hjust = 0.5),
+      legend.title = element_blank(),
+      legend.title.position = "top",
+      legend.text = element_text(size =13),
+
+      # legend.text = element_text(hjust = 0, size =13),
+      axis.text.x = element_text(size = 13),
+      axis.text.y = element_text(size = 13),
+      axis.title.x = element_text(size = 13),
+      axis.title.y = element_text(size = 13),
+      
+      legend.position = c(0.13, 0.92),
+      # legend.position = "top",
+      plot.background = element_rect(fill = "white", color =NA) ,
+      legend.key.width = unit(1,"cm"),
+      legend.key.height = unit(2,"mm")
+
+    # plot.margin = margin(t = 5, r = 5, b = 5, l = 5), # Adjusts plot margins
+    # legend.spacing.y = unit(0.1, "cm"),  # Reduces space between legend items vertically
+    # legend.margin = margin(t = 0, b = -10)  
+      # panel.border = element_blank(),
+    )
+)
+
+```
+
+```{r cold spells}
+#| cache: true
+#| echo: false
+#| eval: false
+#| warning: false
+
+
+cold_clim <- ts2clm(df_heatwaveR, climatologyPeriod = c("1949-01-01", "2024-06-23"),
+                   pctile = 10)
+  res_cold <- detect_event(cold_clim, coldSpells = T)
+  event_cold <- detect_event(cold_clim,categories = T) %>% 
+    filter(intensity_cumulative < 0)
+  coldspell_clim <- res_cold$clim
+  
+  coldspell_clim %>% 
+    filter(t> as.Date("1960-01-01") & t< as.Date("1961-01-01")) %>%
+ggplot(aes(x = t, y = temp))+
+  geom_line() +
+  geom_flame(aes(y = thresh ,y2 = temp), fill = "darkblue")+
+  geom_line(aes(y = thresh), color = "darkblue")
+
+    
+freq_coldspells <- event_cold %>% 
+  mutate(year = substr(as.character(date_start),1,4)) %>% 
+  group_by(year) %>% 
+  reframe(value = n()) %>% 
+  mutate(data = "Frequency")
+
+intensity_coldspells <- event_cold %>% 
+  mutate(year = substr(as.character(date_start),1,4)) %>% 
+  group_by(year) %>% 
+  reframe(value = sum(intensity_cumulative)) %>% 
+  mutate(data = "Intensity") %>% 
+  mutate(value = (value))
+
+df_coldspells <- rbind(freq_coldspells,intensity_coldspells) %>% 
+  pivot_wider(names_from = data, values_from = value)
+
+
+
+df_freq_CS <- df_coldspells %>% 
+  dplyr::select(-Intensity) %>% 
+  mutate(year = as.numeric(year))
+
+gam_freq_CS <- mgcv::gam(Frequency ~ s(year,
+                                       k=3), 
+                 # family = poisson(),
+                 data = df_freq_CS)
+
+Utilities.Package::Model_Check(gam_freq_CS)
+
+
+NewData_freq_CS<-expand_grid(year=unique(df_freq_CS$year))
+
+pred_freq_CS <- predict(gam_freq_CS, NewData_freq_CS, se.fit = T, type = "link")
+
+
+NewData_freq_CS <- NewData_freq_CS %>% 
+  mutate(fit = pred_freq_CS$fit,
+         se = pred_freq_CS$se.fit)
+
+(coldspells_frequency <- ggplot(df_freq_CS, aes(x=year))+
+  geom_point(aes(y=Frequency), color = "darkblue", alpha = 0.3)+
+    geom_line(data = NewData_freq_CS, aes(x = year, y = fit),color = "darkblue")+
+    geom_ribbon(data = NewData_freq_CS, aes(x = year, y = fit, ymin = fit-se, ymax = fit+se),color = NA ,fill = "darkblue",alpha = 0.2)+
+    ylab(expression("Frequency of atmospheric coldspells (year"^"-1" * ")"))+
+    xlab(expression("Years"))+
+    scale_y_continuous(breaks = c(2,5,8))+
+    theme_Bede()+
+    # scale_fill_manual(values = coltab)+
+    theme(
+      # strip.text.y= element_text(size =17),
+       strip.text.y= element_blank(),
+      # legend.title = element_text(size =17, hjust = 0.5),
+      legend.title = element_blank(),
+      legend.title.position = "top",
+      legend.text = element_text(size =13),
+
+      # legend.text = element_text(hjust = 0, size =13),
+      axis.text.x = element_text(size = 13),
+      axis.text.y = element_text(size = 13),
+      axis.title.x = element_text(size = 13),
+      axis.title.y = element_text(size = 13),
+      
+      legend.position = c(0.13, 0.92),
+      # legend.position = "top",
+      plot.background = element_rect(fill = "white", color =NA) ,
+      legend.key.width = unit(1,"cm"),
+      legend.key.height = unit(2,"mm")
+
+    # plot.margin = margin(t = 5, r = 5, b = 5, l = 5), # Adjusts plot margins
+    # legend.spacing.y = unit(0.1, "cm"),  # Reduces space between legend items vertically
+    # legend.margin = margin(t = 0, b = -10)  
+      # panel.border = element_blank(),
+    )
+)
+
+
+df_Int_CS <- df_coldspells %>% 
+  dplyr::select(-Frequency) %>% 
+  mutate(year = as.numeric(year))
+
+gam_Int_CS <- mgcv::gam(Intensity ~ s(year,
+                                       k=3), 
+                 # family = poisson(),
+                 data = df_Int_CS)
+
+Utilities.Package::Model_Check(gam_Int_CS)
+
+
+NewData_Int_CS<-expand_grid(year=unique(df_Int_CS$year))
+
+pred_Int_CS <- predict(gam_Int_CS, NewData_Int_CS, se.fit = T, type = "link")
+
+
+NewData_Int_CS <- NewData_Int_CS %>% 
+  mutate(fit = pred_Int_CS$fit,
+         se = pred_Int_CS$se.fit)
+
+(coldspells_Intensity <- ggplot(df_Int_CS, aes(x=year))+
+  geom_point(aes(y=Intensity), color = "darkblue", alpha = 0.3)+
+    geom_line(data = NewData_Int_CS, aes(x = year, y = fit),color = "darkblue")+
+    geom_ribbon(data = NewData_Int_CS, aes(x = year, y = fit, ymin = fit-se, ymax = fit+se),color = NA ,fill = "darkblue",alpha = 0.2)+
+    ylab(expression("Cumulative intensity of atmospheric coldspells (°C)"))+
+    xlab(expression("Years"))+
+    scale_y_continuous(position = "right",
+                       transform = "reverse")+
+    # scale_x_continuous(position = "top")+
+
+    theme_Bede()+
+    # scale_fill_manual(values = coltab)+
+    theme(
+      # strip.text.y= element_text(size =17),
+       strip.text.y= element_blank(),
+      # legend.title = element_text(size =17, hjust = 0.5),
+      legend.title = element_blank(),
+      legend.title.position = "top",
+      legend.text = element_text(size =13),
+
+      # legend.text = element_text(hjust = 0, size =13),
+      axis.text.x = element_text(size = 13),
+      axis.text.y = element_text(size = 13),
+      axis.title.x = element_text(size = 13),
+      axis.title.y = element_text(size = 13),
+      
+      legend.position = c(0.13, 0.92),
+      # legend.position = "top",
+      plot.background = element_rect(fill = "white", color =NA) ,
+      legend.key.width = unit(1,"cm"),
+      legend.key.height = unit(2,"mm")
+
+    # plot.margin = margin(t = 5, r = 5, b = 5, l = 5), # Adjusts plot margins
+    # legend.spacing.y = unit(0.1, "cm"),  # Reduces space between legend items vertically
+    # legend.margin = margin(t = 0, b = -10)  
+      # panel.border = element_blank(),
+    )
+)
+
+
+```
+
+```{r merging HW CS plots}
+#| cache: true
+#| echo: false
+#| eval: false
+#| warning: false
+
+(plot_HW_CP <- ((heatwaves_frequency | heatwaves_Intensity) / (coldspells_frequency | coldspells_Intensity))  + 
+  plot_layout(guides = "collect")& 
+  theme(legend.position = "bottom")
+)
+
+ggsave("Paper/Figs/High_res/plot_HW_CS.png", plot_HW_CP, width = 10, height = 10, dpi = 400)
+ggsave("Paper/Figs/Low_res/plot_HW_CS.png", plot_HW_CP, width = 10, height = 10, dpi = 200)
+
+```
+
+```{r Fig Freq_Int_HW_CS}
+#| cache: false
+#| echo: false
+#| warning: false
+#| fig-cap: "Frequency and intensity of atmospheric heatwaves (red) and cold spells (blue) over time at the Lorient-Lann Bihoué weather station. The left column displays the annual frequency of heatwaves and cold spells as the total number of events per year. The right column illustrates event intensity, represented by the cumulative temperature anomaly throughout the year, measured in degrees Celsius."
+#| label: fig-Freq_Int_HW_CS
+#| fig-width: 10
+#| fig-height: 10
+#| out-width: "80%"
+
+knitr::include_graphics("Figs/Low_res/plot_HW_CS.png")
+```
+
+## Resilation of seagrasses to extrem events
+
+```{r resilience of seagrasses}
+#| cache: true
+#| echo: false
+#| eval: false
+#| warning: false
+
+library(Utilities.Package)
+library(tidyverse)
+library(terra)
+library(sf)
+library(MapRs)
+
+
+img_list <- "Data/Sentinel2/" %>% 
+  list.files(recursive = T, full.names = T ,pattern = ".SAFE", include.dirs = T) %>% 
+  as_tibble() %>% 
+  rename(path = "value") %>% 
+  dplyr::filter(str_detect(path,"20210906") | str_detect(path, "20210814") | str_detect(path, "20211008"))
+
+msk <- read_sf("Data/shp/mask_seagrasses.shp")
+
+GCP <- read.csv("Data/Biolittoral/Bio-Littoral_Drone/Quadrat_metadata.csv") %>% 
+    as_tibble() %>% 
+  st_as_sf(coords = c("lon", "lat"), crs = 4326) %>% 
+  mutate(Target_types = case_when(str_detect(Target_types,"Mix") ~ "Other",
+                                  str_detect(Target_types,"Healthy") ~ "Healthy_seagrass",
+                                  str_detect(Target_types,"Bleached") ~ "Bleached_seagrass",
+                                  T ~ "Other")) %>% 
+  dplyr::filter(Target_types %in% c("Bleached_seagrass","Healthy_seagrass")) %>% 
+  vect()
+
+
+before <- img_list %>%  
+  dplyr::filter(str_detect(path,"20210814")) %>% 
+  pull(path) %>% 
+  Read_S2() %>% 
+  crop(msk, mask = T) 
+
+during <- img_list %>%  
+  dplyr::filter(str_detect(path,"20210906")) %>% 
+  pull(path) %>% 
+  Read_S2() %>% 
+  crop(msk, mask = T) 
+
+after <- img_list %>%  
+  dplyr::filter(str_detect(path,"20211008")) %>% 
+  pull(path) %>% 
+  Read_S2() %>% 
+  crop(msk, mask = T) 
+
+before_cor <- before -1000
+during_cor <- during - 1000
+after_cor <- after - 1000
+
+SPC_before <- 172.06*(before_cor$B08-before_cor$B04)/(before_cor$B08+before_cor$B04)-22.18
+SPC_during <- 172.06*(during_cor$B08-during_cor$B04)/(during_cor$B08+during_cor$B04)-22.18
+SPC_after <- 172.06*(after_cor$B08-after_cor$B04)/(after_cor$B08+after_cor$B04)-22.18
+
+names(SPC_before) <- "SPC_before"
+names(SPC_during) <- "SPC_during"
+names(SPC_after) <- "SPC_after"
+
+
+darkened_patches <- read_sf("Output/darkening_patches_SDI.shp") %>% 
+  rasterize(SPC_before)
+names(darkened_patches)<-"IsDarkened"
+
+stk <- c(SPC_before,SPC_during,SPC_after, darkened_patches) %>% 
+  as.data.frame() %>% 
+  pivot_longer(-IsDarkened, names_to = "When", values_to = "SPC") %>% 
+  mutate(When = case_when(str_detect(When,"before") ~ "Before",
+                          str_detect(When, "during") ~ "During",
+                          str_detect(When, "after") ~ "After"),
+         IsDarkened = case_when(IsDarkened == 1 ~ "Impacted",
+                                T ~ "Green"))
+ggplot(stk)+
+  geom_boxplot(aes(x = IsDarkened, y = SPC, color = IsDarkened))+
+  facet_wrap(~When, ncol = 3)
+
+
+
+
+df_all_indice <- read.csv("Data/Sentinel2/df_all_spectra_GCP.csv") %>% 
+  mutate(SPC = 172.06*NDVI-22.18) %>% 
+  dplyr::select(c(filename, Target_types,Raster,NDVI,GLI,SPC)) %>%
+  mutate(sum = NDVI + GLI + SPC) %>% 
+  dplyr::distinct(sum, .keep_all = T) %>% 
+  dplyr::select(-sum) %>% 
+    dplyr::filter(NDVI > 0 ) %>% 
+  mutate(GLI = GLI *2) %>% 
+  pivot_longer(c(NDVI,SPC,GLI), names_to = "Indices", values_to = "values") %>% 
+  mutate(date = case_when(Raster == "After" ~ ("2021-09-06"), 
+                          T ~ ("2021-09-01")),
+         Indices = case_when(Indices == "NDVI" ~ "NDVI",
+                             Indices == "SPC" ~ "SPC",
+                             Indices == "GLI" ~ "GLI"),
+         Target_types = case_when(Target_types == "Bleached_seagrass" ~ "GCPs Darkened in the field",
+                                  T ~ "GCPs Green in the Field"),
+        Target_types = factor(Target_types, levels = c("GCPs Green in the Field", "GCPs Darkened in the field")),
+        Indices = factor(Indices, levels = c("NDVI", "SPC", "GLI"))
+  ) %>% 
+  dplyr::filter(Indices == "SPC") %>% 
+  dplyr::select(-c(filename,Indices,date)) %>% 
+  rename(SPC = "values",
+         When = "Raster") %>% 
+  mutate(When = case_when(When == "After" ~ "During",
+                          T ~ When))
+
+
+# coltab <- c("GCPs Darkened in the field" = "brown", "GCPs Green in the Field" = "darkgreen")
+coltab <- c("Impacted" = "brown", "Not Impacted" = "darkgreen")
+
+  
+plot_resilience <- c(SPC_after) %>% 
+  terra::extract(GCP, bind = T) %>% 
+  as_tibble() %>% 
+   dplyr::select(-c(path,filename)) %>% 
+   mutate(When = "After",
+         Target_types = case_when(Target_types == "Bleached_seagrass" ~ "GCPs Darkened in the field",
+                                  T ~ "GCPs Green in the Field")) %>% 
+   rename(SPC = "SPC_after") %>% 
+   rbind(df_all_indice) %>% 
+   mutate(date = case_when(When == "Before" ~ "2021-09-01",
+                           When == "During" ~ "2021-09-06", 
+                           When == "After" ~ "2021-10-07"),
+         Target_types = case_when(Target_types == "GCPs Darkened in the field" ~ "Impacted",
+                                  T ~ "Not Impacted"),
+          Target_types = as.factor(Target_types),
+         SPC = case_when(SPC > 100 ~ 100,
+                         T ~ SPC)
+          # Target_types = fct_relevel(Target_types, "GCPs Green in the Field", "GCPs Darkened in the field")
+          ) %>% 
+  dplyr::filter(SPC > 0 ) %>% 
+   ggplot()+
+  geom_boxplot(aes(x = Target_types, y = SPC, color = Target_types), show.legend = F)+
+    scale_color_manual(values = coltab, 
+                       label = c("Unimpacted seagrasses","Impacted seagrasses")) +
+  facet_wrap(~date, nrow = 1)+
+  ylab("Seagrass Cover (%)")+
+  xlab("Seagrass status")+
+  # scale_x_discrete(breaks = c("No", "Yes"))+
+   theme_Bede()+
+  theme(
+      strip.text.x = element_text(size =17),
+      # legend.title = element_text(size =17),
+      legend.title = element_blank(),
+      # legend.title.position = "top",
+      legend.text = element_text(size =15),
+
+      # legend.text = element_text(hjust = 0, size =13),
+      axis.text.x = element_text(size = 13),
+      axis.text.y = element_text(size = 13),
+      axis.title.x = element_text(size = 15),
+      axis.title.y = element_text(size = 15),
+      
+      # legend.position = c(0.86, 0.13),
+      # legend.position = "top",
+      plot.background = element_rect(fill = "white"),
+      legend.key.width = unit(1,"cm"),
+      legend.key.height = unit(8,"mm")
+      # panel.border = element_blank(),
+    )
+
+ggsave("Paper/Figs/High_res/plot_resilience.png", plot_resilience, width = 10, height = 5, dpi = 400)
+ggsave("Paper/Figs/Low_res/plot_resilience.png", plot_resilience, width = 10, height = 5, dpi = 200)
+```
+
+```{r Fig Resilience_of_seagrasses}
+#| cache: false
+#| echo: false
+#| warning: false
+#| fig-cap: "Comparison of the seagrass percent cover before (left), during (center) and after (right) the heatwaves for seagrasses that have not been impacted by heatwaves (i.e. remains green) and seagrasses that have been impacted by the events (i.e. seagrasses that darkened)."
+#| label: fig-Resilience_of_seagrasses
+#| fig-width: 10
+#| fig-height: 5
+#| out-width: "100%"
+
+knitr::include_graphics("Figs/Low_res/plot_resilience.png")
+```
+
+
 
 
 # Bibliography
