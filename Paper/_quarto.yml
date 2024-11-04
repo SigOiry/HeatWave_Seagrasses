@@ -13,13 +13,9 @@ format:
     output-file: "Simon_Heatwaves_Paper"
     floatsintext: true
     numbered-lines: true
-  apaquarto-pdf: 
+  elsevier-pdf: 
     fig-pos: "H"
     output-file: "Simon_Heatwaves_Paper"
-    floatsintext: true
-    numbered-lines: true
-    documentmode: doc
-    nocorrespondence: true
 render: 
   - "!*.qmd"
   - "!*.ipynb"
