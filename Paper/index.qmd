@@ -4530,19 +4530,6 @@ ggsave("Paper/Figs/High_res/plot_resilience.png", plot_resilience, width = 10, h
 ggsave("Paper/Figs/Low_res/plot_resilience.png", plot_resilience, width = 10, height = 5, dpi = 200)
 ```
 
-```{r Fig Resilience_of_seagrasses}
-#| cache: false
-#| echo: false
-#| warning: false
-#| fig-cap: "Comparison of the seagrass percent cover before (left), during (center) and after (right) the heatwaves for seagrasses that have not been impacted by heatwaves (i.e. remains green) and seagrasses that have been impacted by the events (i.e. seagrasses that darkened)."
-#| label: fig-Resilience_of_seagrasses
-#| fig-width: 10
-#| fig-height: 5
-#| out-width: "100%"
-
-knitr::include_graphics("Figs/Low_res/plot_resilience.png")
-```
-
 ```{r function Tide_info2}
 #| cache: true
 #| echo: false
@@ -4894,16 +4881,35 @@ c(litto_cropped_NT, litto_cropped_ST) %>%
 
 ```
 
-The boxplot in @fig-Resilience_of_seagrasses illustrates the seagrass cover (SPC) changes between impacted and non-impacted areas across three dates: 1st of September, 6th of September and 7th of October 2021. Before the heatwave event on the 1st of September, the impacted seagrass patch had a higher SPC compared to non-impacted areas. However, during the event on the 6th September, a noticeable decline in SPC occurred in the impacted patch (@fig-NDVI_GLI_SPC, C and D). ThisOne month post-event, on the 7th of October, the SPC of the impacted seagrasses, which was initially higher, had decreased to a level below that of the non-impacted seagrasses. This shift underscores the long-term impact of extreme events on previously robust seagrass patches, revealing how heatwaves can reverse resilience patterns, leaving once-thriving patches in a weakened state compared to less disturbed areas.
+Seagrass resilience to heatwaves is a complex and multifaceted issue shaped by species-specific traits, geographical location, and concurrent environmental stressors [@canadell2021ecosystem; @hatum2024predicting; @berger2024eelgrass]. As climate change drives the frequency and intensity of marine heatwaves, understanding these dynamics becomes crucial, especially for temperate seagrass meadows composed of slow-growing, long-lived species like *Posidonia*, *Amphibolis*, and *Zostera.* These species, unlike their tropical counterparts, tend to be highly vulnerable to abrupt environmental changes, struggling to recover from disturbances due to their slower growth and longer lifespan. In contrast, colonizing species typical of tropical regions, such as *Halodule*, *Halophila*, and *Syringodium*, demonstrate greater resilience to warming events and marine heatwaves due to their rapid growth and more flexible life strategies [@o2018seagrass].
 
-Seagrass resilience to heatwaves is a complex issue influenced by species-specific traits, geographical location, and concurrent environmental stressors [@canadell2021ecosystem; @hatum2024predicting; @berger2024eelgrass]. Temperate meadows composed of slow-growing, long-lived species such as *Posidonia*, *Amphibolis*, and *Zostera* are highly vulnerable to climate change-related disturbances. In contrast, smaller, colonizing species typical of tropical regions, including *Halodule*, *Halophila*, and *Syringodium*, demonstrate greater resilience to warming events and marine heatwaves [@o2018seagrass].
+The impact of heatwaves on seagrass ecosystems is further influenced by tidal variation, especially in temperate regions where tidal ranges can exceed 10 meters, as in Mont Saint Michel Bay, France. This significant tidal amplitude affects intertidal seagrasses like *Nanozostera noltei*, which are exposed to air for varying durations depending on their position within the intertidal zone. During neap tides, seagrasses located higher in the intertidal zone may remain exposed for extended periods, increasing their vulnerability to atmospheric heatwaves. Conversely, seagrasses in the lower intertidal experience prolonged emersion, making them more susceptible to extreme marine heat events. Consequently, both marine and atmospheric heatwaves can intensify stress on seagrass meadows, with their effects potentially compounded by tidal timing and amplitude.
 
-In temperate regions, tidal ranges are generally more pronounced than in tropical areas, reaching over 10 meters in locations like Mont Saint Michel Bay, France. This significant variation affects intertidal seagrasses, which are exposed to air for varying durations depending on their position within the intertidal zone and the tidal amplitude. During neap tides, seagrasses in the upper intertidal zone may experience only brief periods of submersion or may remain emerged, increasing their susceptibility to extreme atmospheric events. Conversely, seagrasses in the lower intertidal zone may undergo extended emersion periods, making them more exposed to extreme marine events. Consequently, the effects of both marine and atmospheric heatwaves can be amplified by tidal amplitude at the time the event occurs.
+Species like *Nanozostera noltei* display distinct seasonal patterns that become increasingly pronounced at higher latitudes [@davies2024sentinel; @davies2024intertidal]. These patterns reflect the species' adaptation to seasonal variations in temperature and light, but they also make N. noltei particularly sensitive to extreme events depending on their timing. For instance, if a heatwave coincides with early developmental stages or occurs after the biomass peak when leaf senescence has begun, the impact on meadow resilience can be severe
 
-Intertidal seagrass species such as *Nanozostera noltei* exhibit distinct phenological patterns throughout the year, which become more pronounced at higher latitudes [@davies2024sentinel; @davies2024intertidal]. The timing of extreme events can significantly impact meadow resilience, particularly if they coincide with early developmental stages or occur after the biomass peak has been reached and leaf senescence has begun.
+Environmental conditions can moderate seagrass resilience to thermal stress. Seagrass meadows located in areas benefiting from tidal cooling or positioned further from the warmer edges of their geographical ranges often experience reduced heat stress, resulting in higher shoot densities and enhanced resilience [@canadell2021ecosystem; @berger2024eelgrass]. In these cooler areas, *Nanostera noltei* exhibits high survival and photosynthetic performance up to 37°C, though temperatures above 39°C lead to near-total mortality within days, underscoring the species' sensitivity to temperature thresholds that may become increasingly common under climate change scenarios [@franssen2014genome].
+Moreover, the frequency, duration, and intervals between heatwaves significantly affect seagrass biomass and recovery; prolonged and frequent heatwaves reduce resilience and complicate recovery processes [@hatum2024predicting].
 
-Environmental factors further shape this differential resilience. Seagrass meadows in regions benefiting from tidal cooling or situated away from the warmer edges of their geographical ranges tend to experience less heat stress and exhibit higher shoot densities [@canadell2021ecosystem; @berger2024eelgrass]. Moreover, the frequency, duration, and intervals between heatwaves significantly affect seagrass biomass and recovery; prolonged and frequent heatwaves reduce resilience and complicate recovery processes [@hatum2024predicting].
+The influence of other stressors, such as eutrophication and sulfide accumulation, complicates this resilience. Increased sediment sulfide levels, which often accompany nutrient enrichment, can be toxic to seagrasses, particularly under elevated temperatures that amplify sulfide toxicity. Z. noltii, for example, has a mutualistic relationship with lucinid clams that helps detoxify sulfides. However, this interaction is compromised at high temperatures, reducing the efficacy of sulfide removal and further inhibiting nutrient uptake, growth, and overall resilience [@de2022increased]. 
 
-Seagrasses possess inherent coping mechanisms, including genetic adaptations and physiological acclimation, such as the rapid activation of photoprotective mechanisms and heat-responsive gene expression [@hughes2004genetic; @reusch2005ecosystem]. However, the accelerated pace of climate change raises concerns about the ability of these adaptations to keep pace with escalating temperatures [@loarie2009velocity]. Management strategies focused on mitigating local stressors, utilizing heatwave-resistant genotypes, and implementing restoration efforts are critical for bolstering seagrass resilience. Despite these challenges, emerging evidence suggests that some seagrass species may adapt to evolving ecological conditions, providing hope for their persistence in an increasingly warm climate [@canadell2021ecosystem].
+In a simulated heatwave experiment on *Nanozostera noltei*, resilience was evident under short-term moderate stress, with no significant changes in photosynthetic performance or survival. However, prolonged or more intense heat events posed a greater challenge, highlighting the species’ limited capacity to withstand chronic thermal stress [@massa2009temperature ; @franssen2014genome]. 
+The long-term impact of heatwaves is especially evident in changes to seagrass cover (SPC). Before the heatwave event on 1st September 2021, impacted seagrass patches exhibited higher SPC than non-impacted areas. However, during the event on 6th September, SPC in the impacted patch experienced a sharp decline. By 7th October, one month post-event, the SPC of impacted seagrasses, initially higher, had fallen below that of non-impacted seagrasses, revealing how extreme events can undermine resilience patterns, leaving previously robust patches in a weakened state compared to less disturbed areas [@fig-Resilience_of_seagrasses]. 
+
+```{r Fig Resilience_of_seagrasses}
+#| cache: false
+#| echo: false
+#| warning: false
+#| fig-cap: "Comparison of the seagrass percent cover before (left), during (center) and after (right) the heatwaves for seagrasses that have not been impacted by heatwaves (i.e. remains green) and seagrasses that have been impacted by the events (i.e. seagrasses that darkened)."
+#| label: fig-Resilience_of_seagrasses
+#| fig-width: 10
+#| fig-height: 5
+#| out-width: "100%"
+
+knitr::include_graphics("Figs/Low_res/plot_resilience.png")
+```
+
+On a physiological level, seagrasses possess coping mechanisms such as photoprotective responses and heat-responsive gene expression, including the activation of heat-shock proteins (HSPs) and other stress-related genes [@hughes2004genetic; @reusch2005ecosystem]. *Nanozostera noltei*, in particular, has shown differential gene expression responses to heat stress, with a variety of genes involved in protein folding, membrane stability, and reactive oxygen species scavenging playing critical roles. However, the rapid pace of climate change raises concerns about whether these adaptations can keep up with the increasing frequency and severity of thermal events [@franssen2014genome].
+
+Given the combined pressures of temperature extremes, eutrophication, and other anthropogenic impacts, targeted management strategies are essential for enhancing seagrass resilience [@loarie2009velocity]. Approaches such as reducing local stressors, cultivating heat-tolerant genotypes, and investing in restoration initiatives are vital to supporting these ecosystems in a warming climate. Although challenges remain, the adaptability and potential resilience of certain seagrass species offer hope for their persistence amid accelerating ecological shifts. In particular, regions that can buffer seagrasses from extreme stressors or provide cooler refuges may play a critical role in maintaining these valuable ecosystems in the face of global climate change [@de2022increased ; @canadell2021ecosystem]
 
 # Bibliography
