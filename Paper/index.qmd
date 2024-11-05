@@ -3919,7 +3919,7 @@ Additionally, analysis of bathymetry data to determine seagrass emersion time sh
 knitr::include_graphics("Figs/Low_res/GAM_emersion.png")
 ```
 
-# Discussion - **WORK IN PROGRESS**
+# Discussion
 
 Although extensive research exists on marine heatwaves' effects on subtidal seagrasses, little attention has been given to intertidal habitats and even less to the interaction between atmospherical extreme event and intertidal meadows. This study initiates an exploration of how intertidal seagrasses respond to the dual influence of marine and atmospheric heatwaves, underscoring the need for further investigation in this underexplored area.
 
