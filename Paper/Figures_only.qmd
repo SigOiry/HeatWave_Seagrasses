@@ -1,0 +1,19 @@
+---
+title: "Figures_only"
+format: docx
+output-file: "Figures_heatwaves"
+editor: source
+---
+
+```{r Fig Site Quiberon Plot}
+#| cache: false
+#| echo: false
+#| warning: false
+#| fig-cap: Location of the fieldtrip campaign that occured in the 10th of September 2021. The red line surround the intertidal zone (Zone between High tide and low tide, that is totally emerged at low tide) and the dark green polygon indicate the extent of the seagrass meadow. Green dots indicate location of quadrat picture over unimpacted seagrasses (i.e. showing a green color on the field) while red dots indicate location of quadrat took over impacted seagrasses (i.e. showing a dark color on the field). 
+#| label: fig-quiberonMap
+#| fig-width: 10
+#| fig-height: 10
+#| out-width: "100%"
+
+knitr::include_graphics("Figs/Low_res/Quiberon_map.png")
+```
