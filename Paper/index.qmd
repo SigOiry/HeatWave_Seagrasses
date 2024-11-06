@@ -580,12 +580,6 @@ Based on the observed spectral changes in seagrasses exposed to extreme events, 
 
 The Seagrass Darkening Index (SDI) is introduced here as a measure of the difference between the interpolated value between 560 and 842 nm and the observed value at 740 nm. This approach calculates the line height using a triplet of bands, where 560 nm and 842 nm serve as the 'baseline' and 740 nm represents the central peak. The SDI can be mathematically expressed as:
 
-Generale equation for interpolation:
-$$
-y = y_0 + \frac{x - x_0}{x_1 - x_0} (y_1 - y_0)
-$$
-
-Interpolation applied for SDI
 $$
 I_{SDI} = R(560) + \frac{740 - 560}{842 - 560} [R(842) - R(560)]
 $$ 
