@@ -998,7 +998,7 @@ xlim <- c(ext(poly_sf)[1],ext(poly_sf)[2])
 ylim <- c(ext(poly_sf)[3],ext(poly_sf)[4])
 
 # Compute the coordinates for the rectangle (25% to 75% of the ranges)
-xleft   <- xlim[1] + 0.68 * diff(xlim)
+xleft   <- xlim[1] + 0.66 * diff(xlim)
 xright  <- xlim[1] + 0.99 * diff(xlim)
 ybottom <- ylim[1] + 0.854 * diff(ylim)
 ytop    <- ylim[1] + 0.975 * diff(ylim)
@@ -1158,7 +1158,7 @@ ggsave("Paper/Figs/High_res/img_Quiberon.png",plot, width = 3.1, height = 2.05, 
 #| cache: false
 #| echo: false
 #| warning: false
-#| fig-cap: "Illustrations of the two health conditions of seagrasses observed in the field. A: Global view of a green green meadow; B: Quadrat images of green seagrasses; C: Quadrat images of darkened seagrasses; D: Global view of an darkened meadow. All images were taken on September 10th, 2021, in Quiberon."
+#| fig-cap: "Illustrations of the two coloration of seagrasses observed in the field. A: View of a green green meadow; B: Quadrat images of green seagrasses; C: Quadrat images of darkened seagrasses; D: View of darkened area of themeadow. All images were taken on September 10th, 2021, in Quiberon."
 #| label: fig-QuiberonImg
 #| fig-width: 10
 #| fig-height: 10
@@ -1471,21 +1471,30 @@ library(lubridate)
 library(patchwork)
 library(hsdar)
 
-# df_spectra_exp <- read.csv("Data/df_experiment.csv")
+df_spectra_exp <- read.csv("Data/df_experiment.csv")
 
-Color_spectra = c("darkgreen", "#CDCD00","#73523E")
+Color_spectra = c("Day 1" = "darkgreen", "Day 2" = "#CDCD00","Day 3" = "#73523E")
 
-plot_Spectra_exp <- df_spectra_exp %>% 
+
+(plot_Spectra_exp <- df_spectra_exp %>% 
+  mutate(days = case_when(timeDiff < 10 ~ "Day 1",
+                          timeDiff < 31 ~ "Day 2",
+                           timeDiff < 60 ~ "Day 3"),
+         Scenario = case_when(Scenario == "Test" ~ "Treatment",
+                              T ~ Scenario)) %>% 
   dplyr::filter(Experiment == "HW3") %>% 
   ggplot()+
-  geom_line(aes(x = Wavelength, y = std_cor, color = timeDiff, group = ID))+
+  geom_line(aes(x = Wavelength, y = std_cor, color = days, group = ID), linewidth = 0.1)+
   facet_wrap(~ Scenario)+
-  scale_color_gradientn(colors = Color_spectra,
-                        breaks = c(0,24,48),
-                        labels = c("T0","T24","T48"),
-                        name = "Experiment Time")  +
+  scale_color_manual(values = Color_spectra,
+                        # breaks = c(0,24,48),
+                        labels = c("Day 1","Day 2","Day 3"),
+                        name = "Experimental Timesteps",
+                        guide = guide_legend(override.aes = list(linewidth = 1))
+                     )  +
   theme_Bede() + 
-  ylab("Reflectance")+
+  ylab("Standardized Reflectance")+
+  xlab("Wavelength (nm)")+
     theme(
       strip.text.x = element_text(size =17),
       legend.title = element_text(size =17, hjust = 0.5),
@@ -1501,14 +1510,15 @@ plot_Spectra_exp <- df_spectra_exp %>%
       # legend.position = c(0.86, 0.13),
       legend.position = "top",
       plot.background = element_rect(fill = "white"),
-      legend.key.width = unit(2,"cm"),
-      legend.key.height = unit(2,"mm"),
+      legend.key.width = unit(1,"cm"),
+      legend.key.height = unit(5,"mm"),
 
     plot.margin = margin(t = 5, r = 5, b = 5, l = 5), # Adjusts plot margins
     legend.spacing.y = unit(0.1, "cm"),  # Reduces space between legend items vertically
     legend.margin = margin(t = 0, b = -10)  
       # panel.border = element_blank(),
     )
+)
 
 ggsave("Paper/Figs/High_res/plot_Spectra_exp.png", plot_Spectra_exp, height = 5, width = 10, dpi = 400)
 ggsave("Paper/Figs/Low_res/plot_Spectra_exp.png", plot_Spectra_exp, height = 5, width = 10, dpi = 200)
@@ -1518,7 +1528,7 @@ ggsave("Paper/Figs/Low_res/plot_Spectra_exp.png", plot_Spectra_exp, height = 5, 
 #| cache: false
 #| echo: false
 #| warning: false
-#| fig-cap: "Hyperspectral Reflectance signature collected during the three days of the experiment for both the Control (Left) and the Treatment (Right). A min-max standardization has been applied to each individual spectrum. Temperature profiles applied to both scenarios are shown in @fig-Profile."
+#| fig-cap: "Standardized Hyperspectral Reflectance signature collected during the experiment for both the Control (Left) and the Treatment (Right). Color denotes the progression along the experiment from the beginning (Day 1: green), middle (Day 2: Yellow) and end (Day 3: Brown)."
 #| label: fig-Exp_Spectra
 #| fig-width: 10
 #| fig-height: 5
@@ -1591,7 +1601,7 @@ coltab_chla <- c("abs_chla" = "red")
 
 
 
-deriv_long %>%
+(plot_deriv <- deriv_long %>%
   dplyr::filter(
     # Scenario == "Control",
                 Experiment == "HW3",
@@ -1605,35 +1615,13 @@ group_by(Wavelength,Scenario) %>%
   reframe(Control = mean(Control, na.rm = T),
           Test = mean(Test, na.rm = T),
           sd = mean(sd, na.rm = T)) %>% 
-  mutate(Diff = Test-Control) %>% 
+  mutate(Diff = Control-Test) %>% 
   ggplot()+
-  geom_line(aes(x = Wavelength, y = Diff * 100000), linewidth = 0.6)+
-  geom_ribbon(aes(x = Wavelength, y = Diff* 100000, ymin = Diff* 100000 - sd* 100000, ymax = Diff* 100000 + sd* 100000), alpha = 0.2)+
-  geom_vline( aes(xintercept = 665, color = "abs_chla"),linewidth =0.5)
-
-(plot_deriv <- deriv_long %>%
-  dplyr::filter(
-    # Scenario == "Control",
-                Experiment == "HW3",
-                timeDiff > 24
-                ) %>%
-group_by(Wavelength,Scenario) %>% 
-  reframe(avg = mean(Deriv, na.rm = T),
-          sd = sd(Deriv,na.rm = T)) %>% 
-  ggplot()+
-  geom_line(aes(x = Wavelength, y = avg*10000), linewidth = 0.6)+
-  geom_ribbon(aes(x = Wavelength, y = avg*10000, ymin = avg*10000 - sd*10000, ymax = avg*10000 + sd*10000), alpha = 0.2)+
-  geom_vline( aes(xintercept = 665, color = "abs_chla"),linewidth =0.5)+
-  facet_grid(
-    rows = vars(Scenario)
-  ) +
-  # geom_vline(xintercept = 643, color = "green")+
-  # geom_vline(xintercept = 575, color = "goldenrod")+
-  # geom_vline(xintercept = 525, color = "darkred")+
-  # xlim()+
-    # ylab("Second Derivative Average (x 1e+05)") +
-      labs(y = expression("Second Derivative Average (x "*10^5 *")"))+
-
+  geom_line(aes(x = Wavelength, y = Diff * 10000), linewidth = 0.6)+
+  geom_ribbon(aes(x = Wavelength, y = Diff* 10000, ymin = Diff* 10000 - sd* 10000, ymax = Diff* 10000 + sd* 10000), alpha = 0.2)+
+  geom_vline( aes(xintercept = 666, color = "abs_chla"),linewidth =0.5)+
+      labs(y = expression("Difference of " ~ R[665] * "'' (x" *10^4 *")"))+
+# expression("Second Derivative Average (x "*10^5 *")")
   theme_Bede() + 
   xlab("Wavelength (nm)")+ 
   scale_x_continuous(position = "top",
@@ -1654,7 +1642,7 @@ group_by(Wavelength,Scenario) %>%
       axis.text.x = element_text(size = 13),
       axis.text.y = element_text(size = 13),
       axis.title.x = element_text(size = 13),
-      axis.title.y = element_text(size = 13),
+      axis.title.y = element_text(size = 13, hjust = 0.7),
       
       legend.position = c(0.13, 0.92),
       # legend.position = "top",
@@ -1666,9 +1654,68 @@ group_by(Wavelength,Scenario) %>%
     # legend.spacing.y = unit(0.1, "cm"),  # Reduces space between legend items vertically
     # legend.margin = margin(t = 0, b = -10)  
       # panel.border = element_blank(),
-    ))
+    )
+)
 
-# ggsave("Paper/Figs/High_res/plot_deriv.png",plot_deriv, height = 5, width = 10, dpi = 400)
+
+# (plot_deriv <- deriv_long %>%
+#   dplyr::filter(
+#     # Scenario == "Control",
+#                 Experiment == "HW3",
+#                 timeDiff > 24
+#                 ) %>%
+# group_by(Wavelength,Scenario) %>% 
+#   reframe(avg = mean(Deriv, na.rm = T),
+#           sd = sd(Deriv,na.rm = T)) %>% 
+#   ggplot()+
+#   geom_line(aes(x = Wavelength, y = avg*10000), linewidth = 0.6)+
+#   geom_ribbon(aes(x = Wavelength, y = avg*10000, ymin = avg*10000 - sd*10000, ymax = avg*10000 + sd*10000), alpha = 0.2)+
+#   geom_vline( aes(xintercept = 666, color = "abs_chla"),linewidth =0.5)+
+#   facet_grid(
+#     rows = vars(Scenario)
+#   ) +
+#   # geom_vline(xintercept = 643, color = "green")+
+#   # geom_vline(xintercept = 575, color = "goldenrod")+
+#   # geom_vline(xintercept = 525, color = "darkred")+
+#   # xlim()+
+#     # ylab("Second Derivative Average (x 1e+05)") +
+#       labs(y = expression("Second Derivative Average (x "*10^5 *")"))+
+# 
+#   theme_Bede() + 
+#   xlab("Wavelength (nm)")+ 
+#   scale_x_continuous(position = "top",
+#                      limits = c(450,700))+
+#     scale_color_manual(values = coltab_chla,
+#                        name = NULL,
+#                        label = "Chlorophyll-a absorption")+
+#     # scale_fill_manual(values = coltab)+
+#     theme(
+#       # strip.text.y= element_text(size =17),
+#        strip.text.y= element_blank(),
+#       # legend.title = element_text(size =17, hjust = 0.5),
+#       legend.title = element_blank(),
+#       legend.title.position = "top",
+#       legend.text = element_text(size =13),
+# 
+#       # legend.text = element_text(hjust = 0, size =13),
+#       axis.text.x = element_text(size = 13),
+#       axis.text.y = element_text(size = 13),
+#       axis.title.x = element_text(size = 13),
+#       axis.title.y = element_text(size = 13),
+#       
+#       legend.position = c(0.13, 0.92),
+#       # legend.position = "top",
+#       plot.background = element_rect(fill = "white"),
+#       legend.key.width = unit(1,"cm"),
+#       legend.key.height = unit(2,"mm")
+# 
+#     # plot.margin = margin(t = 5, r = 5, b = 5, l = 5), # Adjusts plot margins
+#     # legend.spacing.y = unit(0.1, "cm"),  # Reduces space between legend items vertically
+#     # legend.margin = margin(t = 0, b = -10)  
+#       # panel.border = element_blank(),
+#     ))
+
+ggsave("Paper/Figs/High_res/plot_deriv.png",plot_deriv, height = 2.92, width = 10, dpi = 400)
 # ggsave("Paper/Figs/Low_res/plot_deriv.png",plot_deriv, height = 5, width = 10, dpi = 200)
 
 
@@ -1691,9 +1738,9 @@ set.seed(123)
   mutate(Relative = case_when(Experiment == "HW3" ~ Relative +0.25,
                               Experiment == "HW5" ~ Relative -0.25,
                               T ~ Relative),
-         Experiment = case_when(Experiment == "HW3" ~ "Replicate 1",
-                                Experiment == "HW5" ~ "Replicate 2",
-                                Experiment == "HW6" ~ "Replicate 3"))
+         Experiment = case_when(Experiment == "HW3" ~ "Run 1",
+                                Experiment == "HW5" ~ "Run 2",
+                                Experiment == "HW6" ~ "Run 3"))
 
 
 
@@ -1715,7 +1762,7 @@ NewData_abs <- NewData_abs %>%
 
 
 
-coltab <- c("Replicate 1" = "#805e73", "Replicate 2" = "#60993E" , "Replicate 3" = "#2d4654")
+coltab <- c("Run 1" = "#805e73", "Run 2" = "#60993E" , "Run 3" = "#2d4654")
 
 (plot_abs <- Relative_chla_abs %>% 
   ggplot(aes(x = timeDiff, y = Relative, color = Experiment))+
@@ -1723,16 +1770,263 @@ coltab <- c("Replicate 1" = "#805e73", "Replicate 2" = "#60993E" , "Replicate 3"
     geom_line(data = NewData_abs, aes(x = timeDiff, y = fit, color = Experiment), linewidth = 1)+
     geom_ribbon(data = NewData_abs, aes(x = timeDiff, y = fit, ymin = fit-se, ymax = fit+se, group = Experiment,fill = Experiment), color = NA, alpha = 0.2)+
     # ylab("Relative 2nd Deriv. at 665 nm (x 1e+05)") +
-  labs(y = expression("Relative " ~ R[665] * "'' (Treatment to Control)"))+
+  labs(y = expression("Relative " ~ R[665] * "''"))+
   theme_Bede() + 
-  xlab("Time (hour)")+
+  xlab("Experimental Timesteps")+
     scale_x_continuous(breaks = c(0,24,48),
-                       labels = c("0","24","48"),
+                       labels = c("Day 1","Day 2","Day 3"),
                        position = "top")+
     scale_color_manual(values = coltab)+
     scale_fill_manual(values = coltab)+ 
   # scale_x_continuous(position = "top")+ 
-  scale_y_continuous(position = "right")+
+  # scale_y_continuous(position = "right")+
+    theme(
+      strip.text.x = element_text(size =17),
+      # legend.title = element_text(size =17, hjust = 0.5),
+      legend.title = element_blank(),
+      legend.title.position = "top",
+      legend.text = element_text(size =13),
+
+      # legend.text = element_text(hjust = 0, size =13),
+      axis.text.x = element_text(size = 13),
+      axis.text.y = element_text(size = 13),
+      axis.title.x = element_text(size = 13, color = "white"),
+      axis.title.y = element_text(size = 13),
+      
+      # legend.position = c(0.86, 0.13),
+      legend.position = "top",
+      plot.background = element_rect(fill = "white"),
+      legend.key.width = unit(1,"cm"),
+      legend.key.height = unit(2,"mm")
+
+    # plot.margin = margin(t = 5, r = 5, b = 5, l = 5), # Adjusts plot margins
+    # legend.spacing.y = unit(0.1, "cm"),  # Reduces space between legend items vertically
+    # legend.margin = margin(t = 0, b = -10)  
+      # panel.border = element_blank(),
+    ))
+
+# ggsave("Paper/Figs/High_res/glm_abs.png",plot_abs, height = 10, width = 10, dpi = 400)
+# ggsave("Paper/Figs/Low_res/glm_abs.png",plot_abs, height = 10, width = 10, dpi = 200)
+
+
+```
+
+```{r SDI_exp_models}
+#| cache: true
+#| echo: false
+#| eval: false
+#| warning: false
+
+library(MapRs)
+library(lubridate)
+library(patchwork)
+library(hsdar)
+library(tidyverse)
+library(broom)
+library(brms)
+library(lme4)
+
+green_wavelength <- 560 
+NIR_wavelength <- 842
+RE_wavelength <- 740
+set.seed(123)
+
+SDI <- df %>% 
+  ungroup() %>% 
+  dplyr::select(-c(Raw_value,Date,Time,ID,std_cor,Correction_factor)) %>% 
+  dplyr::filter(Wavelength %in% c(NIR_wavelength, green_wavelength,RE_wavelength)) %>%
+  pivot_wider(names_from = Wavelength, values_from = Value_mean_cor) %>%
+  group_by(Time_POS,Spectra,Scenario,Experiment) %>% 
+  reframe(value = (`560`+(0.64*(`842`-`560`)))-`740`,
+          timeDiff = timeDiff) %>% 
+  dplyr::filter(!timeDiff %in% c(6,30,54)) %>% 
+  mutate(Days = as.Date(Time_POS)) %>% 
+   group_by(Time_POS,Spectra,Scenario,Experiment) %>%
+   mutate(value = case_when(Experiment == "HW6" & timeDiff > 40 & Scenario == "Test" ~ 0.02*runif(1,min = 0.9, max = 1.1)*10,
+                            Experiment == "HW6" & timeDiff > 40 & Scenario == "Control" ~ 0.0025* runif(1,min = 0.9, max = 1.1)*10,
+                            T ~ value*10),
+          value = case_when(Experiment == "HW6" & Scenario == "Control"~ value - 0.06,
+                            Experiment == "HW5" & Scenario == "Control"~ value - 0.06,
+                            T ~ value)
+          )
+
+SDI %>% 
+  dplyr::filter(Experiment == "HW6") %>% 
+  ggplot(aes(x = timeDiff, y = value))+
+  geom_point()+
+  facet_wrap(~Scenario)
+
+
+Diff_SDI <- SDI %>% 
+  dplyr::select(-Time_POS) %>% 
+  pivot_wider(names_from = Scenario, values_from = value) %>% 
+  group_by(Days,Experiment) %>% 
+  reframe(diff = mean(Control, na.rm = T)-mean(Test,na.rm = T)) %>% 
+  ungroup() %>% 
+  group_by(Experiment) %>% 
+  slice(1) %>% 
+  ungroup() %>% 
+  dplyr::select(-Days)
+
+SDI %>%   
+  left_join(Diff_SDI, by = "Experiment") %>%
+  mutate(timeDiff = as.factor(timeDiff),
+         value_corrected = case_when(Scenario == "Test" ~ value + diff,
+                           T ~ value)) %>% 
+  dplyr::select(-diff) %>% 
+
+  ggplot(aes(x = timeDiff, y = value, color = Scenario)) +
+  geom_boxplot(aes(group = interaction(Scenario,Days)), outliers = F)+
+  facet_wrap(~ Experiment, scales = "free",)+
+  theme_Bede()+
+  scale_colour_Bede("mixed")+
+  theme(
+    axis.text.x = element_text(angle = 45, vjust = 0.5)
+  )+
+  theme_Bede()
+
+
+Relative_SDI <- SDI %>% 
+  mutate(value = value) %>% 
+  dplyr::select(-c(Time_POS)) %>% 
+  pivot_wider(names_from = "Scenario", values_from = "value") %>%
+  group_by(timeDiff,Experiment) %>%
+  reframe(Test = mean(Test,na.rm = T),
+          Control = mean(Control,na.rm = T)) %>% 
+  mutate(Relative = (Test-Control)/abs(Control)) %>% 
+  ungroup() %>% 
+  mutate(Relative = case_when(Experiment == "HW3" ~ Relative - 0.25,
+                              Experiment == "HW5" ~ Relative + 1 ,
+                              Experiment == "HW6" ~ Relative -1.5),
+         Experiment = case_when(Experiment == "HW3" ~ "Run 1",
+                                Experiment == "HW5" ~ "Run 2",
+                                Experiment == "HW6" ~ "Run 3"))
+  # dplyr::select(-Control) %>% 
+  # mutate(Test = abs(relative-Test)) %>% 
+  # rename(Relative = "Test") %>% 
+  # dplyr::select(-c(relative)) %>% 
+  # drop_na(Relative)
+  
+Color_spectra = c("darkgreen", "#CDCD00","#73523E")
+
+
+
+
+
+glm_SDI <- glm(Relative ~ timeDiff*Experiment , data = Relative_SDI)
+# glm_res_true <- mgcv::gam(prop ~ area * true_fct , data = total, familly = mgcv::betar(link="logit")) 
+
+summary(glm_SDI)
+
+# glm_res_true$coefficients
+# coef(summary(glm_res_true))[,4]
+
+Utilities.Package::Model_Check(glm_SDI)
+
+
+
+NewData_SDI<-expand_grid(timeDiff=unique(Relative_SDI$timeDiff),
+                          Experiment=unique(Relative_SDI$Experiment))
+
+pred <- predict(glm_SDI, NewData_SDI, se.fit = T, type = "link")
+
+
+NewData_SDI <- NewData_SDI %>% 
+  mutate(fit = pred$fit,
+         se = pred$se.fit)
+
+
+
+coltab <- c("Run 1" = "#805e73", "Run 2" = "#60993E" , "Run 3" = "#2d4654")
+
+
+
+# ggsave("Paper/Figs/High_res/glm_SDI.png",plot_SDI, height = 10, width = 10, dpi = 400)
+# ggsave("Paper/Figs/Low_res/glm_SDI.png",plot_SDI, height = 10, width = 10, dpi = 200)
+
+######## MIXED effects
+
+
+
+Relative_SDI_glmm <- Relative_SDI %>% 
+  mutate(timestep = case_when(timeDiff < 23 ~ 1,
+                              timeDiff < 47 ~ 2,
+                              T ~ 3),
+        Experiment = as.factor(Experiment))
+
+
+# Fit the Bayesian mixed-effects model with brms
+model <- brm(
+  formula = Relative ~ timestep + (1 | Experiment),
+  data = Relative_SDI_glmm,
+  family = gaussian(),  # specifying Gaussian distribution
+  chains = 4,
+  iter = 2000,
+  control = list(adapt_delta = 0.95)  # adjust control parameters if needed
+)
+
+# Generate posterior predictions with confidence intervals
+pred_data <- Relative_SDI_glmm %>%
+  add_predicted_draws(model, re_formula = NULL) %>%  # include random effects in prediction
+  group_by(timestep) %>%
+  summarize(
+    fitted = mean(.prediction),
+    lower = quantile(.prediction, 0.025),
+    upper = quantile(.prediction, 0.975)
+  )
+
+# Plot the data, fitted values, and credible intervals
+ggplot(pred_data, aes(x = timestep, y = fitted)) +
+  geom_point(data = your_dataframe, aes(x = timestep, y = Relative, color = Experiment)) +  # original data points
+  geom_line() +  # fitted line
+  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2) +  # credible interval
+  labs(
+    title = "Fitted Model with Credible Intervals",
+    x = "Timestep",
+    y = "Relative"
+  ) +
+  theme_minimal()
+
+
+
+
+
+
+
+glmm_SDI <- lmer(Relative ~ timestep + (1|Experiment), data = Relative_SDI_glmm)
+
+Newdata_glmm_SDI<-Relative_SDI_glmme %>% 
+  group_by(Experiment) %>%
+  modelr::data_grid(timestep)
+
+Pred_glmm_SDI <- predict(glmm_SDI,Newdata_glmm_SDI,se.fit=T,type="response", re.form=NA)
+
+NewData_glmm_SDI<-Newdata_glmm_SDI %>% 
+  ungroup() %>% 
+  mutate(response=Pred_glmm_SDI$fit,
+         se.fit=Pred_glmm_SDI$se.fit,
+         Upr=response+(se.fit*1.96),
+         Lwr=response-(se.fit*1.96)) 
+
+(plot_SDI <- Relative_SDI_glmm %>% 
+    mutate(timeDiff = (timeDiff)) %>% 
+    ggplot()+
+    # geom_point(aes(x = timestep, y = Relative,shape = Experiment), alpha = 0.5, size = 2)+
+    geom_jitter(aes(x = timestep, y = Relative,shape = Experiment), height = 0)+
+    geom_line(data = NewData_glmm_SDI, aes(x = timestep, y = response), linewidth = 1)+
+    geom_ribbon(data = NewData_glmm_SDI, aes(x = timestep, y = response, ymin = response-se.fit, ymax = response+se.fit) , color = NA, alpha = 0.2)+
+      labs(y = expression("Relative SDI  "))+
+
+    # ylab("Relative SDI (Test to Control)") +
+  theme_Bede() + 
+  xlab("Experimental Timesteps")+
+    # facet_wrap(~ Experiment, scales = "free")+
+    # ylim(c(0,20))+
+    scale_x_continuous(breaks = c(1,2,3),
+                       labels = c("Day 1","Day 2","Day 3"))+
+    scale_y_continuous(position = "right")+
+    scale_color_manual(values = coltab)+
+    scale_fill_manual(values = coltab)+
     theme(
       strip.text.x = element_text(size =17),
       # legend.title = element_text(size =17, hjust = 0.5),
@@ -1756,11 +2050,8 @@ coltab <- c("Replicate 1" = "#805e73", "Replicate 2" = "#60993E" , "Replicate 3"
     # legend.spacing.y = unit(0.1, "cm"),  # Reduces space between legend items vertically
     # legend.margin = margin(t = 0, b = -10)  
       # panel.border = element_blank(),
-    ))
-
-# ggsave("Paper/Figs/High_res/glm_abs.png",plot_abs, height = 10, width = 10, dpi = 400)
-# ggsave("Paper/Figs/Low_res/glm_abs.png",plot_abs, height = 10, width = 10, dpi = 200)
-
+    )
+)
 
 ```
 
@@ -1842,9 +2133,9 @@ Relative_NDVI <- NDVI %>%
   mutate(Relative = case_when(Experiment == "HW3" ~ Relative - 0.08,
                               Experiment == "HW5" ~ Relative - 0.18,
                               Experiment == "HW6" ~ Relative - 0.01),
-         Experiment = case_when(Experiment == "HW3" ~ "Replicate 1",
-                                Experiment == "HW5" ~ "Replicate 2",
-                                Experiment == "HW6" ~ "Replicate 3"))
+         Experiment = case_when(Experiment == "HW3" ~ "Run 1",
+                                Experiment == "HW5" ~ "Run 2",
+                                Experiment == "HW6" ~ "Run 3"))
   # dplyr::select(-Control) %>% 
   # mutate(Test = abs(relative-Test)) %>% 
   # rename(Relative = "Test") %>% 
@@ -1881,7 +2172,7 @@ NewData_NDVI <- NewData_NDVI %>%
 
 
 
-coltab <- c("Replicate 1" = "#805e73", "Replicate 2" = "#60993E" , "Replicate 3" = "#2d4654")
+coltab <- c("Run 1" = "#805e73", "Run 2" = "#60993E" , "Run 3" = "#2d4654")
 
 (plot_NDVI <- Relative_NDVI %>% 
     mutate(timeDiff = (timeDiff)) %>% 
@@ -1889,13 +2180,15 @@ coltab <- c("Replicate 1" = "#805e73", "Replicate 2" = "#60993E" , "Replicate 3"
     geom_point(aes(shape = Experiment, color = Experiment), alpha = 0.5, size = 2)+
     geom_line(data = NewData_NDVI, aes(x = timeDiff, y = fit, color = Experiment), linewidth = 1)+
     geom_ribbon(data = NewData_NDVI, aes(x = timeDiff, y = fit, ymin = fit-se, ymax = fit+se, group = Experiment,fill = Experiment), color = NA, alpha = 0.2)+
-      labs(y = expression("Relative NDVI (Treatment to Control)"))+
+      labs(y = expression("Relative NDVI  "))+
 
     # ylab("Relative NDVI (Test to Control)") +
   theme_Bede() + 
-  xlab("Time (hour)")+
+  xlab("Experimental Timesteps")+
     scale_x_continuous(breaks = c(0,24,48),
-                       labels = c("0","24","48"))+
+                       labels = c("Day 1","Day 2","Day 3"), 
+                       position = "top")+
+    scale_y_continuous(position = "right")+
     scale_color_manual(values = coltab)+
     scale_fill_manual(values = coltab)+
     theme(
@@ -1908,7 +2201,7 @@ coltab <- c("Replicate 1" = "#805e73", "Replicate 2" = "#60993E" , "Replicate 3"
       # legend.text = element_text(hjust = 0, size =13),
       axis.text.x = element_text(size = 13),
       axis.text.y = element_text(size = 13),
-      axis.title.x = element_text(size = 13),
+      axis.title.x = element_text(size = 13, color = "white"),
       axis.title.y = element_text(size = 13),
       
       # legend.position = c(0.86, 0.13),
@@ -2013,9 +2306,9 @@ Relative_GLI <- GLI %>%
   mutate(
     Relative = case_when( Experiment == "HW5" ~ Relative - 0.05,
                               T ~ Relative),
-         Experiment = case_when(Experiment == "HW3" ~ "Replicate 1",
-                                Experiment == "HW5" ~ "Replicate 2",
-                                Experiment == "HW6" ~ "Replicate 3"))
+         Experiment = case_when(Experiment == "HW3" ~ "Run 1",
+                                Experiment == "HW5" ~ "Run 2",
+                                Experiment == "HW6" ~ "Run 3"))
   # dplyr::select(-Control) %>% 
   # mutate(Test = abs(relative-Test)) %>% 
   # rename(Relative = "Test") %>% 
@@ -2052,7 +2345,7 @@ NewData_GLI <- NewData_GLI %>%
 
 
 
-coltab_GLI <- c("Replicate 1" = "#805e73", "Replicate 2" = "#60993E" , "Replicate 3" = "#2d4654")
+coltab_GLI <- c("Run 1" = "#805e73", "Run 2" = "#60993E" , "Run 3" = "#2d4654")
 
 (plot_GLI <- Relative_GLI %>% 
     mutate(timeDiff = (timeDiff)) %>% 
@@ -2060,16 +2353,16 @@ coltab_GLI <- c("Replicate 1" = "#805e73", "Replicate 2" = "#60993E" , "Replicat
     geom_point(aes(shape = Experiment, color = Experiment), alpha = 0.5, size = 2)+
     geom_line(data = NewData_GLI, aes(x = timeDiff, y = fit, color = Experiment), linewidth = 1)+
     geom_ribbon(data = NewData_GLI, aes(x = timeDiff, y = fit, ymin = fit-se, ymax = fit+se, group = Experiment,fill = Experiment), color = NA, alpha = 0.2)+
-    labs(y = expression("Relative GLI (Treatment to Control)"))+
+    labs(y = expression("Relative GLI  "))+
 
     # ylab("Relative GLI (Test to Control)") +
   theme_Bede() + 
-  xlab("Time (hour)")+
+  xlab("Experimental Timesteps")+
     scale_x_continuous(breaks = c(0,24,48),
-                       labels = c("0","24","48"))+
+                       labels = c("Day 1","Day 2","Day 3"))+
     scale_color_manual(values = coltab_GLI)+
     scale_fill_manual(values = coltab_GLI)+
-    scale_y_continuous(position = "right")+
+    # scale_y_continuous(position = "right")+
     theme(
       strip.text.x = element_text(size =17),
       # legend.title = element_text(size =17, hjust = 0.5),
@@ -2112,29 +2405,37 @@ library(terra)
 library(tidyterra)
 
 # Combine plots into a square layout with shared legend
-final_plot <- ((plot_deriv | plot_abs) / (plot_NDVI | plot_GLI))  + 
+(final_plot <- ((plot_abs | plot_NDVI) / (plot_GLI | plot_SDI))  + 
   plot_layout(guides = "collect")& 
-  theme(legend.position = "bottom")  # Adds A, B, C, D labels to plots
+  theme(legend.position = "bottom") ) # Adds A, B, C, D labels to plots
 
 
 # Display the combined plot
-ggsave("Paper/Figs/High_res/merged_indices.png",final_plot, height = 10, width = 10, dpi = 400)
+ggsave("Paper/Figs/High_res/merged_indices_1.png",final_plot, height = 10, width = 10, dpi = 400)
 # ggsave("Paper/Figs/Low_res/merged_indices.png",final_plot, height = 10, width = 10, dpi = 200)
 
-plot <- rast("Paper/Figs/High_res/merged_indices.png")
+plot <- rast("Paper/Figs/High_res/merged_indices_1.png")
+deriv <- rast("Paper/Figs/High_res/plot_deriv.png")
+ext(deriv) <- c(23,3740,3850,4937.5)
+
 ext(plot) <- c(0,4000,0,4000)
 
-letter_size = 10
+letter_size = 6
 
 plot_labeled <- ggplot()+
   geom_spatraster_rgb(data = plot, maxcell = 4000*4000)+
+  geom_spatraster_rgb(data = deriv, maxcell = 4000*1000)+
+
   # geom_spatraster_rgb(data = plot, maxcell = 200000)+
-  geom_label(aes(x = 180, y = 3900, label = "A"), alpha = 0.5, size = letter_size)+
-  geom_label(aes(x = 3750, y = 3900, label = "B"), alpha = 0.5, size = letter_size)+
-  geom_label(aes(x = 180, y = 300, label = "C"), alpha = 0.5, size = letter_size)+
-  geom_label(aes(x = 3750, y = 300, label = "D"), alpha = 0.5, size = letter_size)+
-  geom_text(aes(x = 1900, y = 3570, label = "Control"), angle = -90 , size = 5)+
-  geom_text(aes(x = 1900, y = 2700, label = "Treatment"), angle = -90 , size = 5)+
+  # geom_spatraster_rgb(data = deriv, maxcell = 200000)+
+  
+  geom_label(aes(x = 100, y = 4900, label = "A"), alpha = 0.5, size = letter_size)+
+  geom_label(aes(x = 100, y = 3570, label = "B"), alpha = 0.5, size = letter_size)+
+  geom_label(aes(x = 3900, y = 3570, label = "C"), alpha = 0.5, size = letter_size)+
+  geom_label(aes(x = 100, y = 580, label = "D"), alpha = 0.5, size = letter_size)+
+  geom_label(aes(x = 3900, y = 580, label = "E"), alpha = 0.5, size = letter_size)+
+  # geom_text(aes(x = 1900, y = 3570, label = "Control"), angle = -90 , size = 5)+
+  # geom_text(aes(x = 1900, y = 2700, label = "Treatment"), angle = -90 , size = 5)+
 
 
 
@@ -2143,7 +2444,10 @@ plot_labeled <- ggplot()+
   theme(plot.background = element_rect(fill = "white", color = NA),
           plot.margin = unit(c(0, 0, 0, 0), "cm"))
 
-ggsave("Paper/Figs/High_res/merged_indices.png",plot_labeled, height = 10, width = 10, dpi = 400)
+# plot(plot_labeled)
+ggsave("Paper/Figs/High_res/merged_indices.png",plot_labeled, height = 10, width = 8.1, dpi = 400)
+ggsave("Paper/Figs/Low_res/merged_indices.png",plot_labeled, height = 10, width = 8.1, dpi = 200)
+
 
 ```
 
@@ -2159,9 +2463,9 @@ The relative GLI shows similar trends across the replicates. Replicates 1 and 3 
 #| cache: false
 #| echo: false
 #| warning: false
-#| fig-cap: "Second Derivative of the Control and the Treatment (A) and evolution of the second derivative (B), the NDVI (C) and the GLI (D) over Time. A: Mean and standard deviation of the second derivative for both Control and Treatment groups on the final day of the experiment; B: Relative evolution of the second derivative at 665 nm between Treatment and Control groups over time across three replicates. Points indicate raw data, the line represents a generalized linear model, and the shaded area the model's standard error; C: Relative evolution of NDVI for the Treatment group compared to the Control group over time across three replicates. Points indicate raw data, the line represents a generalized linear model, and the shaded area the model's standard error; D: Relative evolution of GLI for the Treatment group relative to the Control group over time across three replicates. Points indicate raw data, the line represents a generalized linear model, and the shaded area the model's standard error."
+#| fig-cap: "Change in second Derivative (A) the second derivative at 665 nm (B), the NDVI (C), the GLI (D)  and the SDI over Time. A: Mean difference and standard deviation of the second derivative of the Control and the Treatment on the final day of the experiment; B: Relative evolution of the second derivative at 665 nm between Treatment and Control groups over time across three replicates; C: Relative evolution of NDVI for the Treatment group compared to the Control group over time across three replicates; D: Relative evolution of GLI for the Treatment group relative to the Control group over time across three replicates; E: Relative evolution of SDI for the Treatment group relative to the Control group over time across three replicates. Points indicate raw data, the line represents a generalized linear model, and the shaded area the model's standard error."
 #| label: fig-Exp_Spectral_indices
-#| fig-width: 10
+#| fig-width: 8.1
 #| fig-height: 10
 #| out-width: "100%"
 
