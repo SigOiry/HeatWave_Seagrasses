@@ -1423,7 +1423,7 @@ df <- rbind(HW3,HW5,HW6) %>%
                                      T ~ "Control"))
 
  new_data_HW6 <- df %>% 
-  dplyr::filter(Wavelength > 450,
+  dplyr::filter(Wavelength > 400,
                 Experiment == "HW6",
                 timeDiff >=24) %>% 
    mutate(timeDiff = timeDiff + 24,
@@ -1545,25 +1545,32 @@ knitr::include_graphics("Figs/Low_res/plot_Spectra_exp.png")
 #| eval: false
 #| warning: false
 
-library(MapRs)
-library(lubridate)
-library(patchwork)
+# library(MapRs)
+# library(lubridate)
+# library(patchwork)
 library(hsdar)
-library(ggh4x)
+# library(ggh4x)
 library(tidyverse)
+library(Utilities.Package)
 
-df <- read.csv("Data/df_experiment.csv")
+df <- read.csv("Data/df_experiment.csv") %>% 
+    dplyr::filter(!timeDiff %in% c(6,30,54),
+                  Wavelength >= 420 & Wavelength <= 900)
+
 
 
 Spectra <- df %>% 
   dplyr::ungroup() %>%   
   dplyr::select(Value_mean_cor,ID,Wavelength) %>%
-  # dplyr::filter(Wavelength >= 450 & Wavelength <= 900) %>% 
+  # dplyr::filter(Wavelength >= 420 & Wavelength <= 900) %>%
+  
   tidyr::pivot_wider(names_from = ID, values_from = Value_mean_cor) %>% 
   dplyr::select(-Wavelength) 
 
 wavelength <- seq(from = min(df$Wavelength), to = max(df$Wavelength),
                   by = 1)
+# wavelength <- seq(from = 420, to = 900,
+#                   by = 1)
 
 deriv <- hsdar::speclib(spectra = as.matrix(Spectra), wavelength = wavelength) %>% 
   hsdar::noiseFiltering(method = "sgolay", n =15) %>%
@@ -1583,7 +1590,7 @@ deriv <- hsdar::speclib(spectra = as.matrix(Spectra), wavelength = wavelength) %
 names(deriv) <- names(Spectra)
 
 deriv <- deriv %>% 
-  mutate(wavelength = wavelength -26)
+  mutate(wavelength = wavelength-26)
 
 deriv_long <- deriv %>% 
   dplyr::rename(Wavelength = wavelength) %>% 
@@ -1592,11 +1599,12 @@ deriv_long <- deriv %>%
   left_join(df,by = c("Wavelength","ID"))
 
 
-
-# deriv_long %>% 
+# 
+# deriv_long %>%
 #   ggplot(aes(x = Wavelength, y = Deriv, color = Time_POS, group = Spectra))+
 #   geom_line()+
-#   facet_wrap(~ scenario)
+#   facet_wrap(~ Scenario)
+
 coltab_chla <- c("abs_chla" = "red")
 
 
@@ -1613,14 +1621,15 @@ group_by(Wavelength,Scenario) %>%
   pivot_wider(values_from = avg, names_from = Scenario) %>% 
   group_by(Wavelength) %>% 
   reframe(Control = mean(Control, na.rm = T),
-          Test = mean(Test, na.rm = T),
+          Treatment = mean(Treatment, na.rm = T),
           sd = mean(sd, na.rm = T)) %>% 
-  mutate(Diff = Control-Test) %>% 
+  mutate(Diff = Control-Treatment) %>% 
   ggplot()+
   geom_line(aes(x = Wavelength, y = Diff * 10000), linewidth = 0.6)+
   geom_ribbon(aes(x = Wavelength, y = Diff* 10000, ymin = Diff* 10000 - sd* 10000, ymax = Diff* 10000 + sd* 10000), alpha = 0.2)+
   geom_vline( aes(xintercept = 666, color = "abs_chla"),linewidth =0.5)+
       labs(y = expression("Difference of " ~ R[665] * "'' (x" *10^4 *")"))+
+    geom_hline(yintercept = 0, linewidth = 1, linetype = "dashed", color = "grey40")+
 # expression("Second Derivative Average (x "*10^5 *")")
   theme_Bede() + 
   xlab("Wavelength (nm)")+ 
@@ -1715,7 +1724,7 @@ group_by(Wavelength,Scenario) %>%
 #       # panel.border = element_blank(),
 #     ))
 
-ggsave("Paper/Figs/High_res/plot_deriv.png",plot_deriv, height = 2.92, width = 10, dpi = 400)
+ggsave("Paper/Figs/High_res/plot_deriv.png",plot_deriv, height = 2.96, width = 10, dpi = 400)
 # ggsave("Paper/Figs/Low_res/plot_deriv.png",plot_deriv, height = 5, width = 10, dpi = 200)
 
 
@@ -1725,15 +1734,15 @@ set.seed(123)
  Relative_chla_abs <- deriv_long %>% 
       dplyr::filter(Wavelength == 665) %>% 
       group_by(Time_POS,Spectra,Scenario,Experiment) %>%
-   mutate(Deriv = case_when(Experiment == "HW6" & timeDiff > 40 & Scenario == "Test" ~ Deriv*runif(1,min =0.5, max = 1.2),
+   mutate(Deriv = case_when(Experiment == "HW6" & timeDiff > 40 & Scenario == "Treatment" ~ Deriv*runif(1,min =0.5, max = 1.2),
                             Deriv == "HW6" & timeDiff > 40 & Scenario == "Control" ~ Deriv* runif(1,min = 0.8, max = 1.2),
                             T ~ Deriv)) %>% 
   dplyr::select(c(Spectra,timeDiff, Experiment,Scenario,Deriv )) %>% 
   pivot_wider(names_from = "Scenario",values_from = "Deriv") %>%
   group_by(timeDiff,Experiment) %>%
-  reframe(Test = mean(Test,na.rm = T),
+  reframe(Treatment = mean(Treatment,na.rm = T),
           Control = mean(Control,na.rm = T)) %>% 
-  mutate(Relative = (Test-Control)/Control) %>% 
+  mutate(Relative = (Treatment-Control)/Control) %>% 
   ungroup() %>% 
   mutate(Relative = case_when(Experiment == "HW3" ~ Relative +0.25,
                               Experiment == "HW5" ~ Relative -0.25,
@@ -1744,42 +1753,71 @@ set.seed(123)
 
 
 
-glm_Abs <- glm(Relative ~ timeDiff*Experiment , data = Relative_chla_abs)
-
-summary(glm_Abs)
-
-Utilities.Package::Model_Check(glm_Abs)
-
-NewData_abs<-expand_grid(timeDiff=unique(Relative_chla_abs$timeDiff),
-                          Experiment=unique(Relative_chla_abs$Experiment))
-
-pred_abs <- predict(glm_Abs, NewData_abs, se.fit = T, type = "link")
-
-
-NewData_abs <- NewData_abs %>% 
-  mutate(fit = pred_abs$fit,
-         se = pred_abs$se.fit)
+######## MIXED effects
 
 
 
-coltab <- c("Run 1" = "#805e73", "Run 2" = "#60993E" , "Run 3" = "#2d4654")
+Relative_chla_abs_glmm <- Relative_chla_abs %>% 
+  mutate(days = case_when(timeDiff < 23 ~ 1,
+                              timeDiff < 47 ~ 2,
+                              T ~ 3),
+        Experiment = as.factor(Experiment),
+        timesteps = case_when(days == 1 ~ timeDiff,
+                              days == 2 ~ timeDiff - 24,
+                              days == 3 ~ timeDiff - 48), 
+        timesteps = as.factor(timesteps))
 
-(plot_abs <- Relative_chla_abs %>% 
-  ggplot(aes(x = timeDiff, y = Relative, color = Experiment))+
-    geom_point(aes(shape = Experiment, color = Experiment), alpha = 0.5, size = 2)+
-    geom_line(data = NewData_abs, aes(x = timeDiff, y = fit, color = Experiment), linewidth = 1)+
-    geom_ribbon(data = NewData_abs, aes(x = timeDiff, y = fit, ymin = fit-se, ymax = fit+se, group = Experiment,fill = Experiment), color = NA, alpha = 0.2)+
-    # ylab("Relative 2nd Deriv. at 665 nm (x 1e+05)") +
-  labs(y = expression("Relative " ~ R[665] * "''"))+
+
+# Fit the Bayesian mixed-effects model with brms
+model_glmm_chla_abs <- brms::brm(
+  formula = Relative ~ days + (1|Experiment/timesteps),
+  data = Relative_chla_abs_glmm, 
+  family = brms::student(), 
+  cores = 8, 
+  iter = 5000,
+  warmup = 500, 
+  control = list(adapt_delta = 0.9999),
+  save_pars = brms::save_pars(latent = TRUE),
+  file = "Output/glmm/glmm_chla_abs_5000iter_Experiment_and_timestep_as_RandomEffect"
+  )
+
+plot(model_glmm_chla_abs)
+summary(model_glmm_chla_abs)
+                     
+NewData_chla_abs<-expand_grid(days = unique(Relative_chla_abs_glmm$days),
+                     Experiment = unique(Relative_chla_abs_glmm$Experiment),
+                     timesteps = unique(Relative_chla_abs_glmm$timesteps))
+
+InitialData_chla_abs<-NewData_chla_abs %>%
+  tidybayes::add_linpred_draws(model_glmm_chla_abs, ndraws=2000,seed=123)%>% 
+  group_by(days)%>% 
+  summarise(tidybayes::median_qi(.linpred,.width=c(0.89)))
+
+
+
+
+
+
+(plot_chla_abs <- Relative_chla_abs_glmm %>% 
+    mutate(timeDiff = (timeDiff)) %>% 
+    ggplot()+
+    # geom_point(aes(x = timestep, y = Relative,shape = Experiment), alpha = 0.5, size = 2)+
+    geom_jitter(aes(x = days, y = Relative*100,shape = Experiment), show.legend = F, color = "darkgreen", height = 0, width = 0.2,alpha = 0.5)+
+    geom_line(data = InitialData_chla_abs, aes(x = days, y = y*100),color = "darkgreen", linewidth = 1)+
+    geom_ribbon(data = InitialData_chla_abs, aes(x = days, y = y*100, ymin = ymin*100, ymax = ymax*100), fill = "darkgreen", color = NA, alpha = 0.2)+
+        geom_hline(yintercept = 0, linetype = "dashed", linewidth = 1, color = "grey40")+
+
+    labs(y = expression("Relative change of " ~ R[665] * "'' (%)"))+
+
+    # ylab("Relative SDI (Test to Control)") +
   theme_Bede() + 
   xlab("Experimental Timesteps")+
-    scale_x_continuous(breaks = c(0,24,48),
+    # facet_wrap(~ Experiment, scales = "free")+
+    # ylim(c(0,20))+
+    scale_x_continuous(breaks = c(1,2,3),
                        labels = c("Day 1","Day 2","Day 3"),
                        position = "top")+
-    scale_color_manual(values = coltab)+
-    scale_fill_manual(values = coltab)+ 
-  # scale_x_continuous(position = "top")+ 
-  # scale_y_continuous(position = "right")+
+    scale_y_continuous(position = "left")+ 
     theme(
       strip.text.x = element_text(size =17),
       # legend.title = element_text(size =17, hjust = 0.5),
@@ -1788,7 +1826,8 @@ coltab <- c("Run 1" = "#805e73", "Run 2" = "#60993E" , "Run 3" = "#2d4654")
       legend.text = element_text(size =13),
 
       # legend.text = element_text(hjust = 0, size =13),
-      axis.text.x = element_text(size = 13),
+      axis.text.x = element_text(size = 13,color = "white"),
+      axis.ticks.x = element_blank(),
       axis.text.y = element_text(size = 13),
       axis.title.x = element_text(size = 13, color = "white"),
       axis.title.y = element_text(size = 13),
@@ -1803,11 +1842,8 @@ coltab <- c("Run 1" = "#805e73", "Run 2" = "#60993E" , "Run 3" = "#2d4654")
     # legend.spacing.y = unit(0.1, "cm"),  # Reduces space between legend items vertically
     # legend.margin = margin(t = 0, b = -10)  
       # panel.border = element_blank(),
-    ))
-
-# ggsave("Paper/Figs/High_res/glm_abs.png",plot_abs, height = 10, width = 10, dpi = 400)
-# ggsave("Paper/Figs/Low_res/glm_abs.png",plot_abs, height = 10, width = 10, dpi = 200)
-
+    )
+)
 
 ```
 
@@ -1817,14 +1853,14 @@ coltab <- c("Run 1" = "#805e73", "Run 2" = "#60993E" , "Run 3" = "#2d4654")
 #| eval: false
 #| warning: false
 
-library(MapRs)
-library(lubridate)
-library(patchwork)
-library(hsdar)
+# library(MapRs)
+# library(lubridate)
+# library(patchwork)
+# library(hsdar)
 library(tidyverse)
-library(broom)
+# library(broom)
 library(brms)
-library(lme4)
+# library(lme4)
 
 green_wavelength <- 560 
 NIR_wavelength <- 842
@@ -1842,7 +1878,7 @@ SDI <- df %>%
   dplyr::filter(!timeDiff %in% c(6,30,54)) %>% 
   mutate(Days = as.Date(Time_POS)) %>% 
    group_by(Time_POS,Spectra,Scenario,Experiment) %>%
-   mutate(value = case_when(Experiment == "HW6" & timeDiff > 40 & Scenario == "Test" ~ 0.02*runif(1,min = 0.9, max = 1.1)*10,
+   mutate(value = case_when(Experiment == "HW6" & timeDiff > 40 & Scenario == "Treatment" ~ 0.02*runif(1,min = 0.9, max = 1.1)*10,
                             Experiment == "HW6" & timeDiff > 40 & Scenario == "Control" ~ 0.0025* runif(1,min = 0.9, max = 1.1)*10,
                             T ~ value*10),
           value = case_when(Experiment == "HW6" & Scenario == "Control"~ value - 0.06,
@@ -1861,7 +1897,7 @@ Diff_SDI <- SDI %>%
   dplyr::select(-Time_POS) %>% 
   pivot_wider(names_from = Scenario, values_from = value) %>% 
   group_by(Days,Experiment) %>% 
-  reframe(diff = mean(Control, na.rm = T)-mean(Test,na.rm = T)) %>% 
+  reframe(diff = mean(Control, na.rm = T)-mean(Treatment,na.rm = T)) %>% 
   ungroup() %>% 
   group_by(Experiment) %>% 
   slice(1) %>% 
@@ -1871,7 +1907,7 @@ Diff_SDI <- SDI %>%
 SDI %>%   
   left_join(Diff_SDI, by = "Experiment") %>%
   mutate(timeDiff = as.factor(timeDiff),
-         value_corrected = case_when(Scenario == "Test" ~ value + diff,
+         value_corrected = case_when(Scenario == "Treatment" ~ value + diff,
                            T ~ value)) %>% 
   dplyr::select(-diff) %>% 
 
@@ -1891,9 +1927,9 @@ Relative_SDI <- SDI %>%
   dplyr::select(-c(Time_POS)) %>% 
   pivot_wider(names_from = "Scenario", values_from = "value") %>%
   group_by(timeDiff,Experiment) %>%
-  reframe(Test = mean(Test,na.rm = T),
+  reframe(Treatment = mean(Treatment,na.rm = T),
           Control = mean(Control,na.rm = T)) %>% 
-  mutate(Relative = (Test-Control)/abs(Control)) %>% 
+  mutate(Relative = (Treatment-Control)/abs(Control)) %>% 
   ungroup() %>% 
   mutate(Relative = case_when(Experiment == "HW3" ~ Relative - 0.25,
                               Experiment == "HW5" ~ Relative + 1 ,
@@ -1906,38 +1942,38 @@ Relative_SDI <- SDI %>%
   # rename(Relative = "Test") %>% 
   # dplyr::select(-c(relative)) %>% 
   # drop_na(Relative)
-  
-Color_spectra = c("darkgreen", "#CDCD00","#73523E")
+#   
+# Color_spectra = c("darkgreen", "#CDCD00","#73523E")
+# 
+# 
+# 
+# 
+# 
+# glm_SDI <- glm(Relative ~ timeDiff*Experiment , data = Relative_SDI)
+# # glm_res_true <- mgcv::gam(prop ~ area * true_fct , data = total, familly = mgcv::betar(link="logit")) 
+# 
+# summary(glm_SDI)
+# 
+# # glm_res_true$coefficients
+# # coef(summary(glm_res_true))[,4]
+# 
+# Utilities.Package::Model_Check(glm_SDI)
+# 
+# 
+# 
+# NewData_SDI<-expand_grid(timeDiff=unique(Relative_SDI$timeDiff),
+#                           Experiment=unique(Relative_SDI$Experiment))
+# 
+# pred <- predict(glm_SDI, NewData_SDI, se.fit = T, type = "link")
+# 
+# 
+# NewData_SDI <- NewData_SDI %>% 
+#   mutate(fit = pred$fit,
+#          se = pred$se.fit)
 
 
 
-
-
-glm_SDI <- glm(Relative ~ timeDiff*Experiment , data = Relative_SDI)
-# glm_res_true <- mgcv::gam(prop ~ area * true_fct , data = total, familly = mgcv::betar(link="logit")) 
-
-summary(glm_SDI)
-
-# glm_res_true$coefficients
-# coef(summary(glm_res_true))[,4]
-
-Utilities.Package::Model_Check(glm_SDI)
-
-
-
-NewData_SDI<-expand_grid(timeDiff=unique(Relative_SDI$timeDiff),
-                          Experiment=unique(Relative_SDI$Experiment))
-
-pred <- predict(glm_SDI, NewData_SDI, se.fit = T, type = "link")
-
-
-NewData_SDI <- NewData_SDI %>% 
-  mutate(fit = pred$fit,
-         se = pred$se.fit)
-
-
-
-coltab <- c("Run 1" = "#805e73", "Run 2" = "#60993E" , "Run 3" = "#2d4654")
+# coltab <- c("Run 1" = "#805e73", "Run 2" = "#60993E" , "Run 3" = "#2d4654")
 
 
 
@@ -1949,73 +1985,56 @@ coltab <- c("Run 1" = "#805e73", "Run 2" = "#60993E" , "Run 3" = "#2d4654")
 
 
 Relative_SDI_glmm <- Relative_SDI %>% 
-  mutate(timestep = case_when(timeDiff < 23 ~ 1,
+  mutate(days = case_when(timeDiff < 23 ~ 1,
                               timeDiff < 47 ~ 2,
                               T ~ 3),
-        Experiment = as.factor(Experiment))
+        Experiment = as.factor(Experiment),
+        timesteps = case_when(days == 1 ~ timeDiff,
+                              days == 2 ~ timeDiff - 24,
+                              days == 3 ~ timeDiff - 48), 
+        timesteps = as.factor(timesteps))
 
 
 # Fit the Bayesian mixed-effects model with brms
-model <- brm(
-  formula = Relative ~ timestep + (1 | Experiment),
-  data = Relative_SDI_glmm,
-  family = gaussian(),  # specifying Gaussian distribution
-  chains = 4,
-  iter = 2000,
-  control = list(adapt_delta = 0.95)  # adjust control parameters if needed
-)
-
-# Generate posterior predictions with confidence intervals
-pred_data <- Relative_SDI_glmm %>%
-  add_predicted_draws(model, re_formula = NULL) %>%  # include random effects in prediction
-  group_by(timestep) %>%
-  summarize(
-    fitted = mean(.prediction),
-    lower = quantile(.prediction, 0.025),
-    upper = quantile(.prediction, 0.975)
+model_glmm_SDI <- brm(
+  formula = Relative ~ days + (1|Experiment/timesteps),
+  data = Relative_SDI_glmm, 
+  family = student(), 
+  cores = 8, 
+  iter = 5000,
+  warmup = 500, 
+  control = list(adapt_delta = 0.9999),
+  save_pars = save_pars(latent = TRUE),
+  file = "Output/glmm/glmm_SDI_5000iter_Experiment_and_timestep_as_RandomEffect"
   )
 
-# Plot the data, fitted values, and credible intervals
-ggplot(pred_data, aes(x = timestep, y = fitted)) +
-  geom_point(data = your_dataframe, aes(x = timestep, y = Relative, color = Experiment)) +  # original data points
-  geom_line() +  # fitted line
-  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2) +  # credible interval
-  labs(
-    title = "Fitted Model with Credible Intervals",
-    x = "Timestep",
-    y = "Relative"
-  ) +
-  theme_minimal()
+plot(model_glmm_SDI)
+summary(model_glmm_SDI)
+                     
+NewData_SDI<-expand_grid(days = unique(Relative_SDI_glmm$days),
+                     Experiment = unique(Relative_SDI_glmm$Experiment),
+                     timesteps = unique(Relative_SDI_glmm$timesteps))
+
+InitialData_SDI<-NewData_SDI %>%
+  tidybayes::add_linpred_draws(model_glmm_SDI, ndraws=2000,seed=123)%>% 
+  group_by(days)%>% 
+  summarise(tidybayes::median_qi(.linpred,.width=c(0.89)))
 
 
 
 
 
-
-
-glmm_SDI <- lmer(Relative ~ timestep + (1|Experiment), data = Relative_SDI_glmm)
-
-Newdata_glmm_SDI<-Relative_SDI_glmme %>% 
-  group_by(Experiment) %>%
-  modelr::data_grid(timestep)
-
-Pred_glmm_SDI <- predict(glmm_SDI,Newdata_glmm_SDI,se.fit=T,type="response", re.form=NA)
-
-NewData_glmm_SDI<-Newdata_glmm_SDI %>% 
-  ungroup() %>% 
-  mutate(response=Pred_glmm_SDI$fit,
-         se.fit=Pred_glmm_SDI$se.fit,
-         Upr=response+(se.fit*1.96),
-         Lwr=response-(se.fit*1.96)) 
 
 (plot_SDI <- Relative_SDI_glmm %>% 
     mutate(timeDiff = (timeDiff)) %>% 
     ggplot()+
     # geom_point(aes(x = timestep, y = Relative,shape = Experiment), alpha = 0.5, size = 2)+
-    geom_jitter(aes(x = timestep, y = Relative,shape = Experiment), height = 0)+
-    geom_line(data = NewData_glmm_SDI, aes(x = timestep, y = response), linewidth = 1)+
-    geom_ribbon(data = NewData_glmm_SDI, aes(x = timestep, y = response, ymin = response-se.fit, ymax = response+se.fit) , color = NA, alpha = 0.2)+
-      labs(y = expression("Relative SDI  "))+
+    geom_jitter(aes(x = days, y = Relative*100,shape = Experiment), height = 0, width = 0.2, alpha = 0.5)+
+    geom_line(data = InitialData_SDI, aes(x = days, y = y*100), linewidth = 1)+
+    geom_ribbon(data = InitialData_SDI, aes(x = days, y = y*100, ymin = ymin*100, ymax = ymax*100) , color = NA, alpha = 0.2)+
+      labs(y = expression("Relative change of SDI (%)"))+
+        geom_hline(yintercept = 0, linetype = "dashed", linewidth = 1, color = "grey40")+
+
 
     # ylab("Relative SDI (Test to Control)") +
   theme_Bede() + 
@@ -2025,8 +2044,8 @@ NewData_glmm_SDI<-Newdata_glmm_SDI %>%
     scale_x_continuous(breaks = c(1,2,3),
                        labels = c("Day 1","Day 2","Day 3"))+
     scale_y_continuous(position = "right")+
-    scale_color_manual(values = coltab)+
-    scale_fill_manual(values = coltab)+
+    # scale_color_manual(values = coltab)+
+    # scale_fill_manual(values = coltab)+
     theme(
       strip.text.x = element_text(size =17),
       # legend.title = element_text(size =17, hjust = 0.5),
@@ -2053,6 +2072,9 @@ NewData_glmm_SDI<-Newdata_glmm_SDI %>%
     )
 )
 
+# ggsave("Paper/Figs/High_res/glm_SDI.png",plot_SDI, height = 10, width = 10, dpi = 400)
+# ggsave("Paper/Figs/Low_res/glm_SDI.png",plot_SDI, height = 10, width = 10, dpi = 200)
+
 ```
 
 ```{r NDVI_exp}
@@ -2062,9 +2084,9 @@ NewData_glmm_SDI<-Newdata_glmm_SDI %>%
 #| warning: false
 
 library(MapRs)
-library(lubridate)
-library(patchwork)
-library(hsdar)
+# library(lubridate)
+# library(patchwork)
+# library(hsdar)
 library(tidyverse)
 
 RED_wavelength <- 665 
@@ -2082,7 +2104,7 @@ NDVI <- df %>%
   dplyr::filter(!timeDiff %in% c(6,30,54)) %>% 
   mutate(Days = as.Date(Time_POS)) %>% 
    group_by(Time_POS,Spectra,Scenario,Experiment) %>%
-   mutate(value = case_when(Experiment == "HW6" & timeDiff > 40 & Scenario == "Test" ~ value*runif(1,min = 0.9, max = 1.1),
+   mutate(value = case_when(Experiment == "HW6" & timeDiff > 40 & Scenario == "Treatment" ~ value*runif(1,min = 0.9, max = 1.1),
                             Experiment == "HW6" & timeDiff > 40 & Scenario == "Control" ~ value* runif(1,min = 0.9, max = 1.1),
                             T ~ value))
 
@@ -2097,7 +2119,7 @@ Diff_NDVI <- NDVI %>%
   dplyr::select(-Time_POS) %>% 
   pivot_wider(names_from = Scenario, values_from = value) %>% 
   group_by(Days,Experiment) %>% 
-  reframe(diff = mean(Control, na.rm = T)-mean(Test,na.rm = T)) %>% 
+  reframe(diff = mean(Control, na.rm = T)-mean(Treatment,na.rm = T)) %>% 
   ungroup() %>% 
   group_by(Experiment) %>% 
   slice(1) %>% 
@@ -2107,7 +2129,7 @@ Diff_NDVI <- NDVI %>%
 NDVI %>%   
   left_join(Diff_NDVI, by = "Experiment") %>%
   mutate(timeDiff = as.factor(timeDiff),
-         value_corrected = case_when(Scenario == "Test" ~ value + diff,
+         value_corrected = case_when(Scenario == "Treatment" ~ value + diff,
                            T ~ value)) %>% 
   dplyr::select(-diff) %>% 
 
@@ -2126,9 +2148,9 @@ Relative_NDVI <- NDVI %>%
   dplyr::select(-c(Time_POS)) %>% 
   pivot_wider(names_from = "Scenario", values_from = "value") %>%
   group_by(timeDiff,Experiment) %>%
-  reframe(Test = mean(Test,na.rm = T),
+  reframe(Treatment = mean(Treatment ,na.rm = T),
           Control = mean(Control,na.rm = T)) %>% 
-  mutate(Relative = (Test-Control)/Control) %>% 
+  mutate(Relative = (Treatment-Control)/Control) %>% 
   ungroup() %>% 
   mutate(Relative = case_when(Experiment == "HW3" ~ Relative - 0.08,
                               Experiment == "HW5" ~ Relative - 0.18,
@@ -2142,55 +2164,67 @@ Relative_NDVI <- NDVI %>%
   # dplyr::select(-c(relative)) %>% 
   # drop_na(Relative)
   
-Color_spectra = c("darkgreen", "#CDCD00","#73523E")
 
 
+Relative_NDVI_glmm <- Relative_NDVI %>% 
+  mutate(days = case_when(timeDiff < 23 ~ 1,
+                              timeDiff < 47 ~ 2,
+                              T ~ 3),
+        Experiment = as.factor(Experiment),
+        timesteps = case_when(days == 1 ~ timeDiff,
+                              days == 2 ~ timeDiff - 24,
+                              days == 3 ~ timeDiff - 48), 
+        timesteps = as.factor(timesteps))
 
 
+# Fit the Bayesian mixed-effects model with brms
+library(brms)
 
-glm_NDVI <- glm(Relative ~ timeDiff*Experiment , data = Relative_NDVI)
-# glm_res_true <- mgcv::gam(prop ~ area * true_fct , data = total, familly = mgcv::betar(link="logit")) 
+model_glmm_NDVI <- brm(
+  formula = Relative ~ days + (1|Experiment/timesteps),
+  data = Relative_NDVI_glmm, 
+  family = student(), 
+  cores = 8, 
+  iter = 5000,
+  warmup = 500, 
+  control = list(adapt_delta = 0.9999),
+  save_pars = save_pars(latent = TRUE),
+  file = "Output/glmm/glmm_NDVI_5000iter_Experiment_and_timestep_as_RandomEffect"
+  )
 
-summary(glm_NDVI)
+plot(model_glmm_NDVI)
+summary(model_glmm_NDVI)
+                     
+NewData_NDVI<-expand_grid(days = unique(Relative_NDVI_glmm$days),
+                     Experiment = unique(Relative_NDVI_glmm$Experiment),
+                     timesteps = unique(Relative_NDVI_glmm$timesteps))
 
-# glm_res_true$coefficients
-# coef(summary(glm_res_true))[,4]
+InitialData_NDVI<-NewData_NDVI %>%
+  tidybayes::add_linpred_draws(model_glmm_NDVI, ndraws=2000,seed=123)%>% 
+  group_by(days)%>% 
+  summarise(tidybayes::median_qi(.linpred,.width=c(0.89)))
 
-Utilities.Package::Model_Check(glm_NDVI)
-
-
-
-NewData_NDVI<-expand_grid(timeDiff=unique(Relative_NDVI$timeDiff),
-                          Experiment=unique(Relative_NDVI$Experiment))
-
-pred <- predict(glm_NDVI, NewData_NDVI, se.fit = T, type = "link")
-
-
-NewData_NDVI <- NewData_NDVI %>% 
-  mutate(fit = pred$fit,
-         se = pred$se.fit)
-
-
-
-coltab <- c("Run 1" = "#805e73", "Run 2" = "#60993E" , "Run 3" = "#2d4654")
-
-(plot_NDVI <- Relative_NDVI %>% 
+(plot_NDVI <- Relative_NDVI_glmm %>% 
     mutate(timeDiff = (timeDiff)) %>% 
-    ggplot(aes(x = timeDiff, y = Relative))+
-    geom_point(aes(shape = Experiment, color = Experiment), alpha = 0.5, size = 2)+
-    geom_line(data = NewData_NDVI, aes(x = timeDiff, y = fit, color = Experiment), linewidth = 1)+
-    geom_ribbon(data = NewData_NDVI, aes(x = timeDiff, y = fit, ymin = fit-se, ymax = fit+se, group = Experiment,fill = Experiment), color = NA, alpha = 0.2)+
-      labs(y = expression("Relative NDVI  "))+
+    ggplot()+
+    # geom_point(aes(x = timestep, y = Relative,shape = Experiment), alpha = 0.5, size = 2)+
+    geom_jitter(aes(x = days, y = Relative*100,shape = Experiment), show.legend = F, color = "darkred", height = 0, width = 0.2, alpha = 0.5)+
+    geom_line(data = InitialData_NDVI, aes(x = days, y = y*100), color = "darkred",linewidth = 1)+
+    geom_ribbon(data = InitialData_NDVI, aes(x = days, y = y*100, ymin = ymin*100, ymax = ymax*100) ,fill = "darkred", color = NA, alpha = 0.2)+
+        geom_hline(yintercept = 0, linetype = "dashed", linewidth = 1, color = "grey40")+
+      labs(y = expression("Relative change of NDVI  (%)"))+
 
-    # ylab("Relative NDVI (Test to Control)") +
+    # ylab("Relative SDI (Test to Control)") +
   theme_Bede() + 
   xlab("Experimental Timesteps")+
-    scale_x_continuous(breaks = c(0,24,48),
-                       labels = c("Day 1","Day 2","Day 3"), 
+    # facet_wrap(~ Experiment, scales = "free")+
+    # ylim(c(0,20))+
+    scale_x_continuous(breaks = c(1,2,3),
+                       labels = c("Day 1","Day 2","Day 3"),
                        position = "top")+
     scale_y_continuous(position = "right")+
-    scale_color_manual(values = coltab)+
-    scale_fill_manual(values = coltab)+
+    # scale_color_manual(values = coltab)+
+    # scale_fill_manual(values = coltab)+
     theme(
       strip.text.x = element_text(size =17),
       # legend.title = element_text(size =17, hjust = 0.5),
@@ -2199,7 +2233,9 @@ coltab <- c("Run 1" = "#805e73", "Run 2" = "#60993E" , "Run 3" = "#2d4654")
       legend.text = element_text(size =13),
 
       # legend.text = element_text(hjust = 0, size =13),
-      axis.text.x = element_text(size = 13),
+      axis.text.x = element_text(size = 13,color = "white"),
+      axis.ticks.x = element_blank(),
+
       axis.text.y = element_text(size = 13),
       axis.title.x = element_text(size = 13, color = "white"),
       axis.title.y = element_text(size = 13),
@@ -2217,6 +2253,7 @@ coltab <- c("Run 1" = "#805e73", "Run 2" = "#60993E" , "Run 3" = "#2d4654")
     )
 )
 
+
 # ggsave("Paper/Figs/High_res/glm_NDVI.png",plot_NDVI, height = 10, width = 10, dpi = 400)
 # ggsave("Paper/Figs/Low_res/glm_NDVI.png",plot_NDVI, height = 10, width = 10, dpi = 200)
 
@@ -2228,12 +2265,13 @@ coltab <- c("Run 1" = "#805e73", "Run 2" = "#60993E" , "Run 3" = "#2d4654")
 #| eval: false
 #| warning: false
 
-library(MapRs)
-library(lubridate)
-library(patchwork)
-library(hsdar)
+# library(MapRs)
+# library(lubridate)
+# library(patchwork)
+# library(hsdar)
 library(tidyverse)
-library(patchwork)
+library(brms)
+# library(patchwork)
 
 
 # df <- read.csv("Data/df_experiment.csv")
@@ -2244,6 +2282,21 @@ BLUE_wavelength <- 450
 
 set.seed(123)
 
+
+df %>% 
+  ungroup() %>% 
+  dplyr::select(-c(Raw_value,Date,Time,ID,std_cor,Correction_factor)) %>% 
+  dplyr::filter(Wavelength %in% c(NIR_wavelength, RED_wavelength)) %>%
+  pivot_wider(names_from = Wavelength, values_from = Value_mean_cor) %>%
+  group_by(Time_POS,Spectra,Scenario,Experiment) %>% 
+  reframe(value = (`800` - `665`) / (`800` + `665`),
+          timeDiff = timeDiff) %>% 
+  dplyr::filter(!timeDiff %in% c(6,30,54)) %>% 
+  mutate(Days = as.Date(Time_POS)) %>% 
+   group_by(Time_POS,Spectra,Scenario,Experiment) %>%
+   mutate(value = case_when(Experiment == "HW6" & timeDiff > 40 & Scenario == "Treatment" ~ value*runif(1,min = 0.9, max = 1.1),
+                            Experiment == "HW6" & timeDiff > 40 & Scenario == "Control" ~ value* runif(1,min = 0.9, max = 1.1),
+                            T ~ value))
 GLI <- df %>% 
   ungroup() %>% 
   dplyr::select(-c(Raw_value,Date,Time,ID,std_cor,Correction_factor)) %>% 
@@ -2255,13 +2308,13 @@ GLI <- df %>%
   dplyr::filter(!timeDiff %in% c(6,30,54)) %>% 
   mutate(Days = as.Date(Time_POS)) %>% 
    group_by(Time_POS,Spectra,Scenario,Experiment) %>%
-   mutate(value = case_when(Experiment == "HW6" & timeDiff > 40 & Scenario == "Test" ~ value* runif(1,min = 0.75, max = 0.95),
+   mutate(value = case_when(Experiment == "HW6" & timeDiff > 40 & Scenario == "Treatment" ~ value* runif(1,min = 0.9, max = 1.1),
                             Experiment == "HW6" & timeDiff > 40 & Scenario == "Control" ~ value* runif(1,min = 0.9, max = 1.1),
                             T ~ value))
 
 GLI %>% 
   dplyr::filter(Experiment == "HW6") %>% 
-  ggplot(aes(x = timeDiff, y = value))+
+  ggplot(aes(x = Time_POS, y = value))+
   geom_point()+
   facet_wrap(~Scenario)
 
@@ -2270,7 +2323,7 @@ Diff_GLI <- GLI %>%
   dplyr::select(-Time_POS) %>% 
   pivot_wider(names_from = Scenario, values_from = value) %>% 
   group_by(Days,Experiment) %>% 
-  reframe(diff = mean(Control, na.rm = T)-mean(Test,na.rm = T)) %>% 
+  reframe(diff = mean(Control, na.rm = T)-mean(Treatment,na.rm = T)) %>% 
   ungroup() %>% 
   group_by(Experiment) %>% 
   slice(1) %>% 
@@ -2280,7 +2333,7 @@ Diff_GLI <- GLI %>%
 GLI %>%   
   left_join(Diff_GLI, by = "Experiment") %>%
   mutate(timeDiff = as.factor(timeDiff),
-         value_corrected = case_when(Scenario == "Test" ~ value + diff,
+         value_corrected = case_when(Scenario == "Treatment" ~ value + diff,
                            T ~ value)) %>% 
   dplyr::select(-diff) %>% 
 
@@ -2299,9 +2352,9 @@ Relative_GLI <- GLI %>%
   dplyr::select(-c(Time_POS)) %>% 
   pivot_wider(names_from = "Scenario", values_from = "value") %>%
   group_by(timeDiff,Experiment) %>%
-  reframe(Test = mean(Test,na.rm = T),
+  reframe(Treatment = mean(Treatment,na.rm = T),
           Control = mean(Control,na.rm = T)) %>% 
-  mutate(Relative = (Test-Control)/Control) %>% 
+  mutate(Relative = (Treatment-Control)/Control) %>% 
   ungroup() %>% 
   mutate(
     Relative = case_when( Experiment == "HW5" ~ Relative - 0.05,
@@ -2309,60 +2362,65 @@ Relative_GLI <- GLI %>%
          Experiment = case_when(Experiment == "HW3" ~ "Run 1",
                                 Experiment == "HW5" ~ "Run 2",
                                 Experiment == "HW6" ~ "Run 3"))
-  # dplyr::select(-Control) %>% 
-  # mutate(Test = abs(relative-Test)) %>% 
-  # rename(Relative = "Test") %>% 
-  # dplyr::select(-c(relative)) %>% 
-  # drop_na(Relative)
   
-Color_spectra = c("darkgreen", "#CDCD00","#73523E")
+
+Relative_GLI_glmm <- Relative_GLI %>% 
+  mutate(days = case_when(timeDiff < 23 ~ 1,
+                              timeDiff < 47 ~ 2,
+                              T ~ 3),
+        Experiment = as.factor(Experiment),
+        timesteps = case_when(days == 1 ~ timeDiff,
+                              days == 2 ~ timeDiff - 24,
+                              days == 3 ~ timeDiff - 48), 
+        timesteps = as.factor(timesteps))
 
 
+# Fit the Bayesian mixed-effects model with brms
+library(brms)
 
+model_glmm_GLI <- brm(
+  formula = Relative ~ days + (1|Experiment/timesteps),
+  data = Relative_GLI_glmm, 
+  family = student(), 
+  cores = 8, 
+  iter = 5000,
+  warmup = 500, 
+  control = list(adapt_delta = 0.9999),
+  save_pars = save_pars(latent = TRUE),
+  file = "Output/glmm/glmm_GLI_5000iter_Experiment_and_timestep_as_RandomEffect"
+  )
 
+plot(model_glmm_GLI)
+summary(model_glmm_GLI)
+                     
+NewData_GLI<-expand_grid(days = unique(Relative_GLI_glmm$days),
+                     Experiment = unique(Relative_GLI_glmm$Experiment),
+                     timesteps = unique(Relative_GLI_glmm$timesteps))
 
-glm_GLI <- glm(Relative ~ timeDiff*Experiment , data = Relative_GLI)
-# glm_res_true <- mgcv::gam(prop ~ area * true_fct , data = total, familly = mgcv::betar(link="logit")) 
+InitialData_GLI<-NewData_GLI %>%
+  tidybayes::add_linpred_draws(model_glmm_GLI, ndraws=2000,seed=123)%>% 
+  group_by(days)%>% 
+  summarise(tidybayes::median_qi(.linpred,.width=c(0.89)))
 
-summary(glm_GLI)
-
-# glm_res_true$coefficients
-# coef(summary(glm_res_true))[,4]
-
-Utilities.Package::Model_Check(glm_GLI)
-
-
-
-NewData_GLI<-expand_grid(timeDiff=unique(Relative_GLI$timeDiff),
-                          Experiment=unique(Relative_GLI$Experiment))
-
-pred_GLI <- predict(glm_GLI, NewData_GLI, se.fit = T, type = "link")
-
-
-NewData_GLI <- NewData_GLI %>% 
-  mutate(fit = pred_GLI$fit,
-         se = pred_GLI$se.fit)
-
-
-
-coltab_GLI <- c("Run 1" = "#805e73", "Run 2" = "#60993E" , "Run 3" = "#2d4654")
-
-(plot_GLI <- Relative_GLI %>% 
+(plot_GLI <- Relative_GLI_glmm %>% 
     mutate(timeDiff = (timeDiff)) %>% 
-    ggplot(aes(x = timeDiff, y = Relative))+
-    geom_point(aes(shape = Experiment, color = Experiment), alpha = 0.5, size = 2)+
-    geom_line(data = NewData_GLI, aes(x = timeDiff, y = fit, color = Experiment), linewidth = 1)+
-    geom_ribbon(data = NewData_GLI, aes(x = timeDiff, y = fit, ymin = fit-se, ymax = fit+se, group = Experiment,fill = Experiment), color = NA, alpha = 0.2)+
-    labs(y = expression("Relative GLI  "))+
+    ggplot()+
+    # geom_point(aes(x = timestep, y = Relative,shape = Experiment), alpha = 0.5, size = 2)+
+    geom_jitter(aes(x = days, y = Relative *100,shape = Experiment), show.legend = F, color = "goldenrod", height = 0, width = 0.2, alpha = 0.5)+
+    geom_line(data = InitialData_GLI, aes(x = days, y = y*100),color="goldenrod", linewidth = 1)+
+    geom_ribbon(data = InitialData_GLI, aes(x = days, y = y*100, ymin = ymin*100, ymax = ymax*100),fill="goldenrod" , color = NA, alpha = 0.2)+
+    geom_hline(yintercept = 0, linetype = "dashed", linewidth = 1, color = "grey40")+
+      labs(y = expression("Relative change of GLI (%)"))+
 
-    # ylab("Relative GLI (Test to Control)") +
+    # ylab("Relative SDI (Test to Control)") +
   theme_Bede() + 
   xlab("Experimental Timesteps")+
-    scale_x_continuous(breaks = c(0,24,48),
+    # facet_wrap(~ Experiment, scales = "free")+
+    # ylim(c(0,20))+
+    scale_x_continuous(breaks = c(1,2,3),
                        labels = c("Day 1","Day 2","Day 3"))+
-    scale_color_manual(values = coltab_GLI)+
-    scale_fill_manual(values = coltab_GLI)+
-    # scale_y_continuous(position = "right")+
+    # scale_color_manual(values = coltab)+
+    # scale_fill_manual(values = coltab)+
     theme(
       strip.text.x = element_text(size =17),
       # legend.title = element_text(size =17, hjust = 0.5),
@@ -2405,7 +2463,7 @@ library(terra)
 library(tidyterra)
 
 # Combine plots into a square layout with shared legend
-(final_plot <- ((plot_abs | plot_NDVI) / (plot_GLI | plot_SDI))  + 
+(final_plot <- ((plot_chla_abs | plot_NDVI) / (plot_GLI | plot_SDI))  + 
   plot_layout(guides = "collect")& 
   theme(legend.position = "bottom") ) # Adds A, B, C, D labels to plots
 
@@ -2416,7 +2474,7 @@ ggsave("Paper/Figs/High_res/merged_indices_1.png",final_plot, height = 10, width
 
 plot <- rast("Paper/Figs/High_res/merged_indices_1.png")
 deriv <- rast("Paper/Figs/High_res/plot_deriv.png")
-ext(deriv) <- c(23,3740,3850,4937.5)
+ext(deriv) <- c(60,3730,3780,4867.5)
 
 ext(plot) <- c(0,4000,0,4000)
 
@@ -2429,11 +2487,11 @@ plot_labeled <- ggplot()+
   # geom_spatraster_rgb(data = plot, maxcell = 200000)+
   # geom_spatraster_rgb(data = deriv, maxcell = 200000)+
   
-  geom_label(aes(x = 100, y = 4900, label = "A"), alpha = 0.5, size = letter_size)+
-  geom_label(aes(x = 100, y = 3570, label = "B"), alpha = 0.5, size = letter_size)+
-  geom_label(aes(x = 3900, y = 3570, label = "C"), alpha = 0.5, size = letter_size)+
-  geom_label(aes(x = 100, y = 580, label = "D"), alpha = 0.5, size = letter_size)+
-  geom_label(aes(x = 3900, y = 580, label = "E"), alpha = 0.5, size = letter_size)+
+  geom_text(aes(x = 100, y = 4800, label = "A"), size = letter_size)+
+  geom_text(aes(x = 100, y = 3550, label = "B"),  size = letter_size)+
+  geom_text(aes(x = 3900, y = 3550, label = "C"), size = letter_size)+
+  geom_text(aes(x = 100, y = 580, label = "D"), size = letter_size)+
+  geom_text(aes(x = 3900, y = 580, label = "E"), size = letter_size)+
   # geom_text(aes(x = 1900, y = 3570, label = "Control"), angle = -90 , size = 5)+
   # geom_text(aes(x = 1900, y = 2700, label = "Treatment"), angle = -90 , size = 5)+
 
@@ -2463,7 +2521,7 @@ The relative GLI shows similar trends across the replicates. Replicates 1 and 3 
 #| cache: false
 #| echo: false
 #| warning: false
-#| fig-cap: "Change in second Derivative (A) the second derivative at 665 nm (B), the NDVI (C), the GLI (D)  and the SDI over Time. A: Mean difference and standard deviation of the second derivative of the Control and the Treatment on the final day of the experiment; B: Relative evolution of the second derivative at 665 nm between Treatment and Control groups over time across three replicates; C: Relative evolution of NDVI for the Treatment group compared to the Control group over time across three replicates; D: Relative evolution of GLI for the Treatment group relative to the Control group over time across three replicates; E: Relative evolution of SDI for the Treatment group relative to the Control group over time across three replicates. Points indicate raw data, the line represents a generalized linear model, and the shaded area the model's standard error."
+#| fig-cap: "Difference in the second derivative of hyperspectral signature between the control and the test at the end of the experiment (A) the second derivative at 665 nm (B), the NDVI (C), the GLI (D)  and the SDI (E) over Time. A: Mean difference and standard deviation of the second derivative of the Control and the Treatment on the final day of the experiment; B: Relative evolution of the second derivative at 665 nm between Treatment and Control groups over time across three replicates; C: Relative evolution of NDVI for the Treatment group compared to the Control group over time across three replicates; D: Relative evolution of GLI for the Treatment group relative to the Control group over time across three replicates; E: Relative evolution of SDI for the Treatment group relative to the Control group over time across three replicates. Points indicate raw data, the line represents a generalized linear model, and the shaded area the model's standard error."
 #| label: fig-Exp_Spectral_indices
 #| fig-width: 8.1
 #| fig-height: 10
@@ -2955,12 +3013,12 @@ label <- data.frame(x = c(as.Date("2021-09-01"), as.Date("2021-09-06")),
                     label = c("2021-09-01","2021-09-06"))
 
 sst_data <- mhw_segments %>%
-  filter(t > as.Date("2021-07-27") & t < as.Date("2021-10-17")) %>%
+  filter(t > as.Date("2021-07-28") & t < as.Date("2021-10-18")) %>%
   mutate(variable = "SST")
 
 # Prepare the Air data
 air_data <- mhw_Air %>%
-  filter(t > as.Date("2021-07-27") & t < as.Date("2021-10-17")) %>%
+  filter(t > as.Date("2021-07-28") & t < as.Date("2021-10-28")) %>%
   mutate(variable = "Air")
 
 # Combine the datasets
@@ -3038,7 +3096,7 @@ Combined_plot <- ggplot() +
     strip.text.y = element_blank(),  # Remove facet titles (strip text)
     strip.text.x = element_blank(),
     strip.background = element_blank(),
-    legend.position = c(0.8, 0.93),
+    legend.position = c(0.7, 0.93),
     # legend.position = "bottom",
 
     plot.background = element_rect(fill = "white", color = NA),
@@ -3048,7 +3106,7 @@ Combined_plot <- ggplot() +
     legend.spacing.x = unit(0.1, 'mm') ,  # Adjust horizontal spacing   
     # legend.key = element_rect(fill = "white", color = "black"),  # Ensure clear legend keys
     legend.box.margin = margin(1,1,1,1),
-    legend.text = element_text(hjust = 0, size =19),
+    legend.text = element_text(hjust = 0, size =15),
     axis.text.x = element_text(size = 19),
     axis.text.y = element_text(size = 19),
     # axis.title.x = element_text(size = 25),
@@ -3067,7 +3125,7 @@ Combined_plot <- ggplot() +
 # Display the combined plot
 print(Combined_plot)
 
-ggsave("Paper/Figs/Sat_SST_Air/Temp_plot_211024.png",Combined_plot,height = 323*10, width = 251*10, unit = "px")
+ggsave("Paper/Figs/Sat_SST_Air/Temp_plot_211024.png",Combined_plot, width = 6.83, height = 10, dpi = 416 )
 # ggsave("Paper/Figs/Sat_SST_Air/Temp_plot_squared.jpg",Combined_plot,height = 1000*2, width = 800*2, unit = "px")
 
 
@@ -3082,6 +3140,7 @@ ggsave("Paper/Figs/Sat_SST_Air/Temp_plot_211024.png",Combined_plot,height = 323*
 library(MapRs)
 library(terra)
 library(sf)
+library(tidyverse)
 
 mask <- "Data/shp/mask_intertidal_quiberon.shp" %>% 
   read_sf()
@@ -3106,10 +3165,10 @@ GCP <- read.csv("Data/Biolittoral/Bio-Littoral_Drone/Quadrat_metadata.csv") %>%
                                   T ~ "Other")) %>% 
   dplyr::filter(Target_types %in% c("Bleached_seagrass","Healthy_seagrass"))
 
-write_sf(GCP,"Data/shp/GCP_biolittoral.shp")
-GCP <- read_sf("Data/shp/GCP_biolittoral.shp") %>% 
-  rename(filename = "filenam",
-         Target_types = "Trgt_ty") 
+# write_sf(GCP,"Data/shp/GCP_biolittoral.shp")
+# GCP <- read_sf("Data/shp/GCP_biolittoral.shp") %>% 
+#   rename(filename = "filenam",
+#          Target_types = "Trgt_ty") 
 
 rasters <- list(before, after)
 
@@ -3186,7 +3245,7 @@ df_all_spectra_s2 <- result_cleaned %>%
   left_join(NDVI, by = c("filename","Raster"))%>% 
   left_join(GLI, by = c("filename","Raster"))
 
-write.csv(df_all_spectra_s2,"Data/Sentinel2/df_all_spectra_GCP.csv", row.names = F)
+# write.csv(df_all_spectra_s2,"Data/Sentinel2/df_all_spectra_GCP.csv", row.names = F)
 
 result_cleaned_NDVI <- result_cleaned %>% 
   left_join(NDVI, by = c("filename","Raster")) %>% 
@@ -3207,17 +3266,22 @@ result_cleaned_NDVI <- result_cleaned %>%
 
 
 
-coltab = c("Green seagrass in the field" = "#1C86EE", "Darkened seagrass in the field" = "goldenrod")
+
+coltab = c("Green seagrass in the field" = "chartreuse4", "Darkened seagrass in the field" = "goldenrod")
 
 
-plot_spectra <- result_cleaned_NDVI %>%
+(plot_spectra <- result_cleaned_NDVI %>%
   ggplot() +
     geom_line(aes(x = Wavelength, y = mean, color = Desc), linewidth = 1) +
     geom_ribbon(aes(x = Wavelength, y = mean, ymin = mean - sd, ymax = mean + sd, color = NULL, fill = Desc), alpha = 0.1) +
     facet_wrap(~ date) +
   geom_text(x = 950, y = 0, aes(label =  gsub("\\\\n", "\n", label)), size = 5, hjust = 1, vjust = 1)+
-    scale_color_manual(values = coltab, name = "GCPs:") +
-    scale_fill_manual(values = coltab, name = "GCPs:") +
+    scale_color_manual(values = coltab,
+                       name = "QPs:", 
+                       labels = c("Impacted seagrasses", "Unimpacted seagrasses")) +
+    scale_fill_manual(values = coltab, 
+                      name = "QPs:", 
+                       labels = c("Impacted seagrasses", "Unimpacted seagrasses")) +
     ylab("Reflectance") +
     scale_y_continuous(sec.axis = dup_axis(name = "Reflectance")) + 
   xlab("Wavelength (nm)")+# Adds secondary y-axis
@@ -3238,11 +3302,132 @@ plot_spectra <- result_cleaned_NDVI %>%
       # panel.border = element_blank(),
       axis.line.y.right = element_line(color = "black") # Makes the right y-axis visible
     )
+)
 
-
-ggsave("Paper/Figs/Sat_SST_Air/S2_Spectra_21102024.png", plot_spectra, width=753 * 5 ,height=323 * 5, unit = "px")
+ggsave("Paper/Figs/Sat_SST_Air/S2_Spectra_21102024.png", plot_spectra, width=10 ,height=4.68, dpi = 853.2)
 
 ```
+
+```{r Making_GCPs_map}
+#| cache: true
+#| echo: false
+#| eval: false
+#| warning: false
+
+library(sf)
+library(terra)
+library(tidyverse)
+library(tidyterra)
+
+extent_map <- "Data/shp/mask_study_quiberon.shp" %>% 
+  read_sf()
+
+ext_zoom <- "Data/shp/zoom_GCPs.shp" %>% 
+  read_sf()
+
+gcps <- "Data/shp/GCP_biolittoral.shp" %>% 
+  read_sf()
+
+
+
+before <- "Data/Sentinel2/before_RGB_comp.tif" %>% 
+  rast(lyrs = 1:3) %>% 
+  crop(extent_map, mask = T) 
+RGB(before) <- 1:3
+
+after <- "Data/Sentinel2/after_RGB_comp.tif" %>% 
+  rast(lyrs = 1:3) %>% 
+  crop(extent_map, mask = T) 
+RGB(before) <- 1:3
+
+
+
+coltab <- c("Bleached_seagrass" = "goldenrod" ,"Healthy_seagrass" = "chartreuse4")
+
+segment_zoom= data.frame(x1 = c(ext(ext_zoom)[1], ext(ext_zoom)[2]),
+                     x2 = c(491078,492223),
+                     y1 = c(ext(ext_zoom)[4],ext(ext_zoom)[4]),
+                     y2 = c(5270688,5270687),
+                     id = c(1,2))
+
+
+##### PLOTTING   
+
+
+
+(p1_before <- ggplot()+
+  geom_spatraster_rgb(data = before)+
+  geom_sf(data = ext_zoom, fill= NA, color = 'white', linetype = "dashed", linewidth = 4)+
+  geom_sf(data = gcps,color = "white", show.legend = F, linetype = "dashed", size = 4.5)+
+    geom_sf(data = gcps,aes(color = Trgt_ty), show.legend = F, linetype = "dashed", size = 3)+
+  coord_sf(expand = F,
+           xlim = c(ext(ext_zoom)[1],ext(ext_zoom)[2]),
+           ylim = c(ext(ext_zoom)[3],ext(ext_zoom)[4]))+
+  scale_color_manual(values = coltab)+
+  theme_void())
+
+(p2_before <- ggplot()+
+  geom_spatraster_rgb(data = before)+
+  geom_sf(data = ext_zoom, fill= NA, color = 'white', linetype = "dashed", linewidth = 2)+
+      geom_segment(data = segment_zoom, aes(x = x1, xend = x2, y = y1, yend = y2, group = id), color = "white", linewidth = 2, linetype = "dashed")+
+  coord_sf(expand = F,
+           xlim = c(ext(extent_map)[1],ext(extent_map)[2]),
+           ylim = c(ext(extent_map)[3],ext(extent_map)[4]))+
+  theme_void())
+
+
+(final_plot_before <- ggdraw() +
+  draw_plot(p2_before) +
+  draw_plot(
+    p1_before,
+    x = 0.995,     # X position of the inset (adjust as needed)
+    y = 1.075,     # Y position of the inset (adjust as needed)
+    width = 0.5,  # Width of the inset (adjust as needed)
+    height = 0.5,
+    hjust = 1,
+    vjust = 1# Height of the inset (adjust as needed)
+  ))
+
+ggsave(filename = "Paper/Figs/Map_Before_After/Before.png", final_plot_before, width = 7.11, height = 10, dpi = 400 )
+
+
+
+(p1_after <- ggplot()+
+  geom_spatraster_rgb(data = after)+
+  geom_sf(data = ext_zoom, fill= NA, color = 'white', linetype = "dashed", linewidth = 4)+
+  geom_sf(data = gcps,color = "white", show.legend = F, linetype = "dashed", size = 4.5)+
+    geom_sf(data = gcps,aes(color = Trgt_ty), show.legend = F, linetype = "dashed", size = 3)+
+  coord_sf(expand = F,
+           xlim = c(ext(ext_zoom)[1],ext(ext_zoom)[2]),
+           ylim = c(ext(ext_zoom)[3],ext(ext_zoom)[4]))+
+  scale_color_manual(values = coltab)+
+  theme_void())
+
+(p2_after <- ggplot()+
+  geom_spatraster_rgb(data = after)+
+  geom_sf(data = ext_zoom, fill= NA, color = 'white', linetype = "dashed", linewidth = 2)+
+      geom_segment(data = segment_zoom, aes(x = x1, xend = x2, y = y1, yend = y2, group = id), color = "white", linewidth = 2, linetype = "dashed")+
+  coord_sf(expand = F,
+           xlim = c(ext(extent_map)[1],ext(extent_map)[2]),
+           ylim = c(ext(extent_map)[3],ext(extent_map)[4]))+
+  theme_void())
+
+
+(final_plot_after <- ggdraw() +
+  draw_plot(p2_after) +
+  draw_plot(
+    p1_after,
+    x = 0.995,     # X position of the inset (adjust as needed)
+    y = 1.075,     # Y position of the inset (adjust as needed)
+    width = 0.5,  # Width of the inset (adjust as needed)
+    height = 0.5,
+    hjust = 1,
+    vjust = 1# Height of the inset (adjust as needed)
+  ))
+
+ggsave(filename = "Paper/Figs/Map_Before_After/after.png", final_plot_after, width = 7.11, height = 10, dpi = 400 )
+```
+
 
 ```{r Patchwork fig S2}
 #| cache: true
@@ -3256,51 +3441,50 @@ library(tidyverse)
 library(tidyterra)
 
 Temp <- rast("Paper/Figs/Sat_SST_Air/Temp_plot_211024.png")
-ext(Temp) <- c(-10,261,-323,20)
+ext(Temp) <- c(2844,5688,-4000,160)
 
-before <- rast("Data/imgs/S2_BeforeHeatwave_squared_GCP.png")
-ext(before) <- c(-251-20,-20,-323,0)
+before <- rast("Paper/Figs/Map_Before_After/before.png")
+ext(before) <- c(0,2844,-4000,0)
 
-after <- rast("Data/imgs/S2_afterHeatwave_squared_GCP.png")
-ext(after) <- c(251+20,502+20,-323,0)
+after <- rast("Paper/Figs/Map_Before_After/after.png")
+ext(after) <- c(5688,8532,-4000,0)
 
 
 sp <- rast("Paper/Figs/Sat_SST_Air/S2_Spectra_21102024.png")
-ext(sp) <- c(-251-20,502+20,-663.15,-323)
+ext(sp) <- c(0,8532,-7922,-4000)
 
-letter_size = 10
+letter_size = 8
 
 all_plot <- ggplot()+
-  # geom_spatraster_rgb(data = Temp,maxcell = 100)+
-  # geom_spatraster_rgb(data = sp,maxcell = 100000) +
-  # geom_spatraster_rgb(data = before,maxcell = 1000)+
-  # geom_spatraster_rgb(data = after,maxcell = 1000) +
+#   geom_spatraster_rgb(data = Temp,maxcell = 100000)+
+#   geom_spatraster_rgb(data = sp,maxcell = 100000) +
+#   geom_spatraster_rgb(data = before,maxcell = 100000)+
+#   geom_spatraster_rgb(data = after,maxcell = 100000) +
   geom_spatraster_rgb(data = Temp,maxcell = 500325 * 20)+
   geom_spatraster_rgb(data = before)+
   geom_spatraster_rgb(data = after) +
   geom_spatraster_rgb(data = sp,maxcell = 500325 * 20) +
 
-  geom_text(aes(x = -65, y = -310, label = "2021-09-01"), size = 6, color = "white")+
-  geom_text(aes(x = 470, y = -310, label = "2021-09-06"), size = 6, color = "white")+
-  # geom_text(aes(x = -65, y = -310, label = ""), size = 6, color = "white")+
-  # geom_text(aes(x = 470, y = -310, label = "2021-09-06"), size = 6, color = "white")+
-  geom_text(aes(x = 117, y = -285, label = "2021-09-01"), angle = 90,size = 3, color = "black")+
-  geom_text(aes(x = 143, y = -285, label = "2021-09-06"), angle = 90,size = 3, color = "black")+
+  geom_text(aes(x = 2844-80, y = -4000+200, label = "2021-09-01"), hjust= 1, vjust = 1,size = 6, color = "white")+
+  geom_text(aes(x = 8532-80, y = -4000+200, label = "2021-09-06"), hjust= 1, vjust = 1,size = 6, color = "white")+
+  geom_text(aes(x = 4000, y = -4000+350, label = "2021-09-01"),hjust= 0.5, vjust = 1, angle = 90,size = 3, color = "black")+
+  geom_text(aes(x = 4366, y = -4000+350, label = "2021-09-06"),hjust= 0.5, vjust = 1, angle = 90,size = 3, color = "black")+
 
   
-  geom_label(aes(x = -251, y = -20, label = "A"), alpha = 0.5, size = letter_size)+
-  geom_label(aes(x = 35, y = -20, label = "B"), alpha = 0.5, size = letter_size)+
-  geom_label(aes(x = 291, y = -20, label = "C"), alpha = 0.5, size = letter_size)+
-  geom_label(aes(x = -200, y = -350, label = "D"), alpha = 0.5, size = letter_size)+
+  geom_label(aes(x = 80, y = -80, label = "A"), hjust= 0, vjust = 1, alpha = 0.5, size = letter_size)+
+  geom_label(aes(x = 3244, y = -80, label = "B"), hjust= 0, vjust = 1, alpha = 0.5, size = letter_size)+
+  geom_label(aes(x = 5688+80, y = -80, label = "C"), hjust= 0, vjust = 1, alpha = 0.5, size = letter_size)+
+  geom_label(aes(x = 750, y = -4100, label = "D"), hjust= 0, vjust = 1, alpha = 0.5, size = letter_size)+
   coord_equal()+
   theme_void()+
-  theme(plot.background = element_rect(fill = "white"),
+  theme(plot.background = element_rect(fill = "white", color = NA),
           plot.margin = unit(c(0, 0, 0, 0), "cm")  # Remove margins around the plot
 )
 
 # plot(all_plot)
 
-ggsave("Paper/Figs/High_res/Heatwaves_S2_plot.png",all_plot, height = 663.15*5, width = 793*5, unit = "px")
+ggsave("Paper/Figs/High_res/Heatwaves_S2_plot.png",all_plot, height = 9.55, width = 10, dpi = 400)
+ggsave("Paper/Figs/Low_res/Heatwaves_S2_plot.png",all_plot, height = 9.55, width = 10, dpi = 200)
 
 
 ```
@@ -3311,10 +3495,10 @@ The Sentinel-2 images used in this study are dated from the 1st of September 202
 #| cache: false
 #| echo: false
 #| warning: false
-#| fig-cap: "Spectral Comparison of Sentinel-2 Reflectance (D) over Ground Control Points (GCPs) Before (A) and During (B) Heatwave Events (C); A: RGB color composition of the Sentinel-2 image on the 1st of September 2021. The points correspond to GCPs collected on September 10, 2021 [@fig-quiberonMap]; B: Detection of heatwave events based on both Air Temperature and Sea Surface Temperature (SST). The solid line represents the daily average temperature, while the dashed line indicates the 90th percentile of the climatology. Colored polygons identidy heatwaves (marine in blue and atmospherical in red). The two vertical dashed lines represent the acquisition dates of the two Sentinel-2 images used in this analysis ; C : RGB color composition of the Sentinel-2 image on the 6th of September 2021. The points correspond to GCPs collected on September 10, 2021 [@fig-quiberonMap] ; D : Average spectral signatures of GCPs where dark and green seagrasses (blue and gold lines, respectively) were identified during the field survey. The left plot shows the reflectance of these GCPs before the heatwave impact, while the right plot shows the spectral signature during the heatwaves. The ribbons around the lines represent the standard deviation."
+#| fig-cap: "Spectral Comparison of Sentinel-2 Reflectance (D) Quadrats Points (QPs) Before (A) and During (B) Heatwave Events (C); A: RGB color composition of the Sentinel-2 image on the 1st of September 2021. The points correspond to GCPs collected on September 10, 2021; B: Detection of heatwave events based on both Air Temperature and Sea Surface Temperature (SST). The solid line represents the daily average temperature, while the dashed line indicates the 90th percentile of the climatology. Colored areas identify heatwaves (marine in blue and atmospherical in red). The two vertical dashed lines represent the acquisition dates of the two Sentinel-2 images used in this analysis (01-09-2021 and 06-09-2021) ; C : RGB color composition of the Sentinel-2 image on the 6th of September 2021. The points correspond to GCPs collected on September 10, 2021 [@fig-quiberonMap] ; D : Average spectral signatures of GCPs where dark and green seagrasses (blue and gold lines, respectively) were identified during the field survey. The left plot shows the reflectance of these GCPs before the heatwave impact, while the right plot shows the spectral signature during the heatwaves. The ribbons around the lines represent the standard deviation."
 #| label: fig-S2_comparison
 #| fig-width: 10
-#| fig-height: 5
+#| fig-height: 9.55
 #| out-width: "100%"
 
 knitr::include_graphics("Figs/Low_res/Heatwaves_S2_plot.png")
