@@ -1,25 +1,8 @@
 ---
-project:
-  type: manuscript
-execute:
-  freeze: auto
-format:
-  html: 
-    toc: true
-    theme: cosmo
-    comments:
-      hypothesis: true
-  apaquarto-docx: 
-    output-file: "Simon_Heatwaves_Paper"
-    floatsintext: true
-    numbered-lines: true
-  elsevier-pdf: 
-    fig-pos: "H"
-    output-file: "Simon_Heatwaves_Paper"
 title: Effect of Marine and Atmospheric Heatwaves on Reflectance and Pigment Composition of Intertidal *Zostera noltei*
 shorttitle: Effect of heatwaves on seagrasses
 author:
-  - name: Simon Oiry
+  - name: Simon Oiry^[Institut des Substances et Organismes de la Mer, ISOMer, Nantes Université, UR 2160, F-44000 Nantes, France]
     orcid: 0000-0001-7161-5246
     corresponding: true
     email: oirysimon@gmail.com
@@ -29,7 +12,7 @@ author:
       - Data acquisition
     affiliations:
       - Institut des Substances et Organismes de la Mer, ISOMer, Nantes Université, UR 2160, F-44000 Nantes, France
-  - name: Bede Ffinian Rowe Davies
+  - name: Bede Ffinian Rowe Davies¹
     orcid: 0000-0001-6462-4347
     corresponding: false
     roles: 
@@ -38,7 +21,7 @@ author:
       - Revision
     affiliations:
       - Institut des Substances et Organismes de la Mer, ISOMer, Nantes Université, UR 2160, F-44000 Nantes, France
-  - name: Philippe Rosa
+  - name: Philippe Rosa¹
     orcid: 0000-0001-6621-3445
     corresponding: false
     roles: 
@@ -46,7 +29,7 @@ author:
       - Revision
     affiliations:
       - Institut des Substances et Organismes de la Mer, ISOMer, Nantes Université, UR 2160, F-44000 Nantes, France
-  - name: Augustin Debly
+  - name: Augustin Debly¹
     corresponding: false
     orcid: 0009-0000-7194-7099
     roles: 
@@ -55,7 +38,7 @@ author:
       - Revision
     affiliations:
       - Institut des Substances et Organismes de la Mer, ISOMer, Nantes Université, UR 2160, F-44000 Nantes, France
-  - name: Maria Laura Zoffoli
+  - name: Maria Laura Zoffoli^[Consiglio Nazionale delle Ricerche, Istituto di Scienze Marine (CNR-ISMAR), 00133 Rome, Italy]
     orcid: 0000-0003-1892-0051
     corresponding: false
     roles: 
@@ -63,7 +46,7 @@ author:
       - Revision
     affiliations:
       - Consiglio Nazionale delle Ricerche, Istituto di Scienze Marine (CNR-ISMAR), 00133 Rome, Italy
-  - name: Anne-Laure Barillé
+  - name: Anne-Laure Barillé^[Bio-littoral, Immeuble Le Nevada, 2 Rue du Château de l'Eraudière, 44300 Nantes, France]
     corresponding: false
     roles: 
       - Investigation
@@ -71,7 +54,7 @@ author:
       - Revision
     affiliations:
       - Bio-littoral, Immeuble Le Nevada, 2 Rue du Château de l'Eraudière, 44300 Nantes, France
-  - name: Nicolas Harin
+  - name: Nicolas Harin³
     corresponding: false
     roles: 
       - Investigation
@@ -79,7 +62,7 @@ author:
       - Revision
     affiliations:
       - Bio-littoral, Immeuble Le Nevada, 2 Rue du Château de l'Eraudière, 44300 Nantes, France
-  - name: Pierre Gernez
+  - name: Pierre Gernez¹
     orcid: 0000-0003-2055-410X
     corresponding: false
     roles: 
@@ -88,7 +71,7 @@ author:
       - Revision
     affiliations:
       - Institut des Substances et Organismes de la Mer, ISOMer, Nantes Université, UR 2160, F-44000 Nantes, France
-  - name: Laurent Barillé
+  - name: Laurent Barillé¹
     orcid: 0000-0001-5138-2684
     corresponding: false
     roles: 
@@ -113,7 +96,6 @@ key-points:
   - Novel Seagrass Darkening Index quantifies stress-induced color changes in seagrasses
   - Remote sensing proves effective in monitoring seagrass state during extreme events
   - Our findings highlight rapid impacts of heatwaves on seagrass meadows
-
 date: last-modified
 citation:
   container-title: Remote Sensing of Environment
@@ -1024,8 +1006,8 @@ meadow_mask <- "Data/shp/mask_seagrasses.shp" %>%
 
 p2 <- ggplot() +
   tidyterra::geom_spatraster_rgb(data = RGB_Low) +
-  geom_sf(data = mask_sf, aes(fill = "Mask"), color = "darkred", linewidth = 0.8, alpha = 0.1) +
   geom_sf(data = meadow_mask, aes(fill = "meadow_mask"), color = "darkgreen", linewidth = 0.8, alpha = 0.1) +
+  geom_sf(data = mask_sf, aes(fill = "Mask"), color = "darkred", linewidth = 0.8, alpha = 0.1) +
 
   # geom_sf(data = Drone_flight_area, aes(fill = "Drone_Flight_Area"), color = "grey0", size = 2.2, linewidth = 0.5) +
   geom_sf(data = quadrat_sf, aes(color = Target_types), size = 2.1)+
@@ -3155,6 +3137,11 @@ after <- "Data/Sentinel2/S2B_MSIL2A_20210906T112109_N0500_R037_T30TVT_20230113T0
   crop(mask)
 names(after) <- paste0("B",c(1:12))
 
+way_after <- "Data/Sentinel2/S2A_MSIL2A_20211008T110951_N0500_R137_T30TVT_20230108T123709.SAFE" %>%
+  Read_S2() %>%
+  crop(mask)
+names(way_after) <- paste0("B",c(1:12))
+
 
 GCP <- read.csv("Data/Biolittoral/Bio-Littoral_Drone/Quadrat_metadata.csv") %>% 
     as_tibble() %>% 
@@ -3170,7 +3157,7 @@ GCP <- read.csv("Data/Biolittoral/Bio-Littoral_Drone/Quadrat_metadata.csv") %>%
 #   rename(filename = "filenam",
 #          Target_types = "Trgt_ty") 
 
-rasters <- list(before, after)
+rasters <- list(before, after,way_after)
 
 # Initialize an empty list to store extracted values
 extracted_values_list <- list()
@@ -3200,6 +3187,7 @@ result <- GCP %>%
   pivot_longer(-c(path,filename,Target_types,ID), names_to = "Band",values_to = "values") %>% 
   mutate(values = values - 1000,
          Raster = case_when(str_detect(Band,"raster1") ~ "Before",
+                            str_detect(Band,"raster2") ~ "During",
                             T ~ "After"),
          Band = gsub(".*_","",Band))
 
@@ -3228,26 +3216,41 @@ result_cleaned <- result %>%
   dplyr::filter(Wavelength <1000)
 
 NDVI <- result_cleaned %>% 
-  dplyr::select(filename ,Raster,Wavelength, values) %>% 
+  dplyr::select(filename ,Raster,Wavelength, values, Target_types) %>% 
   dplyr::filter(Wavelength == 664 | Wavelength == 832) %>% 
   pivot_wider(names_from = Wavelength, values_from = values) %>% 
-  mutate(NDVI = ((`832`) - (`664`))/((`832`) + (`664`))) %>% 
-  dplyr::select(filename,Raster,NDVI)
+  mutate(NDVI = ((`832`/10000) - (`664`/10000))/((`832`/10000) + (`664`/10000)),
+         SPC = 172.06*NDVI-22.18,
+         SPC = case_when(SPC < 0 ~ 0, 
+                         T ~ SPC)) %>% 
+  # dplyr::filter(SPC <= 100) %>% 
+  dplyr::select(filename,Raster,NDVI,SPC,Target_types)
 
 GLI <- result_cleaned %>% 
-  dplyr::select(filename ,Raster,Wavelength, values) %>% 
+  dplyr::select(filename ,Raster,Wavelength, values,Target_types) %>% 
   dplyr::filter(Wavelength == 559 | Wavelength == 664 | Wavelength == 492) %>% 
   pivot_wider(names_from = Wavelength, values_from = values) %>% 
-  mutate(GLI = ((`559`-`664`)+(`559`-`492`)) / ((2*`559`) + `664`+`492`)) %>% 
-  dplyr::select(filename,Raster,GLI)
+  mutate(GLI = ((`559`/10000-`664`/10000)+(`559`/10000-`492`/10000)) / ((2*`559`/10000) + `664`/10000+`492`/10000)) %>% 
+  dplyr::select(filename,Raster,GLI,Target_types)
+
+SDI <- result_cleaned %>% 
+  dplyr::select(filename ,Raster,Wavelength, values,Target_types) %>% 
+  dplyr::filter(Wavelength == 559 | Wavelength == 832 | Wavelength == 740) %>% 
+  pivot_wider(names_from = Wavelength, values_from = values) %>% 
+  mutate(SDI = (`559`/10000 + 0.64*(`832`/10000-`559`/10000))-`740`/10000) %>% 
+  dplyr::select(filename,Raster,SDI,Target_types)
 
 df_all_spectra_s2 <- result_cleaned %>% 
-  left_join(NDVI, by = c("filename","Raster"))%>% 
-  left_join(GLI, by = c("filename","Raster"))
+  left_join(NDVI, by = c("filename","Raster", "Target_types"))%>% 
+  left_join(GLI, by = c("filename","Raster", "Target_types"))%>% 
+  left_join(SDI, by = c("filename","Raster", "Target_types"))
 
-# write.csv(df_all_spectra_s2,"Data/Sentinel2/df_all_spectra_GCP.csv", row.names = F)
+write.csv(df_all_spectra_s2,"Data/Sentinel2/df_all_spectra_GCP.csv", row.names = F)
 
 result_cleaned_NDVI <- result_cleaned %>% 
+  dplyr::filter(Raster != "After") %>% 
+  mutate(Raster = case_when(Raster == "During" ~ "After",
+                            T ~ Raster) )%>% 
   left_join(NDVI, by = c("filename","Raster")) %>% 
   dplyr::filter(NDVI > 0.1) %>% 
   group_by(filename,Raster) %>% 
@@ -3260,7 +3263,7 @@ result_cleaned_NDVI <- result_cleaned %>%
                           T ~ ("2021-09-01")),
          Desc = case_when(Target_types == "Bleached_seagrass" ~ "Darkened seagrass in the field", 
                           T ~ "Green seagrass in the field"),
-         label = case_when(Raster == "After" ~ ("Spectra after heatwaves : 2021-09-06"),
+         label = case_when(Raster == "During" ~ ("Spectra during heatwaves : 2021-09-06"),
                           T ~ ("Spectra before heatwaves : 2021-09-01"))
          )
 
@@ -3518,77 +3521,323 @@ library(tidyverse)
 library(Utilities.Package)
 library(tidyterra)
 library(terra)
+library(brms)
 
-df_all_indice <- read.csv("Data/Sentinel2/df_all_spectra_GCP.csv") %>% 
-  mutate(SPC = 172.06*NDVI-22.18) %>% 
-  dplyr::select(c(filename, Target_types,Raster,NDVI,GLI,SPC)) %>%
-  mutate(sum = NDVI + GLI + SPC) %>% 
+img_to_remove <- read.csv("Data/Sentinel2/df_all_spectra_GCP.csv") %>% 
+  dplyr::select(c(filename, Target_types,Raster,NDVI,GLI,SPC,SDI)) %>%
+  mutate(sum = NDVI + GLI + SPC + SDI) %>% 
   dplyr::distinct(sum, .keep_all = T) %>% 
   dplyr::select(-sum) %>% 
-    dplyr::filter(NDVI > 0 ) %>% 
+  dplyr::filter(SPC < 20) %>% 
+  pull(filename)
+
+df_all_indice <- read.csv("Data/Sentinel2/df_all_spectra_GCP.csv") %>% 
+  dplyr::select(c(filename, Target_types,Raster,NDVI,GLI,SPC,SDI)) %>%
+  mutate(sum = NDVI + GLI + SPC + SDI) %>% 
+  dplyr::distinct(sum, .keep_all = T) %>% 
+  dplyr::select(-sum) %>% 
+    dplyr::filter(NDVI > 0, 
+                  !filename %in% img_to_remove) %>% 
   # mutate(GLI = GLI *2) %>% 
-  pivot_longer(c(NDVI,SPC,GLI), names_to = "Indices", values_to = "values") %>% 
-  mutate(date = case_when(Raster == "After" ~ ("2021-09-06"), 
+  pivot_longer(c(NDVI,SPC,GLI,SDI), names_to = "Indices", values_to = "values") %>%
+  # dplyr::filter(Indices != "SPC") %>% 
+  mutate(date = case_when(Raster == "During" ~ ("2021-09-06"),
+                          Raster == "After" ~ ("2021-10-08"),
                           T ~ ("2021-09-01")),
-         Indices = case_when(Indices == "NDVI" ~ "NDVI",
-                             Indices == "SPC" ~ "SPC",
-                             Indices == "GLI" ~ "GLI"),
-         Target_types = case_when(Target_types == "Bleached_seagrass" ~ "GCPs Darkened in the field",
-                                  T ~ "GCPs Green in the Field"),
-        Target_types = factor(Target_types, levels = c("GCPs Green in the Field", "GCPs Darkened in the field")),
-        Indices = factor(Indices, levels = c("NDVI", "SPC", "GLI"))
+         Target_types = case_when(Target_types == "Bleached_seagrass" ~ "Impacted seagrasses",
+                                  T ~ "Unimpacted seagrasses"),
+        Target_types = factor(Target_types, levels = c("Unimpacted seagrasses", "Impacted seagrasses")),
+        Indices = factor(Indices, levels = c("NDVI","SPC" ,"GLI","SDI"))
+  )%>%
+  group_by(filename, Indices,Target_types) %>%
+  mutate(
+    Before_value = values[Raster == "Before"],
+    Relative = (values - Before_value) / abs(Before_value)
+  ) %>%
+  ungroup() %>%
+  select(-Before_value) %>% 
+  mutate(Raster = as.factor(Raster),
+         Indices = as.factor(Indices)) %>% 
+  as_tibble()
+
+df_all_indice %>% 
+  dplyr::filter(filename == "FR5300027_HZ1_132841736.jpg")
+
+
+df_all_indice %>% 
+  dplyr::select(filename,Target_types,Raster,Relative,Indices) %>% 
+  pivot_wider(names_from = Indices, values_from = Relative) %>%
+  # dplyr::filter(NDVI > 0.6) %>% 
+  ggplot(aes(x = NDVI, y = SPC))+
+  geom_point()
+
+coltab <- c("Impacted seagrasses" = "red4",
+            "Unimpacted seagrasses" = "green4")
+ ##################   NDVI  #####################
+
+df_glm_NDVI_S2 <- df_all_indice %>% 
+  dplyr::filter(Indices == "NDVI")
+
+
+glm_NDVI_S2 <- brm(
+  formula = Relative ~ Raster*Target_types,
+  data = df_glm_NDVI_S2, 
+  family = gaussian(), 
+  cores = 8, 
+  iter = 5000,
+  warmup = 500,
+  control = list(adapt_delta = 0.9999),
+  save_pars = save_pars(latent = TRUE),
+  file = "Output/glmm/glmm_S2_NDVI_5000iter"
   )
 
+NewData_S2_NDVI<-expand_grid(Raster = unique(df_glm_NDVI_S2$Raster),
+                     Target_types = unique(df_glm_NDVI_S2$Target_types),
+                     Indices = unique(df_glm_NDVI_S2$Indices))
 
-coltab <- c("After" = "red4",
-            "Before" = "green4")
+InitialData_S2_NDVI<-NewData_S2_NDVI %>%
+  tidybayes::add_linpred_draws(glm_NDVI_S2, ndraws=2000,seed=123)%>% 
+  group_by(Raster,Target_types,Indices)%>% 
+  summarise(tidybayes::median_qi(.linpred,.width=c(0.89))) %>% 
+  mutate(Raster = factor( Raster, levels  = c("Before","During","After")))
 
-(plot_indices <- df_all_indice %>% 
-  # dplyr::filter(Targets_name == "Bleached_seagrass") %>% 
-  ggplot(aes(x = date, y = values, color = Raster))+
-  geom_boxplot(show.legend = F)+
-  facet_grid(Indices ~ Target_types, scales = "free_y", switch="y")+
-  scale_color_manual(values = coltab)+
-  xlab("Date of the S2 image")+
-  theme_Bede()+
-  theme(
-    axis.title.x = element_text(size = 20),
-    axis.text.x = element_text(size = 15),
-    axis.text.y = element_text(size = 15),
-    axis.title.y = element_blank(),
-    plot.background = element_rect(fill = "white"),
-    strip.text = element_text(size = 17),
-    strip.placement = "outside"
+
+plot_NDVI <- InitialData_S2_NDVI %>% 
+  ggplot(aes(x = Raster, y = y*100, color = Target_types)) +
+  geom_point(position = position_dodge(width = 0.3)) +
+  geom_line(aes(group = Target_types),position = position_dodge(width = 0.3)) +
+  geom_errorbar(aes(ymin = ymin*100, ymax = ymax*100), width = 0.2, position = position_dodge(width = 0.3)) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey40", linewidth=1)+
+  scale_color_manual(values = coltab, 
+                     labels = c("Unimpacted","Impacted"))+
+  theme_Bede() +
+  theme(legend.position = "top")+ 
+      scale_x_discrete(labels = c("1st-Sept","6th-Sept","8th-Oct"),
+                                       position = "top")+
+      labs(y = paste0("Relative Differences of NDVI (%)"), x = "Dates")+
+      theme(
+        strip.text.x = element_text(size =17),
+        # legend.title = element_text(size =17, hjust = 0.5),
+        legend.title.position = "top",
+        legend.text = element_text(size =13),
+  
+        # legend.text = element_text(hjust = 0, size =13),
+        axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
+        axis.title.x = element_text(size = 13, color = "white"),
+        axis.title.y = element_text(size = 13),
+        plot.background = element_rect(fill = "white"),
+        legend.key.width = unit(1,"cm"),
+        legend.key.height = unit(2,"mm")
+      )
+
+ ##################   SPC  #####################
+
+df_glm_SPC_S2 <- df_all_indice %>% 
+  dplyr::filter(Indices == "SPC")
+
+
+glm_SPC_S2 <- brm(
+  formula = Relative ~ Raster*Target_types,
+  data = df_glm_SPC_S2, 
+  family = gaussian(), 
+  cores = 8, 
+  iter = 5000,
+  warmup = 500,
+  control = list(adapt_delta = 0.9999),
+  save_pars = save_pars(latent = TRUE),
+  file = "Output/glmm/glmm_S2_SPC_5000iter"
   )
-)
 
-stat_indices <- df_all_indice %>% 
-  group_by(Indices, Target_types, date) %>% 
-  reframe(mean = mean(values, na.rm = T),
-          sd = sd(values, na.rm = T), 
-          median = median(values, na.rm = T))
+NewData_S2_SPC<-expand_grid(Raster = unique(df_glm_SPC_S2$Raster),
+                     Target_types = unique(df_glm_SPC_S2$Target_types),
+                     Indices = unique(df_glm_SPC_S2$Indices))
 
-ggsave("Paper/Figs/High_res/Compares_Indices_S2.png",plot_indices, width =7 , height = 10, dpi = 400)
+InitialData_S2_SPC<-NewData_S2_SPC %>%
+  tidybayes::add_linpred_draws(glm_SPC_S2, ndraws=2000,seed=123)%>% 
+  group_by(Raster,Target_types,Indices)%>% 
+  summarise(tidybayes::median_qi(.linpred,.width=c(0.89))) %>% 
+  mutate(Raster = factor( Raster, levels  = c("Before","During","After")))
+
+
+plot_SPC <- InitialData_S2_SPC %>% 
+  ggplot(aes(x = Raster, y = y*100, color = Target_types)) +
+  geom_point(position = position_dodge(width = 0.3)) +
+  geom_line(aes(group = Target_types),position = position_dodge(width = 0.3)) +
+  geom_errorbar(aes(ymin = ymin*100, ymax = ymax*100), width = 0.2, position = position_dodge(width = 0.3)) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey40", linewidth=1)+
+  scale_color_manual(values = coltab, 
+                     labels = c("Unimpacted","Impacted"))+
+  theme_Bede() +
+  theme(legend.position = "top")+ 
+      scale_x_discrete(labels = c("1st-Sept","6th-Sept","8th-Oct"),
+                                       position = "top")+
+      scale_y_continuous(position = "right")+
+      labs(y = paste0("Relative Differences of SC (%)"), x = "Dates")+
+      theme(
+        strip.text.x = element_text(size =17),
+        # legend.title = element_text(size =17, hjust = 0.5),
+        legend.title.position = "top",
+        legend.text = element_text(size =13),
+  
+        # legend.text = element_text(hjust = 0, size =13),
+        axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
+        axis.title.x = element_text(size = 13, color = "white"),
+        axis.title.y = element_text(size = 13),
+        plot.background = element_rect(fill = "white"),
+        legend.key.width = unit(1,"cm"),
+        legend.key.height = unit(2,"mm")
+      )
+
+
+ ##################   GLI  #####################
+
+df_glm_GLI_S2 <- df_all_indice %>% 
+  dplyr::filter(Indices == "GLI")
+
+
+glm_GLI_S2 <- brm(
+  formula = Relative ~ Raster*Target_types,
+  data = df_glm_GLI_S2, 
+  family = gaussian(), 
+  cores = 8, 
+  iter = 5000,
+  warmup = 500,
+  control = list(adapt_delta = 0.9999),
+  save_pars = save_pars(latent = TRUE),
+  file = "Output/glmm/glmm_S2_GLI_5000iter"
+  )
+
+NewData_S2_GLI<-expand_grid(Raster = unique(df_glm_GLI_S2$Raster),
+                     Target_types = unique(df_glm_GLI_S2$Target_types),
+                     Indices = unique(df_glm_GLI_S2$Indices))
+
+InitialData_S2_GLI<-NewData_S2_GLI %>%
+  tidybayes::add_linpred_draws(glm_GLI_S2, ndraws=2000,seed=123)%>% 
+  group_by(Raster,Target_types,Indices)%>% 
+  summarise(tidybayes::median_qi(.linpred,.width=c(0.89))) %>% 
+  mutate(Raster = factor( Raster, levels  = c("Before","During","After")))
+
+
+plot_GLI <- InitialData_S2_GLI %>% 
+  ggplot(aes(x = Raster, y = y*100, color = Target_types)) +
+  geom_point(position = position_dodge(width = 0.3)) +
+  geom_line(aes(group = Target_types),position = position_dodge(width = 0.3)) +
+  geom_errorbar(aes(ymin = ymin*100, ymax = ymax*100), width = 0.2, position = position_dodge(width = 0.3)) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey40", linewidth=1)+
+  scale_color_manual(values = coltab, 
+                     labels = c("Unimpacted","Impacted"))+
+  theme_Bede() +
+  theme(legend.position = "top")+ 
+      scale_x_discrete(labels = c("1st-Sept","6th-Sept","8th-Oct"))+
+      labs(y = paste0("Relative Differences of GLI (%)"), x = "Dates")+
+      theme(
+        strip.text.x = element_text(size =17),
+        # legend.title = element_text(size =17, hjust = 0.5),
+        legend.title.position = "top",
+        legend.text = element_text(size =13),
+  
+        # legend.text = element_text(hjust = 0, size =13),
+        axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
+        axis.title.x = element_text(size = 13),
+        axis.title.y = element_text(size = 13),
+        plot.background = element_rect(fill = "white"),
+        legend.key.width = unit(1,"cm"),
+        legend.key.height = unit(2,"mm")
+      )
+
+
+ ##################   SDI  #####################
+
+df_glm_SDI_S2 <- df_all_indice %>% 
+  dplyr::filter(Indices == "SDI")
+
+
+glm_SDI_S2 <- brm(
+  formula = Relative ~ Raster*Target_types,
+  data = df_glm_SDI_S2, 
+  family = gaussian(), 
+  cores = 8, 
+  iter = 5000,
+  warmup = 500,
+  control = list(adapt_delta = 0.9999),
+  save_pars = save_pars(latent = TRUE),
+  file = "Output/glmm/glmm_S2_SDI_5000iter"
+  )
+
+NewData_S2_SDI<-expand_grid(Raster = unique(df_glm_SDI_S2$Raster),
+                     Target_types = unique(df_glm_SDI_S2$Target_types),
+                     Indices = unique(df_glm_SDI_S2$Indices))
+
+InitialData_S2_SDI<-NewData_S2_SDI %>%
+  tidybayes::add_linpred_draws(glm_SDI_S2, ndraws=2000,seed=123)%>% 
+  group_by(Raster,Target_types,Indices)%>% 
+  summarise(tidybayes::median_qi(.linpred,.width=c(0.89))) %>% 
+  mutate(Raster = factor( Raster, levels  = c("Before","During","After")))
+
+
+plot_SDI <- InitialData_S2_SDI %>% 
+  ggplot(aes(x = Raster, y = y*100, color = Target_types)) +
+  geom_point(position = position_dodge(width = 0.3)) +
+  geom_line(aes(group = Target_types),position = position_dodge(width = 0.3)) +
+  geom_errorbar(aes(ymin = ymin*100, ymax = ymax*100), width = 0.2, position = position_dodge(width = 0.3)) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey40", linewidth=1)+
+  scale_color_manual(values = coltab, 
+                     labels = c("Unimpacted","Impacted"))+
+  theme_Bede() +
+  theme(legend.position = "top")+ 
+      scale_x_discrete(labels = c("1st-Sept","6th-Sept","8th-Oct"))+
+      scale_y_continuous(position = "right")+
+      labs(y = paste0("Relative Differences of ",ID, " (%)"), x = "Dates")+
+      theme(
+        strip.text.x = element_text(size =17),
+        # legend.title = element_text(size =17, hjust = 0.5),
+        legend.title.position = "top",
+        legend.text = element_text(size =13),
+  
+        # legend.text = element_text(hjust = 0, size =13),
+        axis.text.x = element_text(size = 13),
+        axis.text.y = element_text(size = 13),
+        axis.title.x = element_text(size = 13),
+        axis.title.y = element_text(size = 13),
+        plot.background = element_rect(fill = "white"),
+        legend.key.width = unit(1,"cm"),
+        legend.key.height = unit(2,"mm")
+      )
+
+
+
+########### TOTAL PLOT ##########
+(final_plot <- ((plot_NDVI | plot_SPC) / (plot_GLI | plot_SDI))  + 
+  plot_layout(guides = "collect")& 
+  theme(legend.position = "bottom"))
+
+
+ggsave("Paper/Figs/High_res/Compares_Indices_S2.png",final_plot, width =10 , height = 10, dpi = 400)
+
+
+
 
 graph <- "Paper/Figs/High_res/Compares_Indices_S2.png" %>% 
   rast()
 ext_graph <- ext(graph)
 
 plot_labeled <- ggplot()+
-  geom_spatraster_rgb(data = graph, maxcell = ext_graph[2]*ext_graph[4])+
+  geom_spatraster_rgb(data = graph, maxcell = 3000*3000)+
     # geom_spatraster_rgb(data = graph)+
-    geom_label(aes(x = 500, y = 2800, label = "A"), alpha = 0.5, size = 10)+ 
-    geom_label(aes(x = 1720, y = 2800, label = "B"), alpha = 0.5, size = 10)+ 
-    geom_label(aes(x = 500, y = 1590, label = "C"), alpha = 0.5, size = 10)+
-    geom_label(aes(x = 1720, y = 1590, label = "D"), alpha = 0.5, size = 10)+
-    geom_label(aes(x = 500, y = 385, label = "E"), alpha = 0.5, size = 10)+ 
-    geom_label(aes(x = 1720, y = 385, label = "F"), alpha = 0.5, size = 10)+  
+    geom_text(aes(x = 450, y = 3600, label = "A"),  size = 8)+ 
+    geom_text(aes(x = 2200, y = 3600, label = "B"),size = 8)+ 
+    geom_text(aes(x = 450, y = 1950, label = "C"),  size = 8)+
+    geom_text(aes(x = 2200, y = 1950, label = "D"), size = 8)+
     coord_equal(expand = F)+
     theme_void()
 
+# plot_labeled
 
-ggsave("Paper/Figs/High_res/Compares_Indices_S2.png",plot_labeled, width =7 , height = 10, dpi = 400)
-ggsave("Paper/Figs/Low_res/Compares_Indices_S2.png",plot_labeled, width =7 , height = 10, dpi = 200)
+ggsave("Paper/Figs/High_res/Compares_Indices_S2.png",plot_labeled, width =10 , height = 10, dpi = 400)
+ggsave("Paper/Figs/Low_res/Compares_Indices_S2.png",plot_labeled, width =10 , height = 10, dpi = 200)
 
 
 
@@ -3598,11 +3847,11 @@ ggsave("Paper/Figs/Low_res/Compares_Indices_S2.png",plot_labeled, width =7 , hei
 #| cache: false
 #| echo: false
 #| warning: false
-#| fig-cap: "Comparaison of Sentinel-2 based radiometric indices at two different dates, before (2021-09-01, green) and after (2021-09-06, red) the heatwaves events of Quiberons, for the two category of GCPs seen in the filed : Green seagrasses (i.e seagrass not affected by the event, Left Column) and Darkened Seagrasses (i.e seagrass affected by the event, Right column). The Normalised Difference Vegetation Index (NDVI) has been computed using the @eq-ndvi, the Seagrass Percent Cover (SPC) with the @eq-spc and the Green Leaf Index (GLI) using @eq-gli,"
+#| fig-cap: "Comparaison the relative difference since the 1st of September 2021 of Sentinel-2 based metrics at two different dates : during (2021-09-06) and after the heatwave events (2021-10-08) of Quiberons, for the two category of QPs : Unimpacted seagrasses (green) and Impacted Seagrasses (red). A: Normalized Difference Vegetation Index (NDVI); B: Seagrass Cover (SC); C: Green Leaf Index (GLI); D: Seagrass Darkening Index (SDI). Points represent predicted value of the metric using a GLM while error bar represent the 89% confidance interval of it."
 #| label: fig-NDVI_GLI_SPC
-#| fig-width: 7
+#| fig-width: 10
 #| fig-height: 10
-#| out-width: "80%"
+#| out-width: "100%"
 
 knitr::include_graphics("Figs/Low_res/Compares_Indices_S2.png")
 ```
@@ -3621,7 +3870,7 @@ library(tidyverse)
 library(MapRs)
 library(tidyterra)
 
-msk <- read_sf("Data/shp/mask_study_quiberon.shp")
+msk <- read_sf("Data/shp/mask_study_quiberon_narrow.shp")
 msk_inter <- "Data/shp/mask_intertidal_quiberon.shp" %>% 
   read_sf()
 
@@ -4099,26 +4348,33 @@ stk_all <- c(stk,litto_cropped) %>%
 
 writeRaster(stk_all,"Data/Stack_all_variables.tif", overwrite = T)
 
+
+
+stk_all <- rast("Data/Stack_all_variables.tif") %>% 
+  mutate(Relative_SDI = (SDI_after-SDI_before)/abs(SDI_before))
+
 stk_all_df <- stk_all %>% 
   as.data.frame(xy = T) %>% 
   as_tibble() %>% 
   # as_tibble() %>% 
-  mutate(diff_GLI = GLI_before - GLI_after,
-         percentage_GLI =  ((GLI_before - GLI_after)/ GLI_before)*100,
-         emersion_per_day = (emersion_time/60)/4, 
+  mutate(emersion_per_day = (emersion_time/60)/4, 
          SDI_after = (SDI_after / 1000)+0.1, 
          SDI_before = (SDI_before / 1000)+0.1)%>% 
   as.data.frame()
 
-stk_all_df_gam <- stk_all_df %>% 
-  dplyr::filter(NDVI_before > 0.5,
-                !(percentage_GLI < 25 & emersion_per_day > 14.5),
-                emersion_per_day < 16)
+
 
 stk_all_df_gam_sdi <- stk_all_df %>% 
-  dplyr::filter(NDVI_before > 0.5,
-                # !(percentage_GLI < 25 & emersion_per_day > 14.5),
-                emersion_per_day < 16)
+  dplyr::filter(
+    # NDVI_before > 0.5,
+    SDI_before < 0,
+    # !(NDVI_before > NDVI_after & SDI_before > SDI_after),
+    # !(GLI_before < GLI_after & SDI_before > SDI_after),
+    # 
+    # Relative_SDI < 10,
+    # # Relative_SDI > -5,
+    emersion_per_day < 16
+    )
 # 
 # stk_all_df_gam %>% 
 #   # dplyr::filter(NDVI_before > 0.5) %>% 
@@ -4127,21 +4383,21 @@ stk_all_df_gam_sdi <- stk_all_df %>%
 #   geom_point()
 
 stk_all_df_gam_sdi %>% 
-  ggplot(aes(x = emersion_per_day, y = SDI_after))+
+  ggplot(aes(x = emersion_per_day, y = Relative_SDI))+
   # geom_density2d()
   geom_point()
 
   
   
 
-gam_model <- mgcv::gam(SDI_after ~ s(emersion_per_day,
+gam_model <- mgcv::gam(Relative_SDI ~ s(emersion_per_day,
                                           k=6
                                           ), 
                        
                  family = gaussian(),
                  data = stk_all_df_gam_sdi)
 
-# Utilities.Package::Model_Check(gam_model)
+Utilities.Package::Model_Check(gam_model)
 
 
 NewData<-expand_grid(emersion_per_day=unique(stk_all_df_gam_sdi$emersion_per_day))
@@ -4153,13 +4409,17 @@ NewData <- NewData %>%
   mutate(fit = pred$fit,
          se = pred$se.fit)
 
-(plot_GAM <- ggplot(NewData)+
-  geom_line(data = NewData, aes(x = emersion_per_day, y = fit), linewidth = 1)+
-  geom_ribbon(data = NewData, aes(x = emersion_per_day, y = fit, ymin = fit- se, ymax = fit + se ), alpha = 0.2)+
-  ylab("Seagrass Darkening Index")+
+
+library(ggExtra)
+
+(plot_GAM <- ggplot()+
+  geom_line(data = NewData, aes(x = emersion_per_day, y = fit*100), linewidth = 1)+
+  geom_ribbon(data = NewData, aes(x = emersion_per_day, y = fit*100, ymin = fit*100- se*100, ymax = fit*100 + se*100 ), alpha = 0.2)+
+  ylab("Relative change of SDI (%)")+
   xlab("Emerged time per day (hour)")+
-  geom_point(data = stk_all_df_gam_sdi , aes(x = emersion_per_day , y = SDI_after), alpha = 0.05)+
+  geom_point(data = stk_all_df_gam_sdi , aes(x = emersion_per_day , y = Relative_SDI*100),alpha = 0.01)+
     geom_hline(yintercept = 0)+
+    ylim(c(-250,300))+
   theme_Bede()+
   xlim(c(10,15))+
   theme(axis.text.x = element_text(size = 15),
@@ -4167,6 +4427,9 @@ NewData <- NewData %>%
         axis.title.x = element_text(size = 16),
         axis.title.y = element_text(size = 16),
         plot.background = element_rect(fill = "white")))
+
+ggMarginal(plot_GAM, type = "density", margins = "y", size = 20)
+
 
 ggsave("Paper/Figs/High_res/GAM_emersion.png", plot_GAM, height = 5 , width = 10, dpi = 400 )
 ggsave("Paper/Figs/Low_res/GAM_emersion.png", plot_GAM, height = 5 , width = 10, dpi = 200 )
@@ -4183,6 +4446,7 @@ library(ggplot2)
 library(sf)
 library(cowplot)
 
+msk <- read_sf("Data/shp/mask_study_quiberon_narrow.shp")
 
 zoom1 <- "Data/shp/zoom_bathy_insert.shp" %>% 
   read_sf()
@@ -4191,6 +4455,7 @@ coltab <- c("bathy_color" = "goldenrod2")
 RGB_comp <- "Data/Sentinel2/after_RGB_comp.tif" %>% 
   terra::rast() %>% 
   terra::crop(msk)
+
 
 lims <- ext(RGB_comp)
 
@@ -4246,7 +4511,7 @@ final_plot <- ggdraw() +
   draw_plot(
     inset_plot_bathy,
     x = 0.95,     # X position of the inset (adjust as needed)
-    y = 0.75,     # Y position of the inset (adjust as needed)
+    y = 0.76,     # Y position of the inset (adjust as needed)
     width = 0.45,  # Width of the inset (adjust as needed)
     height = 0.45, # Height of the inset (adjust as needed)
     hjust = 1,
@@ -4283,6 +4548,8 @@ segment_darkening= data.frame(x1 = c(490524, 490925),
                      y1 = c(5269905,5269905),
                      y2 = c(5270467,5270448),
                      id = c(1,2))
+
+sf_darkseagrass <- read_sf("Output/darkening_patches_SDI.shp")
 
 main_plot_darkening <- ggplot() +
   geom_spatraster_rgb(data = RGB_comp,interpolate = F,max_col_value = 220 ) +
@@ -4347,7 +4614,7 @@ final_plot <- ggdraw() +
   draw_plot(
     inset_plot_darkening,
     x = 0.9,     # X position of the inset (adjust as needed)
-    y = 0.75,     # Y position of the inset (adjust as needed)
+    y = 0.76,     # Y position of the inset (adjust as needed)
     width = 0.45,  # Width of the inset (adjust as needed)
     height = 0.45,
     hjust = 1,
@@ -4358,6 +4625,92 @@ final_plot <- ggdraw() +
 # print(final_plot)
 
 ggsave("Paper/Figs/High_res/Map_darkening.png",final_plot, width = 5, height = 9, dpi = 400)
+
+```
+
+```{r map after}
+#| cache: true
+#| echo: false
+#| eval: false
+#| warning: false
+
+library(ggplot2)
+library(sf)
+library(cowplot)
+
+RGB_comp <- "Data/Sentinel2/after2_RGB_comp.tif" %>% 
+  terra::rast() %>% 
+  terra::crop(msk)
+
+
+lims <- ext(RGB_comp)
+
+segment_bathy= data.frame(x1 = c(490415, 490816),
+                     x2 = c(490760,491554),
+                     y1 = c(5271168,5271168),
+                     y2 = c(5270760,5270762),
+                     id = c(1,2))
+# Create the main plot
+main_plot_bathy <- ggplot() +
+  geom_spatraster_rgb(data = RGB_comp,interpolate = F,max_col_value = 220 ) +
+  geom_sf(data = bathy_line, aes(color = "bathy_color"),show.legend = F,linewidth = 0.7) +
+  geom_sf(data = zoom1, color = "red", fill = NA,linewidth = 1, linetype = "dashed")+
+  geom_segment(data = segment_bathy, aes(x = x1, xend = x2, y = y1, yend = y2, group = id), color = "red", linewidth = 0.8, linetype = "dashed")+
+  geom_label(aes(x = 490200, y = 5271680, label = "C"), alpha = 0.5, size = 10)+
+    coord_sf(xlim = lims[1:2], ylim = lims[3:4], 
+           expand = FALSE,
+          label_axes = list(
+          bottom = "E", right = "N"
+           )) +
+  scale_color_manual(values = coltab) +
+  theme_Bede_Map() +
+  theme(
+    # legend.position = c(0.95, 0.98),
+    # legend.background = element_rect(fill = alpha("white", 0.5)),
+    plot.background = element_rect(fill = "white", color=NA),
+    axis.text.y = element_text(vjust = 0.5,hjust = 0.5, angle = 90),
+    axis.title.y = element_blank(),
+    axis.title.x = element_blank()
+  )
+
+
+
+zoom1_bbox <- st_bbox(zoom1)
+
+# Create the inset plot
+inset_plot_bathy <- ggplot() +
+  geom_spatraster_rgb(data = RGB_comp,interpolate = F,max_col_value = 150 ) +
+  geom_sf(data = bathy_line, aes(color = "bathy_color"), linewidth = 0.7) +
+    geom_sf(data = zoom1, color = "red", fill = NA, linewidth = 2, linetype = "dashed")+
+  
+  coord_sf(
+    xlim = c(zoom1_bbox$xmin, zoom1_bbox$xmax),
+    ylim = c(zoom1_bbox$ymin, zoom1_bbox$ymax),
+    expand = FALSE
+  ) +
+  scale_color_manual(values = coltab,
+                     label = "1m bathymetry",
+                     name = NULL) +
+  theme_void() +  # Remove axes and background for the inset
+  theme(legend.position = "none")  # Remove legend from the inset
+
+# Combine the main plot and the inset plot
+final_plot <- ggdraw() +
+  draw_plot(main_plot_bathy) +
+  draw_plot(
+    inset_plot_bathy,
+    x = 0.90,     # X position of the inset (adjust as needed)
+    y = 0.76,     # Y position of the inset (adjust as needed)
+    width = 0.45,  # Width of the inset (adjust as needed)
+    height = 0.45, # Height of the inset (adjust as needed)
+    hjust = 1,
+    vjust = 1
+  )
+# print(final_plot)
+
+ggsave("Paper/Figs/High_res/Map_bathy_after.png",final_plot, width = 5, height = 9, dpi = 400)
+
+
 
 ```
 
@@ -4373,19 +4726,32 @@ values(plt1)[values(plt1$Map_bathy_4)==0] <- NA
 plt2 <- rast("Paper/Figs/High_res/Map_darkening.png")
 values(plt2)[values(plt2$Map_darkening_4)==0] <- NA
 
+plt3 <- rast("Paper/Figs/High_res/Map_bathy_after.png")
+values(plt3)[values(plt3$Map_bathy_after_4)==0] <- NA
+
 ext(plt2)[1]<-ext(plt2)[1]+ext(plt1)[2]-100 
 ext(plt2)[2]<-ext(plt2)[2]+ext(plt1)[2]-100
+ext(plt3)[2]<-ext(plt1)[2]+ext(plt2)[2]-185
+
+ext(plt3)[1] <- ext(plt2)[2]-185
+# ext(plt3)[1] <-3800
+
 
 plt_combine <- ggplot()+
-  geom_spatraster_rgb(data = plt2, maxcell = ext(plt1)[2]*ext(plt1)[4])+
-  geom_spatraster_rgb(data = plt1, maxcell = ext(plt1)[2]*ext(plt1)[4])+
+  # geom_spatraster_rgb(data = plt3, maxcell = ext(plt1)[2]*ext(plt1)[4])+
+  # geom_spatraster_rgb(data = plt2, maxcell = ext(plt1)[2]*ext(plt1)[4])+
+  # geom_spatraster_rgb(data = plt1, maxcell = ext(plt1)[2]*ext(plt1)[4])+
+  geom_spatraster_rgb(data = plt2)+
+  geom_spatraster_rgb(data = plt1)+
+  geom_spatraster_rgb(data = plt3)+
+
   coord_sf(expand = F)+
   theme_void()+
   theme( plot.background = element_rect(fill = "white", color = NA))
-     
+plt_combine     
 
-ggsave("Paper/Figs/High_res/Map_darkening_Bathy.png",plt_combine, width = 10, height = 9.35, dpi = 400)
-ggsave("Paper/Figs/Low_res/Map_darkening_Bathy.png",plt_combine, width = 10, height = 9.35, dpi = 200)
+ggsave("Paper/Figs/High_res/Map_darkening_Bathy.png",plt_combine, width = 10, height = 6.2, dpi = 400)
+ggsave("Paper/Figs/Low_res/Map_darkening_Bathy.png",plt_combine, width = 10, height =6.2, dpi = 200)
 ```
 
 ```{r Stat_mapping}
@@ -4432,10 +4798,10 @@ Using the @eq-SDI, we can detect seagrass patches that have darkened. Following 
 #| cache: false
 #| echo: false
 #| warning: false
-#| fig-cap: "Map of the Darkening of seagrasses during the heatwave events of September 2021 in Quiberon. A: 3.9 m bathymetry isobar (golden line); B: Result of the detection of darkened seagrass patches (Blue plolygons)"
+#| fig-cap: "Map of the Darkening of seagrasses during the heatwave events of September 2021 in Quiberon. A: 3.9 m bathymetry isobar (golden line); B: Result of the detection of darkened seagrass patches (Blue plolygons); Sentinel-2 image one month after the end of the heatwaves (2021-10-08)."
 #| label: fig-Map_darkening_Bathy
 #| fig-width: 10
-#| fig-height: 9.35
+#| fig-height: 6.2
 #| out-width: "100%"
 
 knitr::include_graphics("Figs/Low_res/Map_darkening_Bathy.png")
@@ -4447,7 +4813,7 @@ Additionally, analysis of bathymetry data to determine seagrass emersion time sh
 #| cache: false
 #| echo: false
 #| warning: false
-#| fig-cap: "Seagrass Darkening Index as a function of the daily emergence time of seagrasses. The line represents a Generalized Additive Model (GAM) prediction, and the shaded area indicates the standard error. Shaded points represent raw data, with each point corresponding to a single pixel of the meadow."
+#| fig-cap: "Relative change of the SDI before and during the heatwaves events as a function of the daily emergence time of seagrasses. The line represents a Generalized Additive Model (GAM) prediction, and the shaded area indicates the standard error. Shaded points represent raw data, with each point corresponding to a single pixel of the meadow."
 #| label: fig-GAM_Emersion
 #| fig-width: 10
 #| fig-height: 5

@@ -1,12 +1,24 @@
-output-dir: "../docs"
+project:
+  type: manuscript
+  output-dir: ../docs
+manuscript: 
+  article: index.qmd
+format:
+  html: 
+    toc: true
+    theme: cosmo
+  docx:
+    output-file: "Simon_Heatwaves_Paper"
+    reference-doc: quarto_template.docx
+  nature-pdf: 
+    fig-pos: "H"
+    output-file: "Simon_Heatwaves_Paper"
 render: 
-  - "*.qmd"
-  - "!*.ipynb"
-  - "!*.out.ipynb"
+  - "index.qmd"
 resources:
+  - "../docs/Figures_only.docx"
   - "!*.qmd"
   - "!*.ipynb"
   - "!*.out.ipynb"
   - "!*.embed.ipynb"
-
 bibliography: library.bib

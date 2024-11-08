@@ -25,3 +25,5 @@ contributes:
         - "partials/_author.tex"
         - "partials/_affiliation.tex"
         - "partials/before-body.tex"
+    docx: 
+      reference-doc: quarto_template.docx

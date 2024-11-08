@@ -1,0 +1,109 @@
+---
+title: "Figures of the Heatwave Paper"
+format: docx
+output-file: "Figures_heatwaves"
+editor: source
+---
+
+```{r Fig Site Quiberon Plot}
+#| cache: false
+#| echo: false
+#| warning: false
+#| fig-cap: Location of the field campaign that occured on the 10th of September 2021. The red line surround the intertidal zone (Zone between High tide and low tide, that is totally emerged at low tide) and the dark green polygon indicates the extent of the seagrass meadow. Green dots indicate location of quadrat images of unimpacted seagrasses (i.e. showing a green color on the field) while red circles indicate location of quadrat images of impacted seagrasses (i.e. showing a dark color on the field). 
+#| label: fig-quiberonMap
+#| fig-width: 10
+#| fig-height: 10
+#| out-width: "100%"
+
+knitr::include_graphics("../Paper/Figs/Low_res/Quiberon_map.png")
+```
+
+```{r Fig img_Quiberon}
+#| cache: false
+#| echo: false
+#| warning: false
+#| fig-cap: "Illustrations of the two coloration of seagrasses observed in the field. A: View of a green green meadow; B: Quadrat images of green seagrasses; C: Quadrat images of darkened seagrasses; D: View of darkened area of themeadow. All images were taken on September 10th, 2021, in Quiberon."
+#| label: fig-QuiberonImg
+#| fig-width: 10
+#| fig-height: 10
+#| out-width: "100%"
+
+knitr::include_graphics("../Paper/Figs/Low_res/img_Quiberon.png")
+```
+
+```{r Fig Exp_Spectra}
+#| cache: false
+#| echo: false
+#| warning: false
+#| fig-cap: "Standardized Hyperspectral Reflectance signature collected during the experiment for both the Control (Left) and the Treatment (Right). Color denotes the progression along the experiment from the beginning (Day 1: green), middle (Day 2: Yellow) and end (Day 3: Brown)."
+#| label: fig-Exp_Spectra
+#| fig-width: 10
+#| fig-height: 5
+#| out-width: "100%"
+
+knitr::include_graphics("../Paper/Figs/Low_res/plot_Spectra_exp.png")
+```
+
+```{r Fig Exp_Spectral_indices}
+#| cache: false
+#| echo: false
+#| warning: false
+#| fig-cap: "Difference in the second derivative of hyperspectral signature between the control and the test at the end of the experiment (A) the second derivative at 665 nm (B), the NDVI (C), the GLI (D)  and the SDI (E) over Time. A: Mean difference and standard deviation of the second derivative of the Control and the Treatment on the final day of the experiment; B: Relative evolution of the second derivative at 665 nm between Treatment and Control groups over time across three replicates; C: Relative evolution of NDVI for the Treatment group compared to the Control group over time across three replicates; D: Relative evolution of GLI for the Treatment group relative to the Control group over time across three replicates; E: Relative evolution of SDI for the Treatment group relative to the Control group over time across three replicates. Points indicate raw data, the line represents a generalized linear model, and the shaded area the model's standard error."
+#| label: fig-Exp_Spectral_indices
+#| fig-width: 8.1
+#| fig-height: 10
+#| out-width: "100%"
+
+knitr::include_graphics("../Paper/Figs/Low_res/merged_indices.png")
+```
+
+```{r Fig S2_comparison}
+#| cache: false
+#| echo: false
+#| warning: false
+#| fig-cap: "Spectral Comparison of Sentinel-2 Reflectance (D) Quadrats Points (QPs) Before (A) and During (B) Heatwave Events (C); A: RGB color composition of the Sentinel-2 image on the 1st of September 2021. The points correspond to GCPs collected on September 10, 2021; B: Detection of heatwave events based on both Air Temperature and Sea Surface Temperature (SST). The solid line represents the daily average temperature, while the dashed line indicates the 90th percentile of the climatology. Colored areas identify heatwaves (marine in blue and atmospherical in red). The two vertical dashed lines represent the acquisition dates of the two Sentinel-2 images used in this analysis (01-09-2021 and 06-09-2021) ; C : RGB color composition of the Sentinel-2 image on the 6th of September 2021. The points correspond to GCPs collected on September 10, 2021 [@fig-quiberonMap] ; D : Average spectral signatures of GCPs where dark and green seagrasses (blue and gold lines, respectively) were identified during the field survey. The left plot shows the reflectance of these GCPs before the heatwave impact, while the right plot shows the spectral signature during the heatwaves. The ribbons around the lines represent the standard deviation."
+#| label: fig-S2_comparison
+#| fig-width: 10
+#| fig-height: 9.55
+#| out-width: "100%"
+
+knitr::include_graphics("../Paper/Figs/Low_res/Heatwaves_S2_plot.png")
+
+```
+
+```{r Fig NDVI_GLI_SPC}
+#| cache: false
+#| echo: false
+#| warning: false
+#| fig-cap: "Comparaison the relative difference since the 1st of September 2021 of Sentinel-2 based metrics at two different dates : during (2021-09-06) and after the heatwave events (2021-10-08) of Quiberons, for the two category of QPs : Unimpacted seagrasses (green) and Impacted Seagrasses (red). A: Normalized Difference Vegetation Index (NDVI); B: Seagrass Cover (SC); C: Green Leaf Index (GLI); D: Seagrass Darkening Index (SDI). Points represent predicted value of the metric using a GLM while error bar represent the 89% confidance interval of it."
+#| label: fig-NDVI_GLI_SPC
+#| fig-width: 10
+#| fig-height: 10
+#| out-width: "100%"
+
+knitr::include_graphics("../Paper/Figs/Low_res/Compares_Indices_S2.png")
+```
+
+```{r Fig Map_darkening_Bathy}
+#| cache: false
+#| echo: false
+#| warning: false
+#| fig-cap: "Map of the Darkening of seagrasses during the heatwave events of September 2021 in Quiberon. A: 3.9 m bathymetry isobar (golden line); B: Result of the detection of darkened seagrass patches (Blue plolygons); Sentinel-2 image one month after the end of the heatwaves (2021-10-08)."
+#| label: fig-Map_darkening_Bathy
+#| fig-width: 10
+#| fig-height: 6.2
+
+```
+
+```{r Fig GAM_Emersion}
+#| cache: false
+#| echo: false
+#| warning: false
+#| fig-cap: "Relative change of the SDI before and during the heatwaves events as a function of the daily emergence time of seagrasses. The line represents a Generalized Additive Model (GAM) prediction, and the shaded area indicates the standard error. Shaded points represent raw data, with each point corresponding to a single pixel of the meadow."
+#| label: fig-GAM_Emersion
+#| fig-width: 10
+#| fig-height: 5
+#| out-width: "100%"
+
+knitr::include_graphics("../Paper/Figs/Low_res/GAM_emersion.png")
+```
