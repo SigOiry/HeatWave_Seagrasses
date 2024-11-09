@@ -5,6 +5,19 @@ output-file: "Figures_heatwaves"
 editor: source
 ---
 
+```{r Fig design}
+#| cache: false
+#| echo: false
+#| warning: false
+#| fig-cap: "Example of the various steps of the experiment. A: Field sampling of seagrass using a sampling box; B: Intertidal chambers used during the experiment; C: Seagrass sample inside a chamber during the experiment at high tide; D: Photo of the treatment sample at the start of the experiment; E: Photo of the treatment sample at the end of the experiment."
+#| label: fig-design
+#| fig-width: 10
+#| fig-height: 10
+#| out-width: "100%"
+
+knitr::include_graphics("Figs/Low_res/Experimental_design.png")
+```
+
 ```{r Fig Site Quiberon Plot}
 #| cache: false
 #| echo: false
