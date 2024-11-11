@@ -10,9 +10,9 @@ format:
   docx:
     output-file: "Simon_Heatwaves_Paper"
     reference-doc: quarto_template.docx
-  nature-pdf: 
-    fig-pos: "H"
-    output-file: "Simon_Heatwaves_Paper"
+  # nature-pdf: 
+  #   fig-pos: "H"
+  #   output-file: "Simon_Heatwaves_Paper"
 render: 
   - "index.qmd"
 resources:

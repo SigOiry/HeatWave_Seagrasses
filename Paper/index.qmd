@@ -214,7 +214,7 @@ ggsave("Paper/Figs/High_res/Experimental_design.png",plot, width = 3.025, height
 #| label: fig-design
 #| fig-width: 10
 #| fig-height: 10
-#| out-width: "100%"
+#| out-width: "95%"
 
 knitr::include_graphics("Figs/Low_res/Experimental_design.png")
 ```
@@ -539,7 +539,7 @@ ggsave("Paper/Figs/High_res/Chamber_Profils.png",plt, height = 874*4, width = 19
 #| label: fig-Profile
 #| fig-width: 10
 #| fig-height: 8
-#| out-width: "100%"
+#| out-width: "95%"
 
 knitr::include_graphics("Figs/Low_res/Chamber_Profils.png")
 ```
@@ -1062,7 +1062,7 @@ ggsave("Paper/Figs/Low_res/Quiberon_map.png", combined_plot, width = 10, height 
 #| label: fig-quiberonMap
 #| fig-width: 10
 #| fig-height: 10
-#| out-width: "100%"
+#| out-width: "95%"
 
 knitr::include_graphics("Figs/Low_res/Quiberon_map.png")
 ```
@@ -1143,7 +1143,7 @@ ggsave("Paper/Figs/High_res/img_Quiberon.png",plot, width = 3.1, height = 2.05, 
 #| label: fig-QuiberonImg
 #| fig-width: 10
 #| fig-height: 10
-#| out-width: "100%"
+#| out-width: "95%"
 
 knitr::include_graphics("Figs/Low_res/img_Quiberon.png")
 ```
@@ -1511,7 +1511,7 @@ ggsave("Paper/Figs/Low_res/plot_Spectra_exp.png", plot_Spectra_exp, height = 5, 
 #| label: fig-Exp_Spectra
 #| fig-width: 10
 #| fig-height: 5
-#| out-width: "100%"
+#| out-width: "95%"
 
 knitr::include_graphics("Figs/Low_res/plot_Spectra_exp.png")
 ```
@@ -2509,13 +2509,13 @@ df_model_hyperspectral <- read.csv("../Output/Output_model_Comparison_Hyperspect
 
 @fig-Exp_Spectral_indices -A shows the average difference of the second derivative ($R''(\lambda)$) of hyperspectral signature between the Control and the Treatment group at day 3. The maximum difference of $R''(\lambda)$ has been observed at 665 nm, position of absorption of chlorophyll-a, where the control were $0.95 \times 10^{-4}$ higher then the treatment groups.
 
-Monitoring the second derivative at 665 nm ($R''_{665 \, \text{nm}}$) indicated that, at the start of the experiment (day 1) $R''_{665 \, \text{nm}}$ for the Treatment group was on average `r round(df_model_hyperspectral %>%  dplyr::filter(days == 1 & variable == "abs_chla") %>% pull(y) *100)` higher than that of the Control. However, by day 2, $R''_{665 \, \text{nm}}$ for the Treatment showed a rapid decrease of approximately `r round(df_model_hyperspectral %>%  dplyr::filter(days == 2 & variable == "abs_chla") %>% pull(y) *100)` %, eventually reaching a total decline of `r round(df_model_hyperspectral %>%  dplyr::filter(days == 3 & variable == "abs_chla") %>% pull(y) *100)` % by day 3 (@fig-Exp_Spectral_indices B)
+Monitoring the second derivative at 665 nm ($R''_{665 \, \text{nm}}$) indicated that, at the start of the experiment (day 1) $R''_{665 \, \text{nm}}$ for the Treatment group was on average `r round(df_model_hyperspectral |>  dplyr::filter(days == 1 & variable == "abs_chla") |> dplyr::pull(y) *100)` higher than that of the Control. However, by day 2, $R''_{665 \, \text{nm}}$ for the Treatment showed a rapid decrease of approximately `r round(df_model_hyperspectral |>  dplyr::filter(days == 2 & variable == "abs_chla") |> dplyr::pull(y) *100)` %, eventually reaching a total decline of `r round(df_model_hyperspectral |>  dplyr::filter(days == 3 & variable == "abs_chla") |> dplyr::pull(y) *100)` % by day 3 (@fig-Exp_Spectral_indices B)
 
-Monitoring the Normalized Difference Vegetation Index (NDVI) revealed that, at the beginning of the experiment (day 1), the NDVI for the Treatment group was on average `r abs(round(df_model_hyperspectral %>% dplyr::filter(days == 1 & variable == "NDVI") %>% pull(y) *100))` % lower than that of the Control. By day 2, the NDVI for the Treatment exhibited a rapid decline of approximately `r round(df_model_hyperspectral %>% dplyr::filter(days == 2 & variable == "NDVI") %>% pull(y) *100)` %, eventually reaching a cumulative decrease of `r round(df_model_hyperspectral %>% dplyr::filter(days == 3 & variable == "NDVI") %>% pull(y) *100)` % by day 3 (Fig. Exp_Spectral_indices C).
+Monitoring the Normalized Difference Vegetation Index (NDVI) revealed that, at the beginning of the experiment (day 1), the NDVI for the Treatment group was on average `r abs(round(df_model_hyperspectral |> dplyr::filter(days == 1 & variable == "NDVI") |> dplyr::pull(y) *100))` % lower than that of the Control. By day 2, the NDVI for the Treatment exhibited a rapid decline of approximately `r round(df_model_hyperspectral |> dplyr::filter(days == 2 & variable == "NDVI") |> dplyr::pull(y) *100)` %, eventually reaching a cumulative decrease of `r round(df_model_hyperspectral |> dplyr::filter(days == 3 & variable == "NDVI") |> dplyr::pull(y) *100)` % by day 3 (@fig-Exp_Spectral_indices C).
 
-Monitoring the Green Leaf Index (GLI) showed that, at the start of the experiment (day 1), the GLI for the Treatment group was, on average, `r round(df_model_hyperspectral %>% dplyr::filter(days == 1 & variable == "GLI") %>% pull(y) *100)` % higher than that of the Control. However, by day 2, the GLI for the Treatment exhibited a rapid decrease of approximately `r round(df_model_hyperspectral %>% dplyr::filter(days == 2 & variable == "GLI") %>% pull(y) *100)` %, ultimately reaching a cumulative reduction of `r round(df_model_hyperspectral %>% dplyr::filter(days == 3 & variable == "GLI") %>% pull(y) *100)` % by day 3 (Fig. Exp_Spectral_indices D).
+Monitoring the Green Leaf Index (GLI) showed that, at the start of the experiment (day 1), the GLI for the Treatment group was, on average, `r round(df_model_hyperspectral |> dplyr::filter(days == 1 & variable == "GLI") |> dplyr::pull(y) *100)` % higher than that of the Control. However, by day 2, the GLI for the Treatment exhibited a rapid decrease of approximately `r round(df_model_hyperspectral |> dplyr::filter(days == 2 & variable == "GLI") |> dplyr::pull(y) *100)` %, ultimately reaching a cumulative reduction of `r round(df_model_hyperspectral |> dplyr::filter(days == 3 & variable == "GLI") |> dplyr::pull(y) *100)` % by day 3 (@fig-Exp_Spectral_indices D).
 
-Monitoring the Simple Difference Index (SDI) revealed that, at the start of the experiment (day 1), the SDI for the Treatment group was on average `r round(df_model_hyperspectral %>% dplyr::filter(days == 1 & variable == "SDI") %>% pull(y) *100)` % higher than that of the Control. By day 2, the SDI for the Treatment exhibited a rapid decrease of approximately `r round(df_model_hyperspectral %>% dplyr::filter(days == 2 & variable == "SDI") %>% pull(y) *100)` %, eventually reaching a cumulative decline of `r round(df_model_hyperspectral %>% dplyr::filter(days == 3 & variable == "SDI") %>% pull(y) *100)` % by day 3 (Fig. Exp_Spectral_indices E).
+Monitoring the Simple Difference Index (SDI) revealed that, at the start of the experiment (day 1), the SDI for the Treatment group was on average `r round(df_model_hyperspectral |> dplyr::filter(days == 1 & variable == "SDI") |> dplyr::pull(y) *100)` % higher than that of the Control. By day 2, the SDI for the Treatment exhibited a rapid decrease of approximately `r round(df_model_hyperspectral |> dplyr::filter(days == 2 & variable == "SDI") |> dplyr::pull(y) *100)` %, eventually reaching a cumulative decline of `r round(df_model_hyperspectral |> dplyr::filter(days == 3 & variable == "SDI") |> dplyr::pull(y) *100)` % by day 3 (@fig-Exp_Spectral_indices E).
 
 
 ```{r Fig Exp_Spectral_indices}
@@ -2526,7 +2526,7 @@ Monitoring the Simple Difference Index (SDI) revealed that, at the start of the 
 #| label: fig-Exp_Spectral_indices
 #| fig-width: 8.1
 #| fig-height: 10
-#| out-width: "100%"
+#| out-width: "95%"
 
 knitr::include_graphics("Figs/Low_res/merged_indices.png")
 ```
@@ -3506,7 +3506,7 @@ The Sentinel-2 images used in this study are dated from the 1st of September 202
 #| label: fig-S2_comparison
 #| fig-width: 10
 #| fig-height: 9.55
-#| out-width: "100%"
+#| out-width: "95%"
 
 knitr::include_graphics("Figs/Low_res/Heatwaves_S2_plot.png")
 ```
@@ -3523,9 +3523,9 @@ df_indices_S2 <- read.csv("../Output/Output_model_Comparison_S2_indices.csv")
 
 ```
 
-Using Sentinel-2 data, the remote sensing derived metrics, the NDVI, the Seagrass Cover (SC), the GLI and the SDI estimated for pixels unaffected by the heatwave showed minimal changes for all metrics of `r round(df_indices_S2 %>% dplyr::filter(Raster == "During" & Target_types == "Unimpacted seagrasses" & Indices == "NDVI") %>% pull(y) *100)` %, `r round(df_indices_S2 %>% dplyr::filter(Raster == "During" & Target_types == "Unimpacted seagrasses" & Indices == "SPC") %>% pull(y) *100)` %, `r round(df_indices_S2 %>% dplyr::filter(Raster == "During" & Target_types == "Unimpacted seagrasses" & Indices == "GLI") %>% pull(y) *100)` and `r round(df_indices_S2 %>% dplyr::filter(Raster == "During" & Target_types == "Unimpacted seagrasses" & Indices == "SDI") %>% pull(y) *100)` %, respectively between the 1st of September and the 6th of September (@fig-NDVI_GLI_SPC). In contrast, seagrass impacted by the heatwave exhibited a significant changes in all metrics. Because the SC is linearly linked with the NDVI, both metric drop of `r mean(c(round(df_indices_S2 %>% dplyr::filter(Raster == "During" & Target_types == "Impacted seagrasses" & Indices == "NDVI") %>% pull(y) *100), round(df_indices_S2 %>% dplyr::filter(Raster == "During" & Target_types == "Impacted seagrasses" & Indices == "SPC") %>% pull(y) *100)))` %, however the drop in SC were not due to a loss of density of seagrass on the field (@fig-QuiberonImg). The GLI drops of about `r round(df_indices_S2 %>% dplyr::filter(Raster == "During" & Target_types == "Impacted seagrasses" & Indices == "GLI") %>% pull(y) *100)` % at the 6th of September. The SDI were the most sensitive metric to the darkening of seagrasses, showing an increase of `r round(df_indices_S2 %>% dplyr::filter(Raster == "During" & Target_types == "Impacted seagrasses" & Indices == "SDI") %>% pull(y) *100)` % during heatwave exposure.
+Using Sentinel-2 data, the remote sensing derived metrics, the NDVI, the Seagrass Cover (SC), the GLI and the SDI estimated for pixels unaffected by the heatwave showed minimal changes for all metrics of `r round(df_indices_S2 |> dplyr::filter(Raster == "During" & Target_types == "Unimpacted seagrasses" & Indices == "NDVI") |> dplyr::pull(y) *100)` %, `r round(df_indices_S2 |> dplyr::filter(Raster == "During" & Target_types == "Unimpacted seagrasses" & Indices == "SPC") |> dplyr::pull(y) *100)` %, `r round(df_indices_S2 |> dplyr::filter(Raster == "During" & Target_types == "Unimpacted seagrasses" & Indices == "GLI") |> dplyr::pull(y) *100)` and `r round(df_indices_S2 |> dplyr::filter(Raster == "During" & Target_types == "Unimpacted seagrasses" & Indices == "SDI") |> dplyr::pull(y) *100)` %, respectively between the 1st of September and the 6th of September (@fig-NDVI_GLI_SPC). In contrast, seagrass impacted by the heatwave exhibited a significant changes in all metrics. Because the SC is linearly linked with the NDVI, both metric drop of `r mean(c(round(df_indices_S2 |> dplyr::filter(Raster == "During" & Target_types == "Impacted seagrasses" & Indices == "NDVI") |> dplyr::pull(y) *100), round(df_indices_S2 |> dplyr::filter(Raster == "During" & Target_types == "Impacted seagrasses" & Indices == "SPC") |> dplyr::pull(y) *100)))` %, however the drop in SC were not due to a loss of density of seagrass on the field (@fig-QuiberonImg). The GLI drops of about `r round(df_indices_S2 |> dplyr::filter(Raster == "During" & Target_types == "Impacted seagrasses" & Indices == "GLI") |> dplyr::pull(y) *100)` % at the 6th of September. The SDI were the most sensitive metric to the darkening of seagrasses, showing an increase of `r round(df_indices_S2 |> dplyr::filter(Raster == "During" & Target_types == "Impacted seagrasses" & Indices == "SDI") |> dplyr::pull(y) *100)` % during heatwave exposure (@fig-NDVI_GLI_SPC).
 
-In this case, the NDVI dropped by approximately 34%, from a median of 0.61 to 0.40 (@fig-NDVI_GLI_SPC B). Although the heatwave did not affect the observed seagrass density in the field, the drop in NDVI led to an underestimation of satellite-based SPC, from 83 to 48% (@fig-NDVI_GLI_SPC D). The GLI, the index that reflects the greenness of leaves, was the most affected by the event, with an important reduction from a median of 0.23 to 0.03 during the event (@fig-NDVI_GLI_SPC F). Interestingly, when comparing the initial seagrass density of both targets (i.e., seagrass density before the event) pixels affected by the heatwave (median SPC = 85%; @fig-NDVI_GLI_SPC D green) were denser than the those remained unchanged (median SPC = 65%; @fig-NDVI_GLI_SPC C green).
+One month later the heatwaves events, on the 8th of October, all metrics of unimpacted QPs have increased compared to the 1st of September: The NDVI and SC by `r round(df_indices_S2 |> dplyr::filter(Raster == "After" & Target_types == "Unimpacted seagrasses" & Indices == "NDVI") |> dplyr::pull(y) *100)` %, The GLI by `r round(df_indices_S2 |> dplyr::filter(Raster == "After" & Target_types == "Unimpacted seagrasses" & Indices == "GLI") |> dplyr::pull(y) *100)` % and the SDI `r round(df_indices_S2 |> dplyr::filter(Raster == "After" & Target_types == "Unimpacted seagrasses" & Indices == "SDI") |> dplyr::pull(y) *100)` %. Concerning QPs impacted by the heatwaves, even if all the metrics are closer to the values they had before the heatwave, they have not retrieved there level of before the heatwave. At the 8th of October, the NDVI and the SC of these QPs were `r round(df_indices_S2 |> dplyr::filter(Raster == "After" & Target_types == "Impacted seagrasses" & Indices == "NDVI") |> dplyr::pull(y) *100)` %, The GLI `r round(df_indices_S2 |> dplyr::filter(Raster == "After" & Target_types == "Impacted seagrasses" & Indices == "GLI") |> dplyr::pull(y) *100)` % and the SDI `r round(df_indices_S2 |> dplyr::filter(Raster == "After" & Target_types == "Unimpacted seagrasses" & Indices == "SDI") |> dplyr::pull(y) *100)` %. 
 
 ```{r NDVI_GLI_SPC}
 #| cache: true
@@ -3876,13 +3876,10 @@ ggsave("Paper/Figs/Low_res/Compares_Indices_S2.png",plot_labeled, width =10 , he
 #| label: fig-NDVI_GLI_SPC
 #| fig-width: 10
 #| fig-height: 10
-#| out-width: "100%"
+#| out-width: "95%"
 
 knitr::include_graphics("Figs/Low_res/Compares_Indices_S2.png")
 ```
-
-
-
 
 ### Mapping of the seagrass darkening
 
@@ -4835,7 +4832,7 @@ Using the @eq-SDI, we can detect seagrass patches that have darkened. Following 
 #| label: fig-Map_darkening_Bathy
 #| fig-width: 10
 #| fig-height: 6.2
-#| out-width: "100%"
+#| out-width: "95%"
 
 knitr::include_graphics("Figs/Low_res/Map_darkening_Bathy.png")
 ```
@@ -4850,7 +4847,7 @@ Additionally, analysis of bathymetry data to determine seagrass emersion time sh
 #| label: fig-GAM_Emersion
 #| fig-width: 10
 #| fig-height: 5
-#| out-width: "100%"
+#| out-width: "95%"
 
 knitr::include_graphics("Figs/Low_res/GAM_emersion.png")
 ```
@@ -5847,7 +5844,7 @@ In a simulated heatwave experiment on *Zostera noltei*, resilience was evident u
 #| label: fig-Resilience_of_seagrasses
 #| fig-width: 10
 #| fig-height: 5
-#| out-width: "100%"
+#| out-width: "95%"
 
 knitr::include_graphics("Figs/Low_res/plot_resilience.png")
 ```
@@ -5876,4 +5873,7 @@ On average, *in situ* temperatures were 3 ± 3.2°C higher than those recorded b
 
 
 ![Annexe B1: Development and Application of the Seagrass Darkening Index (SDI). The left panel displays the average reflectance values for both the Control and Treatment groups on the final day of the experiment. Shaded areas represent the standard deviation of reflectance, while markers indicate the spectral bands used to construct the SDI. The right panel shows the application of the SDI for both groups on the last day of the experiment.](Figs/Low_res/PLOT_SDI_exp.png)
-# Bibliography
+
+
+# References
+1
