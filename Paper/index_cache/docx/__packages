@@ -10,3 +10,4 @@ forcats
 lubridate
 sf
 terra
+magrittr

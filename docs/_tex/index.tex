@@ -712,42 +712,41 @@ individual spectrum.}
 \subsubsection{Evolution of spectral
 metrics}\label{evolution-of-spectral-metrics}
 
-\textbf{Clear differences emerged in the second derivative of the
-spectral signature between the two groups: the Control group exhibited
-more variability, reflecting more pronounced spectral features, whereas
-the Treatment group shows less variability, indicating fewer absorption
-features in its spectral signature. The maximum absorption for both
-groups occurs at 665 nm, with values of \(1.63 \times 10^{-4}\) for the
-Control group and \(8.08 \times 10^{-5}\) for the Treatment group---a
-reduction of 50.31\% by the experiment's end.}
+Figure~\ref{fig-Exp_Spectral_indices} -A shows the average difference of
+the second derivative (\(R''(\lambda)\)) of hyperspectral signature
+between the Control and the Treatment group at day 3. The maximum
+difference of \(R''(\lambda)\) has been observed at 665 nm, position of
+absorption of chlorophyll-a, where the control were
+\(0.95 \times 10^{-4}\) higher then the treatment groups.
 
 Monitoring the second derivative at 665 nm (\(R''_{665 \, \text{nm}}\))
-over time reveals a rapid drop in replicates 1 and 3, decreasing by 26
-and 64 \% respectively after 24 hours (T24) of treatment
-(Figure~\ref{fig-Exp_Spectral_indices}, B). After T24
-\(R''_{665 \, \text{nm}}\) in these replicates stabilizes for the
-remainder of the experiment. In contrast, replicate 2 shows a slower but
-more substantial decrease of 110 \% by the experiment's end. Overall,
-between the start and the end of the experiment, the
-\(R''_{665 \, \text{nm}}\) have decreased by 72 \%.
+indicated that, at the start of the experiment (day 1)
+\(R''_{665 \, \text{nm}}\) for the Treatment group was on average 13
+higher than that of the Control. However, by day 2,
+\(R''_{665 \, \text{nm}}\) for the Treatment showed a rapid decrease of
+approximately -27 \%, eventually reaching a total decline of -68 \% by
+day 3 (Figure~\ref{fig-Exp_Spectral_indices} B)
 
-NDVI shows the same trends, exhibit an initial rapid decline of
-approximately 25\% between T24 and T30, after which their values
-stabilize, with minimal further changes observed through the end of the
-experiment. In contrast, Replicate 2 remains relatively stable between 0
-and 48 hours, showing little change during this period (drop of 9\% at
-T24). ,However, after T48, Replicate 2 undergoes a substantial drop,
-ultimately reaching a reduction of approximately 48\%
-(Figure~\ref{fig-Exp_Spectral_indices}, C).
+Monitoring the Normalized Difference Vegetation Index (NDVI) revealed
+that, at the beginning of the experiment (day 1), the NDVI for the
+Treatment group was on average 3 \% lower than that of the Control. By
+day 2, the NDVI for the Treatment exhibited a rapid decline of
+approximately -17 \%, eventually reaching a cumulative decrease of -31
+\% by day 3 (Fig. Exp\_Spectral\_indices C).
 
-The relative GLI shows similar trends across the replicates. Replicates
-1 and 3 exhibit an initial rapid decline of approximately 50 and 68 \%,
-respectively between T24 and T30, after which their values stabilize
-with minimal further changes observed until the end of the experiment.
-In contrast, Replicate 2 remains relatively constant between 0 and 48
-hours, showing only a minor decline of around 5\% by T24. However, after
-T48 mark, Replicate 2 experiences a substantial decrease, ultimately
-reaching a reduction of 73\% (Figure~\ref{fig-Exp_Spectral_indices}, D).
+Monitoring the Green Leaf Index (GLI) showed that, at the start of the
+experiment (day 1), the GLI for the Treatment group was, on average, -2
+\% higher than that of the Control. However, by day 2, the GLI for the
+Treatment exhibited a rapid decrease of approximately -28 \%, ultimately
+reaching a cumulative reduction of -54 \% by day 3 (Fig.
+Exp\_Spectral\_indices D).
+
+Monitoring the Simple Difference Index (SDI) revealed that, at the start
+of the experiment (day 1), the SDI for the Treatment group was on
+average 55 \% higher than that of the Control. By day 2, the SDI for the
+Treatment exhibited a rapid decrease of approximately 241 \%, eventually
+reaching a cumulative decline of 420 \% by day 3 (Fig.
+Exp\_Spectral\_indices E).
 
 \phantomsection\label{cell-fig-Exp_Spectral_indices}
 \begin{figure}[H]
@@ -776,28 +775,6 @@ area the model's standard error.}
 
 \end{figure}%
 
-\subsubsection{Buidling the Seagrass Darkening radiometric
-index}\label{buidling-the-seagrass-darkening-radiometric-index}
-
-\phantomsection\label{cell-fig-SDI_exp}
-\begin{figure}[H]
-
-\centering{
-
-\includegraphics[width=1\textwidth,height=\textheight]{Figs/Low_res/PLOT_SDI_exp.png}
-
-}
-
-\caption{\label{fig-SDI_exp}Development and Application of the Seagrass
-Darkening Index (SDI). The left panel displays the average reflectance
-values for both the Control and Treatment groups on the final day of the
-experiment. Shaded areas represent the standard deviation of
-reflectance, while markers indicate the spectral bands used to construct
-the SDI. The right panel shows the application of the SDI for both
-groups on the last day of the experiment.}
-
-\end{figure}%
-
 When applied to reflectance data collected during the experiment, the
 SDI revealed clear distinctions between the Control and Treatment
 groups. By the end of the experiment, seagrasses in the Treatment group
@@ -805,7 +782,7 @@ exhibited a median SDI of 0.01, with no samples showing a negative SDI
 value, consistent with their visibly darkened appearance. In contrast,
 the Control group retained a green appearance throughout the experiment,
 with a median SDI of -0.003, and only 3\% of samples displaying a
-positive SDI value (Figure~\ref{fig-SDI_exp}, right).
+positive SDI value (Annexe B1 ; Section~\ref{sec-AnnexeB}).
 
 \subsubsection{Pigment composition evolution along the
 experiment}\label{pigment-composition-evolution-along-the-experiment}
@@ -826,23 +803,20 @@ classified as a strong event, and the MHW has been classified as
 moderate. Even though the Sentinel-2 of the 6th of September was
 captured only a few days after the start of the events, darkening of
 seagrass can already be observed in the true-color composition
-(Figure~\ref{fig-S2_comparison} C). Before the event, all GCPs appeared
-green un the images, with similar reflectance spectra, regardless of the
-class attributed to the GCPs on the field
-(Figure~\ref{fig-S2_comparison} A and D left). Their reflectance spectra
-showed a peak at 560 nm (in the green part of the spectra), low values
-at 665 nm, corresponding to the strong absorption by chlorophyll-a and a
-high infrared plateau (\textgreater{} 705 nm). However, GCPs classified
-as dark seagrass during the fieldtrip, showed significant differences in
-reflectance spectral shape compared to GCPs classified as green seagrass
-on the 10th of September, with corresponding differences in the true
-color composition (Figure~\ref{fig-S2_comparison} C and D right). In
-fact these dark seagrass GCPs were affected by extreme events, which
-altered their color and impacted the satellite reflectance
-(Figure~\ref{fig-S2_comparison} C). The reflectance spectra over dark
-seagrass were characterized by the loss of the reflectance peak at 560
-nm and a decrease in the infared plateau, which was observed as a steady
-increasing slope up to 940 nm.
+(Figure~\ref{fig-S2_comparison} C). Before the event, all QPs appeared
+green on the images, with similar reflectance spectra, regardless of the
+class attributed to the QPs on the field (Figure~\ref{fig-S2_comparison}
+A and D left). Their reflectance spectra showed a peak at 560 nm (in the
+green part of the spectra), low values at 665 nm, corresponding to the
+strong absorption by chlorophyll-a and a high infrared plateau
+(\textgreater{} 705 nm). However, QPs classified as impacted during the
+field campaign, showed significant differences in reflectance spectral
+shape compared to QPs classified as unimpacted on the 10th of September,
+with corresponding differences in the true color composition
+(Figure~\ref{fig-S2_comparison} C and D right). The reflectance spectra
+over dark seagrass were characterized by the loss of the reflectance
+peak at 560 nm and a decrease in the infrared plateau, which was
+observed as a steady increasing slope up to 940 nm.
 
 \phantomsection\label{cell-fig-S2_comparison}
 \begin{figure}[H]
@@ -854,41 +828,47 @@ increasing slope up to 940 nm.
 }
 
 \caption{\label{fig-S2_comparison}Spectral Comparison of Sentinel-2
-Reflectance (D) Quadrats Points (QPs) Before (A) and During (B) Heatwave
-Events (C); A: RGB color composition of the Sentinel-2 image on the 1st
-of September 2021. The points correspond to GCPs collected on September
-10, 2021; B: Detection of heatwave events based on both Air Temperature
-and Sea Surface Temperature (SST). The solid line represents the daily
-average temperature, while the dashed line indicates the 90th percentile
-of the climatology. Colored areas identify heatwaves (marine in blue and
-atmospherical in red). The two vertical dashed lines represent the
-acquisition dates of the two Sentinel-2 images used in this analysis
-(01-09-2021 and 06-09-2021) ; C : RGB color composition of the
-Sentinel-2 image on the 6th of September 2021. The points correspond to
-GCPs collected on September 10, 2021 Figure~\ref{fig-quiberonMap} ; D :
-Average spectral signatures of GCPs where dark and green seagrasses
-(blue and gold lines, respectively) were identified during the field
-survey. The left plot shows the reflectance of these GCPs before the
-heatwave impact, while the right plot shows the spectral signature
-during the heatwaves. The ribbons around the lines represent the
-standard deviation.}
+Reflectance (D) of Quadrats Points (QPs) Before (A) and During (C)
+Heatwave Events (B); A: RGB color composition of the Sentinel-2 image on
+the 1st of September 2021. The points correspond to GCPs collected on
+September 10, 2021, with unimpacted seagrass in green and impacted
+seagrass in golden; B: Detection of heatwave events based on both Air
+Temperature and Sea Surface Temperature (SST). The solid line represents
+the daily average temperature, while the dashed line indicates the 90th
+percentile of the climatology. Colored areas identify heatwaves (marine
+in blue and atmospherical in red). The two vertical dashed lines
+represent the acquisition dates of the two Sentinel-2 images used in
+this analysis (01-09-2021 and 06-09-2021) ; C : RGB color composition of
+the Sentinel-2 image on the 6th of September 2021, with unimpacted
+seagrass in green and impacted seagrass in golden; D : Average spectral
+signatures of GCPs where dark and green seagrasses (gold and green
+lines, respectively) were identified during the field survey. The left
+plot shows the reflectance of these QPs before the heatwave impact,
+while the right plot shows the spectral signature during the heatwaves.
+The ribbons around the lines represent the standard deviation.}
 
 \end{figure}%
 
-\subsubsection{Radiometric indices
-comparison}\label{radiometric-indices-comparison}
+\subsubsection{Sentinel-2 derived metrics
+comparison}\label{sentinel-2-derived-metrics-comparison}
 
-Using Sentinel-2 data, the spectral indices (NDVI and GLI) and SPC
-estimated for pixels unaffected by the heatwave showed no significant
-differences before or during the event (Figure~\ref{fig-NDVI_GLI_SPC},
-left column) In contrast, seagrass darkened by the heatwave exhibited a
-significant decrease in both index values and SPC
-(Figure~\ref{fig-NDVI_GLI_SPC}, right column). In this case, the NDVI
-dropped by approximately 34\%, from a median of 0.61 to 0.40, while also
-becoming more homogeneous (the standard deviation decreased from 0.09 to
-0.06) (Figure~\ref{fig-NDVI_GLI_SPC} B). Although the heatwave did not
-affect the observed seagrass density in the field, the drop in NDVI led
-to an underestimation of satellite-based SPC, from 83 to 48\%
+Using Sentinel-2 data, the remote sensing derived metrics, the NDVI, the
+Seagrass Cover (SC), the GLI and the SDI estimated for pixels unaffected
+by the heatwave showed minimal changes for all metrics of -1 \%, -1 \%,
+-10 and 3 \%, respectively between the 1st of September and the 6th of
+September (Figure~\ref{fig-NDVI_GLI_SPC}). In contrast, seagrass
+impacted by the heatwave exhibited a significant changes in all metrics.
+Because the SC is linearly linked with the NDVI, both metric drop of -35
+\%, however the drop in SC were not due to a loss of density of seagrass
+on the field (Figure~\ref{fig-QuiberonImg}). The GLI drops of about -85
+\% at the 6th of September. The SDI were the most sensitive metric to
+the darkening of seagrasses, showing an increase of 97 \% during
+heatwave exposure.
+
+In this case, the NDVI dropped by approximately 34\%, from a median of
+0.61 to 0.40 (Figure~\ref{fig-NDVI_GLI_SPC} B). Although the heatwave
+did not affect the observed seagrass density in the field, the drop in
+NDVI led to an underestimation of satellite-based SPC, from 83 to 48\%
 (Figure~\ref{fig-NDVI_GLI_SPC} D). The GLI, the index that reflects the
 greenness of leaves, was the most affected by the event, with an
 important reduction from a median of 0.23 to 0.03 during the event
@@ -987,26 +967,47 @@ in this underexplored area.
 In the present study, significant changes in the reflectance of
 seagrasses exposed to heatwaves were observed experimentally. These
 changes mainly include a drop in reflectance around 560 nm and another
-drop around 740 nm in the near-infrared part of the spectrum. The change
-in color can be multifactorial and has been documented in plants under
-various stress conditions, including thermal stress. Leaf blackening in
-angiosperms, as observed in \emph{Protea neriifolia}, is primarily
-driven by oxidative processes involving the enzyme polyphenol oxidase
-(PPO) and the oxidation of phenolic compounds. When photosynthesis is
-inhibited by factors such as low light, chemical interference, or
-thermal stress, the plant's production of essential carbohydrates and
-antioxidants diminishes, increasing oxidative stress and leading to
-darkening. Experimental essays have proved that low-oxygen environments
-and the addition of antioxydants like diphenylamine (DPA), have been
-effective in reducing these oxidative reactions. In the absence of
-photosynthesis, membrane integrity is also compromised, allowing PPO to
-interact with phenolic compounds, thereby accelerating darkening.
-Furthermore, high temperatures can destabilize membranes, especially in
-chloroplasts, disrupting photosystem II and impairing recovery of
-photosynthetic function (Dascaliuc et al., 2007; Jones and
-Clayton-Greene, 1992). As chlorophyll-a degrades, the ratio of pigments
-shift; with pigments like carotenoids becoming more prominent, leading
-to a darkening of the leaves.
+drop around 740 nm in the near-infrared part of the spectrum.
+Figure~\ref{fig-Exp_Spectral_indices} illustrates distinct temporal
+trends across the different spectral indices monitored throughout the
+experiment. The second derivative at 665 nm (R'\,'665), NDVI, and GLI
+(panels B, C, and D) all demonstrate a clear decline over the
+experimental period (days 1-3), suggesting a progressive reduction in
+photosynthetic activity or pigment levels in the treatment group
+relative to the control. In contrast, SDI (panel E) shows a marked
+increase, reaching up to 600\% by day 3. This positive trend in SDI
+aligns with its design as an index to indicate darkening of seagrass,
+likely resulting from structural or physiological changes, such as
+degraded pigmentation or altered light absorption. While the general
+trends are consistent across experimental runs, there is some
+variability, particularly evident in the confidence intervals, which are
+wider for SDI than for the other indices. This suggests that while
+darkening is a consistent response, it may vary in intensity between
+individual samples or experimental runs. Furthermore, the contrasting
+magnitudes of change---especially the pronounced increases in SDI versus
+the declines in other indices---highlight the sensitivity of SDI to
+changes associated with seagrass darkening, which could be indicative of
+stress or adaptation responses specific to the treatment conditions.
+
+The change in color can be multifactorial and has been documented in
+plants under various stress conditions, including thermal stress. Leaf
+blackening in angiosperms, as observed in \emph{Protea neriifolia}, is
+primarily driven by oxidative processes involving the enzyme polyphenol
+oxidase (PPO) and the oxidation of phenolic compounds. When
+photosynthesis is inhibited by factors such as low light, chemical
+interference, or thermal stress, the plant's production of essential
+carbohydrates and antioxidants diminishes, increasing oxidative stress
+and leading to darkening. Experimental essays have proved that
+low-oxygen environments and the addition of antioxydants like
+diphenylamine (DPA), have been effective in reducing these oxidative
+reactions. In the absence of photosynthesis, membrane integrity is also
+compromised, allowing PPO to interact with phenolic compounds, thereby
+accelerating darkening. Furthermore, high temperatures can destabilize
+membranes, especially in chloroplasts, disrupting photosystem II and
+impairing recovery of photosynthetic function (Dascaliuc et al., 2007;
+Jones and Clayton-Greene, 1992). As chlorophyll-a degrades, the ratio of
+pigments shift; with pigments like carotenoids becoming more prominent,
+leading to a darkening of the leaves.
 
 \emph{Zostera noltei}, as a species inhabiting the intertidal zone and
 regularly exposed to air, has developed adaptations to minimize water
@@ -1402,8 +1403,10 @@ seagrasses only experience temperatures representade by solid lines.}
 
 \end{figure}%
 
-\section*{Bibliography}\label{bibliography}
-\addcontentsline{toc}{section}{Bibliography}
+\subsection{Annexes B - SDI applied on Experiment
+samples}\label{sec-AnnexeB}
+
+\includegraphics{Figs/Low_res/PLOT_SDI_exp.png} \# Bibliography
 
 \phantomsection\label{refs}
 \begin{CSLReferences}{1}{0}

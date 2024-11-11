@@ -2502,7 +2502,8 @@ write.csv(df_output_model, "Output/Output_model_Comparison_Hyperspectral_indices
 #| eval: true
 #| warning: false
 
-library(tidyverse)
+library(magrittr)
+
 df_model_hyperspectral <- read.csv("../Output/Output_model_Comparison_Hyperspectral_indices.csv")
 ```
 
