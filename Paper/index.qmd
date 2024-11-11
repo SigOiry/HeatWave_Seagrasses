@@ -2488,7 +2488,9 @@ ggsave("Paper/Figs/Low_res/merged_indices.png",plot_labeled, height = 10, width 
 
 ```
 
-**Clear differences emerged in the second derivative of the spectral signature between the two groups: the Control group exhibited more variability, reflecting more pronounced spectral features, whereas the Treatment group shows less variability, indicating fewer absorption features in its spectral signature. The maximum absorption for both groups occurs at 665 nm, with values of $1.63 \times 10^{-4}$ for the Control group and $8.08 \times 10^{-5}$ for the Treatment group—a reduction of 50.31% by the experiment's end.**
+@fig-Exp_Spectral_indices -A shows the average difference of the second derivative ($R''(\lambda)$) of hyperspectral signature between the Control and the Treatment group at day 3. The maximum difference of $R''(\lambda)$ has been observed at 665 nm, position of absorption of chlorophyll-a, where the control were $0.95 \times 10^{-4}$ higher then the treatment groups.
+
+Monitoring the second derivative at 665 nm ($R''_{665 \, \text{nm}}$) showed that at the start of the experiment (day 1), the $R''_{665 \, \text{nm}}$ of the Treatment was in average 28 % highers than the Control. However the $R''_{665 \, \text{nm}}$ of the Treatment quickly drops at day 2 of about 25% and fi
 
 Monitoring the second derivative at 665 nm ($R''_{665 \, \text{nm}}$) over time reveals a rapid drop in replicates 1 and 3, decreasing by 26 and 64 % respectively after 24 hours (T24) of treatment (@fig-Exp_Spectral_indices, B). After T24 $R''_{665 \, \text{nm}}$ in these replicates stabilizes for the remainder of the experiment. In contrast, replicate 2 shows a slower but more substantial decrease of 110 % by the experiment’s end. Overall, between the start and the end of the experiment, the $R''_{665 \, \text{nm}}$ have decreased by 72 %.
 
