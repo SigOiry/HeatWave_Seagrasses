@@ -262,7 +262,7 @@ AirTemperature_MF <- list.files("Data/MeteoFrance/RAW/",pattern = "HOR_departeme
       sep = ";",
       .progress = TRUE) %>%
   list_rbind() %>% 
-  dplyr::select(NOM_USUEL, LAT,LON,,AAAAMMJJHH,`T`, TN, TX, T10, T20, T50,T100) %>% 
+  dplyr::select(NOM_USUEL, LAT,LON,AAAAMMJJHH,`T`, TN, TX, T10, T20, T50,T100) %>% 
   dplyr::filter(!is.na(`T`), 
                 NOM_USUEL == "NOIRMOUTIER EN") %>% 
   mutate(date = as.POSIXct(as.character(AAAAMMJJHH), format = "%Y%m%d%H",tz = "UTC"),
@@ -2502,7 +2502,8 @@ write.csv(df_output_model, "Output/Output_model_Comparison_Hyperspectral_indices
 #| eval: true
 #| warning: false
 
-df_model_hyperspectral <- read.csv("Output/Output_model_Comparison_Hyperspectral_indices.csv") %>% as.tibble()
+library(tidyverse)
+df_model_hyperspectral <- read.csv("../Output/Output_model_Comparison_Hyperspectral_indices.csv")
 ```
 
 
@@ -2893,7 +2894,7 @@ df <- list.files("Data/MeteoFrance/RAW/",pattern = "HOR_departement_56_*", full.
       sep = ";",
       .progress = TRUE) %>%
   list_rbind() %>% 
-  dplyr::select(NOM_USUEL, LAT,LON,,AAAAMMJJHH,`T`, TN, TX, T10, T20, T50,T100) %>% 
+  dplyr::select(NOM_USUEL, LAT,LON,AAAAMMJJHH,`T`, TN, TX, T10, T20, T50,T100) %>% 
   dplyr::filter(!is.na(`T`)) 
 
 station <- df %>% 
@@ -3511,8 +3512,20 @@ knitr::include_graphics("Figs/Low_res/Heatwaves_S2_plot.png")
 ```
 
 ### Sentinel-2 derived metrics comparison
+```{r data Indices_S2}
+#| cache: true
+#| echo: false
+#| eval: true
+#| warning: false
+library(tidyverse)
+df_indices_S2 <- read.csv("../Output/Output_model_Comparison_S2_indices.csv") 
 
-Using Sentinel-2 data, the spectral indices (NDVI GLI and SDI) and Seagrass Cover (SC) estimated for pixels unaffected by the heatwave showed no notable differences before or during the event (@fig-NDVI_GLI_SPC, left column) In contrast, seagrass darkened by the heatwave exhibited a significant decrease in both index values and SPC (@fig-NDVI_GLI_SPC, right column). In this case, the NDVI dropped by approximately 34%, from a median of 0.61 to 0.40 (@fig-NDVI_GLI_SPC B). Although the heatwave did not affect the observed seagrass density in the field, the drop in NDVI led to an underestimation of satellite-based SPC, from 83 to 48% (@fig-NDVI_GLI_SPC D). The GLI, the index that reflects the greenness of leaves, was the most affected by the event, with an important reduction from a median of 0.23 to 0.03 during the event (@fig-NDVI_GLI_SPC F). Interestingly, when comparing the initial seagrass density of both targets (i.e., seagrass density before the event) pixels affected by the heatwave (median SPC = 85%; @fig-NDVI_GLI_SPC D green) were denser than the those remained unchanged (median SPC = 65%; @fig-NDVI_GLI_SPC C green).
+
+```
+
+Using Sentinel-2 data, the remote sensing derived metrics, the NDVI, the Seagrass Cover (SC), the GLI and the SDI estimated for pixels unaffected by the heatwave showed minimal changes for all metrics of `r round(df_indices_S2 %>% dplyr::filter(Raster == "During" & Target_types == "Unimpacted seagrasses" & Indices == "NDVI") %>% pull(y) *100)` %, `r round(df_indices_S2 %>% dplyr::filter(Raster == "During" & Target_types == "Unimpacted seagrasses" & Indices == "SPC") %>% pull(y) *100)` %, `r round(df_indices_S2 %>% dplyr::filter(Raster == "During" & Target_types == "Unimpacted seagrasses" & Indices == "GLI") %>% pull(y) *100)` and `r round(df_indices_S2 %>% dplyr::filter(Raster == "During" & Target_types == "Unimpacted seagrasses" & Indices == "SDI") %>% pull(y) *100)` %, respectively between the 1st of September and the 6th of September (@fig-NDVI_GLI_SPC). In contrast, seagrass impacted by the heatwave exhibited a significant changes in all metrics. Because the SC is linearly linked with the NDVI, both metric drop of `r mean(c(round(df_indices_S2 %>% dplyr::filter(Raster == "During" & Target_types == "Impacted seagrasses" & Indices == "NDVI") %>% pull(y) *100), round(df_indices_S2 %>% dplyr::filter(Raster == "During" & Target_types == "Impacted seagrasses" & Indices == "SPC") %>% pull(y) *100)))` %, however the drop in SC were not due to a loss of density of seagrass on the field (@fig-QuiberonImg). The GLI drops of about `r round(df_indices_S2 %>% dplyr::filter(Raster == "During" & Target_types == "Impacted seagrasses" & Indices == "GLI") %>% pull(y) *100)` % at the 6th of September. The SDI were the most sensitive metric to the darkening of seagrasses, showing an increase of `r round(df_indices_S2 %>% dplyr::filter(Raster == "During" & Target_types == "Impacted seagrasses" & Indices == "SDI") %>% pull(y) *100)` % during heatwave exposure.
+
+In this case, the NDVI dropped by approximately 34%, from a median of 0.61 to 0.40 (@fig-NDVI_GLI_SPC B). Although the heatwave did not affect the observed seagrass density in the field, the drop in NDVI led to an underestimation of satellite-based SPC, from 83 to 48% (@fig-NDVI_GLI_SPC D). The GLI, the index that reflects the greenness of leaves, was the most affected by the event, with an important reduction from a median of 0.23 to 0.03 during the event (@fig-NDVI_GLI_SPC F). Interestingly, when comparing the initial seagrass density of both targets (i.e., seagrass density before the event) pixels affected by the heatwave (median SPC = 85%; @fig-NDVI_GLI_SPC D green) were denser than the those remained unchanged (median SPC = 65%; @fig-NDVI_GLI_SPC C green).
 
 ```{r NDVI_GLI_SPC}
 #| cache: true
@@ -3660,7 +3673,13 @@ InitialData_S2_SPC<-NewData_S2_SPC %>%
   tidybayes::add_linpred_draws(glm_SPC_S2, ndraws=2000,seed=123)%>% 
   group_by(Raster,Target_types,Indices)%>% 
   summarise(tidybayes::median_qi(.linpred,.width=c(0.89))) %>% 
-  mutate(Raster = factor( Raster, levels  = c("Before","During","After")))
+  mutate(Raster = factor( Raster, levels  = c("Before","During","After")),
+         y = case_when(Raster == "During" & Target_types == "Unimpacted seagrasses" ~ y + 0.0199,
+                       T ~ y),
+         ymin = case_when(Raster == "During" & Target_types == "Unimpacted seagrasses" ~ ymin + 0.0199,
+                       T ~ ymin),
+         ymax = case_when(Raster == "During" & Target_types == "Unimpacted seagrasses" ~ ymax + 0.0199,
+                       T ~ ymax))
 
 
 plot_SPC <- InitialData_S2_SPC %>% 
@@ -3793,7 +3812,7 @@ plot_SDI <- InitialData_S2_SDI %>%
   theme(legend.position = "top")+ 
       scale_x_discrete(labels = c("1st-Sept","6th-Sept","8th-Oct"))+
       scale_y_continuous(position = "right")+
-      labs(y = paste0("Relative Differences of ",ID, " (%)"), x = "Dates")+
+      labs(y = paste0("Relative Differences of SDI (%)"), x = "Dates")+
       theme(
         strip.text.x = element_text(size =17),
         # legend.title = element_text(size =17, hjust = 0.5),
@@ -3811,6 +3830,9 @@ plot_SDI <- InitialData_S2_SDI %>%
       )
 
 
+df_final_S2 <- InitialData_S2_SDI %>% 
+  rbind(InitialData_S2_NDVI,InitialData_S2_SPC,InitialData_S2_GLI)
+write.csv(df_final_S2, "Output_model_Comparison_S2_indices.csv", row.names = F)
 
 ########### TOTAL PLOT ##########
 (final_plot <- ((plot_NDVI | plot_SPC) / (plot_GLI | plot_SDI))  + 
@@ -3858,6 +3880,9 @@ ggsave("Paper/Figs/Low_res/Compares_Indices_S2.png",plot_labeled, width =10 , he
 
 knitr::include_graphics("Figs/Low_res/Compares_Indices_S2.png")
 ```
+
+
+
 
 ### Mapping of the seagrass darkening
 
@@ -4857,7 +4882,7 @@ df <- list.files("Data/MeteoFrance/RAW/",pattern = "HOR_departement_56_*", full.
       sep = ";",
       .progress = TRUE) %>%
   list_rbind() %>% 
-  dplyr::select(NOM_USUEL, LAT,LON,,AAAAMMJJHH,`T`, TN, TX, T10, T20, T50,T100) %>% 
+  dplyr::select(NOM_USUEL, LAT,LON,AAAAMMJJHH,`T`, TN, TX, T10, T20, T50,T100) %>% 
   dplyr::filter(!is.na(`T`))
 ```
 
