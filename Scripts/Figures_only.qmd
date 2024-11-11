@@ -74,14 +74,13 @@ knitr::include_graphics("../Paper/Figs/Low_res/merged_indices.png")
 #| cache: false
 #| echo: false
 #| warning: false
-#| fig-cap: "Spectral Comparison of Sentinel-2 Reflectance (D) Quadrats Points (QPs) Before (A) and During (B) Heatwave Events (C); A: RGB color composition of the Sentinel-2 image on the 1st of September 2021. The points correspond to GCPs collected on September 10, 2021; B: Detection of heatwave events based on both Air Temperature and Sea Surface Temperature (SST). The solid line represents the daily average temperature, while the dashed line indicates the 90th percentile of the climatology. Colored areas identify heatwaves (marine in blue and atmospherical in red). The two vertical dashed lines represent the acquisition dates of the two Sentinel-2 images used in this analysis (01-09-2021 and 06-09-2021) ; C : RGB color composition of the Sentinel-2 image on the 6th of September 2021. The points correspond to GCPs collected on September 10, 2021 [@fig-quiberonMap] ; D : Average spectral signatures of GCPs where dark and green seagrasses (blue and gold lines, respectively) were identified during the field survey. The left plot shows the reflectance of these GCPs before the heatwave impact, while the right plot shows the spectral signature during the heatwaves. The ribbons around the lines represent the standard deviation."
+#| fig-cap: "Spectral Comparison of Sentinel-2 Reflectance (D) of Quadrats Points (QPs) Before (A) and During (C) Heatwave Events (B); A: RGB color composition of the Sentinel-2 image on the 1st of September 2021. The points correspond to GCPs collected on September 10, 2021; B: Detection of heatwave events based on both Air Temperature and Sea Surface Temperature (SST). The solid line represents the daily average temperature, while the dashed line indicates the 90th percentile of the climatology. Colored areas identify heatwaves (marine in blue and atmospherical in red). The two vertical dashed lines represent the acquisition dates of the two Sentinel-2 images used in this analysis (01-09-2021 and 06-09-2021) ; C : RGB color composition of the Sentinel-2 image on the 6th of September 2021. The points correspond to QPs collected on September 10, 2021 [@fig-quiberonMap] ; D : Average spectral signatures of GCPs where dark and green seagrasses (gold and green lines, respectively) were identified during the field survey. The left plot shows the reflectance of these QPs before the heatwave impact, while the right plot shows the spectral signature during the heatwaves. The ribbons around the lines represent the standard deviation."
 #| label: fig-S2_comparison
 #| fig-width: 10
 #| fig-height: 9.55
 #| out-width: "100%"
 
-knitr::include_graphics("../Paper/Figs/Low_res/Heatwaves_S2_plot.png")
-
+knitr::include_graphics("Figs/Low_res/Heatwaves_S2_plot.png")
 ```
 
 ```{r Fig NDVI_GLI_SPC}
@@ -120,3 +119,5 @@ knitr::include_graphics("../Paper/Figs/Low_res/Compares_Indices_S2.png")
 
 knitr::include_graphics("../Paper/Figs/Low_res/GAM_emersion.png")
 ```
+
+
