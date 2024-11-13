@@ -4,10 +4,9 @@
 \PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
 %
 \documentclass[
-  default,
-]{sn-jnl}
-
-
+  letterpaper,
+  DIV=11,
+  numbers=noendperiod]{scrartcl}
 
 \usepackage{amsmath,amssymb}
 \usepackage{iftex}
@@ -81,15 +80,17 @@
 \makesavenoteenv{longtable}
 \usepackage{graphicx}
 \makeatletter
-\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
-\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
-\makeatother
-% Scale images if necessary, so that they will not overflow the page
-% margins by default, and it is still possible to overwrite the defaults
-% using explicit options in \includegraphics[width, height, ...]{}
-\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
 % Set default figure placement to htbp
-\makeatletter
 \def\fps@figure{htbp}
 \makeatother
 % definitions for citeproc citations
@@ -126,26 +127,7 @@
 \newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
 \newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 
-%%%% Standard Packages
-
-\usepackage{graphicx}%
-\usepackage{multirow}%
-\usepackage{amsmath,amssymb,amsfonts}%
-\usepackage{amsthm}%
-\usepackage{mathrsfs}%
-\usepackage[title]{appendix}%
-\usepackage{xcolor}%
-\usepackage{textcomp}%
-\usepackage{manyfoot}%
-\usepackage{booktabs}%
-\usepackage{algorithm}%
-\usepackage{algorithmicx}%
-\usepackage{algpseudocode}%
-\usepackage{listings}%
-
-%%%%
-
-\raggedbottom
+\KOMAoption{captions}{tableheading}
 \makeatletter
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \AtBeginDocument{%
@@ -188,9 +170,6 @@
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
 
-\ifLuaTeX
-  \usepackage{selnolig}  % disable illegal ligatures
-\fi
 \usepackage{bookmark}
 
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
@@ -208,29 +187,27 @@ Ecosystems, Heatwaves},
   pdfcreator={LaTeX via pandoc}}
 
 
-\title[Effect of Marine and Atmospheric Heatwaves on Reflectance and
-Pigment Composition of Intertidal \emph{Zostera noltei}]{Effect of
-Marine and Atmospheric Heatwaves on Reflectance and Pigment Composition
-of Intertidal \emph{Zostera noltei}}
+\title{Effect of Marine and Atmospheric Heatwaves on Reflectance and
+Pigment Composition of Intertidal \emph{Zostera noltei}}
+\author{Simon Oiry\footnote{Institut des Substances et Organismes de la
+  Mer, ISOMer, Nantes Université, UR 2160, F-44000 Nantes, France} \and Bede
+Ffinian Rowe Davies¹ \and Philippe Rosa¹ \and Augustin Debly¹ \and Maria
+Laura Zoffoli\footnote{Consiglio Nazionale delle Ricerche, Istituto di
+  Scienze Marine (CNR-ISMAR), 00133 Rome, Italy} \and Anne-Laure
+Barillé\footnote{Bio-littoral, Immeuble Le Nevada, 2 Rue du Château de
+  l'Eraudière, 44300 Nantes, France} \and Nicolas Harin³ \and Pierre
+Gernez¹ \and Laurent Barillé¹}
+\date{2024-11-13}
 
-% author setup
-\author*[aff-1]{\fnm{Simon} \sur{Oiry}}\email{oirysimon@gmail.com}\author[aff-1]{\fnm{Bede Ffinian Rowe} \sur{Davies¹}}\author[aff-1]{\fnm{Philippe} \sur{Rosa¹}}\author[aff-1]{\fnm{Augustin} \sur{Debly¹}}\author[aff-2]{\fnm{Maria Laura} \sur{Zoffoli}}\author[aff-3]{\fnm{Anne-Laure} \sur{Barillé}}\author[aff-3]{\fnm{Nicolas} \sur{Harin³}}\author[aff-1]{\fnm{Pierre} \sur{Gernez¹}}\author[aff-1]{\fnm{Laurent} \sur{Barillé¹}}
-% affil setup
-\affil[aff-1]{, \orgname{Institut des Substances et Organismes de la
-Mer, ISOMer, Nantes Université, UR 2160, F-44000 Nantes, France}}
-\affil[aff-2]{, \orgname{Consiglio Nazionale delle Ricerche, Istituto di
-Scienze Marine (CNR-ISMAR), 00133 Rome, Italy}}
-\affil[aff-3]{, \orgname{Bio-littoral, Immeuble Le Nevada, 2 Rue du
-Château de l'Eraudière, 44300 Nantes, France}}
-
-% abstract 
-
-\abstract{Seagrasses are critical to coastal ecosystems, providing
-habitat, stabilizing sediments, and aiding carbon sequestration. Climate
-change has increased the frequency and intensity of heatwaves,
-potentially threatening seagrass health. This study investigates the
-impact of marine and atmospheric heatwaves on the pigment composition
-and reflectance of the intertidal seagrass Zostera noltei. We performed
+\begin{document}
+\maketitle
+\begin{abstract}
+Seagrasses are critical to coastal ecosystems, providing habitat,
+stabilizing sediments, and aiding carbon sequestration. Climate change
+has increased the frequency and intensity of heatwaves, potentially
+threatening seagrass health. This study investigates the impact of
+marine and atmospheric heatwaves on the pigment composition and
+reflectance of the intertidal seagrass Zostera noltei. We performed
 laboratory experiments, exposing N. noltei samples to controlled
 heatwave conditions while measuring hyperspectral reflectance and
 pigment concentration to assess impact over time. We found that
@@ -252,14 +229,8 @@ exposed to atmospheric heatwave more than 13.5 hours a day. This work
 highlights the need for continuous monitoring of seagrass meadows under
 the current and futur climate regimes, underscoring the potential of
 remote sensing to capture rapid environmental changes in intertidal
-zones.}
-
-% keywords
-\keywords{Remote Sensing,  Pigment Composition,  Seagrass,  Coastal
-Ecosystems,  Heatwaves}
-
-\begin{document}
-\maketitle
+zones.
+\end{abstract}
 
 
 \section{Introduction}\label{introduction}
@@ -371,7 +342,7 @@ tide, a pump allowed the water to circulate and to re-oxygenate.
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{Figs/Low_res/Experimental_design.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/Experimental_design.png}
 
 }
 
@@ -531,7 +502,7 @@ darkening.}{In situ seagrass darkening.}}\label{in-situ-seagrass-darkening.}
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{Figs/Low_res/Quiberon_map.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/Quiberon_map.png}
 
 }
 
@@ -564,7 +535,7 @@ a visual estimation of the leaf coloration
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{Figs/Low_res/img_Quiberon.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/img_Quiberon.png}
 
 }
 
@@ -696,7 +667,7 @@ right).
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{Figs/Low_res/plot_Spectra_exp.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/plot_Spectra_exp.png}
 
 }
 
@@ -732,28 +703,28 @@ that, at the beginning of the experiment (day 1), the NDVI for the
 Treatment group was on average 3 \% lower than that of the Control. By
 day 2, the NDVI for the Treatment exhibited a rapid decline of
 approximately -17 \%, eventually reaching a cumulative decrease of -31
-\% by day 3 (Fig. Exp\_Spectral\_indices C).
+\% by day 3 (Figure~\ref{fig-Exp_Spectral_indices} C).
 
 Monitoring the Green Leaf Index (GLI) showed that, at the start of the
 experiment (day 1), the GLI for the Treatment group was, on average, -2
 \% higher than that of the Control. However, by day 2, the GLI for the
 Treatment exhibited a rapid decrease of approximately -28 \%, ultimately
-reaching a cumulative reduction of -54 \% by day 3 (Fig.
-Exp\_Spectral\_indices D).
+reaching a cumulative reduction of -54 \% by day 3
+(Figure~\ref{fig-Exp_Spectral_indices} D).
 
 Monitoring the Simple Difference Index (SDI) revealed that, at the start
 of the experiment (day 1), the SDI for the Treatment group was on
 average 55 \% higher than that of the Control. By day 2, the SDI for the
 Treatment exhibited a rapid decrease of approximately 241 \%, eventually
-reaching a cumulative decline of 420 \% by day 3 (Fig.
-Exp\_Spectral\_indices E).
+reaching a cumulative decline of 420 \% by day 3
+(Figure~\ref{fig-Exp_Spectral_indices} E).
 
 \phantomsection\label{cell-fig-Exp_Spectral_indices}
 \begin{figure}[H]
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{Figs/Low_res/merged_indices.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/merged_indices.png}
 
 }
 
@@ -823,7 +794,7 @@ observed as a steady increasing slope up to 940 nm.
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{Figs/Low_res/Heatwaves_S2_plot.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/Heatwaves_S2_plot.png}
 
 }
 
@@ -863,28 +834,22 @@ Because the SC is linearly linked with the NDVI, both metric drop of -35
 on the field (Figure~\ref{fig-QuiberonImg}). The GLI drops of about -85
 \% at the 6th of September. The SDI were the most sensitive metric to
 the darkening of seagrasses, showing an increase of 97 \% during
-heatwave exposure.
+heatwave exposure (Figure~\ref{fig-NDVI_GLI_SPC}).
 
-In this case, the NDVI dropped by approximately 34\%, from a median of
-0.61 to 0.40 (Figure~\ref{fig-NDVI_GLI_SPC} B). Although the heatwave
-did not affect the observed seagrass density in the field, the drop in
-NDVI led to an underestimation of satellite-based SPC, from 83 to 48\%
-(Figure~\ref{fig-NDVI_GLI_SPC} D). The GLI, the index that reflects the
-greenness of leaves, was the most affected by the event, with an
-important reduction from a median of 0.23 to 0.03 during the event
-(Figure~\ref{fig-NDVI_GLI_SPC} F). Interestingly, when comparing the
-initial seagrass density of both targets (i.e., seagrass density before
-the event) pixels affected by the heatwave (median SPC = 85\%;
-Figure~\ref{fig-NDVI_GLI_SPC} D green) were denser than the those
-remained unchanged (median SPC = 65\%; Figure~\ref{fig-NDVI_GLI_SPC} C
-green).
+One month later the heatwaves events, on the 8th of October, all metrics
+of unimpacted QPs have increased compared to the 1st of September: The
+NDVI and SC by 21 \%, The GLI by 15 \% and the SDI 14 \%. Concerning QPs
+impacted by the heatwaves, even if all the metrics are closer to the
+values they had before the heatwave, they have not retrieved there level
+of before the heatwave. At the 8th of October, the NDVI and the SC of
+these QPs were -5 \%, The GLI -16 \% and the SDI 14 \%.
 
 \phantomsection\label{cell-fig-NDVI_GLI_SPC}
 \begin{figure}[H]
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{Figs/Low_res/Compares_Indices_S2.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/Compares_Indices_S2.png}
 
 }
 
@@ -903,45 +868,48 @@ predicted value of the metric using a GLM while error bar represent the
 \subsubsection{Mapping of the seagrass
 darkening}\label{mapping-of-the-seagrass-darkening}
 
-Using the Equation~\ref{eq-SDI}, we can detect seagrass patches that
-have darkened. Following the heatwave events, a total of 26.9 hectares
-of seagrass darkened, with the largest affected patch covering nearly 8
-hectares. Overall, 24 \% of the total seagrass meadow area showed signs
-of darkening between the 1st and 6th of September 2021. Comparing the
-spatial distribution of darkened patches with the site's bathymetry
-reveals that 94.6 \% of darkened areas are located at above 3.8 meters
-of bathymetry (Figure~\ref{fig-Map_darkening_Bathy}, A and B).
+Using the SDI (Equation~\ref{eq-SDI}), we can detect seagrass patches
+that have darkened. Following the heatwave events, a total of 26.9
+hectares of seagrass darkened, with the largest affected patch covering
+nearly 8 hectares. Overall, 24 \% of the total seagrass meadow area
+showed signs of darkening between the 1st and 6th of September 2021.
+Comparing the spatial distribution of darkened patches with the site's
+bathymetry reveals that 94.6 \% of darkened areas are located at above
+3.9 meters of bathymetry (Figure~\ref{fig-Map_darkening_Bathy}, A and
+B). One month later, on October 8th, areas that were previously darkened
+have regained their green color (Figure~\ref{fig-Map_darkening_Bathy},
+C).
 
 \phantomsection\label{cell-fig-Map_darkening_Bathy}
 \begin{figure}[H]
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{Figs/Low_res/Map_darkening_Bathy.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/Map_darkening_Bathy.png}
 
 }
 
 \caption{\label{fig-Map_darkening_Bathy}Map of the Darkening of
 seagrasses during the heatwave events of September 2021 in Quiberon. A:
 3.9 m bathymetry isobar (golden line); B: Result of the detection of
-darkened seagrass patches (Blue plolygons); Sentinel-2 image one month
-after the end of the heatwaves (2021-10-08).}
+darkened seagrass patches (Blue plolygons); C: Sentinel-2 image one
+month after the end of the heatwaves (2021-10-08).}
 
 \end{figure}%
 
-Additionally, analysis of bathymetry data to determine seagrass emersion
-time shows a clear relationship between the time seagrass is exposed to
-air and its darkening. During the heatwave, no significant darkening
-occurred with daily exposure below 13.5 hours. However, when exposure
-reached 13.5 hours or more per day, seagrasses began to darken, peaking
-at around 14.5 hours of daily exposure (Figure~\ref{fig-GAM_Emersion}).
+Additionally, the analysis of bathymetry data to determine seagrass
+emersion time reveals a clear relationship between the duration of air
+exposure and seagrass darkening. During the heatwave, no significant
+darkening occurred with daily exposure below 13 hours. However, above 13
+hours, seagrasses began to darken, reaching peak darkening at around
+14.5 hours of daily exposure (Figure~\ref{fig-GAM_Emersion}).
 
 \phantomsection\label{cell-fig-GAM_Emersion}
 \begin{figure}[H]
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{Figs/Low_res/GAM_emersion.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/GAM_emersion.png}
 
 }
 
@@ -955,6 +923,9 @@ pixel of the meadow.}
 \end{figure}%
 
 \section{Discussion}\label{discussion}
+
+\subsection{Physiological impacts of heatwaves on
+seagrasses}\label{physiological-impacts-of-heatwaves-on-seagrasses}
 
 Although extensive research exists on marine heatwaves' effects on
 subtidal seagrasses, little attention has been given to intertidal
@@ -1011,17 +982,17 @@ leading to a darkening of the leaves.
 
 \emph{Zostera noltei}, as a species inhabiting the intertidal zone and
 regularly exposed to air, has developed adaptations to minimize water
-stress. For example, \emph{Zostera noltei} exhibits smaller, narrower
-leaves compared to species residing lower in the intertidal zone, such
-as \emph{Zostera marina}, which helps reduce water loss during air
-exposure periods (Cabaço et al., 2009). However, during intense warming
-events and under high light conditions, desiccation can occur in certain
-parts of the meadow, particularly where seagrass leaves are exposed for
-prolonged periods ( Figure~\ref{fig-GAM_Emersion}). Under such water
-stress, cellular turgor pressure decreases (the internal cell water
-pressure that maintains cell shape), and concentrations of ions like Na+
-and Cl-- can reach toxic levels. These effects can impair cellular
-functions, enzymatic activity, and membrane stability.
+stress. For example, it exhibits smaller, narrower leaves compared to
+species residing lower in the intertidal zone, such as \emph{Zostera
+marina}, which helps reduce water loss during air exposure periods
+(Cabaço et al., 2009). However, during intense warming events and under
+high light conditions, desiccation can occur in certain parts of the
+meadow, particularly where seagrass leaves are exposed for prolonged
+periods (Figure~\ref{fig-GAM_Emersion}). Under such water stress,
+cellular turgor pressure decreases (the internal cell water pressure
+that maintains cell shape), and concentrations of ions like Na+ and Cl--
+can reach toxic levels. These effects can impair cellular functions,
+enzymatic activity, and membrane stability.
 
 High infrared reflectance in plant leaves is primarly due to the
 internal cellular structure that scatters light. Once sunlight enters
@@ -1063,6 +1034,9 @@ ecological models for future heatwave impacts, enhancing the capacity
 for adaptive management and supporting long-term resilience planning for
 seagrass ecosystems.
 
+\subsection{Climate change and
+heatwaves}\label{climate-change-and-heatwaves}
+
 The rapid global escalation of heatwave frequency, intensity and
 duration is a defining characteristic of the current climate crisis,
 heavily influenced by anthropogenic activities and greenhouse gas
@@ -1071,37 +1045,12 @@ has surged in the past decades, with climate projections predicting a
 continuation of this trend. For example, heatwaves that were once
 considered rare are now up to ten times more likely to occur, with some
 regions experiencing events three times as intense as those in the early
-20th century (Devi et al., 2024; Russo and Domeisen, 2023). In our study
-site in Quiberon, a similar pattern emerges. Data from a local weather
-station show an increasing trend in both the frequency and cumulative
-intensity of atmospheric heatwaves, while coldspells---defined as
-extreme low temperatures below the 10th percentile---have shown a marked
-decline in both frequency and intensity Figure~\ref{fig-Freq_Int_HW_CS}.
-Cumulative indices that quantify heatwave intensity are based on total
-temperature exceedances and offer a more comprehensive understanding of
-event severity than average temperature alone. This is because the
-cumulative impact of prolonged high temperatures imposes more extensive
-stress on ecosystems than isolated peak temperatures (Russo and
-Domeisen, 2023).
-
-\phantomsection\label{cell-fig-Freq_Int_HW_CS}
-\begin{figure}[H]
-
-\centering{
-
-\includegraphics[width=0.8\textwidth,height=\textheight]{Figs/Low_res/plot_HW_CS.png}
-
-}
-
-\caption{\label{fig-Freq_Int_HW_CS}Frequency and intensity of
-atmospheric heatwaves (red) and cold spells (blue) over time at the
-Lorient-Lann Bihoué weather station. The left column displays the annual
-frequency of heatwaves and cold spells as the total number of events per
-year. The right column illustrates event intensity, represented by the
-cumulative temperature anomaly throughout the year, measured in degrees
-Celsius.}
-
-\end{figure}%
+20th century (Devi et al., 2024; Russo and Domeisen, 2023) . Cumulative
+indices that quantify heatwave intensity are based on total temperature
+exceedances and offer a more comprehensive understanding of event
+severity than average temperature alone. This is because the cumulative
+impact of prolonged high temperatures imposes more extensive stress on
+ecosystems than isolated peak temperatures (Russo and Domeisen, 2023).
 
 From a hazard analysis perspective, the concurrent evaluation of
 intensity, frequency, and duration of atmospheric heatwaves allows for a
@@ -1164,6 +1113,9 @@ existential threat to intertidal seagrass ecosystems, highlighting the
 urgent need for targeted climate adaptation measures to mitigate these
 escalating thermal stresses and preserve the resilience of these
 essential marine habitats (Russo and Domeisen, 2023; Stillman, 2019).
+
+\subsection{Seagrass resilience to
+heatwaves}\label{seagrass-resilience-to-heatwaves}
 
 Seagrass resilience to heatwaves is a complex and multifaceted issue
 shaped by species-specific traits, geographical location, and concurrent
@@ -1249,36 +1201,18 @@ exhibited higher SPC than non-impacted areas. However, during the event
 on 6th September, SPC in the impacted patch experienced a sharp decline.
 By 7th October, one month post-event, the SPC of impacted seagrasses,
 initially higher, had fallen below that of non-impacted seagrasses
-Figure~\ref{fig-Resilience_of_seagrasses}. The observed decrease in
-seagrass cover (SPC) on 6th September was primarily due to leaf
-darkening, which influenced the NDVI measurements used to estimate SPC.
-This darkening effect reduced the NDVI values, creating an apparent
-decrease in SPC in the impacted patch when, in reality, the density of
-seagrass remained stable. The bias introduced by remote sensing in this
-instance reflects a limitation in accurately capturing true seagrass
-cover during stress events. It was only after the heatwave that leaves
-began to detach, leading to an actual decline in seagrass density. This
-delayed physical response underscores how extreme events can compromise
-seagrass resilience, leaving previously robust patches in a weakened
-state compared to less disturbed areas
-Figure~\ref{fig-Resilience_of_seagrasses}.
-
-\phantomsection\label{cell-fig-Resilience_of_seagrasses}
-\begin{figure}[H]
-
-\centering{
-
-\includegraphics[width=1\textwidth,height=\textheight]{Figs/Low_res/plot_resilience.png}
-
-}
-
-\caption{\label{fig-Resilience_of_seagrasses}Comparison of the seagrass
-percent cover before (left), during (center) and after (right) the
-heatwaves for seagrasses that have not been impacted by heatwaves
-(i.e.~remains green) and seagrasses that have been impacted by the
-events (i.e.~seagrasses that darkened).}
-
-\end{figure}%
+Figure~\ref{fig-NDVI_GLI_SPC}. The observed decrease in seagrass cover
+(SPC) on 6th September was primarily due to leaf darkening, which
+influenced the NDVI measurements used to estimate SPC. This darkening
+effect reduced the NDVI values, creating an apparent decrease in SPC in
+the impacted patch when, in reality, the density of seagrass remained
+stable. The bias introduced by remote sensing in this instance reflects
+a limitation in accurately capturing true seagrass cover during stress
+events. It was only after the heatwave that leaves began to detach,
+leading to an actual decline in seagrass density. This delayed physical
+response underscores how extreme events can compromise seagrass
+resilience, leaving previously robust patches in a weakened state
+compared to less disturbed areas Figure~\ref{fig-NDVI_GLI_SPC}.
 
 On a physiological level, seagrasses possess coping mechanisms such as
 photoprotective responses and heat-responsive gene expression, including
@@ -1290,6 +1224,8 @@ membrane stability, and reactive oxygen species scavenging playing
 critical roles. However, the rapid pace of climate change raises
 concerns about whether these adaptations can keep up with the increasing
 frequency and severity of thermal events (Franssen et al., 2014).
+
+\subsection{Big picture}\label{big-picture}
 
 Given the combined pressures of temperature extremes, eutrophication,
 and other anthropogenic impacts, targeted management strategies are
@@ -1368,7 +1304,7 @@ experiment}\label{sec-AnnexeA}
 
 \begin{figure}[H]
 
-{\centering \includegraphics{Figs/High_res/Temperature_compare.png}
+{\centering \pandocbounded{\includegraphics[keepaspectratio]{Figs/High_res/Temperature_compare.png}}
 
 }
 
@@ -1391,7 +1327,7 @@ the seagrasses.
 
 \begin{figure}[H]
 
-{\centering \includegraphics{Figs/Low_res/Chamber_Profils.png}
+{\centering \pandocbounded{\includegraphics[keepaspectratio]{Figs/Low_res/Chamber_Profils.png}}
 
 }
 
@@ -1406,7 +1342,25 @@ seagrasses only experience temperatures representade by solid lines.}
 \subsection{Annexes B - SDI applied on Experiment
 samples}\label{sec-AnnexeB}
 
-\includegraphics{Figs/Low_res/PLOT_SDI_exp.png} \# Bibliography
+\begin{figure}[H]
+
+{\centering \pandocbounded{\includegraphics[keepaspectratio]{Figs/Low_res/PLOT_SDI_exp.png}}
+
+}
+
+\caption{Annexe B1: Development and Application of the Seagrass
+Darkening Index (SDI). The left panel displays the average reflectance
+values for both the Control and Treatment groups on the final day of the
+experiment. Shaded areas represent the standard deviation of
+reflectance, while markers indicate the spectral bands used to construct
+the SDI. The right panel shows the application of the SDI for both
+groups on the last day of the experiment.}
+
+\end{figure}%
+
+\section{References}\label{references}
+
+1
 
 \phantomsection\label{refs}
 \begin{CSLReferences}{1}{0}
