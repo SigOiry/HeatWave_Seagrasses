@@ -292,22 +292,22 @@ compromising recruitment (Guerrero-Meseguer et al., 2020).
 Remote sensing is increasingly being used to monitor marine ecosystems,
 including intertidal seagrass meadows (Davies et al., 2024a, 2024b).
 Spectral indices such as the Normalized Difference Vegetation Index
-(NDVI) and the Soil-Adjusted Vegetation Index (SAVI) are effective for
-quantifying vegetation health over time (Akbar et al., 2020; Cârlan et
-al., 2020; Huete, 2012; Kloos et al., 2021). By analyzing specific
-spectral patterns, remote sensing can track changes in seagrass meadows
-with high temporal and spatial resolution. The European Union promotes
-these techniques through frameworks like the Water Framework Directive
-and the Marine Strategy Framework Directive, which advocate for habitat
-mapping using remote sensing technologies to cover large areas and
-detect long-term trends (Papathanasopoulou et al., 2019).
+(NDVI) and the Green Leaf Index (GLI) are effective for quantifying
+vegetation health over time (Akbar et al., 2020; Cârlan et al., 2020;
+Huete, 2012; Kloos et al., 2021). By analyzing specific spectral
+patterns, remote sensing can track changes in seagrass meadows with high
+temporal and spatial resolution. The European Union promotes these
+techniques through frameworks like the Water Framework Directive and the
+Marine Strategy Framework Directive, which advocate for habitat mapping
+using remote sensing technologies to cover large areas and detect
+long-term trends (Papathanasopoulou et al., 2019).
 
 This study aims to experimentally test the hypothesis that warm events,
-such as atmospheric heatwaves, alter the pigment composition and
-reflectance of the intertidal seagrass Zostera noltei. By linking these
-changes with satellite remote sensing data, the study seeks to provide
-insights into how heatwaves affect seagrass meadows and to assess the
-potential of remote sensing in monitoring these impacts
+such as atmospheric heatwaves, alter the reflectance of the intertidal
+seagrass \emph{Zostera noltei}. By linking these changes with satellite
+remote sensing data, the study seeks to provide insights into how
+heatwaves affect seagrass meadows and to assess the potential of remote
+sensing in monitoring these impacts
 
 \section{Material \& Methods}\label{material-methods}
 
@@ -370,21 +370,20 @@ sampling site in Bourgneuf Bay in August 2024. Daily maximum
 temperatures recorded by these \emph{in situ} sensors were compared to
 measurements from the nearest Meteo France weather station (Annexe A1,
 Section~\ref{sec-AnnexeA}). The control chamber was kept at temperatures
-representing typical seasonal conditions, with water temperatures
-ranging from 18°C to 19°C and air temperatures from 18°C to 23°C,
-following natural daily temperature fluctuations (Annexe A2,
-Section~\ref{sec-AnnexeA}). For the experimental treatment, air
-temperature was adjusted to replicate an atmospheric heatwave that
-affected the seagrass meadow in Quiberon, France (47°35'40.0''N,
-3°07'30.0''W), from September 2 to September 6, 2021. On the first day
-of the experiment, air temperatures in the experimental chamber were set
-to range from 23°C at night to 35°C during the day, increasing by 1°C
-daily. Water temperature in the experimental chamber was also adjusted
-to mimic heatwave conditions, starting at the seasonal baseline (18°C)
-and rising incrementally by 0.5°C daily to simulate the increasing
-temperatures during the heatwave. This aimed to replicate the thermal
-stress experienced by the seagrass meadow during the actual heatwave
-event (Annexe A2, Section~\ref{sec-AnnexeA}).
+representing typical seasonal conditions, with water temperatures at
+18°C and air temperatures from 19°C to 23°C, following natural daily
+temperature fluctuations (Annexe A2, Section~\ref{sec-AnnexeA}). For the
+experimental treatment, air temperature was adjusted to replicate an
+atmospheric heatwave that affected the seagrass meadow in Quiberon,
+France (47°35'40.0''N, 3°07'30.0''W), from September 2 to September 6,
+2021. On the first day of the experiment, air temperatures in the
+experimental chamber were set to range from 23°C at night to 35°C during
+the day, increasing by 1°C daily. Water temperature in the experimental
+chamber was also adjusted to mimic heatwave conditions, starting at the
+seasonal baseline (18°C) and rising incrementally by 0.5°C daily to
+simulate the increasing temperatures during the heatwave. This aimed to
+replicate the thermal stress experienced by the seagrass meadow during
+the actual heatwave event (Annexe A2, Section~\ref{sec-AnnexeA}).
 
 \subsubsection{Bio-optical measurements}\label{bio-optical-measurements}
 
@@ -438,12 +437,12 @@ GLI = \frac{[R(550)-R(668)]+[R(550)-R(450)]}{(2 \times R(550) )+ R(668) + R(450)
 where \(R(550)\) and \(R(450)\) are the reflectance in green at 550 nm
 and in the blue at 450 nm, respectively.
 
-A remote sensing based seagrass covers estimation equation, the SPC
+A remote sensing based seagrass covers estimation equation, the SC
 developed by Zoffoli et al. (2020), were used to retrieve the proportion
 of seagrass of Sentinel-2 pixel (Equation~\ref{eq-spc}):
 
 \begin{equation}\phantomsection\label{eq-spc}{
-SPC = 172.06 \times NDVI - 22.18
+SC = 172.06 \times NDVI - 22.18
 }\end{equation}
 
 Based on the observed spectral changes in seagrasses exposed to extreme
@@ -451,7 +450,7 @@ events, a radiometric index can be developed to detect seagrass
 darkening events through remote sensing. This darkening is characterized
 by a reduction in reflectance within the green region, along with a
 substantial decrease in the red-edge portion of the electromagnetic
-spectrum. (Figure~\ref{fig-Exp_Spectral_indices}).
+spectrum.
 
 The Seagrass Darkening Index (SDI) is introduced here as a measure of
 the difference between the interpolated value between 560 and 842 nm and
@@ -474,23 +473,6 @@ selected to align with the spectral resolution of satellites like
 Sentinel-2, enabling the index to be used for mapping darkening events
 from satellite data. From SDI, negative values indicate green, healthy
 seagrasses, while positive values correspond to darkened seagrasses.
-
-\paragraph{Pigment concentration
-measurements}\label{pigment-concentration-measurements}
-
-To assess changes in pigment concentration, at the beginning and the end
-of each diurnal low tide (09:00 am and 03:00 pm) leaves were taken from
-both the test and the control. Leaves were stored at -80°C waiting for
-analysis. Before pigment extraction, each sample was lyophilized and its
-dry weight was measured. Pigment composition and biomass were analyzed
-using high-performance liquid chromatography (HPLC). The HPLC system
-(Alliance HPLC 248 System, Waters) was equipped with a reverse-phase
-C-18 separating column (SunFire C-18 Column, 100Å, 3.5 µm, 2.1 mm x 50
-mm, Waters), preceded by a precolumn (VanGuard 3.9 mm x 5 mm, Waters).
-The system also included a photodiode array detector (2998 PDA) and a
-fluorimeter (Ex: 425 nm, Em: 655 nm; RF-20A, SH
-
-\textbf{Au secours Philippe !!!}
 
 \subsection{\texorpdfstring{\emph{In situ} seagrass
 darkening.}{In situ seagrass darkening.}}\label{in-situ-seagrass-darkening.}
@@ -540,10 +522,10 @@ a visual estimation of the leaf coloration
 }
 
 \caption{\label{fig-QuiberonImg}Illustrations of the two coloration of
-seagrasses observed in the field. A: View of a green green meadow; B:
-Quadrat images of green seagrasses; C: Quadrat images of darkened
-seagrasses; D: View of darkened area of themeadow. All images were taken
-on September 10th, 2021, in Quiberon.}
+seagrasses observed in the field. A: View of a green meadow; B: Quadrat
+images of green seagrasses; C: Quadrat images of darkened seagrasses; D:
+View of darkened area of the meadow. All images were taken on September
+10th, 2021, in Quiberon.}
 
 \end{figure}%
 
@@ -585,16 +567,17 @@ temperature event detection.
 
 \subsubsection{Satellite Observation}\label{satellite-observation}
 
-Two Sentinel-2 images covering the field campaign site
+Three Sentinel-2 images covering the field campaign site
 (Figure~\ref{fig-quiberonMap}) were downloaded from the Copernicus
 platform (European Space Agency, 2024a). The first image was taken
-before the heatwave event on September 1, 2021, and the second image
-after the event on September 6, 2021. Both images were acquired as
-Level-2 product, in surface reflectance, and were orthorectified and
+before the heatwave event on September 1, 2021, the second image during
+the event on September 6, 2021 and the last one, one month after the
+events on the 8th of October 2021. Images were acquired as Level-2
+product, in surface reflectance, and were orthorectified and
 atmospherically corrected to account for the effects of the atmosphere
 on reflectance values (European Space Agency, 2024b).
 
-Reflectance value forf each QPs (Figure~\ref{fig-quiberonMap}) were
+Reflectance value of each QPs (Figure~\ref{fig-quiberonMap}) were
 extracted and compared before and after the heatwave event.
 
 \subsubsection{Emersion Time of
@@ -657,10 +640,7 @@ began to decrease across all wavelengths, particularly around 560 nm and
 in the NIR. At day 3, the NIR reflectance appeared to stabilize at
 values like those observed during day 2. In the green region, however,
 reflectance continued to decline slightly until the experiment's
-conclusion. Additionally, a slight increase in reflectance at 665 nm
-between day 2 and day 3 was observed, possibly associated with a
-reduction in chlorophyll-a concentration (Figure~\ref{fig-Exp_Spectra},
-right).
+conclusion (Figure~\ref{fig-Exp_Spectra}, right).
 
 \phantomsection\label{cell-fig-Exp_Spectra}
 \begin{figure}[H]
@@ -707,7 +687,7 @@ approximately -17 \%, eventually reaching a cumulative decrease of -31
 
 Monitoring the Green Leaf Index (GLI) showed that, at the start of the
 experiment (day 1), the GLI for the Treatment group was, on average, -2
-\% higher than that of the Control. However, by day 2, the GLI for the
+\% lower than that of the Control. However, by day 2, the GLI for the
 Treatment exhibited a rapid decrease of approximately -28 \%, ultimately
 reaching a cumulative reduction of -54 \% by day 3
 (Figure~\ref{fig-Exp_Spectral_indices} D).
@@ -755,11 +735,6 @@ the Control group retained a green appearance throughout the experiment,
 with a median SDI of -0.003, and only 3\% of samples displaying a
 positive SDI value (Annexe B1 ; Section~\ref{sec-AnnexeB}).
 
-\subsubsection{Pigment composition evolution along the
-experiment}\label{pigment-composition-evolution-along-the-experiment}
-
-bla bla bla bla
-
 \subsection{Heatwaves of Quiberon}\label{heatwaves-of-quiberon}
 
 \subsubsection{Spectral inspection}\label{spectral-inspection-1}
@@ -780,14 +755,14 @@ class attributed to the QPs on the field (Figure~\ref{fig-S2_comparison}
 A and D left). Their reflectance spectra showed a peak at 560 nm (in the
 green part of the spectra), low values at 665 nm, corresponding to the
 strong absorption by chlorophyll-a and a high infrared plateau
-(\textgreater{} 705 nm). However, QPs classified as impacted during the
-field campaign, showed significant differences in reflectance spectral
-shape compared to QPs classified as unimpacted on the 10th of September,
-with corresponding differences in the true color composition
-(Figure~\ref{fig-S2_comparison} C and D right). The reflectance spectra
-over dark seagrass were characterized by the loss of the reflectance
-peak at 560 nm and a decrease in the infrared plateau, which was
-observed as a steady increasing slope up to 940 nm.
+(\textgreater{} 705 nm). However, on the 6th of September, QPs
+classified as impacted during the field campaign, showed significant
+differences in reflectance spectral shape compared to QPs classified as
+unimpacted on during the campaign, with corresponding differences in the
+true color composition (Figure~\ref{fig-S2_comparison} C and D right).
+The reflectance spectra over dark seagrass were characterized by the
+loss of the reflectance peak at 560 nm and a decrease in the infrared
+plateau, which was observed as a steady increasing slope up to 940 nm.
 
 \phantomsection\label{cell-fig-S2_comparison}
 \begin{figure}[H]
@@ -801,7 +776,7 @@ observed as a steady increasing slope up to 940 nm.
 \caption{\label{fig-S2_comparison}Spectral Comparison of Sentinel-2
 Reflectance (D) of Quadrats Points (QPs) Before (A) and During (C)
 Heatwave Events (B); A: RGB color composition of the Sentinel-2 image on
-the 1st of September 2021. The points correspond to GCPs collected on
+the 1st of September 2021. The points correspond to QPs collected on
 September 10, 2021, with unimpacted seagrass in green and impacted
 seagrass in golden; B: Detection of heatwave events based on both Air
 Temperature and Sea Surface Temperature (SST). The solid line represents
@@ -812,11 +787,11 @@ represent the acquisition dates of the two Sentinel-2 images used in
 this analysis (01-09-2021 and 06-09-2021) ; C : RGB color composition of
 the Sentinel-2 image on the 6th of September 2021, with unimpacted
 seagrass in green and impacted seagrass in golden; D : Average spectral
-signatures of GCPs where dark and green seagrasses (gold and green
-lines, respectively) were identified during the field survey. The left
-plot shows the reflectance of these QPs before the heatwave impact,
-while the right plot shows the spectral signature during the heatwaves.
-The ribbons around the lines represent the standard deviation.}
+signatures of QPs where dark and green seagrasses (gold and green lines,
+respectively) were identified during the field survey. The left plot
+shows the reflectance of these QPs before the heatwave impact, while the
+right plot shows the spectral signature during the heatwaves. The
+ribbons around the lines represent the standard deviation.}
 
 \end{figure}%
 
@@ -842,7 +817,8 @@ NDVI and SC by 21 \%, The GLI by 15 \% and the SDI 14 \%. Concerning QPs
 impacted by the heatwaves, even if all the metrics are closer to the
 values they had before the heatwave, they have not retrieved there level
 of before the heatwave. At the 8th of October, the NDVI and the SC of
-these QPs were -5 \%, The GLI -16 \% and the SDI 14 \%.
+these QPs were -5 \%, The GLI -16 \% lower and the SDI 14 \% higher than
+at the 1st of September.
 
 \phantomsection\label{cell-fig-NDVI_GLI_SPC}
 \begin{figure}[H]
@@ -853,15 +829,15 @@ these QPs were -5 \%, The GLI -16 \% and the SDI 14 \%.
 
 }
 
-\caption{\label{fig-NDVI_GLI_SPC}Comparaison the relative difference
-since the 1st of September 2021 of Sentinel-2 based metrics at two
-different dates : during (2021-09-06) and after the heatwave events
-(2021-10-08) of Quiberons, for the two category of QPs : Unimpacted
-seagrasses (green) and Impacted Seagrasses (red). A: Normalized
-Difference Vegetation Index (NDVI); B: Seagrass Cover (SC); C: Green
-Leaf Index (GLI); D: Seagrass Darkening Index (SDI). Points represent
-predicted value of the metric using a GLM while error bar represent the
-89\% confidance interval of it.}
+\caption{\label{fig-NDVI_GLI_SPC}Comparaison the relative difference to
+the 1st of September 2021 of Sentinel-2 based metrics at two different
+dates : during (2021-09-06) and after the heatwave events (2021-10-08)
+of Quiberons, for the two category of QPs : Unimpacted seagrasses
+(green) and Impacted Seagrasses (red). A: Normalized Difference
+Vegetation Index (NDVI); B: Seagrass Cover (SC); C: Green Leaf Index
+(GLI); D: Seagrass Darkening Index (SDI). Points represent predicted
+value of the metric using a Generalized Linear Model (GLM) while error
+bar represent the 89\% confidance interval of it.}
 
 \end{figure}%
 
@@ -946,11 +922,11 @@ experiment. The second derivative at 665 nm (R'\,'665), NDVI, and GLI
 experimental period (days 1-3), suggesting a progressive reduction in
 photosynthetic activity or pigment levels in the treatment group
 relative to the control. In contrast, SDI (panel E) shows a marked
-increase, reaching up to 600\% by day 3. This positive trend in SDI
-aligns with its design as an index to indicate darkening of seagrass,
-likely resulting from structural or physiological changes, such as
-degraded pigmentation or altered light absorption. While the general
-trends are consistent across experimental runs, there is some
+increase, reaching up to 600\% for some samples by day 3. This positive
+trend in SDI aligns with its design as an index to indicate darkening of
+seagrass, likely resulting from structural or physiological changes,
+such as degraded pigmentation or altered light absorption. While the
+general trends are consistent across experimental runs, there is some
 variability, particularly evident in the confidence intervals, which are
 wider for SDI than for the other indices. This suggests that while
 darkening is a consistent response, it may vary in intensity between
@@ -1158,18 +1134,18 @@ beyond what our controlled conditions have replicated.
 Species like \emph{Zostera noltei} display distinct seasonal patterns
 that become increasingly pronounced at higher latitudes (Davies et al.,
 2024a, 2024b). These patterns reflect the species' adaptation to
-seasonal variations in temperature and light, but they also make N.
-noltei particularly sensitive to extreme events depending on their
-timing. For instance, if a heatwave coincides with early developmental
-stages or occurs after the biomass peak when leaf senescence has begun,
-the impact on meadow resilience can be severe
+seasonal variations in temperature and light, but they also make
+\emph{Z. noltei} particularly sensitive to extreme events depending on
+their timing. For instance, if a heatwave coincides with early
+developmental stages or occurs after the biomass peak when leaf
+senescence has begun, the impact on meadow resilience can be severe.
 
 Environmental conditions can moderate seagrass resilience to thermal
 stress. Seagrass meadows located in areas benefiting from tidal cooling
 or positioned further from the warmer edges of their geographical ranges
 often experience reduced heat stress, resulting in higher shoot
 densities and enhanced resilience (Berger et al., 2024; Canadell and
-Jackson, 2021). In these cooler areas, \emph{Nanostera noltei} exhibits
+Jackson, 2021). In these cooler areas, \emph{Zostera noltei} exhibits
 high survival and photosynthetic performance up to 37°C, though
 temperatures above 39°C lead to near-total mortality within days,
 underscoring the species' sensitivity to temperature thresholds that may
@@ -1195,24 +1171,24 @@ changes in photosynthetic performance or survival. However, prolonged or
 more intense heat events posed a greater challenge, highlighting the
 species' limited capacity to withstand chronic thermal stress (Franssen
 et al., 2014; Massa et al., 2009). The long-term impact of heatwaves is
-especially evident in changes to seagrass cover (SPC). Before the
+especially evident in changes to seagrass cover (SC). Before the
 heatwave event on 1st September 2021, impacted seagrass patches
-exhibited higher SPC than non-impacted areas. However, during the event
+exhibited higher SCC than non-impacted areas. However, during the event
 on 6th September, SPC in the impacted patch experienced a sharp decline.
-By 7th October, one month post-event, the SPC of impacted seagrasses,
+By 8th October, one month post-event, the SPC of impacted seagrasses,
 initially higher, had fallen below that of non-impacted seagrasses
-Figure~\ref{fig-NDVI_GLI_SPC}. The observed decrease in seagrass cover
-(SPC) on 6th September was primarily due to leaf darkening, which
-influenced the NDVI measurements used to estimate SPC. This darkening
-effect reduced the NDVI values, creating an apparent decrease in SPC in
-the impacted patch when, in reality, the density of seagrass remained
-stable. The bias introduced by remote sensing in this instance reflects
-a limitation in accurately capturing true seagrass cover during stress
-events. It was only after the heatwave that leaves began to detach,
-leading to an actual decline in seagrass density. This delayed physical
-response underscores how extreme events can compromise seagrass
-resilience, leaving previously robust patches in a weakened state
-compared to less disturbed areas Figure~\ref{fig-NDVI_GLI_SPC}.
+(Figure~\ref{fig-NDVI_GLI_SPC}). The observed decrease in seagrass cover
+on 6th September was primarily due to leaf darkening, which influenced
+the NDVI measurements used to estimate SC. This darkening effect reduced
+the NDVI values, creating an apparent decrease in SC in the impacted
+patch when, in reality, the density of seagrass remained stable. The
+bias introduced by remote sensing in this instance reflects a limitation
+in accurately capturing true seagrass cover during stress events. It was
+only after the heatwave that leaves began to detach, leading to an
+actual decline in seagrass density. This delayed physical response
+underscores how extreme events can compromise seagrass resilience,
+leaving previously robust patches in a weakened state compared to less
+disturbed areas (Figure~\ref{fig-NDVI_GLI_SPC}).
 
 On a physiological level, seagrasses possess coping mechanisms such as
 photoprotective responses and heat-responsive gene expression, including
