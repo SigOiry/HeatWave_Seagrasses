@@ -2630,8 +2630,8 @@ plot_SDI_exp <- SDI_sum %>%
         legend.key.height = unit(2,"mm")
       )
 
-ggsave("Paper/Figs/High_res/SDI_exp_overtime.png",plot_SDI_exp, height = 10, width = 10, dpi = 400)
-ggsave("Paper/Figs/Low_res/SDI_exp_overtime.png",plot_SDI_exp, height = 10, width = 10, dpi = 200)
+ggsave("Paper/Figs/High_res/SDI_exp_overtime.png",plot_SDI_exp, height = 6, width = 10, dpi = 400)
+ggsave("Paper/Figs/Low_res/SDI_exp_overtime.png",plot_SDI_exp, height = 6, width = 10, dpi = 200)
 
 ```
 
@@ -2642,7 +2642,7 @@ ggsave("Paper/Figs/Low_res/SDI_exp_overtime.png",plot_SDI_exp, height = 10, widt
 #| fig-cap: "Average and standard deviation of the Seagrass Darkening Index (SDI) across expimental runs, at each day of the experiment. Tge green line shows values of the Control group while the golden line indicates values of the Treatment group."
 #| label: fig-SDI_over_Time
 #| fig-width: 10
-#| fig-height: 10
+#| fig-height: 5
 #| out-width: "95%"
 
 knitr::include_graphics("Figs/Low_res/SDI_exp_overtime.png")
