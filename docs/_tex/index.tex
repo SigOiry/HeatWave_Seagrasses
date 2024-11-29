@@ -175,7 +175,7 @@
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same} % disable monospaced font for URLs
 \hypersetup{
-  pdftitle={Effect of Marine and Atmospheric Heatwaves on Reflectance of Intertidal Zostera noltei},
+  pdftitle={Effects of Marine and Atmospheric Heatwaves on Intertidal Seagrass: Insights from Experimental Spectroradiometry and Satellite Observations},
   pdfauthor={Simon Oiry; Bede Ffinian Rowe Davies¹; Philippe Rosa¹; Augustin Debly¹; Maria Laura Zoffoli; Anne-Laure Barillé; Nicolas Harin³; Pierre Gernez¹; Laurent Barillé¹},
   pdfkeywords={Remote Sensing, Pigment Composition, Seagrass, Coastal
 Ecosystems, Heatwaves},
@@ -187,8 +187,9 @@ Ecosystems, Heatwaves},
   pdfcreator={LaTeX via pandoc}}
 
 
-\title{Effect of Marine and Atmospheric Heatwaves on Reflectance of
-Intertidal \emph{Zostera noltei}}
+\title{Effects of Marine and Atmospheric Heatwaves on Intertidal
+Seagrass: Insights from Experimental Spectroradiometry and Satellite
+Observations}
 \author{Simon Oiry\footnote{Institut des Substances et Organismes de la
   Mer, ISOMer, Nantes Université, UR 2160, F-44000 Nantes, France} \and Bede
 Ffinian Rowe Davies¹ \and Philippe Rosa¹ \and Augustin Debly¹ \and Maria
@@ -197,7 +198,7 @@ Laura Zoffoli\footnote{Consiglio Nazionale delle Ricerche, Istituto di
 Barillé\footnote{Bio-littoral, Immeuble Le Nevada, 2 Rue du Château de
   l'Eraudière, 44300 Nantes, France} \and Nicolas Harin³ \and Pierre
 Gernez¹ \and Laurent Barillé¹}
-\date{2024-11-14}
+\date{2024-11-29}
 
 \begin{document}
 \maketitle
@@ -208,97 +209,116 @@ has increased the frequency and intensity of heatwaves, potentially
 threatening seagrass health. This study investigates the impact of
 marine and atmospheric heatwaves on the reflectance of the intertidal
 seagrass \emph{Zostera noltei}. We performed laboratory experiments,
-exposing \emph{Z.noltei} samples to controlled heatwave conditions while
+exposing seagrass samples to controlled heatwave conditions while
 measuring hyperspectral reflectance to assess impact over time. We found
 that heatwaves induced significant declines in seagrass reflectance,
-particularly in the green and near-infrared regions Furthemore, key
-vegetation indices, such as the Normalized Difference Vegetation Index
-(NDVI) and Green Leaf Index (GLI), displayed marked reductions under
-heatwave stress, with NDVI values decreasing by up to 34\% and GLI by
-57\%. A novel Seagrass Darkening Index (SDI) was developed to identify
-seagrass darkening, showing a strong correlation with heatwave exposure.
-This research suggests that spectral monitoring can effectively track
-the early impacts of heatwaves on seagrasses, providing a valuable tool
-for remote sensing-based habitat assessment. Multispectral satellite
-observations confirmed these findings, showing widespread seagrass
-darkening during atmospheric and marine heatwave events in Quiberon,
+particularly in the green and near-infrared regions This corresponded to
+green leaves turning brown. Furthemore, key vegetation indices, such as
+the Normalized Difference Vegetation Index (NDVI) and Green Leaf Index
+(GLI), displayed marked reductions under heatwave stress, with NDVI
+values decreasing by up to 34\% and GLI by 57\%. A novel Seagrass Heat
+Shock Index (SHSI) was developed to identify leaves fading from green to
+brown color, showing a higher ability to quantify the effect of heatwave
+exposure on seagrass coloration. This research suggests that changes in
+spectral reflectance can effectively be used to detect the early impacts
+of heatwaves on seagrasses, providing a valuable tool for remote
+sensing-based habitat assessment. Multispectral satellite observations
+confirmed these findings, showing widespread seagrass leaves turning
+brown during atmospheric and marine heatwave events in South Brittany,
 France. Darkened seagrasses were observed in areas within the intertidal
-zone that were exposed to the atmospheric heatwave for more than 13.5
-hours a day. This work highlights the need for continuous monitoring of
-seagrass meadows under the current and future climate regimes,
-underscoring the potential of remote sensing to capture rapid
+zone that were exposed to maximum temperatures of 32°C for more than
+13.5 hours a day. This work highlights the need for continuous
+monitoring of seagrass meadows under the current and future climate
+regimes, underscoring the potential of remote sensing to capture rapid
 environmental changes in intertidal zones.
 \end{abstract}
 
 
 \section{Introduction}\label{introduction}
 
-Intertidal seagrasses play a crucial role in the ecosystem by providing
-habitats and feeding grounds for various marine species, supporting rich
-marine biodiversity, and contributing significantly to primary
-production and carbon sequestration (Sousa et al., 2019; Unsworth et
-al., 2022). These seagrasses are essential in maintaining the health of
-coastal ecosystems by stabilizing sediments, filtering water, and
-serving as indicators of environmental changes due to their sensitivity
-to water quality variations (Zoffoli et al., 2021). The interactions
-between seagrass meadows and their associated herbivores further enhance
-the delivery of ecosystem services, including coastal protection and
-fisheries support (Gardner and Finlayson, 2018; Jankowska et al., 2019;
-Zoffoli et al., 2023). Understanding and preserving these ecosystems is
-vital for maintaining the biodiversity and productivity of coastal
-regions (Ramesh and Mohanraju, 2020; Scott et al., 2018).
+Intertidal seagrasses play a crucial role in coastal ecosystems by
+providing habitats and feeding grounds for various marine species,
+supporting rich marine biodiversity, and contributing significantly to
+primary production and carbon sequestration (Sousa et al., 2019;
+Unsworth et al., 2022). These seagrasses are essential for several
+ecological functions, such as sediment stabilization or reducing the
+risk of eutrophication by consuming nutrients (\textbf{REF}). This
+justifies their use as indicators of environmental changes due to their
+sensitivity to water quality variations (Zoffoli et al., 2021). The
+interactions between seagrass meadows and their associated herbivores
+further enhance the delivery of ecosystem services, including coastal
+protection and fisheries support (Gardner and Finlayson, 2018; Jankowska
+et al., 2019; Zoffoli et al., 2023). Understanding and preserving these
+ecosystems is vital for maintaining the biodiversity and productivity of
+coastal regions (Ramesh and Mohanraju, 2020; Scott et al., 2018).
 
 Despite their crucial role in marine ecosystems, intertidal seagrasses
 face numerous threats that compromise their health and functionality.
-Coastal development and human activities are primary threats, which not
-only reduce the available habitat for seagrasses but also increase water
-turbidity, which limits light penetration and photosynthesis (Waycott et
-al., 2009). Seagrasses are also threatened by nutrient enrichment from
-agricultural and urban runoff, leading to eutrophication. This condition
-promotes the rapid growth of algale causing blooms that compete with
-seagrasses for light and nutrients, further stressing these important
-plants (Thomsen et al., 2023) (Oiry et al.~2024). Pollution from
-industrial and agricultural sources introduce harmful chemicals and
-heavy metals into coastal waters, posing toxic risks to seagrass health
-(Bastos et al., 2023; Zahoor and Mushtaq, 2023). These pollutants can
-affect the physiological processes of seagrasses, reducing their growth
-and survival rates (Sevgi and Leblebici, 2022).
+Coastal development and human activities are primary threats, reducing
+the available habitat for seagrasses and increasing water turbidity,
+limiting light penetration and photosynthesis (Waycott et al., 2009).
+Seagrasses are also threatened by agricultural and urban runoff nutrient
+enrichment, leading to eutrophication. This condition promotes the rapid
+growth of algale causing blooms that compete with seagrasses for light
+and nutrients, further stressing these important plants (Oiry et al.,
+2024; Thomsen et al., 2023). Pollution from industrial and agricultural
+sources introduces harmful chemicals and heavy metals into coastal
+waters, posing toxic risks to seagrass health (Bastos et al., 2023;
+Zahoor and Mushtaq, 2023). These pollutants can affect the physiological
+processes of seagrasses, reducing their growth and survival rates (Sevgi
+and Leblebici, 2022). Among these anthropogenic stressors, heatwaves,
+exacerbated by climate change, pose a growing threat to seagrasses
+(Deguette et al., 2022; Sawall et al., 2021). \textbf{However, their
+impact on seagrass spectral reflectance has not yet been investigated.}
+Marine Heatwaves (MHW) are defined by Hobday et al. (2016) as prolonged
+discrete anomalously warm water events while Atmospheric Heatwaves (AHW)
+are defined by Perkins and Alexander (2013) as periods of at least three
+consecutive days with temperatures exceeding the 90th percentile of a
+time series covering at least 30 years. Intertidal seagrasses are
+exposed to both MHWs and AHWs at the interface between the land and
+oceans. Heatwaves profoundly impact the physiology of seagrasses, with
+their effects varying based on species and geographic location. The
+widespread species \emph{Zostera marina} exhibits high susceptibility to
+elevated sea surface temperatures during winter and spring, leading to
+advanced flowering, high mortality rates, and reduced biomass (Sawall et
+al., 2021). Similarly, \emph{Cymodocea nodosa} shows increased
+photosynthetic activity during heatwaves but suffers negative effects on
+photosynthetic performance and leaf biomass during recovery (Deguette et
+al., 2022). Additionally, different populations of \emph{Zostera marina}
+along the European thermal gradient exhibit varied photophysiological
+responses during the recovery phase of heatwaves, indicating
+differential adaptation capabilities among populations (Winters et al.,
+2011). These events intensify other stressors, such as overgrazing and
+seed burial, compromising recruitment (Guerrero-Meseguer et al., 2020).
+Structural impacts on leaf coloration were also observed: in September
+2021, a seagrass meadow in South Brittany (France) exhibited browning of
+the leaves just a few days after the start of a heatwave characterized
+by both water and atmospheric temperature anomalies (Barillé A-L \&
+Harin N., pers. comm.).
 
-Heatwaves, exacerbated by climate change, pose a growing threat to
-seagrasses. Marine Heatwaves (MHW), defined by Hobday et al. (2016) as
-prolonged discrete anomalously warm water events, and Atmospheric
-Heatwaves (AHW), defined by Perkins and Alexander (2013) as periods of
-at least three consecutive days with temperatures exceeding the 90th
-percentile, cause severe physiological stress to seagrasses (Deguette et
-al., 2022; Sawall et al., 2021). At the interface between the land and
-oceans, intertidal seagrasses are exposed to both MHW and AHW. Heatwaves
-have profound impacts on seagrasses, with their effects varying based on
-species and geographic location. For instance, the seagrass
-\emph{Zostera marina} exhibits high susceptibility to elevated sea
-surface temperatures during winter and spring, leading to advanced
-flowering, high mortality rates, and reduced biomass (Sawall et al.,
-2021). Similarly, \emph{Cymodocea nodosa} shows increased photosynthetic
-activity during heatwaves but suffers negative effects on photosynthetic
-performance and leaf biomass during recovery (Deguette et al., 2022).
-Additionally, different populations of \emph{Zostera marina} along the
-European thermal gradient exhibit varied photophysiological responses
-during the recovery phase of heatwaves, indicating differential
-adaptation capabilities among populations (Winters et al., 2011). These
-events intensify other stressors, such as overgrazing and seed burial,
-compromising recruitment (Guerrero-Meseguer et al., 2020).
-
-Remote sensing is increasingly being used to monitor marine ecosystems,
-including intertidal seagrass meadows (Davies et al., 2024a, 2024b).
-Spectral indices such as the Normalized Difference Vegetation Index
-(NDVI) and the Green Leaf Index (GLI) are effective for quantifying
-vegetation health over time (Akbar et al., 2020; Cârlan et al., 2020;
-Huete, 2012; Kloos et al., 2021). By analyzing specific spectral
-patterns, remote sensing can track changes in seagrass meadows with high
-temporal and spatial resolution. The European Union promotes these
-techniques through frameworks like the Water Framework Directive and the
-Marine Strategy Framework Directive, which advocate for habitat mapping
-using remote sensing technologies to cover large areas and detect
-long-term trends (Papathanasopoulou et al., 2019).
+Remote sensing is increasingly employed to monitor marine ecosystems,
+including intertidal seagrass meadows (Davies et al., 2024a, 2024b; Oiry
+et al., 2024; Román et al., 2021). The pigment composition of plants,
+such as chlorophylls, carotenoids, and anthocyanins, significantly
+influences their spectral signature in the visible range due to their
+specific light absorption properties (Davies et al., 2023; Douay et al.,
+2022; Olmedo-Masat et al., 2020; Ustin and Jacquemoud, 2020). During
+senescence, the degradation of chlorophyll and the unmasking of
+accessory pigments result in noticeable changes in leaf coloration and
+reflectance, including increased reflectance in the red and green
+wavelengths and shifts in the red-edge position (Boyer et al., 1988;
+Mariën et al., 2019; Peñuelas et al., 2004). Leaf browning, often
+observed after stress events, produces reflectance changes similar to
+those caused by senescence, enabling the detection of vegetation stress
+through remote sensing (Boyer et al., 1988; Peñuelas et al., 2004).
+Spectral indices such as the Brown Pigment Index (BPI) and the
+Photochemical Reflectance Index (PRI) have been developed to assess
+changes in terrestrial plant physiological status, including oxidative
+and drought stress (Garbulsky et al., 2011; Skendzic, 2023). While these
+effects are well-documented in terrestrial plants, the spectral changes
+associated with senescence and stress in intertidal marine vegetation,
+subjected to a combination of aquatic and aerial conditions, remain
+poorly studied.
 
 This study aims to experimentally test the hypothesis that warm events,
 such as atmospheric heatwaves, alter the reflectance of the intertidal
@@ -1363,6 +1383,11 @@ Eelgrass meadow response to heat stress. II. Impacts of ocean warming
 and marine heatwaves measured by novel metrics. Marine Ecology Progress
 Series 736, 47--62. \url{https://doi.org/10.3354/meps14588}
 
+\bibitem[\citeproctext]{ref-boyer1988senescence}
+Boyer, M., Miller, J., Belanger, M., Hare, E., Wu, J., 1988. Senescence
+and spectral reflectance in leaves of northern pin oak (quercus
+palustris muenchh.). Remote Sensing of Environment 25, 71--87.
+
 \bibitem[\citeproctext]{ref-JSSv100i05}
 Bürkner, P.-C., 2021. Bayesian item response modeling in r with brms and
 stan. Journal of Statistical Software 100, 1--54.
@@ -1383,12 +1408,6 @@ Science 73, 583--588.
 Canadell, J.G., Jackson, R.B., 2021. Ecosystem collapse and climate
 change. Springer.
 
-\bibitem[\citeproctext]{ref-carlan2020identifying}
-Cârlan, I., Mihai, B.-A., Nistor, C., Große-Stoltenberg, A., 2020.
-Identifying urban vegetation stress factors based on open access remote
-sensing imagery and field observations. Ecological Informatics 55,
-101032.
-
 \bibitem[\citeproctext]{ref-JSSv076i01}
 Carpenter, B., Gelman, A., Hoffman, M.D., Lee, D., Goodrich, B.,
 Betancourt, M., Brubaker, M., Guo, J., Li, P., Riddell, A., 2017. Stan:
@@ -1407,6 +1426,12 @@ Dascaliuc, A., Ralea, T., Cuza, P., 2007. Influence of heat shock on
 chlorophyll fluorescence of white oak (quercus pubescens willd.) leaves.
 Photosynthetica 45, 469--471.
 \url{https://doi.org/10.1007/s11099-007-0084-3}
+
+\bibitem[\citeproctext]{ref-davies2023multi}
+Davies, B.F.R., Gernez, P., Geraud, A., Oiry, S., Rosa, P., Zoffoli,
+M.L., Barillé, L., 2023. Multi-and hyperspectral classification of
+soft-bottom intertidal vegetation using a spectral library for coastal
+biodiversity remote sensing. Remote Sensing of Environment 290, 113554.
 
 \bibitem[\citeproctext]{ref-davies2024sentinel}
 Davies, B.F.R., Oiry, S., Rosa, P., Zoffoli, M.L., Sousa, A.I., Thomas,
@@ -1438,6 +1463,11 @@ Devi, R., Gouda, K., Lenka, S., 2024. Intensity duration and frequency
 of heat wave in different phases of MJO over india. Atmospheric Research
 300, 107250.
 
+\bibitem[\citeproctext]{ref-douay2022new}
+Douay, F., Verpoorter, C., Duong, G., Spilmont, N., Gevaert, F., 2022.
+New hyperspectral procedure to discriminate intertidal macroalgae.
+Remote Sensing 14, 346.
+
 \bibitem[\citeproctext]{ref-sen2cor}
 European Space Agency, 2024b. Sen2Cor: Sentinel-2 atmospheric correction
 processor.
@@ -1462,6 +1492,12 @@ functional types. Marine Genomics 15, 65--73.
 Gacia, E., Granata, T., Duarte, C., 1999. An approach to measurement of
 particle flux and sediment retention within seagrass (posidonia
 oceanica) meadows. Aquatic Botany 65, 255--268.
+
+\bibitem[\citeproctext]{ref-garbulsky2011photochemical}
+Garbulsky, M.F., Peñuelas, J., Gamon, J., Inoue, Y., Filella, I., 2011.
+The photochemical reflectance index (PRI) and the remote sensing of
+leaf, canopy and ecosystem radiation use efficiencies: A review and
+meta-analysis. Remote sensing of environment 115, 281--297.
 
 \bibitem[\citeproctext]{ref-gardner2018global}
 Gardner, R.C., Finlayson, C., 2018. Global wetland outlook: State of the
@@ -1493,10 +1529,6 @@ M.T., Donat, M.G., Holbrook, N.J., Moore, P.J., Thomsen, M.S., Wernberg,
 T., others, 2018. Categorizing and naming marine heatwaves. Oceanography
 31, 162--173.
 
-\bibitem[\citeproctext]{ref-huete2012vegetation}
-Huete, A.R., 2012. Vegetation indices, remote sensing and forest
-monitoring. Geography Compass 6, 513--532.
-
 \bibitem[\citeproctext]{ref-hughes2004genetic}
 Hughes, A.R., Stachowicz, J.J., 2004. Genetic diversity enhances the
 resistance of a seagrass ecosystem to disturbance. Proceedings of the
@@ -1519,11 +1551,6 @@ Jones, R.B., Clayton-Greene, K.A., 1992. The role of photosynthesis and
 oxidative reactions in leaf blackening of protea neriifolia r. Br.
 leaves. Scientia Horticulturae 50, 137--145.
 \url{https://doi.org/10.1016/S0304-4238(05)80016-0}
-
-\bibitem[\citeproctext]{ref-kloos2021agricultural}
-Kloos, S., Yuan, Y., Castelli, M., Menzel, A., 2021. Agricultural
-drought detection with MODIS based vegetation health indices in
-southeast germany. Remote Sensing 13, 3907.
 
 \bibitem[\citeproctext]{ref-knipling1970reflectance}
 Knipling, E.B., 1970. Physical and physiological basis for the
@@ -1550,6 +1577,12 @@ Malvern Panalytical, 2023.
 \href{https://www.malvernpanalytical.com/en/support/product-support/software/rs3}{RS3
 software}.
 
+\bibitem[\citeproctext]{ref-marien2019detecting}
+Mariën, B., Balzarolo, M., Dox, I., Leys, S., Lorène, M.J., Geron, C.,
+Portillo-Estrada, M., AbdElgawad, H., Asard, H., Campioli, M., 2019.
+Detecting the onset of autumn leaf senescence in deciduous forest trees
+of the temperate zone. New Phytologist 224, 166--176.
+
 \bibitem[\citeproctext]{ref-massa2009temperature}
 Massa, S., Arnaud-Haond, S., Pearson, G., Serrão, E., 2009. Temperature
 tolerance and survival of intertidal populations of the seagrass zostera
@@ -1569,11 +1602,24 @@ others, 2018. Seagrass ecosystem trajectory depends on the relative
 timescales of resistance, recovery and disturbance. Marine Pollution
 Bulletin 134, 166--176.
 
+\bibitem[\citeproctext]{ref-rs16234383}
+Oiry, S., Davies, B.F.R., Sousa, A.I., Rosa, P., Zoffoli, M.L., Brunier,
+G., Gernez, P., Barillé, L., 2024. Discriminating seagrasses from green
+macroalgae in european intertidal areas using high-resolution
+multispectral drone imagery. Remote Sensing 16.
+\url{https://doi.org/10.3390/rs16234383}
+
 \bibitem[\citeproctext]{ref-oliver2019projected}
 Oliver, E.C.J., Burrows, M.T., Donat, M.G., others, 2019. Projected
 marine heatwaves in the 21st century and the potential for ecological
 impact. Frontiers in Marine Science 6, 734.
 \url{https://doi.org/10.3389/fmars.2019.00734}
+
+\bibitem[\citeproctext]{ref-olmedo2020far}
+Olmedo-Masat, O.M., Raffo, M.P., Rodrı́guez-Pérez, D., Arijón, M.,
+Sánchez-Carnero, N., 2020. How far can we classify macroalgae remotely?
+An example using a new spectral library of species from the south west
+atlantic (argentine patagonia). Remote Sensing 12, 3870.
 
 \bibitem[\citeproctext]{ref-pansch2018heat}
 Pansch, C., Scotti, M., Barboza, F.R., others, 2018. Heat waves and
@@ -1581,11 +1627,11 @@ their significance for a temperate benthic community: A near-natural
 experimental approach. Global Change Biology 24, 4357--4367.
 \url{https://doi.org/10.1111/gcb.14282}
 
-\bibitem[\citeproctext]{ref-papathanasopoulou2019satellite}
-Papathanasopoulou, E., Simis, S., Alikas, K., Ansper, A., Anttila, J.,
-Barillé, A., Barillé, L., Brando, V., Bresciani, M., Bučas, M., others,
-2019. Satellite-assisted monitoring of water quality to support the
-implementation of the water framework directive. EOMORES white paper.
+\bibitem[\citeproctext]{ref-penuelas2004leaf}
+Peñuelas, J., Munné-Bosch, S., Llusià, J., Filella, I., 2004. Leaf
+reflectance and photo-and antioxidant protection in field-grown
+summer-stressed phillyrea angustifolia. Optical signals of oxidative
+stress? New Phytologist 162, 115--124.
 
 \bibitem[\citeproctext]{ref-perkins2013measurement}
 Perkins, S.E., Alexander, L.V., 2013. On the measurement of heat waves.
@@ -1606,6 +1652,11 @@ Reusch, T.B., Ehlers, A., Hämmerli, A., Worm, B., 2005. Ecosystem
 recovery after climatic extremes enhanced by genotypic diversity.
 Proceedings of the National Academy of Sciences 102, 2826--2831.
 \url{https://doi.org/10.1073/pnas.0500008102}
+
+\bibitem[\citeproctext]{ref-roman2021using}
+Román, A., Tovar-Sánchez, A., Olivé, I., Navarro, G., 2021. Using a
+UAV-mounted multispectral camera for the monitoring of marine
+macrophytes. Frontiers in Marine Science 8, 722698.
 
 \bibitem[\citeproctext]{ref-rouse1974monitoring}
 Rouse, J.W., Haas, R.H., Schell, J.A., Deering, D.W., others, 1974.
@@ -1663,6 +1714,12 @@ Simolo, C., Corti, S., 2022. Quantifying the role of variability in
 future intensification of heat extremes. Nature Communications 13.
 \url{https://doi.org/10.1038/s41467-022-35571-0}
 
+\bibitem[\citeproctext]{ref-skendzic2023drought}
+Skendzic, S., 2023. Drought stress in winter wheat-physiological
+responses and detection using remote and proximal sensing techniques,
+in: Smart Life Sciences and Technology for Sustainable Development. pp.
+39--39.
+
 \bibitem[\citeproctext]{ref-smale2019marine}
 Smale, D.A., Wernberg, T., Oliver, E.C.J., others, 2019. Marine
 heatwaves threaten global biodiversity and the provision of ecosystem
@@ -1697,6 +1754,11 @@ services, and the conservation of seagrass meadows. Coast. Conserv 19,
 \bibitem[\citeproctext]{ref-unsworth2022planetary}
 Unsworth, R.K., Cullen-Unsworth, L.C., Jones, B.L., Lilley, R.J., 2022.
 The planetary role of seagrass conservation. Science 377, 609--613.
+
+\bibitem[\citeproctext]{ref-ustin2020optical}
+Ustin, S.L., Jacquemoud, S., 2020. How the optical properties of leaves
+modify the absorption and scattering of energy and enhance leaf
+functionality. Remote sensing of plant biodiversity 349--384.
 
 \bibitem[\citeproctext]{ref-waycott2009accelerating}
 Waycott, M., Duarte, C.M., Carruthers, T.J., Orth, R.J., Dennison, W.C.,
