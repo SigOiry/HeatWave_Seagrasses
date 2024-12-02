@@ -80,17 +80,15 @@
 \makesavenoteenv{longtable}
 \usepackage{graphicx}
 \makeatletter
-\newsavebox\pandoc@box
-\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
-  \sbox\pandoc@box{#1}%
-  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
-  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
-  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
-  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
-  \else\usebox{\pandoc@box}%
-  \fi%
-}
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
 % Set default figure placement to htbp
+\makeatletter
 \def\fps@figure{htbp}
 \makeatother
 % definitions for citeproc citations
@@ -170,6 +168,9 @@
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
 
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
 \usepackage{bookmark}
 
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
@@ -197,7 +198,7 @@ Laura Zoffoli\footnote{Consiglio Nazionale delle Ricerche, Istituto di
 Barillé\footnote{Bio-littoral, Immeuble Le Nevada, 2 Rue du Château de
   l'Eraudière, 44300 Nantes, France} \and Nicolas Harin³ \and Pierre
 Gernez¹ \and Laurent Barillé¹}
-\date{2024-11-29}
+\date{2024-11-30}
 
 \begin{document}
 \maketitle
@@ -237,72 +238,104 @@ rapid environmental changes in intertidal zones.
 \section{Abstract Long version (For LPS
 Submission)}\label{abstract-long-version-for-lps-submission}
 
-Seagrasses are indispensable to coastal ecosystems, serving as crucial
+Seagrasses meadows are important coastal ecosystems, serving as crucial
 habitats for marine biodiversity, stabilizing sediments to mitigate
 erosion, and acting as significant carbon sinks in global climate
 regulation. However, these vital ecosystems face mounting threats from
 climate change, with the intensification and increased frequency of
 marine and atmospheric heatwaves posing profound risks to their health
 and functionality. This study investigates the impact of these extreme
-thermal events on the intertidal seagrass \emph{Zostera noltei},
-employing a combination of laboratory-controlled experiments and
-satellite-based remote sensing to capture changes in spectral
-reflectance and assess the broader ecological implications.
+thermal events on the intertidal seagrass, employing a combination of
+laboratory-controlled experiments and satellite-based remote sensing to
+capture changes in spectral reflectance and assess the broader
+ecological implications.
 
-In laboratory experiments, \emph{Z. noltei} samples were exposed to
-simulated heatwave conditions, with hyperspectral reflectance
-measurements taken over time to monitor physiological and structural
-changes. Heatwave exposure resulted in a significant decline in
-reflectance, particularly in the green and near-infrared regions,
-aligning with visible leaf browning. Vegetation indices such as the
-Normalized Difference Vegetation Index (NDVI) and Green Leaf Index (GLI)
-decreased markedly, with reductions of up to 34\% and 57\%,
-respectively, highlighting a loss of photosynthetic efficiency and
-pigment degradation. To better quantify these changes, a novel Seagrass
-Heat Shock Index (SHSI) was developed, demonstrating a strong ability to
-detect the transition from green to brown leaves, thus offering a
-sensitive tool for assessing the effects of thermal stress on seagrass
-coloration.
+During laboratory experiments, seagrass of the species \emph{Zostera
+noltei} were exposed to controlled simulated heatwave conditions to
+assess the physiological and structural impacts of extreme thermal
+stress. The experimental design involved placing seagrass samples in
+intertidal chambers that simulated natural tidal cycles, allowing to
+closely regulate temperature conditions during both high and low tides.
+One chamber served as a control, maintaining typical seasonal
+temperatures, while the other was used to simulate heatwave conditions
+with progressively increasing air and water temperatures to mimic an
+actual heatwave event observed in the field. Hyperspectral reflectance
+measurements were recorded at regular intervals during low-tide to
+monitor changes in the seagrass over time. Heatwave exposure resulted in
+a significant reduction in reflectance, particularly in the green
+(around 560 nm) and near-infrared (NIR) regions of the spectrum. This
+decline in reflectance was closely linked to visible leaf browning,
+suggesting alterations in pigment content, in the internal structure of
+seagrass leaves and their overall vitality. The green reflectance
+decline indicates a reduction in the plant's health, while changes in
+NIR reflectance often relate to the internal arrangement of cells and
+air spaces, which are sensitive to heat-induced damage. Vegetation
+indices like the Normalized Difference Vegetation Index (NDVI) and the
+Green Leaf Index (GLI), which are indicative of the overall health and
+structural integrity of vegetation, showed marked decreases under
+heatwave conditions, with NDVI dropping by up to 34\% and GLI by 57\%.
+This significant reduction highlights the adverse effects on the
+seagrass's ability to maintain its normal physiological processes under
+heat stress. To quantify these changes more effectively, a novel
+Seagrass Heat Shock Index (SHSI) was developed. The SHSI, applicable on
+emerged seagrass, was particularly effective in detecting the transition
+from green leaves to darkened, stressed leaves, providing a sensitive
+and reliable tool for assessing thermal stress effects on seagrass. By
+focusing on specific changes in reflectance across certain spectral
+bands, the SHSI allowed for a clear differentiation between unimpacted
+and impacted vegetation, capturing the onset of heat-induced stress with
+high accuracy. This sensitivity makes the SHSI valuable for early
+intervention, enabling managers and researchers to identify vulnerable
+seagrass meadows before substantial damage occurs, thereby facilitating
+more timely conservation measures.
 
-Complementing the experimental data, satellite observations from
-multispectral imagery provided evidence of widespread spectral changes
-in seagrass meadows during a documented heatwave event in South
-Brittany, France. Intertidal zones exposed to air temperatures exceeding
-32°C for more than 13.5 hours per day exhibited notable leaf darkening,
-affecting up to 24\% of the meadow's area. Spatial analysis revealed a
-strong correlation between heat exposure and spectral darkening,
-underscoring the vulnerability of intertidal seagrasses to prolonged
-thermal stress. This combination of laboratory and remote sensing
-approaches illustrates the utility of integrating local observations
-with satellite data to track ecosystem changes at multiple scales.
+Complementing the experimental data, Sentinel-2 observations provided
+clear evidence of the effects of a documented heatwave event in South
+Brittany, France, on natural seagrass meadows. These intertidal zones
+were exposed to extreme air temperatures up to 32°C for more than 13.5
+hours per day, leading to significant leaf darkening, which affected up
+to 24\% of the meadow's area. The satellite-derived SHSI indicated a
+strong spatial correlation between prolonged heat exposure and areas
+experiencing spectral darkening, highlighting the susceptibility of
+intertidal seagrasses to extended thermal stress. Spatial analysis
+showed that darkening was especially pronounced in the higher intertidal
+regions, where seagrasses were exposed to air for longer durations
+during low tide, underlining the interaction between tidal exposure and
+thermal stress. However, Sentinel-2 data one month after the heatwave,
+showed partial recovery in some areas, suggesting a certain level of
+resilience in \emph{Zostera noltei}. Despite this recovery, the
+seagrasses that had experienced the most severe darkening did not fully
+return to their original state, indicating that while seagrass meadows
+have some capacity for resilience, prolonged or repeated thermal stress
+can have lasting impacts, particularly in the more exposed intertidal
+regions. This highlights the need for focused conservation efforts to
+support their recovery and enhance their resilience in the face of
+increasing climate-driven thermal extremes.
 
-These findings underscore the critical role of spectral reflectance as
-an early warning indicator of heatwave-induced stress in seagrasses,
-providing a foundation for remote sensing-based monitoring and
-conservation efforts. The study highlights the capacity of innovative
-indices like SHSI to capture subtle yet ecologically significant
-changes, advancing the precision of habitat assessments in intertidal
-zones. Furthermore, the integration of experimental and
-satellite-derived metrics offers a comprehensive perspective on the
-interplay between marine and atmospheric heatwaves, enabling the
-identification of vulnerable areas and informing targeted management
-strategies.
-
-As heatwaves intensify under projected climate scenarios, the need for
-continuous monitoring of intertidal seagrass meadows becomes
-increasingly urgent. This research emphasizes the importance of
-safeguarding these ecosystems, which not only support diverse marine
-life but also contribute to coastal protection and carbon sequestration.
-By demonstrating the potential of remote sensing to capture rapid
-environmental changes, the study provides a valuable framework for
-understanding and mitigating the impacts of climate-driven stressors. It
-calls for the development of adaptive conservation strategies, combining
-technological advancements in remote sensing with field-based
-interventions to preserve the resilience of intertidal seagrass meadows
-in a rapidly warming world. The findings serve as a clarion call for
-action, advocating for proactive measures to address the escalating
-challenges posed by climate change to these indispensable coastal
-habitats.
+The combination of laboratory-controlled experiments and satellite-based
+remote sensing provided a comprehensive understanding of the impacts of
+heatwaves on seagrass meadows at multiple scales, from individual
+leaf-level responses to entire meadow-wide effects. This integrated
+approach highlights the potential of leveraging both detailed local
+observations and large-scale satellite data to effectively monitor
+ecosystem changes, offering valuable insights for the management and
+conservation of these vulnerable habitats. The study underscores the
+critical role of spectral reflectance as an early warning indicator of
+heatwave-induced stress, laying the foundation for remote sensing-based
+monitoring and conservation efforts. By employing innovative indices
+like the Seagrass Heat Shock Index (SHSI), we capture subtle yet
+ecologically significant changes, advancing the precision of habitat
+assessments in intertidal zones. As climate scenarios predict more
+frequent and intense heatwaves, the need for continuous monitoring of
+intertidal seagrass meadows becomes increasingly urgent. This research
+demonstrates the efficacy of remote sensing in capturing rapid
+environmental changes, providing a framework for mitigating the impacts
+of climate-driven stressors and calling for adaptive conservation
+strategies. These strategies should integrate advancements in remote
+sensing technologies with targeted field-based interventions to preserve
+the resilience of intertidal seagrass meadows, thereby addressing the
+escalating challenges posed by climate change and ensuring the continued
+health of these indispensable coastal habitats.
 
 \section{Introduction}\label{introduction}
 
@@ -435,7 +468,7 @@ to circulate and to re-oxygenate.
 
 \centering{
 
-\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/Experimental_design.png}
+\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/Experimental_design.png}
 
 }
 
@@ -489,7 +522,7 @@ Photosynthetically Active Radiation (PAR) intensity of up to 400
 
 \centering{
 
-\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/Chamber_Profils.png}
+\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/Chamber_Profils.png}
 
 }
 
@@ -603,7 +636,7 @@ darkening.}{In situ seagrass darkening.}}\label{in-situ-seagrass-darkening.}
 
 \centering{
 
-\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/Quiberon_map.png}
+\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/Quiberon_map.png}
 
 }
 
@@ -636,7 +669,7 @@ a visual estimation of the leaf coloration
 
 \centering{
 
-\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/img_Quiberon.png}
+\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/img_Quiberon.png}
 
 }
 
@@ -790,7 +823,7 @@ decline slightly until the experiment's conclusion.
 
 \centering{
 
-\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/plot_Spectra_exp.png}
+\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/plot_Spectra_exp.png}
 
 }
 
@@ -833,7 +866,7 @@ decline of 420 \% by day 3 (Figure~\ref{fig-Exp_Spectral_indices} E).
 
 \centering{
 
-\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/merged_indices.png}
+\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/merged_indices.png}
 
 }
 
@@ -861,7 +894,7 @@ green appearance throughout the experiment, with an average SDI of
 
 \centering{
 
-\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/SDI_exp_overtime.png}
+\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/SDI_exp_overtime.png}
 
 }
 
@@ -906,7 +939,7 @@ observed as a steady increasing slope up to 940 nm.
 
 \centering{
 
-\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/Heatwaves_S2_plot.png}
+\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/Heatwaves_S2_plot.png}
 
 }
 
@@ -962,7 +995,7 @@ higher than on the 1st of September.
 
 \centering{
 
-\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/Compares_Indices_S2.png}
+\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/Compares_Indices_S2.png}
 
 }
 
@@ -998,7 +1031,7 @@ green color (Figure~\ref{fig-Map_darkening_Bathy}, C).
 
 \centering{
 
-\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/Map_darkening_Bathy.png}
+\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/Map_darkening_Bathy.png}
 
 }
 
@@ -1022,7 +1055,7 @@ around 14.5 hours of daily exposure.
 
 \centering{
 
-\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/GAM_emersion.png}
+\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/GAM_emersion.png}
 
 }
 
@@ -1418,7 +1451,7 @@ experiment}\label{sec-AnnexeA}
 
 \begin{figure}[H]
 
-{\centering \pandocbounded{\includegraphics[keepaspectratio]{Figs/High_res/Temperature_compare.png}}
+{\centering \includegraphics{Figs/High_res/Temperature_compare.png}
 
 }
 
