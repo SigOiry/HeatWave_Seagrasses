@@ -80,15 +80,17 @@
 \makesavenoteenv{longtable}
 \usepackage{graphicx}
 \makeatletter
-\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
-\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
-\makeatother
-% Scale images if necessary, so that they will not overflow the page
-% margins by default, and it is still possible to overwrite the defaults
-% using explicit options in \includegraphics[width, height, ...]{}
-\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
 % Set default figure placement to htbp
-\makeatletter
 \def\fps@figure{htbp}
 \makeatother
 % definitions for citeproc citations
@@ -168,9 +170,6 @@
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
 
-\ifLuaTeX
-  \usepackage{selnolig}  % disable illegal ligatures
-\fi
 \usepackage{bookmark}
 
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
@@ -198,7 +197,7 @@ Laura Zoffoli\footnote{Consiglio Nazionale delle Ricerche, Istituto di
 Barillé\footnote{Bio-littoral, Immeuble Le Nevada, 2 Rue du Château de
   l'Eraudière, 44300 Nantes, France} \and Nicolas Harin³ \and Pierre
 Gernez¹ \and Laurent Barillé¹}
-\date{2024-11-30}
+\date{2024-12-07}
 
 \begin{document}
 \maketitle
@@ -468,7 +467,7 @@ to circulate and to re-oxygenate.
 
 \centering{
 
-\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/Experimental_design.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/Experimental_design.png}
 
 }
 
@@ -522,7 +521,7 @@ Photosynthetically Active Radiation (PAR) intensity of up to 400
 
 \centering{
 
-\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/Chamber_Profils.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/Chamber_Profils.png}
 
 }
 
@@ -556,19 +555,19 @@ Lambertian reflectivity.
 \paragraph{Spectrum post-processing}\label{spectrum-post-processing}
 
 A Savitzky-Golay smoothing function with a 5 nm moving window was
-applied to each spectrum prior to computing the second derivative of
-\(R(\lambda)\) used to estimate absorption features and compare their
-variability over time. This analysis was performed using the ``hsdar''
-package in R (Lehnert et al., 2017).
+applied to each spectrum using the ``hsdar'' package in R (Lehnert et
+al., 2017). The second derivative at 665 nm (δδ665), showing the highest
+variability between the control and the treatment, was tested as an
+indicator of the spectral changes following heatwaves.
 
-Two well established radiometric indices were also calculated throughout
-the experiment :
+Two additional well-established radiometric indices were also tested :
 
 \begin{itemize}
 \tightlist
 \item
-  Normalized Difference Vegetation Index (NDVI, Rouse et al. (1974)), a
-  proxy of the concentration of chlorophyll-a (Equation~\ref{eq-ndvi})
+  The Normalized Difference Vegetation Index (NDVI, Rouse et al.
+  (1974)), a proxy of the concentration of chlorophyll-a
+  (Equation~\ref{eq-ndvi})
 \end{itemize}
 
 \begin{equation}\phantomsection\label{eq-ndvi}{
@@ -581,8 +580,8 @@ respectively.
 \begin{itemize}
 \tightlist
 \item
-  Green Leaf Index (GLI, Louhaichi et al. (2001)), a measurement of the
-  greenness of seagrass leafs (Equation~\ref{eq-gli})
+  The Green Leaf Index (GLI, Louhaichi et al. (2001)), a measurement of
+  the greenness of seagrass leaves (Equation~\ref{eq-gli})
 \end{itemize}
 
 \begin{equation}\phantomsection\label{eq-gli}{
@@ -592,19 +591,20 @@ GLI = \frac{[R(550)-R(668)]+[R(550)-R(450)]}{(2 \times R(550) )+ R(668) + R(450)
 where \(R(550)\) and \(R(450)\) are the reflectance in green at 550 nm
 and in the blue at 450 nm, respectively.
 
-Based on the observed spectral changes in seagrasses exposed to extreme
-events, a radiometric index can be developed to detect seagrass
-darkening events through remote sensing. This darkening is characterized
-by a reduction in reflectance within the green region, along with a
-substantial decrease in the red-edge portion of the electromagnetic
-spectrum.
+Based on the observed spectral changes in seagrasses exposed to
+heatwaves, we developed a new radiometric index to detect colour changes
+in the visible but also near-infrared slope variations, a significant
+spectral feature for seagrasses (Davies et al., 2023). The observed
+green colour of the leaves turning brown was characterized by a
+reduction in reflectance within the green region and a substantial
+decrease in the red-edge portion of the electromagnetic spectrum.
 
-The Seagrass Darkening Index (SDI) is introduced here as a measure of
-the difference between the interpolated value between 560 and 842 nm and
-the observed value at 740 nm. This approach calculates the line height
-using a triplet of bands, where 560 nm and 842 nm serve as the
-`baseline' and 740 nm represents the central peak. The SDI can be
-mathematically expressed as:
+the Seagrass Heat Shock Index (SHSI) is introduced here to measure the
+difference between the interpolated value between 560 and 842 nm and the
+observed value at 740 nm (\textbf{Add a Figure}). This approach
+calculates the line height using a triplet of bands, where 560 nm and
+842 nm serve as the `baseline' and 740 nm represents the central peak.
+The SDI can be mathematically expressed as:
 \begin{equation}\phantomsection\label{eq-SDI}{
 \text{SDI} = I_{SDI} - R(740)
 }\end{equation}
@@ -636,7 +636,7 @@ darkening.}{In situ seagrass darkening.}}\label{in-situ-seagrass-darkening.}
 
 \centering{
 
-\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/Quiberon_map.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/Quiberon_map.png}
 
 }
 
@@ -669,7 +669,7 @@ a visual estimation of the leaf coloration
 
 \centering{
 
-\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/img_Quiberon.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/img_Quiberon.png}
 
 }
 
@@ -823,7 +823,7 @@ decline slightly until the experiment's conclusion.
 
 \centering{
 
-\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/plot_Spectra_exp.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/plot_Spectra_exp.png}
 
 }
 
@@ -866,7 +866,7 @@ decline of 420 \% by day 3 (Figure~\ref{fig-Exp_Spectral_indices} E).
 
 \centering{
 
-\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/merged_indices.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/merged_indices.png}
 
 }
 
@@ -894,7 +894,7 @@ green appearance throughout the experiment, with an average SDI of
 
 \centering{
 
-\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/SDI_exp_overtime.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/SDI_exp_overtime.png}
 
 }
 
@@ -939,7 +939,7 @@ observed as a steady increasing slope up to 940 nm.
 
 \centering{
 
-\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/Heatwaves_S2_plot.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/Heatwaves_S2_plot.png}
 
 }
 
@@ -995,7 +995,7 @@ higher than on the 1st of September.
 
 \centering{
 
-\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/Compares_Indices_S2.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/Compares_Indices_S2.png}
 
 }
 
@@ -1031,7 +1031,7 @@ green color (Figure~\ref{fig-Map_darkening_Bathy}, C).
 
 \centering{
 
-\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/Map_darkening_Bathy.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/Map_darkening_Bathy.png}
 
 }
 
@@ -1055,7 +1055,7 @@ around 14.5 hours of daily exposure.
 
 \centering{
 
-\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/GAM_emersion.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/GAM_emersion.png}
 
 }
 
@@ -1451,7 +1451,7 @@ experiment}\label{sec-AnnexeA}
 
 \begin{figure}[H]
 
-{\centering \includegraphics{Figs/High_res/Temperature_compare.png}
+{\centering \pandocbounded{\includegraphics[keepaspectratio]{Figs/High_res/Temperature_compare.png}}
 
 }
 
