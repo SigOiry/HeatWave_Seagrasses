@@ -585,24 +585,180 @@ where $R(550)$ and $R(450)$ are the reflectance in green at 550 nm and in the bl
 Based on the observed spectral changes in seagrasses exposed to heatwaves, we developed a new radiometric index to detect colour changes in the visible but also near-infrared slope variations, a significant spectral feature for seagrasses [@davies2023multi]. The observed green colour of the leaves turning brown was characterized by a reduction in reflectance within the green region and a substantial decrease in the red-edge portion of the electromagnetic spectrum.
 
 the Seagrass Heat Shock Index (SHSI) is introduced here to measure the difference between the interpolated value between 560 and 842 nm and the observed value at 740 nm (**Add a Figure**). This approach calculates the line height using a triplet of bands, where 560 nm and 842 nm serve as the 'baseline' and 740 nm represents the central peak. The SDI can be mathematically expressed as: $$
-\text{SDI} = I_{SDI} - R(740)
+\text{SHSI} = I_{SHSI} - R(740)
 $$ {#eq-SDI}
 
 where :
 
 $$
-I_{SDI} = R(560) + \tau    [R(842) - R(560)]
+I_{SHSI} = R(560) + \tau    [R(842) - R(560)]
 $$ and :
 
 $$
 \tau = \frac{740 - 560}{842 - 560}
 $$
 
-Where $R(560)$, $R(740)$, and $R(842)$ represent reflectance values at 560, 740, and 842 nm, respectively. These wavelengths were selected to align with the spectral resolution of satellites like Sentinel-2, enabling the index to be used for mapping darkening events from satellite data. From SDI, negative values indicate green, healthy seagrasses, while positive values correspond to darkened seagrasses.
+Where $R(560)$, $R(740)$, and $R(842)$ represent reflectance values at 560, 740, and 842 nm, respectively. These wavelengths were selected to align with the spectral resolution of satellites like Sentinel-2, enabling the index map leaves browning from satellite data. When applied to unimpacted seagrass spectra, the interpolated line between 560 and 842 nm falls below the reflectance value at 740 nm, resulting in a negative SHSI value (@fig-SHSI A). In contrast, when applied to impacted seagrass spectra, the interpolated line lies above the 740 nm reflectance value, resulting in a positive SHSI value (@fig-SHSI B). 
 
-## *In situ* seagrass darkening.
+```{r SHSI Building Figure}
+#| cache: true
+#| echo: false
+#| eval: false
+#| warning: false
 
-### Field Observation
+df <- read.csv("Data/df_experiment.csv") %>% 
+  as_tibble()
+
+
+df_cleaned <- df %>% 
+  dplyr::filter(Scenario == "Treatment") %>% 
+  mutate(days = case_when(timeDiff < 10 ~ 1,
+                          timeDiff > 10 & timeDiff < 40 ~ 2,
+                          T ~ 3)) %>% 
+  group_by(days, Wavelength) %>% 
+  reframe(mean_ref = mean(std_cor ),
+         sd_ref = sd(std_cor)) 
+
+
+df_segment <- data.frame(xmin = c(560,560),
+                         xmax = c(842,842),
+                         ymin = c(0.2,0.12),
+                         ymax = c(0.8,0.56),
+                         scenario = c("Unimpacted","Impacted"))
+
+df_segment_labels <- df_segment %>%
+  mutate(
+    xmid = c(650,650),
+    ymid = c(0.4,0.27),
+    angle = c(20,15),
+    Label = c("Interpolation line", "Interpolation line")
+  )
+
+Label_ref <- data.frame(x = c(560,560,740,740,842,842),
+                        y = c(0.2,0.12,0.64,0.28,0.8,0.56),
+                        label = c("R(560)","R(560)","R(740)","R(740)","R(842)","R(842)"),
+                        scenario = c("Unimpacted","Impacted","Unimpacted","Impacted","Unimpacted","Impacted"),
+                        y0 = c(0.2,0.12,0.64,0.15,0.8,0.56))
+
+df_segment_SHSI <- data.frame(xmin = c(740,740),
+                              xmax = c(740,740),
+                              ymin = c(0.58,0.28),
+                              ymax = c(0.64,0.40),
+                              scenario = c("Unimpacted","Impacted"))
+
+df_label_SHSI <- data.frame(x = c(740,740),
+                           y = c(0.58,0.33),
+                           scenario = c("Unimpacted","Impacted"),
+                           Label = c("Negative SHSI", "Positive SHSI"),
+                           x0 = c(800,810),
+                           y0 = c(0.4,0.23))
+
+
+col_scale <- c("Unimpacted" = "darkgreen", "Impacted" = "#73523E")
+
+# Create a data frame for the panel labels
+panel_labels <- data.frame(
+  scenario = c("Impacted", "Unimpacted"),
+  label = c("A", "B"),
+  x = 555,  # Choose an x-value slightly greater than your x-limit's lower bound
+  y = 0.75   # Choose a y-value near the top of your y-limit
+)
+
+
+plot_SHSI <- df_cleaned %>% 
+  filter(days != 2) %>% 
+  mutate(scenario = case_when(days == 1 ~ "Unimpacted",
+                              days == 3 ~ "Impacted")) %>% 
+ggplot() +
+  geom_line(aes(x = Wavelength, y = mean_ref, color = scenario, group = scenario), 
+            linewidth = 1.5) +
+  geom_segment(data = df_segment, 
+               aes(x = xmin, y = ymin, xend = xmax, yend = ymax, group = scenario), 
+               linewidth = 1) +
+  geom_segment(data = df_segment_SHSI, 
+               aes(x = xmin, y = ymin, xend = xmax, yend = ymax, group = scenario), 
+               linewidth = 2,
+               color = "red") +
+  # Add the text labels along the segments
+  geom_text(data = df_segment_labels,
+            aes(x = xmid, y = ymid, label = Label, angle = angle, group = scenario),
+            color = "black",
+            vjust = -0.5, # adjust vertical positioning as desired
+            size = 7, # adjust text size as desired
+            show.legend = FALSE) +
+  facet_wrap(~scenario, scales = "free", ncol = 1) +
+  ggforce::geom_mark_ellipse(
+    data = Label_ref,
+    aes(x = x, y = y, y0 = y0,label = label, group = interaction(scenario,x)),
+    size = 0.3,
+    fill = "goldenrod",
+    con.colour = "goldenrod4",
+    show.legend = F,
+    label.fontsize = 20,
+    label.hjust = 0.5,
+    con.size = 1,
+    alpha = 0.8,
+    expand = unit(0.5, "mm"),
+    radius = unit(1.5, "mm"),
+    label.fill = NA,
+    label.buffer = unit(5, "mm")
+  ) +
+  ggforce::geom_mark_ellipse(
+    data = df_label_SHSI,
+    aes(x = x, y = y, y0 = y0, x0 = x0,label = Label, group = scenario),
+    size = 0,
+    fill = "darkred",
+    con.colour = "red",
+    show.legend = F,
+    label.fontsize = 25,
+    label.hjust = 0.5,
+    con.size = 1,
+    alpha = 0.8,
+    expand = unit(0, "mm"),
+    radius = unit(0, "mm"),
+    label.fill = NA,
+    label.buffer = unit(5, "mm")
+  )+
+  # Add the panel labels
+  geom_text(data = panel_labels,
+            aes(x = x, y = y, label = label),
+            hjust = 0,    # Left align the text
+            vjust = 1,    # Top align the text
+            size = 10) +
+  scale_color_manual(values = col_scale) +
+  ylab("Reflectance")+
+  ylim(c(0,0.8)) +
+  theme_Bede()+
+  scale_x_continuous(breaks = c(560,600,640,680,720,760,800,840),
+                     limits = c(550,850))+
+  theme(plot.background = element_rect(fill = "white",color = NA),
+        strip.text = element_blank(),
+        strip.background = element_blank(),
+        legend.title = element_blank(),
+        legend.position = "top",
+        legend.text = element_text(size = 15),
+        legend.key.width = unit(2,"cm"))
+
+ggsave("Paper/Figs/High_res/Plot_explain_SHSI.png", height = 10, width = 10, dpi = 400)
+ggsave("Paper/Figs/Low_res/Plot_explain_SHSI.png", height = 10, width = 10, dpi = 400)
+
+
+```
+
+```{r Fig Site Quiberon Plot}
+#| cache: false
+#| echo: false
+#| warning: false
+#| fig-cap: "Computation of the Seagrass Heat Shock Index (SHSI) from Reflectance Spectra of Impacted (A) and Unimpacted (B) seagrass. Hard darkline represents the interpolation between 560 and 842 nm while the red line represents the SHSI value, mesured at 740 nm."
+#| label: fig-SHSI
+#| fig-width: 10
+#| fig-height: 10
+#| out-width: "95%"
+
+knitr::include_graphics("Figs/Low_res/Plot_explain_SHSI.png")
+```
+
+## Observation of a seagrass bed impacted by a heatwave
 
 ```{r filedtrip Quadrats}
 #| cache: true
@@ -771,95 +927,96 @@ quadrat_sf <- image_list %>%
 # Drone_flight_area <- "Data/shp/Flight_area_drone.shp" %>% 
 #   read_sf()
 
-poly_sf <- "Data/shp/mask_study_quiberon.shp" %>% 
-  read_sf()
+
 ######  Intertidal mask computing ######
 
-# lon_min <- -3.15
-# lon_max <- -3.07
-# lat_min <- 47.54
-# lat_max <- 47.6
+ lon_min <- -3.15
+ lon_max <- -3.07
+ lat_min <- 47.54
+ lat_max <- 47.6
+
+ poly <- data.frame(
+   x = c(lon_min,lon_max,lon_max,lon_min),
+   y = c(lat_max,lat_max,lat_min,lat_min),
+   id = c(1,1,1,1)
+ )
+
+
+ # Ensure the polygon is closed by adding the first point at the end if necessary
+ if (!all(poly[1, c("x", "y")] == poly[nrow(poly), c("x", "y")])) {
+   poly <- rbind(poly, poly[1, ])
+ }
+
+ # Create a matrix of coordinates
+ coords <- as.matrix(poly[, c("x", "y")])
+
+ # Create a list of coordinate matrices (required by st_polygon)
+ polygon_list <- list(coords)
+
+ # Create an 'sfc' (simple features geometry list column) object with the appropriate CRS
+ polygon_sfc <- st_sfc(st_polygon(polygon_list), crs = 4326) %>%
+   st_transform(32630)
+ # CRS 4326 corresponds to WGS84
+
+ #Combine the 'id' with the geometry to create an 'sf' object
+ poly_sf <- st_sf(id = unique(poly$id), geometry = polygon_sfc)
+
+
+ Low_Tide <- "Data/Sentinel2/S2B_MSIL2A_20230903T110629_N0509_R137_T30TVT_20230903T125637.SAFE" %>%
+  list.files(pattern = ".jp2", recursive = T, full.names = T) %>%
+  as_tibble() %>%
+  rename(path = "value") %>%
+  dplyr::filter(str_detect(path, "10m"))
+ 
+# High_Tide <- "Data/Sentinel2/S2B_MSIL2A_20240503T112119_N0510_R037_T30TVT_20240503T130006.SAFE" %>% 
+#   list.files(pattern = ".jp2", recursive = T, full.names = T) %>% 
+#   as_tibble() %>% 
+#   rename(path = "value") %>% 
+#   dplyr::filter(str_detect(path, "10m"))
 # 
-# poly <- data.frame(
-#   x = c(lon_min,lon_max,lon_max,lon_min),
-#   y = c(lat_max,lat_max,lat_min,lat_min),
-#   id = c(1,1,1,1)
-# )
+# RGB_High <- rast(High_Tide$path[6]) %>% 
+#   crop(poly_sf)
+RGB_Low <- rast(Low_Tide$path[6]) %>%
+  crop(poly_sf)
+# 
+# RGB(RGB_High) <- 1:3
+# RGB(RGB_Low) <- 1:3
+# 
+# plot(RGB_Low)
 # 
 # 
-# # Ensure the polygon is closed by adding the first point at the end if necessary
-# if (!all(poly[1, c("x", "y")] == poly[nrow(poly), c("x", "y")])) {
-#   poly <- rbind(poly, poly[1, ])
+# NDVI_comp <- function(df,mask){
+#   
+#   B4 <- (rast(df$path[4])-1000) %>% 
+#     crop(mask)
+#   B8 <- (rast(df$path[5])-1000) %>% 
+#     crop(mask)
+#   
+#   ndvi = (B8-B4)/(B8+B4)
+#   return(ndvi)
 # }
 # 
-# # Create a matrix of coordinates
-# coords <- as.matrix(poly[, c("x", "y")])
+#  NDVI_High<- NDVI_comp(High_Tide,poly_sf)
+#  NDVI_Low<- NDVI_comp(Low_Tide,poly_sf)
+#  
+#  
+# int_mask <- NDVI_High < -0.05 & NDVI_Low > 0.05
 # 
-# # Create a list of coordinate matrices (required by st_polygon)
-# polygon_list <- list(coords)
+# values(int_mask)[values(int_mask) == F] <- NA
 # 
-# # Create an 'sfc' (simple features geometry list column) object with the appropriate CRS
-# polygon_sfc <- st_sfc(st_polygon(polygon_list), crs = 4326) %>% 
-#   st_transform(32630)
-  # CRS 4326 corresponds to WGS84
-
-# Combine the 'id' with the geometry to create an 'sf' object
-# poly_sf <- st_sf(id = unique(poly$id), geometry = polygon_sfc)
-
-
-Low_Tide <- "Data/Sentinel2/S2B_MSIL2A_20230903T110629_N0509_R137_T30TVT_20230903T125637.SAFE" %>% 
-  list.files(pattern = ".jp2", recursive = T, full.names = T) %>% 
-  as_tibble() %>% 
-  rename(path = "value") %>% 
-  dplyr::filter(str_detect(path, "10m"))
-
-High_Tide <- "Data/Sentinel2/S2B_MSIL2A_20240503T112119_N0510_R037_T30TVT_20240503T130006.SAFE" %>% 
-  list.files(pattern = ".jp2", recursive = T, full.names = T) %>% 
-  as_tibble() %>% 
-  rename(path = "value") %>% 
-  dplyr::filter(str_detect(path, "10m"))
-
-RGB_High <- rast(High_Tide$path[6]) %>% 
-  crop(poly_sf)
-RGB_Low <- rast(Low_Tide$path[6]) %>% 
-  crop(poly_sf)
-
-RGB(RGB_High) <- 1:3
-RGB(RGB_Low) <- 1:3
-
-plot(RGB_Low)
-
-
-NDVI_comp <- function(df,mask){
-  
-  B4 <- (rast(df$path[4])-1000) %>% 
-    crop(mask)
-  B8 <- (rast(df$path[5])-1000) %>% 
-    crop(mask)
-  
-  ndvi = (B8-B4)/(B8+B4)
-  return(ndvi)
-}
-
- NDVI_High<- NDVI_comp(High_Tide,poly_sf)
- NDVI_Low<- NDVI_comp(Low_Tide,poly_sf)
- 
- 
-int_mask <- NDVI_High < -0.05 & NDVI_Low > 0.05
-
-values(int_mask)[values(int_mask) == F] <- NA
-
-mask_sf <- as.polygons(int_mask) %>% 
-  st_as_sf() %>% 
-  st_cast("POLYGON") %>% 
-  mutate(area = st_area(geometry)) %>% 
-  dplyr::filter(as.numeric(area) > 6500) %>% 
-  nngeo::st_remove_holes() %>% 
-  smoothr::smooth(method = "ksmooth", smoothness = 3)
+# mask_sf <- as.polygons(int_mask) %>% 
+#   st_as_sf() %>% 
+#   st_cast("POLYGON") %>% 
+#   mutate(area = st_area(geometry)) %>% 
+#   dplyr::filter(as.numeric(area) > 6500) %>% 
+#   nngeo::st_remove_holes() %>% 
+#   smoothr::smooth(method = "ksmooth", smoothness = 3)
   
 plot(mask_sf)
 
-write_sf(mask_sf,"Data/shp/mask_intertidal_quiberon.shp")
+# write_sf(mask_sf,"Data/shp/mask_intertidal_quiberon.shp")
+
+mask_sf <- read_sf("Data/shp/mask_intertidal_quiberon.shp")
 
 ########## Geomgrob ##################"
 
@@ -985,7 +1142,7 @@ ylim <- c(ext(poly_sf)[3],ext(poly_sf)[4])
 # Compute the coordinates for the rectangle (25% to 75% of the ranges)
 xleft   <- xlim[1] + 0.71 * diff(xlim)
 xright  <- xlim[1] + 0.99 * diff(xlim)
-ybottom <- ylim[1] + 0.854 * diff(ylim)
+ybottom <- ylim[1] + 0.78 * diff(ylim)
 ytop    <- ylim[1] + 0.975 * diff(ylim)
 
 # Create a rectangle as an sf polygon
@@ -1007,27 +1164,54 @@ meadow_mask <- "Data/shp/mask_seagrasses.shp" %>%
   smoothr::smooth(method = "ksmooth", smoothness = 3)%>%
   filter(st_intersects(., mask_sf, sparse = FALSE)[,1])
 
+poly_land_Inter <- "Data/shp/mask_study_quiberon_narrow.shp" %>% 
+  read_sf()
+
+inter_mask <- mask_sf %>% 
+  dplyr::filter(Class == "Intertidal")
+
 p2 <- ggplot() +
   tidyterra::geom_spatraster_rgb(data = RGB_Low) +
-  geom_sf(data = meadow_mask, aes(fill = "meadow_mask"), color = "darkgreen", linewidth = 0.8, alpha = 0.1) +
-  geom_sf(data = mask_sf, aes(fill = "Mask"), color = "darkred", linewidth = 0.8, alpha = 0.1) +
-
-  # geom_sf(data = Drone_flight_area, aes(fill = "Drone_Flight_Area"), color = "grey0", size = 2.2, linewidth = 0.5) +
-  geom_sf(data = quadrat_sf, aes(color = Target_types), size = 2.1)+
-  geom_sf(data = rectangle_sf, fill = "white", alpha = 0.5, color = NA) +
-  scale_color_manual(
-    values = col_sf,
-    labels = c("Impacted", "Unimpacted", "Other"),
+  geom_sf(data = meadow_mask, aes(fill = Class, , color = Class), linewidth = 0.8) +
+    scale_color_manual(
+    values = c("Seagrass" = "darkgreen", "Saltmarsh" = "darkolivegreen"),
+    labels = c("Saltmarsh","Seagrass meadow"),
     name = NULL
   ) +
   scale_fill_manual(
-    values = c("Mask" = NA, "meadow_mask" = "darkgreen"),
-    labels = c("Intertidal area", "Seagrass meadow"),
+    values = c("Seagrass" = "darkgreen", "Saltmarsh" = "darkolivegreen"),
+    labels = c("Saltmarsh","Seagrass meadow"),
+    name = NULL  # No title for the fill legend
+  ) +
+  ggnewscale::new_scale_color()+
+  ggnewscale::new_scale_fill()+
+  geom_sf(data = mask_sf, aes(fill = Class, color = Class), linewidth = 0.8) +
+  geom_sf(data = mask_sf, fill = NA, color = "darkred", linewidth = 1, show.legend = F) +
+
+  scale_color_manual(
+    values = c("Land" = alpha("white",0), "Intertidal" = "darkred"),
+    labels = c("Intertidal area","Land"),
+    name = NULL
+  ) +
+  scale_fill_manual(
+    values = c("Intertidal" = alpha("white",0), "Land" = alpha("white",0.6)),
+    labels = c("Intertidal area","Land"),
+    name = NULL  # No title for the fill legend
+  ) +
+  ggnewscale::new_scale_color()+
+  ggnewscale::new_scale_fill()+
+  # geom_sf(data = quadrat_sf, color = "white", size = 2.5)+
+  geom_sf(data = quadrat_sf, aes(fill = Target_types), color = "white", shape = 21, size = 3)+
+  geom_sf(data = rectangle_sf, fill = "white", alpha = 0.5, color = NA) +
+  scale_fill_manual(
+    values = c("Bleached_seagrass" = "goldenrod3", 
+                "Healthy_seagrass" = "#458B00"),
+    labels = c("Impacted", "Unimpacted"),
     name = NULL  # No title for the fill legend
   ) +
   coord_sf(expand = F,
-          xlim = xlim,
-          ylim = ylim) +
+          xlim = as.numeric(ext(poly_sf)[1:2]),
+          ylim = as.numeric(ext(poly_sf)[3:4]) )+
   theme_Bede_Map() +
   guides(
     fill = guide_legend(order = 2),  # Order the fill legend
@@ -1046,6 +1230,7 @@ p2 <- ggplot() +
 
 p2
 
+
 combined_plot <- ggdraw() +
   draw_plot(p2) +                    # Main plot
   draw_plot(p1, x = 0.577, y = 0.04,   # p1 inset (bottom right)
@@ -1062,8 +1247,8 @@ ggsave("Paper/Figs/Low_res/Quiberon_map.png", combined_plot, width = 10, height 
 #| cache: false
 #| echo: false
 #| warning: false
-#| fig-cap: Location of the field campaign that occurred in the 10th of September 2021. The red line surround the intertidal zone (Zone between High tide and low tide, that is totally emerged at low tide) and the dark green polygon indicate the extent of the seagrass meadow. Green dots indicate location of quadrat picture over unimpacted seagrasses (i.e. showing a green color on the field) while red dots indicate location of quadrat took over impacted seagrasses (i.e. showing a dark color on the field). 
 #| label: fig-quiberonMap
+#| fig-cap: "Location of field observation in a seagrass meadow impacted by a heatwave that occured on the 10th of September 2021 in Quiberon, South Brittany, France. The red line indicates the intertidal zone (Zone between high tide and low tide, exposed during low tide), white polygons indicates land areas, the dark green polygon indicates the extent of the seagrass meadow and the olive polygons indicates saltmarshes. Greendots indicate the location of quadrat picture over unimpacted seagrasses (i.e. showing a green colour on the field), while orange-red dots indicate the location of the quadrat taken over impacted seagrasses (i.e. showing a  brown colour on the field)."
 #| fig-width: 10
 #| fig-height: 10
 #| out-width: "95%"
@@ -1071,7 +1256,7 @@ ggsave("Paper/Figs/Low_res/Quiberon_map.png", combined_plot, width = 10, height 
 knitr::include_graphics("Figs/Low_res/Quiberon_map.png")
 ```
 
-A field campaign, aiming to map a seagrass meadow near Quiberon (France : 46°57'32.0"N, 2°10'37.0"W), occurred on the 10th of September 2021 (@fig-quiberonMap). During this field campaign, significant darkening of seagrass leaves was observed over large areas of the meadow alongside normal green seagrass (@fig-QuiberonImg). A total of `r nrow(image_list)` Quadrat Points (QPs) were collected in the form of georeferenced quadrat images across the meadow. These images allow for visual assessment of vegetation type, density, and coloration. The images were then divided into two categories: green seagrasses (henceforth: QPs unimpacted) and darkened seagrasses (henceforth: QPs impacted), based on a visual estimation of the leaf coloration (@fig-quiberonMap).
+A field campaign, aiming to map a seagrass meadow near Quiberon (France : 46°57'32.0"N, 2°10'37.0"W), occurred on September 10th 2021 after a heatwave (@fig-quiberonMap). Seagrass leaves turning brown were observed over large areas of the meadow alongside normal green seagrass (@fig-QuiberonImg). A total of `r nrow(image_list)` Quadrat Points (QPs) were collected as georeferenced quadrat images across the meadow. These images allow for visual assessment of vegetation type, density, and coloration. The quadrats were then divided into two categories: green seagrasses (henceforth: QPs unimpacted) and brown seagrasses (henceforth: QPs impacted), based on a visual estimation of the leaf coloration (@fig-quiberonMap).
 
 ```{r img_Quiberon}
 #| cache: true
@@ -1099,7 +1284,7 @@ get_letter_position <- function(img){
 A <- rast("Data/imgs/biolittoral/healthy_landscap.png") 
 ext(A) <- c(0,1,-2.05,0)
 
-B <- rast("Data/imgs/biolittoral/Quadrat_Healthy.png") 
+B <- rast("Data/imgs/biolittoral/Quadrat_Healthy_greener.png") 
 ext(B) <- c(1.05,2.05,-1,0)
 
 C <- rast("Data/imgs/biolittoral/Quadrat_darkened.png")
@@ -1136,6 +1321,8 @@ plot <- ggplot()+
         plot.margin = margin(0, 0, 0, 0, "pt"))
 
 ggsave("Paper/Figs/High_res/img_Quiberon.png",plot, width = 3.1, height = 2.05, dpi = 800)
+ggsave("Paper/Figs/Low_res/img_Quiberon.png",plot, width = 3.1, height = 2.05, dpi = 400)
+
 
 ```
 
@@ -1143,7 +1330,7 @@ ggsave("Paper/Figs/High_res/img_Quiberon.png",plot, width = 3.1, height = 2.05, 
 #| cache: false
 #| echo: false
 #| warning: false
-#| fig-cap: "Illustrations of the two coloration of seagrasses observed in the field. A: View of a green meadow; B: Quadrat images of green seagrasses; C: Quadrat images of darkened seagrasses; D: View of darkened area of the meadow. All images were taken on September 10th, 2021, in Quiberon."
+#| fig-cap: "Illustrations of the two colorations of seagrass leaves observed in the field. A: View of a green meadow; B: Quadrat with green leaves; C: Quadrat with brown leaves; D: View of a meadow with all leaves turned brown. All images were taken on September 10th, 2021, in Quiberon, South Brittany, France, after a heatwave."
 #| label: fig-QuiberonImg
 #| fig-width: 10
 #| fig-height: 10
@@ -1152,11 +1339,11 @@ ggsave("Paper/Figs/High_res/img_Quiberon.png",plot, width = 3.1, height = 2.05, 
 knitr::include_graphics("Figs/Low_res/img_Quiberon.png")
 ```
 
-### Temperature Data and identification of heatwaves
+### Temperature data and identification of the heatwave
 
 #### Air temperature
 
-Since January 1, 2024, Meteo France weather data has been freely and openly accessible. Hourly air temperature data (°C) was retrieved using a [custom script](https://github.com/SigOiry/HeatWave_Seagrasses/blob/main/Scripts/MeteoFrance_Extraction.qmd) as no API was available at the time of this study. Data form the nearest weather station of our study site (Lorient-Lann Bihoue, 47°45'46"N 3°26'11"W) were downloaded. For this station more than 395000 observation since the 1st of February 1952 were available.
+Since January 1st, 2024, Meteo France weather data has been freely and openly accessible. Hourly air temperature data (°C) was retrieved using a [custom script](https://github.com/SigOiry/HeatWave_Seagrasses/blob/main/Scripts/MeteoFrance_Extraction.qmd) as no API was available at the time of this study. Data from the nearest weather station of our study site (Lorient-Lann Bihoue, 47°45'46"N 3°26'11"W) were downloaded. For this station more than 395000 observations since the February 1<st>, 1952, were available.
 
 #### Water temperature
 
@@ -1212,37 +1399,45 @@ area_poly_sst_numeric <- as.numeric(area_poly_sst_km2)
 area_poly_sst_rounded <- round(area_poly_sst_numeric / 100) * 100
 ```
 
-SST data from the Copernicus CMEMS platform were downloaded for the French coast near Quiberon (47°29′03″N, 3°07′09″W), covering 1982-2022 [@CMEMS_1]. Only pixels within an area of `r area_poly_sst_rounded` km² around Quiberon, Brittany, France (47°29′03″N, 3°07′09″W) were extracted and analyzed. This area was large enough to minimize missing values caused by cloud cover, yet small enough to avoid being influenced by the stability of offshore SST.
+SST data from the Copernicus CMEMS platform were downloaded for the French coast near Quiberon (47°29′03″N, 3°07′09″W), covering 1982-2022 [@CMEMS_1]. Only pixels within an area of `r area_poly_sst_rounded` km² around Quiberon, Brittany, France (47°29′03″N, 3°07′09″W) were extracted and analyzed. This area was large enough to minimize missing values caused by cloud cover yet small enough to avoid being influenced by the stability of offshore SST.
 
-#### Heatwave Detection and Characterization
+#### Heatwave detection and characterization
 
-Heatwave detection was performed using the HeatwaveR package in R [@heatwaveR]. This package utilizes the methodology proposed by @hobday2016hierarchical to detect heatwave events. The climatology for the year was computed using the temperature time series. An event was considered a heatwave each time the temperature exceeded the 90th percentile of the climatology for three consecutive days. The severity of each event has been assessed using the methodology proposed by @hobday2018categorizing.
+Marine and Atmospheric Heatwave detection was performed using the HeatwaveR package in R [@heatwaveR]. This package utilizes the methodology proposed by @hobday2016hierarchical to detect heatwave events. The climatology of both air and water temperature for the year was computed using the temperature time series. An event was considered a heatwave each time the temperature exceeded the 90th percentile of the climatology for three consecutive days. The severity of each event has been assessed using the methodology proposed by @hobday2018categorizing.
 
-### Satellite Observation
+### Satellite observation
 
-Three Sentinel-2 images covering the field campaign site (@fig-quiberonMap) were downloaded from the Copernicus platform [@copernicus_sentinel2]. The first image was taken before the heatwave event on September 1, 2021, the second image during the event on September 6, 2021 and the last one, one month after the events on the 8th of October 2021. Images were acquired as Level-2 product, in surface reflectance, and were orthorectified and atmospherically corrected to account for the effects of the atmosphere on reflectance values [@sen2cor].
+Three Sentinel-2 images covering the field campaign site (@fig-quiberonMap) were downloaded from the Copernicus platform [@copernicus_sentinel2]. The first image was taken before the heatwave event on September 1st, 2021, the second image during the event on September 6th, 2021 and the last one, one month after the events on the 8th of October 2021. Images were acquired as Level-2 product, in surface reflectance, and were orthorectified and atmospherically corrected to account for the effects of the atmosphere on reflectance values [@sen2cor].
 
-Reflectance value of each QPs (@fig-quiberonMap) were extracted and compared before and after the heatwave event.
+The reflectance value of each QPs (@fig-quiberonMap) was extracted and compared before and after the heatwave event.
 
-A remote sensing based seagrass covers estimation equation, the SC developed by @zoffoli2020sentinel, were used to retrieve the proportion of seagrass of Sentinel-2 pixel (@eq-spc):
 
-$$
-SC = 172.06 \times NDVI - 22.18
-$$ {#eq-spc}
+```{r textto remove SC}
+#| cache: true
+#| echo: false
+#| eval: false
+#| warning: false
 
-### Emersion Time of Seagrasses
+# A remote sensing based seagrass covers estimation equation, the SC developed by @zoffoli2020sentinel, were used to retrieve the proportion of seagrass of Sentinel-2 pixel (@eq-spc):
 
-To estimate the emersion time of seagrasses during low tide, bathymetric and tidal data were used. Bathymetry data for the Quiberon intertidal meadow were sourced from the “Service Hydrographique et Océanographique de la Marine” [@shom_bathymetry_litto3d_bzh_2018_2021]. It corresponds to the Litto3D® product, which is a three-dimensional land-sea elevation database, accurately depicting the coastal terrain along certain regions of the French shores. It uses the NGF/IGN69 reference “zero”, which corresponds to the mean sea level recorded at the Marseille tide gauge between 1885 and 1897, commonly known as the “Terrestrial Altimetric Zero”.
+# $$
+# SC = 172.06 \times NDVI - 22.18
+# $$ {#eq-spc}
+```
+
+### Emersion time of the seagrass meadow
+
+To estimate the spatial distribution of emersion time of the seagrass meadow during low tide, bathymetric and tidal data were used. The hypothesis was that the leaf's discoloration follwing the heatwave was related to the emersion time and intertidal topography. Bathymetry data for the Quiberon intertidal meadow were sourced from the “Service Hydrographique et Océanographique de la Marine” [@shom_bathymetry_litto3d_bzh_2018_2021]. It corresponds to the Litto3D® product, with a spatial resolution of 1 m per pixel, which is a three-dimensional land-sea elevation database, accurately depicting the coastal terrain along certain regions of the French shores. It uses the NGF/IGN69 reference “zero”, which corresponds to the mean sea level recorded at the Marseille tide gauge between 1885 and 1897, commonly known as the “Terrestrial Altimetric Zero”.
 
 Tidal data during the heatwave event were downloaded from the Intergovernmental Oceanographic Commission data portal [@ioc_sea_level_lecy], using measurements from the nearest tide gauge at Le Crouesty. In this dataset, the reference “zero” corresponds to the lowest astronomical tide, also known as the Hydrographic Zero.
 
-Before calculating the emersion time, both datasets were intercalibrated to a common altitude reference. This involved applying a correction factor to the Litto3D data to align it with the Hydrographic zero. SHOM annually publishes a document called “Références Altimétriques Marines” [RAM, @shom_ram_2022], which provides these correction factors for each seaport along the French coastline. For Le Crouesty port data from 2022, the correction factor was 2.85 m.
+Before calculating the emersion time, both datasets were intercalibrated to a common altitude reference. This involved applying a correction factor to the Litto3D data to align it with the Hydrographic zero. SHOM annually publishes a document called “Références Altimétriques Marines” [RAM, @shom_ram_2022], which provides these correction factors for each seaport along the French coastline. The correction factor for Le Crouesty port data from 2022 was 2.85 m.
 
 Once aligned, the corrected elevation was compared to water height for each pixel and each time step during the heatwave event. The emersion time was then calculated as the daily total time each pixel remained exposed.
 
 ## Statistics
 
-General Linear Models (GLMs) were used to assess relative differences over time in response variables (Spectral Indices) with different treatments. For analysis of relative changes in indices calculated from experimental spectra the relative change in index was modelled as function of Days (1-3: Discrete) with Run (1-3: Factor) and Timestep within Run (1-6: Factor) as cross random factors. Satellite derived indices were modelled as function of Date (1-3: Discrete) and Treatment (Impacted vs Unimpacted: Categorical). A General Additive Model (GAM) was used to assess the relationship between relative SDI change with emersion time. SDI was modelled as function of emersion time with a basis spline. All model parameters were estimated with a Bayesian framework using the “brms” and “RStan” packages in R to leverage the stan language [@JSSv100i05; @stan2020rstan; @JSSv076i01; @Rbase]. The response variables were modelled assuming a Gaussian distribution, with weakly informative priors (Student-T(3,0,2.5)). Model parameters were estimated using Markov Chain Monte Carlo (MCMC) sampling, with 4 chains of 5000 iterations and a warm-up of 500.
+General Linear Models (GLMs) were used to assess relative differences over time in response variables (Spectral Indices) with different treatments. For analysis of relative changes in indices calculated from experimental spectra the relative change in index was modelled as function of Days (1-3: Discrete) with Replicate (henceforth Runs; 1-3: Factor) and Timestep within Run (1-6: Factor) as cross random factors. Satellite derived indices were modelled as function of Date (1-3: Discrete) and Treatment (Impacted vs Unimpacted: Categorical). A General Additive Model (GAM) was used to assess the relationship between relative SDI change with emersion time. SDI was modelled as function of emersion time with a basis spline. All model parameters were estimated with a Bayesian framework using the “brms” and “RStan” packages in R to leverage the stan language [@JSSv100i05; @stan2020rstan; @JSSv076i01; @Rbase]. The response variables were modelled assuming a Gaussian distribution, with weakly informative priors (Student-T(3,0,2.5)). Model parameters were estimated using Markov Chain Monte Carlo (MCMC) sampling, with 4 chains of 5000 iterations and a warm-up of 500.
 
 # Results
 
@@ -1449,11 +1644,11 @@ write.csv(df, "Data/df_experiment.csv", row.names = F)
 
 ```
 
-### Spectral inspection
+### Seagrass spectra variations related to a heatwave
 
 In the Control group, reflectance remained relatively stable over time, with only minimal changes in magnitude and spectral features (@fig-Exp_Spectra). Overall, the Control group’s reflectance spectra displayed a peak at 560 nm (green region), low values at 665 nm (indicative of strong chlorophyll-a absorption), and a high plateau in the near-infrared (NIR), beyond 705 nm (@fig-Exp_Spectra, left).
 
-In contrast, the Treatment group showed more pronounced changes in reflectance throughout the experiment (@fig-Exp_Spectra, right). At the beginning (Day 1), reflectance values were comparable to those in the Control group, especially in the visible region, with a notable peak around 560 nm and a pronounced trough at 665 nm. However, starting from day 2, reflectance began to decrease across all wavelengths, particularly around 560 nm and in the NIR. At day 3, the NIR reflectance appeared to stabilize at values like those observed during day 2. In the green region, however, reflectance continued to decline slightly until the experiment’s conclusion.
+In contrast, the Treatment group simulted heatwave showed more pronounced changes in reflectance throughout the experiment (@fig-Exp_Spectra, right). At the beginning (Day 1), reflectance values were comparable to those in the Control group, especially in the visible region, with a notable peak around 560 nm and a pronounced trough at 665 nm. However, starting from day 2, reflectance began to decrease across all wavelengths, particularly around 560 nm and in the NIR. At day 3, the NIR reflectance appeared to stabilize at values like those observed during day 2. In the green region, however, reflectance continued to decline slightly until the experiment’s conclusion.
 
 ```{r Plot Spectra}
 #| cache: true
@@ -1523,7 +1718,7 @@ ggsave("Paper/Figs/Low_res/plot_Spectra_exp.png", plot_Spectra_exp, height = 5, 
 #| cache: false
 #| echo: false
 #| warning: false
-#| fig-cap: "Standardized Hyperspectral Reflectance signature collected during the experiment for both the Control (Left) and the Treatment (Right). Color denotes the progression along the experiment from the beginning (Day 1: green), middle (Day 2: Yellow) and end (Day 3: Brown). A min-max standardization has been applied to each individual spectrum."
+#| fig-cap: "Standardized hyperspectral reflectance signature of *Z. noltei* leaves measured during the heatwave experiment for both the Control (Left) and the Treatment (Right). Color denotes the progression along the experiment from the beginning (Day 1: green), middle (Day 2: Yellow) and end (Day 3: Brown). A min-max standardization has been applied to each individual spectrum."
 #| label: fig-Exp_Spectra
 #| fig-width: 10
 #| fig-height: 5

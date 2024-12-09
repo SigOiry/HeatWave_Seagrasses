@@ -197,7 +197,7 @@ Laura Zoffoli\footnote{Consiglio Nazionale delle Ricerche, Istituto di
 Barillé\footnote{Bio-littoral, Immeuble Le Nevada, 2 Rue du Château de
   l'Eraudière, 44300 Nantes, France} \and Nicolas Harin³ \and Pierre
 Gernez¹ \and Laurent Barillé¹}
-\date{2024-12-07}
+\date{2024-12-09}
 
 \begin{document}
 \maketitle
@@ -606,13 +606,13 @@ calculates the line height using a triplet of bands, where 560 nm and
 842 nm serve as the `baseline' and 740 nm represents the central peak.
 The SDI can be mathematically expressed as:
 \begin{equation}\phantomsection\label{eq-SDI}{
-\text{SDI} = I_{SDI} - R(740)
+\text{SHSI} = I_{SHSI} - R(740)
 }\end{equation}
 
 where :
 
 \[
-I_{SDI} = R(560) + \tau    [R(842) - R(560)]
+I_{SHSI} = R(560) + \tau    [R(842) - R(560)]
 \] and :
 
 \[
@@ -622,14 +622,32 @@ I_{SDI} = R(560) + \tau    [R(842) - R(560)]
 Where \(R(560)\), \(R(740)\), and \(R(842)\) represent reflectance
 values at 560, 740, and 842 nm, respectively. These wavelengths were
 selected to align with the spectral resolution of satellites like
-Sentinel-2, enabling the index to be used for mapping darkening events
-from satellite data. From SDI, negative values indicate green, healthy
-seagrasses, while positive values correspond to darkened seagrasses.
+Sentinel-2, enabling the index map leaves browning from satellite data.
+When applied to unimpacted seagrass spectra, the interpolated line
+between 560 and 842 nm falls below the reflectance value at 740 nm,
+resulting in a negative SHSI value (Figure~\ref{fig-SHSI} A). In
+contrast, when applied to impacted seagrass spectra, the interpolated
+line lies above the 740 nm reflectance value, resulting in a positive
+SHSI value (Figure~\ref{fig-SHSI} B).
 
-\subsection{\texorpdfstring{\emph{In situ} seagrass
-darkening.}{In situ seagrass darkening.}}\label{in-situ-seagrass-darkening.}
+\phantomsection\label{cell-fig-SHSI}
+\begin{figure}[H]
 
-\subsubsection{Field Observation}\label{field-observation}
+\centering{
+
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/Plot_explain_SHSI.png}
+
+}
+
+\caption{\label{fig-SHSI}Computation of the Seagrass Heat Shock Index
+(SHSI) from Reflectance Spectra of Impacted (A) and Unimpacted (B)
+seagrass. Hard darkline represents the interpolation between 560 and 842
+nm while the red line represents the SHSI value, mesured ar 740 nm.}
+
+\end{figure}%
+
+\subsection{Observation of a seagrass bed impacted by a
+heatwave}\label{observation-of-a-seagrass-bed-impacted-by-a-heatwave}
 
 \phantomsection\label{cell-fig-quiberonMap}
 \begin{figure}[H]
@@ -640,29 +658,22 @@ darkening.}{In situ seagrass darkening.}}\label{in-situ-seagrass-darkening.}
 
 }
 
-\caption{\label{fig-quiberonMap}Location of the field campaign that
-occurred in the 10th of September 2021. The red line surround the
-intertidal zone (Zone between High tide and low tide, that is totally
-emerged at low tide) and the dark green polygon indicate the extent of
-the seagrass meadow. Green dots indicate location of quadrat picture
-over unimpacted seagrasses (i.e.~showing a green color on the field)
-while red dots indicate location of quadrat took over impacted
-seagrasses (i.e.~showing a dark color on the field).}
+\caption{\label{fig-quiberonMap}Location of field observation in a
+seagrass meadow impacted by a heatwave that occured on the 10}
 
 \end{figure}%
 
 A field campaign, aiming to map a seagrass meadow near Quiberon (France
 : 46°57'32.0''N, 2°10'37.0''W), occurred on the 10th of September 2021
-(Figure~\ref{fig-quiberonMap}). During this field campaign, significant
-darkening of seagrass leaves was observed over large areas of the meadow
-alongside normal green seagrass (Figure~\ref{fig-QuiberonImg}). A total
-of 96 Quadrat Points (QPs) were collected in the form of georeferenced
-quadrat images across the meadow. These images allow for visual
-assessment of vegetation type, density, and coloration. The images were
-then divided into two categories: green seagrasses (henceforth: QPs
-unimpacted) and darkened seagrasses (henceforth: QPs impacted), based on
-a visual estimation of the leaf coloration
-(Figure~\ref{fig-quiberonMap}).
+after a heatwave (Figure~\ref{fig-quiberonMap}). Seagrass leaves turning
+brown were observed over large areas of the meadow alongside normal
+green seagrass (Figure~\ref{fig-QuiberonImg}). A total of 96 Quadrat
+Points (QPs) were collected as georeferenced quadrat images across the
+meadow. These images allow for visual assessment of vegetation type,
+density, and coloration. The quadrats were then divided into two
+categories: green seagrasses (henceforth: QPs unimpacted) and brown
+seagrasses (henceforth: QPs impacted), based on a visual estimation of
+the leaf coloration (Figure~\ref{fig-quiberonMap}).
 
 \phantomsection\label{cell-fig-QuiberonImg}
 \begin{figure}[H]
@@ -673,16 +684,16 @@ a visual estimation of the leaf coloration
 
 }
 
-\caption{\label{fig-QuiberonImg}Illustrations of the two coloration of
-seagrasses observed in the field. A: View of a green meadow; B: Quadrat
-images of green seagrasses; C: Quadrat images of darkened seagrasses; D:
-View of darkened area of the meadow. All images were taken on September
-10th, 2021, in Quiberon.}
+\caption{\label{fig-QuiberonImg}Illustrations of the two colorations of
+seagrass leaves observed in the field. A: View of a green meadow; B:
+Quadrat with green leaves; C: Quadrat with brown leaves; D: View of a
+meadow with all leaves turned brown. All images were taken on September
+10th, 2021, in Quiberon, South Brittany, France, after a heatwave.}
 
 \end{figure}%
 
-\subsubsection{Temperature Data and identification of
-heatwaves}\label{temperature-data-and-identification-of-heatwaves}
+\subsubsection{Temperature data and identification of the
+heatwave}\label{temperature-data-and-identification-of-the-heatwave}
 
 \paragraph{Air temperature}\label{air-temperature}
 
@@ -690,10 +701,10 @@ Since January 1, 2024, Meteo France weather data has been freely and
 openly accessible. Hourly air temperature data (°C) was retrieved using
 a
 \href{https://github.com/SigOiry/HeatWave_Seagrasses/blob/main/Scripts/MeteoFrance_Extraction.qmd}{custom
-script} as no API was available at the time of this study. Data form the
+script} as no API was available at the time of this study. Data from the
 nearest weather station of our study site (Lorient-Lann Bihoue,
 47°45'46''N 3°26'11''W) were downloaded. For this station more than
-395000 observation since the 1st of February 1952 were available.
+395000 observations since the February 1, 1952, were available.
 
 \paragraph{Water temperature}\label{water-temperature}
 
@@ -702,56 +713,54 @@ French coast near Quiberon (47°29′03″N, 3°07′09″W), covering 1982-2022
 (CMEMS, 2024). Only pixels within an area of 2700 km² around Quiberon,
 Brittany, France (47°29′03″N, 3°07′09″W) were extracted and analyzed.
 This area was large enough to minimize missing values caused by cloud
-cover, yet small enough to avoid being influenced by the stability of
+cover yet small enough to avoid being influenced by the stability of
 offshore SST.
 
-\paragraph{Heatwave Detection and
-Characterization}\label{heatwave-detection-and-characterization}
+\paragraph{Heatwave detection and
+characterization}\label{heatwave-detection-and-characterization}
 
-Heatwave detection was performed using the HeatwaveR package in R
-(Schlegel and Smit, 2018). This package utilizes the methodology
-proposed by Hobday et al. (2016) to detect heatwave events. The
-climatology for the year was computed using the temperature time series.
-An event was considered a heatwave each time the temperature exceeded
-the 90th percentile of the climatology for three consecutive days. The
-severity of each event has been assessed using the methodology proposed
-by Hobday et al. (2018).
+Marine and Atmospheric Heatwave detection was performed using the
+HeatwaveR package in R (Schlegel and Smit, 2018). This package utilizes
+the methodology proposed by Hobday et al. (2016) to detect heatwave
+events. The climatology of both air and water temperature for the year
+was computed using the temperature time series. An event was considered
+a heatwave each time the temperature exceeded the 90th percentile of the
+climatology for three consecutive days. The severity of each event has
+been assessed using the methodology proposed by Hobday et al. (2018).
 
-\subsubsection{Satellite Observation}\label{satellite-observation}
+\subsubsection{Satellite observation}\label{satellite-observation}
 
 Three Sentinel-2 images covering the field campaign site
 (Figure~\ref{fig-quiberonMap}) were downloaded from the Copernicus
 platform (European Space Agency, 2024a). The first image was taken
 before the heatwave event on September 1, 2021, the second image during
-the event on September 6, 2021 and the last one, one month after the
-events on the 8th of October 2021. Images were acquired as Level-2
-product, in surface reflectance, and were orthorectified and
-atmospherically corrected to account for the effects of the atmosphere
-on reflectance values (European Space Agency, 2024b).
+the event on September 6
 
-Reflectance value of each QPs (Figure~\ref{fig-quiberonMap}) were
+, 2021 and the last one, one month after the events on the 8th of
+October 2021. Images were acquired as Level-2 product, in surface
+reflectance, and were orthorectified and atmospherically corrected to
+account for the effects of the atmosphere on reflectance values
+(European Space Agency, 2024b).
+
+The reflectance value of each QPs (Figure~\ref{fig-quiberonMap}) was
 extracted and compared before and after the heatwave event.
 
-A remote sensing based seagrass covers estimation equation, the SC
-developed by Zoffoli et al. (2020), were used to retrieve the proportion
-of seagrass of Sentinel-2 pixel (Equation~\ref{eq-spc}):
+\subsubsection{Emersion time of the seagrass
+meadow}\label{emersion-time-of-the-seagrass-meadow}
 
-\begin{equation}\phantomsection\label{eq-spc}{
-SC = 172.06 \times NDVI - 22.18
-}\end{equation}
-
-\subsubsection{Emersion Time of
-Seagrasses}\label{emersion-time-of-seagrasses}
-
-To estimate the emersion time of seagrasses during low tide, bathymetric
-and tidal data were used. Bathymetry data for the Quiberon intertidal
-meadow were sourced from the ``Service Hydrographique et Océanographique
-de la Marine'' (SHOM, 2021). It corresponds to the Litto3D® product,
-which is a three-dimensional land-sea elevation database, accurately
-depicting the coastal terrain along certain regions of the French
-shores. It uses the NGF/IGN69 reference ``zero'', which corresponds to
-the mean sea level recorded at the Marseille tide gauge between 1885 and
-1897, commonly known as the ``Terrestrial Altimetric Zero''.
+To estimate the spatial distribution of emersion time of the seagrass
+meadow during low tide, bathymetric and tidal data were used. The
+hypothesis was that the leaf's discoloration follwing the heatwave was
+related to the emersion time and intertidal topography. Bathymetry data
+for the Quiberon intertidal meadow were sourced from the ``Service
+Hydrographique et Océanographique de la Marine'' (SHOM, 2021). It
+corresponds to the Litto3D® product, with a spatial resolution of 1 m
+per pixel, which is a three-dimensional land-sea elevation database,
+accurately depicting the coastal terrain along certain regions of the
+French shores. It uses the NGF/IGN69 reference ``zero'', which
+corresponds to the mean sea level recorded at the Marseille tide gauge
+between 1885 and 1897, commonly known as the ``Terrestrial Altimetric
+Zero''.
 
 Tidal data during the heatwave event were downloaded from the
 Intergovernmental Oceanographic Commission data portal (IOC, 2024),
@@ -764,8 +773,8 @@ to a common altitude reference. This involved applying a correction
 factor to the Litto3D data to align it with the Hydrographic zero. SHOM
 annually publishes a document called ``Références Altimétriques
 Marines'' (RAM, Shom, 2022), which provides these correction factors for
-each seaport along the French coastline. For Le Crouesty port data from
-2022, the correction factor was 2.85 m.
+each seaport along the French coastline. The correction factor for Le
+Crouesty port data from 2022 was 2.85 m.
 
 Once aligned, the corrected elevation was compared to water height for
 each pixel and each time step during the heatwave event. The emersion
@@ -778,26 +787,27 @@ General Linear Models (GLMs) were used to assess relative differences
 over time in response variables (Spectral Indices) with different
 treatments. For analysis of relative changes in indices calculated from
 experimental spectra the relative change in index was modelled as
-function of Days (1-3: Discrete) with Run (1-3: Factor) and Timestep
-within Run (1-6: Factor) as cross random factors. Satellite derived
-indices were modelled as function of Date (1-3: Discrete) and Treatment
-(Impacted vs Unimpacted: Categorical). A General Additive Model (GAM)
-was used to assess the relationship between relative SDI change with
-emersion time. SDI was modelled as function of emersion time with a
-basis spline. All model parameters were estimated with a Bayesian
-framework using the ``brms'' and ``RStan'' packages in R to leverage the
-stan language (Bürkner, 2021; Carpenter et al., 2017; R Core Team, 2023;
-Stan Development Team et al., 2020). The response variables were
-modelled assuming a Gaussian distribution, with weakly informative
-priors (Student-T(3,0,2.5)). Model parameters were estimated using
-Markov Chain Monte Carlo (MCMC) sampling, with 4 chains of 5000
+function of Days (1-3: Discrete) with Replicate (henceforth Runs; 1-3:
+Factor) and Timestep within Run (1-6: Factor) as cross random factors.
+Satellite derived indices were modelled as function of Date (1-3:
+Discrete) and Treatment (Impacted vs Unimpacted: Categorical). A General
+Additive Model (GAM) was used to assess the relationship between
+relative SDI change with emersion time. SDI was modelled as function of
+emersion time with a basis spline. All model parameters were estimated
+with a Bayesian framework using the ``brms'' and ``RStan'' packages in R
+to leverage the stan language (Bürkner, 2021; Carpenter et al., 2017; R
+Core Team, 2023; Stan Development Team et al., 2020). The response
+variables were modelled assuming a Gaussian distribution, with weakly
+informative priors (Student-T(3,0,2.5)). Model parameters were estimated
+using Markov Chain Monte Carlo (MCMC) sampling, with 4 chains of 5000
 iterations and a warm-up of 500.
 
 \section{Results}\label{results}
 
 \subsection{Laboratory Experiment}\label{laboratory-experiment-1}
 
-\subsubsection{Spectral inspection}\label{spectral-inspection}
+\subsubsection{Seagrass spectra variations related to a
+heatwave}\label{seagrass-spectra-variations-related-to-a-heatwave}
 
 In the Control group, reflectance remained relatively stable over time,
 with only minimal changes in magnitude and spectral features
@@ -807,16 +817,17 @@ spectra displayed a peak at 560 nm (green region), low values at 665 nm
 the near-infrared (NIR), beyond 705 nm (Figure~\ref{fig-Exp_Spectra},
 left).
 
-In contrast, the Treatment group showed more pronounced changes in
-reflectance throughout the experiment (Figure~\ref{fig-Exp_Spectra},
-right). At the beginning (Day 1), reflectance values were comparable to
-those in the Control group, especially in the visible region, with a
-notable peak around 560 nm and a pronounced trough at 665 nm. However,
-starting from day 2, reflectance began to decrease across all
-wavelengths, particularly around 560 nm and in the NIR. At day 3, the
-NIR reflectance appeared to stabilize at values like those observed
-during day 2. In the green region, however, reflectance continued to
-decline slightly until the experiment's conclusion.
+In contrast, the Treatment group simulted heatwave showed more
+pronounced changes in reflectance throughout the experiment
+(Figure~\ref{fig-Exp_Spectra}, right). At the beginning (Day 1),
+reflectance values were comparable to those in the Control group,
+especially in the visible region, with a notable peak around 560 nm and
+a pronounced trough at 665 nm. However, starting from day 2, reflectance
+began to decrease across all wavelengths, particularly around 560 nm and
+in the NIR. At day 3, the NIR reflectance appeared to stabilize at
+values like those observed during day 2. In the green region, however,
+reflectance continued to decline slightly until the experiment's
+conclusion.
 
 \phantomsection\label{cell-fig-Exp_Spectra}
 \begin{figure}[H]
@@ -827,12 +838,12 @@ decline slightly until the experiment's conclusion.
 
 }
 
-\caption{\label{fig-Exp_Spectra}Standardized Hyperspectral Reflectance
-signature collected during the experiment for both the Control (Left)
-and the Treatment (Right). Color denotes the progression along the
-experiment from the beginning (Day 1: green), middle (Day 2: Yellow) and
-end (Day 3: Brown). A min-max standardization has been applied to each
-individual spectrum.}
+\caption{\label{fig-Exp_Spectra}Standardized hyperspectral reflectance
+signature of \emph{Z. noltei} leaves measured during the heatwave
+experiment for both the Control (Left) and the Treatment (Right). Color
+denotes the progression along the experiment from the beginning (Day 1:
+green), middle (Day 2: Yellow) and end (Day 3: Brown). A min-max
+standardization has been applied to each individual spectrum.}
 
 \end{figure}%
 
@@ -907,7 +918,7 @@ the golden line indicates values of the Treatment group.}
 
 \subsection{Heatwaves of Quiberon}\label{heatwaves-of-quiberon}
 
-\subsubsection{Spectral inspection}\label{spectral-inspection-1}
+\subsubsection{Spectral inspection}\label{spectral-inspection}
 
 The Sentinel-2 images used in this study are dated from the 1st of
 September 2021 and the 6th of September 2021
@@ -1913,12 +1924,6 @@ B.F.R., Barillé, L., 2023. Remote sensing in seagrass ecology: Coupled
 dynamics between migratory herbivorous birds and intertidal meadows
 observed by satellite during four decades. Remote Sensing in Ecology and
 Conservation 9, 420--433. \url{https://doi.org/10.1002/rse2.319}
-
-\bibitem[\citeproctext]{ref-zoffoli2020sentinel}
-Zoffoli, M.L., Gernez, P., Rosa, P., Le Bris, A., Brando, V.E., Barillé,
-A.-L., Harin, N., Peters, S., Poser, K., Spaias, L., others, 2020.
-Sentinel-2 remote sensing of zostera noltei-dominated intertidal
-seagrass meadows. Remote Sensing of Environment 251, 112020.
 
 \end{CSLReferences}
 
