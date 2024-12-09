@@ -601,7 +601,7 @@ decrease in the red-edge portion of the electromagnetic spectrum.
 
 the Seagrass Heat Shock Index (SHSI) is introduced here to measure the
 difference between the interpolated value between 560 and 842 nm and the
-observed value at 740 nm (\textbf{Add a Figure}). This approach
+observed value at 740 nm (Figure~\ref{fig-SHSI}). This approach
 calculates the line height using a triplet of bands, where 560 nm and
 842 nm serve as the `baseline' and 740 nm represents the central peak.
 The SDI can be mathematically expressed as:
@@ -642,7 +642,7 @@ SHSI value (Figure~\ref{fig-SHSI} B).
 \caption{\label{fig-SHSI}Computation of the Seagrass Heat Shock Index
 (SHSI) from Reflectance Spectra of Impacted (A) and Unimpacted (B)
 seagrass. Hard darkline represents the interpolation between 560 and 842
-nm while the red line represents the SHSI value, mesured ar 740 nm.}
+nm while the red line represents the SHSI value, mesured at 740 nm.}
 
 \end{figure}%
 
@@ -659,21 +659,30 @@ heatwave}\label{observation-of-a-seagrass-bed-impacted-by-a-heatwave}
 }
 
 \caption{\label{fig-quiberonMap}Location of field observation in a
-seagrass meadow impacted by a heatwave that occured on the 10}
+seagrass meadow impacted by a heatwave that occured on the 10th of
+September 2021 in Quiberon, South Brittany, France. The red line
+indicates the intertidal zone (Zone between high tide and low tide,
+exposed during low tide), white polygons indicates land areas, the dark
+green polygon indicates the extent of the seagrass meadow and the olive
+polygons indicates saltmarshes. Greendots indicate the location of
+quadrat picture over unimpacted seagrasses (i.e.~showing a green colour
+on the field), while orange-red dots indicate the location of the
+quadrat taken over impacted seagrasses (i.e.~showing a brown colour on
+the field).}
 
 \end{figure}%
 
 A field campaign, aiming to map a seagrass meadow near Quiberon (France
-: 46°57'32.0''N, 2°10'37.0''W), occurred on the 10th of September 2021
-after a heatwave (Figure~\ref{fig-quiberonMap}). Seagrass leaves turning
-brown were observed over large areas of the meadow alongside normal
-green seagrass (Figure~\ref{fig-QuiberonImg}). A total of 96 Quadrat
-Points (QPs) were collected as georeferenced quadrat images across the
-meadow. These images allow for visual assessment of vegetation type,
-density, and coloration. The quadrats were then divided into two
-categories: green seagrasses (henceforth: QPs unimpacted) and brown
-seagrasses (henceforth: QPs impacted), based on a visual estimation of
-the leaf coloration (Figure~\ref{fig-quiberonMap}).
+: 46°57'32.0''N, 2°10'37.0''W), occurred on September 10th 2021 after a
+heatwave (Figure~\ref{fig-quiberonMap}). Seagrass leaves turning brown
+were observed over large areas of the meadow alongside normal green
+seagrass (Figure~\ref{fig-QuiberonImg}). A total of 96 Quadrat Points
+(QPs) were collected as georeferenced quadrat images across the meadow.
+These images allow for visual assessment of vegetation type, density,
+and coloration. The quadrats were then divided into two categories:
+green seagrasses (henceforth: QPs unimpacted) and brown seagrasses
+(henceforth: QPs impacted), based on a visual estimation of the leaf
+coloration (Figure~\ref{fig-quiberonMap}).
 
 \phantomsection\label{cell-fig-QuiberonImg}
 \begin{figure}[H]
@@ -697,7 +706,7 @@ heatwave}\label{temperature-data-and-identification-of-the-heatwave}
 
 \paragraph{Air temperature}\label{air-temperature}
 
-Since January 1, 2024, Meteo France weather data has been freely and
+Since January 1st, 2024, Meteo France weather data has been freely and
 openly accessible. Hourly air temperature data (°C) was retrieved using
 a
 \href{https://github.com/SigOiry/HeatWave_Seagrasses/blob/main/Scripts/MeteoFrance_Extraction.qmd}{custom
@@ -733,14 +742,12 @@ been assessed using the methodology proposed by Hobday et al. (2018).
 Three Sentinel-2 images covering the field campaign site
 (Figure~\ref{fig-quiberonMap}) were downloaded from the Copernicus
 platform (European Space Agency, 2024a). The first image was taken
-before the heatwave event on September 1, 2021, the second image during
-the event on September 6
-
-, 2021 and the last one, one month after the events on the 8th of
-October 2021. Images were acquired as Level-2 product, in surface
-reflectance, and were orthorectified and atmospherically corrected to
-account for the effects of the atmosphere on reflectance values
-(European Space Agency, 2024b).
+before the heatwave event on September 1st, 2021, the second image
+during the event on September 6th, 2021 and the last one, one month
+after the events on the 8th of October 2021. Images were acquired as
+Level-2 product, in surface reflectance, and were orthorectified and
+atmospherically corrected to account for the effects of the atmosphere
+on reflectance values (European Space Agency, 2024b).
 
 The reflectance value of each QPs (Figure~\ref{fig-quiberonMap}) was
 extracted and compared before and after the heatwave event.
@@ -850,14 +857,10 @@ standardization has been applied to each individual spectrum.}
 \subsubsection{Evolution of spectral
 metrics}\label{evolution-of-spectral-metrics}
 
-The maximum difference of \(R''(\lambda)\) was observed at 665 nm where
-the control was \(0.95 \times 10^{-4}\) higher than the treatment groups
-(Figure~\ref{fig-Exp_Spectral_indices} A).
-
 Similar patterns were found for the (\(R''_{665 \, \text{nm}}\)), NDVI
 and GLI, where the indices start similar to the control and consistently
 decline over the 3 days of experiment
-(Figure~\ref{fig-Exp_Spectral_indices} B)
+(Figure~\ref{fig-Exp_Spectral_indices} A, B and C)
 
 At the start of the experiment (day 1) \(R''_{665 \, \text{nm}}\), NDVI
 and GLI in the Treatment group were on average 13\% greater, 3\% lower
@@ -867,10 +870,10 @@ and 2\% lower, respectively, than that of the Control. However, by day
 3.
 
 Unlike the other metrics, at the start of the experiment (day 1), the
-SDI for the Treatment group was on average 55 \% greater than that of
+SHSI for the Treatment group was on average 55 \% greater than that of
 the Control. By day 2, the SDI for the Treatment exhibited a rapid
 decrease of approximately 241 \%, eventually reaching a cumulative
-decline of 420 \% by day 3 (Figure~\ref{fig-Exp_Spectral_indices} E).
+decline of 420 \% by day 3 (Figure~\ref{fig-Exp_Spectral_indices} D).
 
 \phantomsection\label{cell-fig-Exp_Spectral_indices}
 \begin{figure}[H]
@@ -881,18 +884,19 @@ decline of 420 \% by day 3 (Figure~\ref{fig-Exp_Spectral_indices} E).
 
 }
 
-\caption{\label{fig-Exp_Spectral_indices}Absolute difference in the
-second derivative of hyperspectral signature at the end of the
-experiment (A), and relative difference of the second derivative at 665
-nm (B), the NDVI (C), the GLI (D) and the SDI (E) between the Control
-and the Treatment over time. Points indicate raw data, the line
-represents a generalized linear model, and the shaded area the model's
-standard error.}
+\caption{\label{fig-Exp_Spectral_indices}Comparison of spectral metrics
+for detecting reflectance changes of seagrass leaves after a heatwave.
+A: Relative difference of the second derivative at 665 nm between the
+Control and the Treatment over time; B: Relative difference of the NDVI;
+C: Relative difference of the GLI; E: Relative difference of the SHSI.
+Points indicate raw data, the line represents a generalized linear
+model, and the shaded area is the model's standard error. The dased
+lines represent no difference between the Control and the Treatment.}
 
 \end{figure}%
 
-The SDI revealed clear distinctions between the Control and Treatment
-groups (Figure~\ref{fig-SDI_over_Time}). At day 1, the SDI of the
+The SHSI revealed clear distinctions between the Control and Treatment
+groups (Figure~\ref{fig-SDI_over_Time}). At day 1, the SHSI of the
 Control and Treatment groups are comparable, with value of -0.11 and
 -0.08, respectively. By the end of the experiment, seagrasses in the
 Treatment group exhibited an average SDI of 0.15, consistent with their

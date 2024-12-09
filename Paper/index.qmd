@@ -584,7 +584,7 @@ where $R(550)$ and $R(450)$ are the reflectance in green at 550 nm and in the bl
 
 Based on the observed spectral changes in seagrasses exposed to heatwaves, we developed a new radiometric index to detect colour changes in the visible but also near-infrared slope variations, a significant spectral feature for seagrasses [@davies2023multi]. The observed green colour of the leaves turning brown was characterized by a reduction in reflectance within the green region and a substantial decrease in the red-edge portion of the electromagnetic spectrum.
 
-the Seagrass Heat Shock Index (SHSI) is introduced here to measure the difference between the interpolated value between 560 and 842 nm and the observed value at 740 nm (**Add a Figure**). This approach calculates the line height using a triplet of bands, where 560 nm and 842 nm serve as the 'baseline' and 740 nm represents the central peak. The SDI can be mathematically expressed as: $$
+the Seagrass Heat Shock Index (SHSI) is introduced here to measure the difference between the interpolated value between 560 and 842 nm and the observed value at 740 nm (@fig-SHSI). This approach calculates the line height using a triplet of bands, where 560 nm and 842 nm serve as the 'baseline' and 740 nm represents the central peak. The SDI can be mathematically expressed as: $$
 \text{SHSI} = I_{SHSI} - R(740)
 $$ {#eq-SDI}
 
@@ -605,6 +605,10 @@ Where $R(560)$, $R(740)$, and $R(842)$ represent reflectance values at 560, 740,
 #| echo: false
 #| eval: false
 #| warning: false
+
+library(tidyverse)
+library(Utilities.Package)
+
 
 df <- read.csv("Data/df_experiment.csv") %>% 
   as_tibble()
@@ -650,8 +654,16 @@ df_label_SHSI <- data.frame(x = c(740,740),
                            y = c(0.58,0.33),
                            scenario = c("Unimpacted","Impacted"),
                            Label = c("Negative SHSI", "Positive SHSI"),
+                           x0 = c(840,810),
+                           y0 = c(0.5,0.23))
+
+
+df_label_I_SHSI <- data.frame(x = c(740,740),
+                           y = c(0.58,0.4),
+                           scenario = c("Unimpacted","Impacted"),
+                           Label = c("Iₛₕₛᵢ","Iₛₕₛᵢ"),
                            x0 = c(800,810),
-                           y0 = c(0.4,0.23))
+                           y0 = c(0.4,0.45))
 
 
 col_scale <- c("Unimpacted" = "darkgreen", "Impacted" = "#73523E")
@@ -674,7 +686,8 @@ ggplot() +
             linewidth = 1.5) +
   geom_segment(data = df_segment, 
                aes(x = xmin, y = ymin, xend = xmax, yend = ymax, group = scenario), 
-               linewidth = 1) +
+               linewidth = 1,
+               linetype = "dashed") +
   geom_segment(data = df_segment_SHSI, 
                aes(x = xmin, y = ymin, xend = xmax, yend = ymax, group = scenario), 
                linewidth = 2,
@@ -690,6 +703,22 @@ ggplot() +
   ggforce::geom_mark_ellipse(
     data = Label_ref,
     aes(x = x, y = y, y0 = y0,label = label, group = interaction(scenario,x)),
+    size = 0.3,
+    fill = "goldenrod",
+    con.colour = "goldenrod4",
+    show.legend = F,
+    label.fontsize = 20,
+    label.hjust = 0.5,
+    con.size = 1,
+    alpha = 0.8,
+    expand = unit(0.5, "mm"),
+    radius = unit(1.5, "mm"),
+    label.fill = NA,
+    label.buffer = unit(5, "mm")
+  ) +
+  ggforce::geom_mark_ellipse(
+    data = df_label_I_SHSI,
+    aes(x = x, y = y, y0 = y0,label = Label, group = interaction(scenario,x)),
     size = 0.3,
     fill = "goldenrod",
     con.colour = "goldenrod4",
@@ -740,9 +769,7 @@ ggplot() +
         legend.key.width = unit(2,"cm"))
 
 ggsave("Paper/Figs/High_res/Plot_explain_SHSI.png", height = 10, width = 10, dpi = 400)
-ggsave("Paper/Figs/Low_res/Plot_explain_SHSI.png", height = 10, width = 10, dpi = 400)
-
-
+ggsave("Paper/Figs/Low_res/Plot_explain_SHSI.png", height = 10, width = 10, dpi = 200)
 ```
 
 ```{r Fig Site Quiberon Plot}
@@ -2676,16 +2703,16 @@ letter_size = 6
 
 plot_labeled <- ggplot()+
   geom_spatraster_rgb(data = plot, maxcell = 4000*4000)+
-  geom_spatraster_rgb(data = deriv, maxcell = 4000*1000)+
+  # geom_spatraster_rgb(data = deriv, maxcell = 4000*1000)+
 
   # geom_spatraster_rgb(data = plot, maxcell = 200000)+
   # geom_spatraster_rgb(data = deriv, maxcell = 200000)+
   
-  geom_text(aes(x = 100, y = 4800, label = "A"), size = letter_size)+
-  geom_text(aes(x = 100, y = 3550, label = "B"),  size = letter_size)+
-  geom_text(aes(x = 3900, y = 3550, label = "C"), size = letter_size)+
-  geom_text(aes(x = 100, y = 580, label = "D"), size = letter_size)+
-  geom_text(aes(x = 3900, y = 580, label = "E"), size = letter_size)+
+  # geom_text(aes(x = 100, y = 4800, label = "A"), size = letter_size)+
+  geom_text(aes(x = 100, y = 3550, label = "A"),  size = letter_size)+
+  geom_text(aes(x = 3900, y = 3550, label = "B"), size = letter_size)+
+  geom_text(aes(x = 100, y = 580, label = "C"), size = letter_size)+
+  geom_text(aes(x = 3900, y = 580, label = "D"), size = letter_size)+
   # geom_text(aes(x = 1900, y = 3570, label = "Control"), angle = -90 , size = 5)+
   # geom_text(aes(x = 1900, y = 2700, label = "Treatment"), angle = -90 , size = 5)+
 
@@ -2697,8 +2724,8 @@ plot_labeled <- ggplot()+
           plot.margin = unit(c(0, 0, 0, 0), "cm"))
 
 # plot(plot_labeled)
-ggsave("Paper/Figs/High_res/merged_indices.png",plot_labeled, height = 10, width = 8.1, dpi = 400)
-ggsave("Paper/Figs/Low_res/merged_indices.png",plot_labeled, height = 10, width = 8.1, dpi = 200)
+ggsave("Paper/Figs/High_res/merged_indices.png",plot_labeled, height = 10, width = 10, dpi = 400)
+ggsave("Paper/Figs/Low_res/merged_indices.png",plot_labeled, height = 10, width = 10, dpi = 200)
 
 df_output_model <- InitialData_chla_abs %>% 
   rbind(InitialData_GLI,InitialData_NDVI, InitialData_SDI)
@@ -2716,28 +2743,26 @@ library(tidyverse)
 df_model_hyperspectral <- read.csv("../Output/Output_model_Comparison_Hyperspectral_indices.csv")
 ```
 
-The maximum difference of $R''(\lambda)$ was observed at 665 nm where the control was $0.95 \times 10^{-4}$ higher than the treatment groups (@fig-Exp_Spectral_indices A).
-
-Similar patterns were found for the ($R''_{665 \, \text{nm}}$), NDVI and GLI, where the indices start similar to the control and consistently decline over the 3 days of experiment (@fig-Exp_Spectral_indices B)
+Similar patterns were found for the ($R''_{665 \, \text{nm}}$), NDVI and GLI, where the indices start similar to the control and consistently decline over the 3 days of experiment (@fig-Exp_Spectral_indices A, B and C)
 
 At the start of the experiment (day 1) $R''_{665 \, \text{nm}}$, NDVI and GLI in the Treatment group were on average `r round(df_model_hyperspectral |>  dplyr::filter(days == 1 & variable == "abs_chla") |> dplyr::pull(y) *100)`% greater, `r abs(round(df_model_hyperspectral |> dplyr::filter(days == 1 & variable == "NDVI") |> dplyr::pull(y) *100))`% lower and `r abs(round(df_model_hyperspectral |> dplyr::filter(days == 1 & variable == "GLI") |> dplyr::pull(y) *100))`% lower, respectively, than that of the Control. However, by day 2, the Treatment showed a rapid decease of approximately `r abs(round(df_model_hyperspectral |> dplyr::filter(days == 2 & variable == "abs_chla") |> dplyr::pull(y) *100))`%, `r abs(round(df_model_hyperspectral |> dplyr::filter(days == 2 & variable == "NDVI") |> dplyr::pull(y) *100))`% and `r abs(round(df_model_hyperspectral |> dplyr::filter(days == 2 & variable == "GLI") |> dplyr::pull(y) *100))`%, eventually reaching a total decline of `r abs(round(df_model_hyperspectral |> dplyr::filter(days == 3 & variable == "abs_chla") |> dplyr::pull(y) *100))`%, `r abs(round(df_model_hyperspectral |> dplyr::filter(days == 3 & variable == "NDVI") |> dplyr::pull(y) *100))`% and `r abs(round(df_model_hyperspectral |> dplyr::filter(days == 3 & variable == "GLI") |> dplyr::pull(y) *100))`% by day 3.
 
-Unlike the other metrics, at the start of the experiment (day 1), the SDI for the Treatment group was on average `r round(df_model_hyperspectral |> dplyr::filter(days == 1 & variable == "SDI") |> dplyr::pull(y) *100)` % greater than that of the Control. By day 2, the SDI for the Treatment exhibited a rapid decrease of approximately `r round(df_model_hyperspectral |> dplyr::filter(days == 2 & variable == "SDI") |> dplyr::pull(y) *100)` %, eventually reaching a cumulative decline of `r round(df_model_hyperspectral |> dplyr::filter(days == 3 & variable == "SDI") |> dplyr::pull(y) *100)` % by day 3 (@fig-Exp_Spectral_indices E).
+Unlike the other metrics, at the start of the experiment (day 1), the SHSI for the Treatment group was on average `r round(df_model_hyperspectral |> dplyr::filter(days == 1 & variable == "SDI") |> dplyr::pull(y) *100)` % greater than that of the Control. By day 2, the SDI for the Treatment exhibited a rapid decrease of approximately `r round(df_model_hyperspectral |> dplyr::filter(days == 2 & variable == "SDI") |> dplyr::pull(y) *100)` %, eventually reaching a cumulative decline of `r round(df_model_hyperspectral |> dplyr::filter(days == 3 & variable == "SDI") |> dplyr::pull(y) *100)` % by day 3 (@fig-Exp_Spectral_indices D).
 
 ```{r Fig Exp_Spectral_indices}
 #| cache: false
 #| echo: false
 #| warning: false
-#| fig-cap: "Absolute difference in the second derivative of hyperspectral signature at the end of the experiment (A), and relative difference of the second derivative at 665 nm (B), the NDVI (C), the GLI (D) and the SDI (E) between the Control and the Treatment over time. Points indicate raw data, the line represents a generalized linear model, and the shaded area the model's standard error."
+#| fig-cap: " Comparison of spectral metrics for detecting reflectance changes of seagrass leaves after a heatwave. A: Relative difference of the second derivative at 665 nm between the Control and the Treatment over time; B: Relative difference of the NDVI; C: Relative difference of the GLI; E: Relative difference of the SHSI. Points indicate raw data, the line represents a generalized linear model, and the shaded area is the model's standard error. The dased lines represent no difference between the Control and the Treatment."
 #| label: fig-Exp_Spectral_indices
-#| fig-width: 8.1
+#| fig-width: 10
 #| fig-height: 10
 #| out-width: "95%"
 
 knitr::include_graphics("Figs/Low_res/merged_indices.png")
 ```
 
-The SDI revealed clear distinctions between the Control and Treatment groups (@fig-SDI_over_Time). At day 1, the SDI of the Control and Treatment groups are comparable, with value of -0.11 and -0.08, respectively. By the end of the experiment, seagrasses in the Treatment group exhibited an average SDI of 0.15, consistent with their visibly darkened appearance. In contrast, the Control group retained a green appearance throughout the experiment, with an average SDI of -0.07.
+The SHSI revealed clear distinctions between the Control and Treatment groups (@fig-SDI_over_Time). At day 1, the SHSI of the Control and Treatment groups are comparable, with value of -0.11 and -0.08, respectively. By the end of the experiment, seagrasses in the Treatment group exhibited an average SDI of 0.15, consistent with their visibly darkened appearance. In contrast, the Control group retained a green appearance throughout the experiment, with an average SDI of -0.07.
 
 ```{r SDI_over_Time}
 #| cache: true
