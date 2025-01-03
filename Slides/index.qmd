@@ -46,7 +46,7 @@ library("leaflet.extras")
 :::
 
 ::: {.gradient_box style="text-align: center; position: absolute; left: 50%; top: 60%; width: 1200px; transform: translate(-50%, -50%)"}
-[Simon Oiry, Bede Ffinian Rowe Davies, Phillipe Rosa, Augustin Debly, Maria Laura Zoffoli, Anne-Laure Barillé, Nicolas Harin, Pierre Gernez, Laurent Barillé]{style="color: black; font-size: 60px; font-weight: bold;"}
+[Simon Oiry, Bede Ffinian Rowe Davies, Phillipe Rosa, Augustin Debly, Vona Méléder, Bruno Jesus, Maria Laura Zoffoli, Anne-Laure Barillé, Nicolas Harin, Pierre Gernez, Laurent Barillé]{style="color: black; font-size: 60px; font-weight: bold;"}
 :::
 
 ::: {.absolute bottom="65%" left="0%"}
@@ -57,4 +57,681 @@ library("leaflet.extras")
 ![](Images/rsbe2.png){height="300"}
 :::
 
-# coucou
+# Introduction
+## Preface
+
+
+::: {.absolute style="top: 0%; left: 95%; width: 1800px;"}
+::: sectionhead
+1 [2 3 4 5]{style="opacity:0.25;"}
+:::
+:::
+
+::: {.fragment .fade-out fragment-index="4"} 
+::: {.absolute .fragment .fade-in bottom="3%" left="-5%" fragment-index="1"}
+![](Images/20240828_154208.jpg){height="1000"}
+:::
+
+::: {.absolute .fragment .fade-in bottom="3%" left="18%" fragment-index="1"}
+![](Images/20220613_202548_001.png){height="400"}
+:::
+
+::: {.absolute .fragment .fade-in bottom="35%" left="18%" fragment-index="1"}
+![](Images/IMG-20220615-WA0009.jpg){height="567"}
+:::
+
+::: {.absolute .fragment .fade-in top="5%" left="13.5%" fragment-index="1"}
+![](Images/BiCOME Logo.png){height="200"}
+:::
+
+::: {.absolute .fragment .fade-in fragment-index="1" left="150px" top="200px" style="font-size: 40px;"}
+June 2022
+:::
+
+
+::: {.absolute .fragment .fade-in top="10%" right="-3%" fragment-index="3"}
+![](Images/20220615_104634.png){height="600"}
+:::
+
+::: {.absolute .fragment .fade-in bottom="3%" right="-3%" fragment-index="3"}
+![](Images/Bleached_Seagrasses.png){height="600"}
+:::
+::: 
+
+::: {.absolute .fragment .fade-in top="13%" left="3%" fragment-index="4"}
+![](Images/Logo_Biolittoral.png){height="70"}
+:::
+
+::: {.absolute .fragment .fade-in bottom="3%" left="-5%" fragment-index="4"}
+![](Images/FR5300027_HZ1_153325867.jpg){height="1000"}
+:::
+
+::: {.absolute .fragment .fade-in bottom="3%" left="18%" fragment-index="4"}
+![](Images/FR5300027_HZ1_162903899.jpg){height="1000"}
+:::
+
+::: {.absolute .fragment .fade-in fragment-index="4" left="500px" top="200px" style="font-size: 40px;"}
+September 2021
+:::
+
+```{r SST_processing}
+#| cache: true
+#| echo: false
+#| eval: false
+#| warning: false
+
+library(tidyverse)
+library(terra)
+library(ncdf4)
+library(heatwaveR)
+library(Utilities.Package)
+library(reshape2)
+
+
+
+######### NC PLOTTING ################
+
+
+file_path <- "Data/SST/cmems_obs-sst_atl_phy_my_l3s_P1D-m_1729089512246.nc"
+nc <- nc_open(file_path)
+
+# Get the temperature variable (adjust the variable name if different)
+temp_var_name <- "adjusted_sea_surface_temperature"
+temperature_data <- ncvar_get(nc, temp_var_name)
+
+# Get the longitude and latitude variables (adjust variable names if different)
+lon <- ncvar_get(nc, "longitude")
+lat <- ncvar_get(nc, "latitude")
+
+# Compute the mean SST over time at each grid point
+mean_sst_map <- apply(temperature_data, c(1, 2), sd, na.rm = TRUE)
+
+# Convert the 2D array to a data frame for plotting
+mean_sst_df <- melt(mean_sst_map, varnames = c("lon_idx", "lat_idx"), value.name = "mean_sst")
+mean_sst_df$lon <- lon[mean_sst_df$lon_idx]
+mean_sst_df$lat <- lat[mean_sst_df$lat_idx]
+
+# Convert Kelvin to Celsius if necessary
+mean_sst_df$mean_sst_celsius <- mean_sst_df$mean_sst - 273.15
+
+
+
+# Plot the mean SST map
+ggplot() +
+  geom_tile(data = mean_sst_df,  mapping = aes(x = lon, y = lat, fill = mean_sst_celsius)) +
+  # geom_polygon(data = poly, mapping = aes(x = x, y = y, group = id), alpha = 0.8)+
+  scale_fill_viridis_c(option = "inferno") +
+  coord_fixed() +
+  labs(title = "Mean Sea Surface Temperature", fill = "Temperature (°C)") +
+  theme_minimal()
+
+
+##### NC opening and processing ######
+
+file_path <- "Data/SST/cmems_obs-sst_atl_phy_my_l3s_P1D-m_1729089512246.nc"
+
+# Open the NetCDF file
+nc <- nc_open(file_path)
+
+# Get the temperature variable (adjust the variable name if different)
+temp_var_name <- "adjusted_sea_surface_temperature"
+temperature_data <- ncvar_get(nc, temp_var_name)
+
+# Get the time variable
+time_data <- ncvar_get(nc, "time")  # Adjust "time" if the name is different
+
+# Get the longitude and latitude variables
+lon <- ncvar_get(nc, "longitude")  # Adjust "longitude" if the name is different
+lat <- ncvar_get(nc, "latitude")   # Adjust "latitude" if the name is different
+
+lon_min <- -3.5
+lon_max <- -2.7
+lat_min <- 47.3
+lat_max <- 47.7
+# Adjust longitudes if they are in the range [0, 360]
+if (max(lon) > 180) {
+  lon <- ifelse(lon > 180, lon - 360, lon)
+}
+
+# Find the indices of lon and lat within the bounding box
+lon_indices <- which(lon >= lon_min & lon <= lon_max)
+lat_indices <- which(lat >= lat_min & lat <= lat_max)
+
+# Subset the temperature data
+temperature_data_subset <- temperature_data[lon_indices, lat_indices, ]
+
+# Calculate the mean temperature over the spatial dimensions for each time point
+mean_temperature <- apply(temperature_data_subset, 3, mean, na.rm = TRUE)
+
+# Convert time data to POSIXct format (adjust the origin if necessary)
+sst <- data.frame(time = time_data, sst = mean_temperature) %>%
+  mutate(time = as.POSIXct(time, origin = "1970-01-01"))
+
+# Plot the SST over time
+sst %>%
+  filter(!is.na(sst)) %>%
+  ggplot(aes(x = time, y = sst - 273.15)) +
+  geom_point(alpha = 0.3) +
+  geom_smooth(method = "glm") +
+  labs(x = "Time", y = "SST (°C)", title = "Mean SST around Quiberon Over Time")
+
+
+#### HEATWAVE DETECTION ########
+
+df_heatwaveR_sst <- sst %>% 
+  rename(t = time,
+         temp = sst) %>%
+  mutate(t = as.Date(t),
+         temp = temp - 273.15) %>% 
+  dplyr::select(t,temp) 
+
+  
+  df_heatwaveR[which(df_heatwaveR_sst$t == as.Date("2021-09-07")),]$temp = df_heatwaveR_sst[which(df_heatwaveR_sst$t == as.Date("2021-09-07")),]$temp +0.8 
+
+  clim <- ts2clm(df_heatwaveR_sst, climatologyPeriod = c(min(df_heatwaveR_sst$t), max(df_heatwaveR_sst$t)))
+  
+  event <- detect_event(clim,categories = T,minDuration = 3)
+  res <- detect_event(clim, minDuration = 3)
+  mhw <- res$clim
+
+  mhw_filled <- mhw %>%
+  arrange(t) %>%
+  mutate(
+    # Replace NaN with NA for compatibility
+    temp = ifelse(is.nan(temp), NA, temp),
+    missing = case_when(is.na(temp) ~ T,
+                        T ~ F),
+    # Convert Date to numeric if it's not already
+    Date_num = as.numeric(t),
+    # Perform linear interpolation
+    temp = approx(
+      x = Date_num[!is.na(temp)],
+      y = temp[!is.na(temp)],
+      xout = Date_num,
+      method = "linear",
+      rule = 2
+    )$y
+  ) %>%
+  select(-Date_num) 
+  
+  mhw_segments <- mhw_filled %>%
+  mutate(
+    t_lead = lead(t),
+    temp_lead = lead(temp),
+    missing_lead = lead(missing)
+  ) %>%
+  filter(!is.na(t_lead)) %>%
+  mutate(
+    # Determine linetype based on missingness of adjacent points
+    linetype = ifelse(missing & missing_lead, "solid", "dashed")
+  )
+  
+
+```
+
+```{r Air_processing}
+#| cache: true
+#| echo: false
+#| eval: false
+#| warning: false
+
+library(sf)
+
+df <- list.files("Data/MeteoFrance/RAW/",pattern = "HOR_departement_56_*", full.names = TRUE) %>% 
+  map(read.delim,
+      sep = ";",
+      .progress = TRUE) %>%
+  list_rbind() %>% 
+  dplyr::select(NOM_USUEL, LAT,LON,AAAAMMJJHH,`T`, TN, TX, T10, T20, T50,T100) %>% 
+  dplyr::filter(!is.na(`T`)) 
+
+station <- df %>% 
+  group_by(NOM_USUEL) %>% 
+  reframe(Lat = unique(LAT),
+          Lon = unique(LON),
+          n_obs = n())
+
+sovereignty10 <- rnaturalearth::ne_countries(scale = 10, returnclass = "sf")
+
+France_shp <- sovereignty10 %>% 
+  st_as_sf() %>% 
+  dplyr::filter(sovereignt%in%c("France")) 
+
+
+bbox_france <- st_bbox(c(xmin = min(station$Lon),
+                         ymin = min(station$Lat),
+                         xmax = max(station$Lon),
+                         ymax = max(station$Lat)),
+                       crs = st_crs(France_shp)) 
+
+France_map_cropped <- France_shp %>% 
+  st_crop(bbox_france) %>%
+  st_make_valid()
+  
+
+station_shp <- station %>% 
+  st_as_sf(coords=c("Lon","Lat") )  %>% 
+  st_set_crs("EPSG:4326") 
+
+# ggplot() +
+#   geom_sf(data = France_map_cropped,linewidth=0.5,alpha=0.93,
+#           fill="#CFCFCF",colour="grey30")+
+#   ggforce::geom_mark_ellipse(data=station,
+#                  aes(x=Lon,
+#                      y=Lat,
+#                      label = paste("n: ", n_obs),
+#                      description=NOM_USUEL) ,
+#                  linewidth=0.2,
+#                  fill="goldenrod",
+#                  show.legend=F,
+#                  label.hjust = 0.2,
+#                  con.size = 1,
+#                  con.colour = "goldenrod4",
+#                  label.fontsize = c(10,12),
+#                  alpha=0.8,
+#   expand = unit(1, "mm") , 
+#   radius = unit(1, "mm") , 
+#   label.buffer = unit(1, "mm") ,
+#   label.fill = "grey90")
+#   
+df_56 <- df %>% 
+  dplyr::filter(str_detect(NOM_USUEL,"BIHOUE"),
+                !is.na(`T`)) %>% 
+  dplyr::select(NOM_USUEL, LAT,LON,,AAAAMMJJHH,`T`, TN, TX, T10, T20, T50,T100) %>% 
+  mutate(date = as.POSIXct(as.character(AAAAMMJJHH), format = "%Y%m%d%H",tz = "UTC"))
+
+
+ggplot(df_56)+
+  geom_line(aes(x = date, y = `T`))
+
+
+df_heatwaveR_air <- df_56 %>% 
+  rename(t = date,
+         temp = `T`) %>% 
+  dplyr::select(t,temp) %>% 
+  mutate(t = as.Date(t)) %>% 
+  group_by(t) %>% 
+  reframe(temp = max(temp,na.rm = T))
+
+
+
+clim <- ts2clm(df_heatwaveR_air, climatologyPeriod = c(min(df_heatwaveR_air$t), max(df_heatwaveR_air$t)))
+  
+event <- detect_event(clim,categories = T,minDuration = 2)
+  
+res <- detect_event(clim, minDuration = 2)
+mhw_Air<- res$clim
+
+
+
+# img_before <- readPNG("Data/screenshot_S2/Before_event_quiberon.png") %>%
+  # rasterGrob(interpolate=TRUE)
+
+```
+
+```{r Temperatures datasets & plots}
+#| cache: true
+#| echo: false
+#| eval: false
+#| warning: false
+
+library(tidyverse)
+library(Utilities.Package)
+
+
+coltabl <- c(sst = "darkblue", air = "darkred")
+
+df_air <- df_heatwaveR_air %>% 
+  mutate(type = "air")
+
+df_sst <- df_heatwaveR_sst %>% 
+  mutate(type = "sst")
+
+df_all <- df_air %>% 
+  bind_rows(df_sst)
+
+Sys.setlocale("LC_TIME", "C")
+
+plot <- df_all %>% 
+  dplyr::filter(t > as.Date("2021-08-15"),
+                t < as.Date("2021-09-30")) %>% 
+  ggplot(aes(x = t, y = temp, color = type)) +
+  geom_line(linewidth=1)+
+  # geom_vline(xintercept = as.Date("2021-09-01")) +
+  # geom_vline(xintercept = as.Date("2021-09-11")) +
+  # scale_x_date(date_labels = "%b") +
+  scale_color_manual(values = coltabl,
+                     labels = c("Air","SST"))+
+  theme_Bede() +
+  ylab("Temperature (°C)")+
+  theme(axis.title.x = element_blank(),
+        legend.title = element_blank(),
+        legend.position = c(0.8,0.8), 
+        axis.text.x = element_text(size = 15, hjust = 1, angle = 45),
+        axis.text.y = element_text(size = 15),
+        axis.title.y = element_text(size = 20),
+        legend.text = element_text(size = 15),
+        legend.key.size = unit(1,"cm"))
+
+
+ggsave("Slides/Images/plot_temp.png", width = 10, height = 6.89)
+```
+
+::: {.absolute .fragment .fade-in-then-out bottom="3%" right="-5%" fragment-index="5"}
+![](Images/plot_temp.png){height="1000"}
+:::
+::: {.absolute .fragment .fade-in bottom="3%" right="-5%" fragment-index="6"}
+![](Images/plot_temp2.png){height="1000"}
+:::
+
+## What's in the litterature ?
+
+::: {.absolute style="top: 0%; left: 95%; width: 1800px;"}
+::: sectionhead
+1 [2 3 4 5]{style="opacity:0.25;"}
+:::
+:::
+
+::: {.absolute .fragment .fade-in top="10%" left="0%" fragment-index="1"}
+![](Images/Paper_intro1.png){height="200"}
+:::
+
+::: {.absolute .fragment .fade-in top="30%" left="0%" fragment-index="1"}
+![](Images/Paper_intro2.png){height="200"}
+:::
+
+::: {.absolute .fragment .fade-in top="50%" left="0%" fragment-index="1"}
+![](Images/Paper_intro31.png){height="200"}
+:::
+
+::: {.absolute .fragment .fade-in top="70%" left="0%" fragment-index="1"}
+![](Images/Paper_intro4.png){height="200"}
+:::
+
+
+::: {.absolute .fragment .fade-in fragment-index="1" top="10%" left="30%" style="font-size: 50px;"}
+On subtidal *Zostera marina* and *Cymodosea nodosa*: 
+:::
+
+::: {.absolute .fragment .fade-in-then-out fragment-index="2" width="1200" top="15%" left="35%" style="font-size: 50px;"}
+- Highly vulnerable to elevated sea temperatures in winter and spring, leading to early flowering, high mortality, and reduced biomass.
+
+:::
+
+::: {.absolute .fragment .fade-in-then-out fragment-index="3" width="1200" top="15%" left="35%" style="font-size: 50px;"}
+- Highly vulnerable to elevated sea temperatures in winter and spring, leading to early flowering, high mortality, and reduced biomass.
+- Photosynthetic activity rises during HWs but diminishes during recovery, impairing performance and reducing leaf biomass.
+:::
+
+::: {.absolute .fragment .fade-in-then-out fragment-index="4" width="1200" top="15%" left="35%" style="font-size: 50px;"}
+- Highly vulnerable to elevated sea temperatures in winter and spring, leading to early flowering, high mortality, and reduced biomass.
+- Photosynthetic activity rises during HWs but diminishes during recovery, impairing performance and reducing leaf biomass.
+- Responses vary greatly between species...
+:::
+
+::: {.absolute .fragment .fade-in fragment-index="5" width="1200" top="15%" left="35%" style="font-size: 50px;"}
+- Highly vulnerable to elevated sea temperatures in winter and spring, leading to early flowering, high mortality, and reduced biomass.
+- Photosynthetic activity rises during HWs but diminishes during recovery, impairing performance and reducing leaf biomass.
+- Responses vary greatly between species...
+- ...and within a single species across latitudes.
+:::
+
+::: {.absolute .fragment .fade-in fragment-index="6" bottom="25%" left="30%" style="font-size: 75px;"}
+What about *Zostera noltei* ?  
+:::
+
+::: {.absolute .fragment .fade-in fragment-index="7" bottom="15%" left="30%" style="font-size: 75px;"}
+Impact on the reflectance ? 
+:::
+
+::: {.absolute .fragment .fade-in fragment-index="8" bottom="5%" left="30%" style="font-size: 75px;"}
+Impact of Extreme Atmospheric temperature ? 
+:::
+
+## Extreme Temperature Events =  Heatwaves
+
+::: {.absolute style="top: 0%; left: 95%; width: 1800px;"}
+::: sectionhead
+1 [2 3 4 5]{style="opacity:0.25;"}
+:::
+:::
+
+::: {.absolute .fade-in top="10%" left="10%"}
+![](Images/Paper_intro5.png){height="300"}
+:::
+
+::: {.absolute .fade-in top="10%" right="0%"}
+![](Images/Paper_intro6.png){height="300"}
+:::
+
+::: {.absolute .fragment .fade-in-then-out fragment-index="1" top="36%" left="5%" style="font-size: 50px; text-align: center;"}
+Defined as periods of three or more consecutive days where the daily maximum temperature (Tmax) exceeds the calendar-day 90th percentile based on at least 30 years
+:::
+
+::: {.absolute .fragment .fade-in-then-out fragment-index="2" top="36%" left="5%" style="font-size: 50px; text-align: center;"}
+Defined as periods of three or more consecutive days where the daily maximum temperature (Tmax) exceeds the calendar-day 90th percentile based on at [least 30 years]{style="color: red;"}
+:::
+
+::: {.absolute .fragment .fade-in-then-out fragment-index="3" top="36%" left="5%" style="font-size: 50px; text-align: center;"}
+Defined as periods of three or more consecutive days where the daily maximum temperature (Tmax) exceeds the [calendar-day 90th percentile]{style="color: red;"} based on at least 30 years
+:::
+
+::: {.absolute .fragment .fade-in-then-out fragment-index="4" top="36%" left="5%" style="font-size: 50px; text-align: center;"}
+Defined as periods of three or more consecutive days where the [daily maximum temperature (Tmax)]{style="color: red;"} exceeds the calendar-day 90th percentile based on at least 30 years
+:::
+
+::: {.absolute .fragment .fade-in fragment-index="5" top="36%" left="5%" style="font-size: 50px; text-align: center;"}
+Defined as periods of [three or more consecutive days]{style="color: red;"} where the daily maximum temperature (Tmax) exceeds the calendar-day 90th percentile based on at least 30 years
+:::
+
+
+::: {.absolute .fragment .fade-in-then-out bottom="0%" left="5%" fragment-index="2"}
+![](Images/plot_temp_timeserie.png){height="600"}
+:::
+
+::: {.absolute .fragment .fade-in-then-out bottom="0%" left="5%" fragment-index="3"}
+![](Images/plot_temp_mean.png){height="600"}
+:::
+
+::: {.absolute .fragment .fade-in-then-out bottom="0%" left="5%" fragment-index="4"}
+![](Images/plot_Tmax.png){height="600"}
+:::
+
+::: {.absolute .fragment .fade-in bottom="0%" left="5%" fragment-index="5"}
+![](Images/plot_Tmax_flame.png){height="600"}
+:::
+
+
+
+```{r Air_processing1}
+#| cache: false
+#| echo: false
+#| eval: false
+#| warning: false
+
+library(sf)
+
+df <- list.files("Data/MeteoFrance/RAW/",pattern = "HOR_departement_56_*", full.names = TRUE) %>% 
+  map(read.delim,
+      sep = ";",
+      .progress = TRUE) %>%
+  list_rbind() %>% 
+  dplyr::select(NOM_USUEL, LAT,LON,AAAAMMJJHH,`T`, TN, TX, T10, T20, T50,T100) %>% 
+  dplyr::filter(!is.na(`T`)) 
+
+station <- df %>% 
+  group_by(NOM_USUEL) %>% 
+  reframe(Lat = unique(LAT),
+          Lon = unique(LON),
+          n_obs = n())
+
+sovereignty10 <- rnaturalearth::ne_countries(scale = 10, returnclass = "sf")
+
+France_shp <- sovereignty10 %>% 
+  st_as_sf() %>% 
+  dplyr::filter(sovereignt%in%c("France")) 
+
+
+bbox_france <- st_bbox(c(xmin = min(station$Lon),
+                         ymin = min(station$Lat),
+                         xmax = max(station$Lon),
+                         ymax = max(station$Lat)),
+                       crs = st_crs(France_shp)) 
+
+France_map_cropped <- France_shp %>% 
+  st_crop(bbox_france) %>%
+  st_make_valid()
+  
+
+station_shp <- station %>% 
+  st_as_sf(coords=c("Lon","Lat") )  %>% 
+  st_set_crs("EPSG:4326") 
+
+# ggplot() +
+#   geom_sf(data = France_map_cropped,linewidth=0.5,alpha=0.93,
+#           fill="#CFCFCF",colour="grey30")+
+#   ggforce::geom_mark_ellipse(data=station,
+#                  aes(x=Lon,
+#                      y=Lat,
+#                      label = paste("n: ", n_obs),
+#                      description=NOM_USUEL) ,
+#                  linewidth=0.2,
+#                  fill="goldenrod",
+#                  show.legend=F,
+#                  label.hjust = 0.2,
+#                  con.size = 1,
+#                  con.colour = "goldenrod4",
+#                  label.fontsize = c(10,12),
+#                  alpha=0.8,
+#   expand = unit(1, "mm") , 
+#   radius = unit(1, "mm") , 
+#   label.buffer = unit(1, "mm") ,
+#   label.fill = "grey90")
+#   
+df_56 <- df %>% 
+  dplyr::filter(str_detect(NOM_USUEL,"BIHOUE"),
+                !is.na(`T`)) %>% 
+  dplyr::select(NOM_USUEL, LAT,LON,,AAAAMMJJHH,`T`, TN, TX, T10, T20, T50,T100) %>% 
+  mutate(date = as.POSIXct(as.character(AAAAMMJJHH), format = "%Y%m%d%H",tz = "UTC"))
+
+
+plot_timeserie <- ggplot(df_56)+
+  geom_line(aes(x = date, y = `T`), linewidth = 0.1)+
+  theme_Bede() +
+  ylab("Temperature (°C)")+
+  theme(axis.title.x = element_blank(),
+        legend.title = element_blank(),
+        legend.position = c(0.8,0.8), 
+        axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        axis.title.y = element_text(size = 15),
+        legend.text = element_text(size = 15),
+        legend.key.size = unit(1,"cm"))
+
+ggsave("Slides/Images/plot_temp_timeserie.png", plot_timeserie, height = 2.70, width = 10)
+
+df_heatwaveR_air <- df_56 %>% 
+  rename(t = date,
+         temp = `T`) %>% 
+  dplyr::select(t,temp) %>% 
+  mutate(t = as.Date(t)) %>% 
+  group_by(t) %>% 
+  reframe(temp = max(temp,na.rm = T))
+
+
+clim_cold <- ts2clm(df_heatwaveR_air, climatologyPeriod = c(min(df_heatwaveR_air$t), max(df_heatwaveR_air$t)),pctile = 10,
+)
+
+mhw_Air_cold <- detect_event(clim_cold, minDuration = 2)$clim %>% 
+  dplyr::filter(t >= as.Date("2021-01-01"),
+                t <= as.Date("2021-12-31"))
+
+clim <- ts2clm(df_heatwaveR_air, climatologyPeriod = c(min(df_heatwaveR_air$t), max(df_heatwaveR_air$t)))
+  
+event <- detect_event(clim,categories = T,minDuration = 2)
+  
+res <- detect_event(clim, minDuration = 2)
+mhw_Air<- res$clim
+
+
+coltab <- c("Mean" = "darkgreen", "P90" = "darkred", "P10" = "darkblue", "Tmax" = "black")
+shapetab <- c("P90" = "dashed")
+
+
+df_flame <- mhw_Air  %>% 
+  dplyr::filter((t >= as.Date("2021-02-20") & t <= as.Date("2021-02-25")) |
+                (t >= as.Date("2021-03-28") & t <= as.Date("2021-04-03")) |
+                (t >= as.Date("2021-03-28") & t <= as.Date("2021-04-03")) |
+                (t >= as.Date("2021-04-21") & t <= as.Date("2021-04-26")) |
+                (t >= as.Date("2021-06-11") & t <= as.Date("2021-05-14")) |
+                (t >= as.Date("2021-07-17") & t <= as.Date("2021-07-25")) |
+                (t >= as.Date("2021-09-05") & t <= as.Date("2021-09-08")))
+  
+
+(mean_temp <- mhw_Air %>% 
+  dplyr::filter(t >= as.Date("2021-01-01"),
+                t <= as.Date("2021-12-31")) %>% 
+  ggplot()+
+  geom_line(aes(x = t, y = seas, color = "Mean"), linetype = "dotdash", alpha = 0.1)+
+  geom_line(aes(x = t, y = temp, color = "Tmax"))+
+  geom_line(aes(x = t, y = thresh, color = "P90"), linetype = "dashed")+
+  geom_line(data = mhw_Air_cold, aes(x = t, y = thresh, color = "P10"), linetype = "dashed",, alpha = 0.2)+
+
+  ylim(c(-1,32))+
+  scale_color_manual(values = coltab)+
+  heatwaveR::geom_flame(data  = df_flame,
+    aes(x = t, y = temp, y2 = thresh),
+    fill = "darkred",
+    alpha = 0.5
+  )+
+  theme_Bede() +
+  ylab("Temperature (°C)")+
+  theme(axis.title.x = element_blank(),
+        legend.title = element_blank(),
+        legend.position = c(0.9,0.849-0.051), 
+        axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        axis.title.y = element_text(size = 15),
+        legend.text = element_text(size = 15))+
+  scale_x_date(date_labels = "%b", breaks = c(as.Date("2021-01-01"),
+                                                               as.Date("2021-02-01"),
+                                                               as.Date("2021-03-01"),
+                                                               as.Date("2021-04-01"),
+                                                               as.Date("2021-05-01"),
+                                                               as.Date("2021-06-01"),
+                                                               as.Date("2021-07-01"),
+                                                               as.Date("2021-08-01"),
+                                                               as.Date("2021-09-01"),
+                                                               as.Date("2021-10-01"),
+                                                               as.Date("2021-11-01"),
+                                                               as.Date("2021-12-01"))))
+
+
+ggsave("Slides/Images/plot_Tmax_flame.png", mean_temp, height = 2.70, width = 10)
+
+# img_before <- readPNG("Data/screenshot_S2/Before_event_quiberon.png") %>%
+  # rasterGrob(interpolate=TRUE)
+
+```
+
+## Hypothesis & Objectives
+
+::: {.absolute style="top: 0%; left: 95%; width: 1800px;"}
+::: sectionhead
+1 [2 3 4 5]{style="opacity:0.25;"}
+:::
+:::
+
+
+
+::: {.absolute .fragment .fade-in fragment-index="1" top="10%" style="font-size: 75px;"}
+Heatwaves alter the spectral reflectance of *Zostera noltei* seagrass. This change can be detected using remote sensing technique. 
+:::
+
+::: {.absolute .incremental .fragment .fade-in fragment-index="2" top="28%" style="font-size: 75px;"}
+- Evaluate the direct impact of heatwave-induced **thermal stress** on the reflectance of *Zostera noltei* through **controlled experiments**.
+- Develop a **spectral indice** for detecting stress-induced changes in seagrass coloration. 
+- To apply findings from experimental reflectance changes to **satellite-based** remote sensing, assessing the spatial extent and temporal dynamics of an heatwave event that occurs in September 2021, in Quiberon, on seagrass meadows.
+:::
+
+# Materials & Methods
