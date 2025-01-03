@@ -32,8 +32,51 @@ library(rnaturalearthdata)
 library(rnaturalearthhires)
 library(leaflet)
 library("leaflet.extras")
-
 ```
+
+
+```{r update gitignore}
+#| cache: true
+#| echo: false
+#| warning: false
+#| eval: false
+
+library(fs)
+
+# Define the size threshold in bytes (100 MB)
+size_threshold <- 100 * 1024 * 1024
+
+# Get a list of all files in the repository
+files <- dir_ls(recurse = TRUE, type = "file")
+
+# Filter files larger than the size threshold
+large_files <- files[file_info(files)$size > size_threshold]
+
+# Check if there are large files
+if (length(large_files) > 0) {
+  # Read the existing .gitignore file if it exists
+  gitignore_path <- ".gitignore"
+  gitignore_content <- if (file_exists(gitignore_path)) {
+    readLines(gitignore_path)
+  } else {
+    character(0)
+  }
+  
+  # Identify files not already in .gitignore
+  files_to_add <- large_files[!large_files %in% gitignore_content]
+  
+  # Append new large files to .gitignore
+  if (length(files_to_add) > 0) {
+    writeLines(c(gitignore_content, files_to_add), gitignore_path)
+    message(length(files_to_add), " file(s) added to .gitignore.")
+  } else {
+    message("No new files to add to .gitignore.")
+  }
+} else {
+  message("No files larger than 100 MB found.")
+}
+```
+
 
 ##  {background-image="Images/background_title2.png"}
 
@@ -735,3 +778,71 @@ Heatwaves alter the spectral reflectance of *Zostera noltei* seagrass. This chan
 :::
 
 # Materials & Methods
+
+::: {.absolute top="-50%" left="50%" style="font-size: 75px; color: #3B2F2F;"}
+- Experiment in the Lab
+
+- *in situ* Satellite Mapping
+:::
+
+## Experiment in the Lab
+
+::: {.absolute style="top: 0%; left: 95%; width: 1800px;"}
+::: sectionhead
+[1]{style="opacity:0.25;"} 2 [3 4 5]{style="opacity:0.25;"}
+:::
+:::
+
+
+
+
+::: {.absolute  top="16%" left="0%" style="font-size: 40px;"}
+*Intertidal chambers from ElectricBlue*
+:::
+
+::: {.absolute .fragment .fade-out fragment-index="1" top="20%" left="0%"}
+![](Images/Intertidal_Chambers.png){height="700"}
+:::
+
+::: {.absolute .fragment .fade-in-then-out fragment-index="1" top="20%" left="0%"}
+![](Images/Intertidal_Chambers2.png){height="700"}
+:::
+
+::: {.absolute .fragment .fade-in-then-out fragment-index="1" top="40%" left="60%" style="font-size: 80px; color: rgba(54, 128, 74,1);"}
+Experiment Tank
+:::
+
+::: {.absolute .fragment .fade-in-then-out fragment-index="1" top="50%" left="60%" style="font-size: 80px; color: rgba(125, 52, 64,1);"}
+Storage Tank
+:::
+
+
+  <div class="absolute fragment fade-in" data-fragment-index="2" style="top: 20%; left: 0%; ">
+  <video id="droneVideo" muted autoplay height="700">
+    <source src="Videos/Benthic_Chamber.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  </div>
+
+
+
+::: {.absolute .fragment .fade-in-then-out fragment-index="2" top="30%" left="55%" style="font-size: 60px;"}
+- Air Temperature : from 18 to 60°C
+- Water Temperature : from 8°C to 55°C
+- Programmable tides
+- Programmable lights
+:::
+
+::: {.absolute .fragment .fade-in-then-out fragment-index="3" top="10%" left="55%"}
+![](Images/ASD_Intertidal_Chambers.jpg){height="1000"}
+:::
+
+::: {.absolute .fragment .fade-in-then-out fragment-index="3" top="30%" left="75%" style="font-size: 60px;"}
+Establish the link between **changes in reflectance** and changes in **pigment composition**.
+:::
+
+::: {.absolute .fragment .fade-in-then-out fragment-index="3" top="10%" left="75%"}
+![](Images/ASD.png){height="150"}
+:::
+
+
