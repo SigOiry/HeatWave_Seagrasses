@@ -1,0 +1,60 @@
+---
+format: 
+    revealjs:
+        slide-number: false
+        transition: slide
+        theme: [default, style.scss]
+        footer: "Simon Oiry, Follow-up Committee Meeting 2024"
+        logo: Images/nantes-universite.png
+        width: 2400
+        height: 1350
+        auto-animate: true
+        auto-play-media: true
+        controls: true
+        controls-tutorial: true
+        includes:
+          after_body: custom.js
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r library}
+#| cache: true
+#| echo: false
+#| eval: true
+#| warning: false
+
+library(tidyverse)
+library(Utilities.Package)
+library(sf) 
+library(rnaturalearth) 
+library(rnaturalearthdata) 
+library(rnaturalearthhires)
+library(leaflet)
+library("leaflet.extras")
+
+```
+
+##  {background-image="Images/background_title2.png"}
+
+::: {.gradient_box style="text-align: center; position: absolute; left: 50%; top: 15%; width: 1800px; transform: translate(-50%, -50%)"}
+[Impact of Marine and Atmospheric Heatwaves on Intertidal Seagrass: Experimental Spectroradiometry and Satellite-Based Insights]{style="color: black; font-size: 90px; font-weight: bold; line-height: 1em; margin: 0px; text-align: justify-all;"}
+:::
+
+::: {.gradient_box style="text-align: center; position: absolute; left: 50%; top: 90%; width: 1300px; transform: translate(-50%, -50%)"}
+[10th of January 2025]{style="color: black;font-size: 60px; font-weight: bold;"}
+:::
+
+::: {.gradient_box style="text-align: center; position: absolute; left: 50%; top: 60%; width: 1200px; transform: translate(-50%, -50%)"}
+[Simon Oiry, Bede Ffinian Rowe Davies, Phillipe Rosa, Augustin Debly, Maria Laura Zoffoli, Anne-Laure Barillé, Nicolas Harin, Pierre Gernez, Laurent Barillé]{style="color: black; font-size: 60px; font-weight: bold;"}
+:::
+
+::: {.absolute bottom="65%" left="0%"}
+![](Images/nantes-universite.png){height="300"}
+:::
+
+::: {.absolute bottom="65%" right="0%"}
+![](Images/rsbe2.png){height="300"}
+:::
+
+# coucou
