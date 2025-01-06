@@ -96,5 +96,15 @@ background: radial-gradient(
   transform: rotate(-40deg);
 }
 
+.fragment.scale-up {
+  transform: scale(0.3);
+  transition: transform 1s ease-in-out; /* 2-second duration */
+  transform-origin: center center;      /* anchor at center */
+}
 
+/* Once Reveal.js shows the fragment (makes it visible), scale to 1 */
+.fragment.scale-up.visible,
+.fragment.scale-up.current-fragment {
+  transform: scale(1);
+}
 

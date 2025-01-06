@@ -89,7 +89,7 @@ if (length(large_files) > 0) {
 :::
 
 ::: {.gradient_box style="text-align: center; position: absolute; left: 50%; top: 60%; width: 1200px; transform: translate(-50%, -50%)"}
-[Simon Oiry, Bede Ffinian Rowe Davies, Phillipe Rosa, Augustin Debly, Vona Méléder, Bruno Jesus, Maria Laura Zoffoli, Anne-Laure Barillé, Nicolas Harin, Pierre Gernez, Laurent Barillé]{style="color: black; font-size: 60px; font-weight: bold;"}
+[Simon Oiry, Bede Ffinian Rowe Davies, Phillipe Rosa, Augustin Debly, Maria Laura Zoffoli, Anne-Laure Barillé, Nicolas Harin, Pierre Gernez, Laurent Barillé]{style="color: black; font-size: 60px; font-weight: bold;"}
 :::
 
 ::: {.absolute bottom="65%" left="0%"}
@@ -750,7 +750,43 @@ df_flame <- mhw_Air  %>%
                                                                as.Date("2021-12-01"))))
 
 
-ggsave("Slides/Images/plot_Tmax_flame.png", mean_temp, height = 2.70, width = 10)
+(mean_temp <- mhw_Air %>% 
+  dplyr::filter(t >= as.Date("2021-01-01"),
+                t <= as.Date("2021-12-31")) %>% 
+  ggplot()+
+  # geom_line(aes(x = t, y = seas, color = "Mean"), linetype = "dotdash", alpha = 0.1)+
+  geom_line(aes(x = t, y = temp, color = "Tmax"))+
+  geom_line(aes(x = t, y = thresh, color = "P90"), linetype = "dashed")+
+  # geom_line(data = mhw_Air_cold, aes(x = t, y = thresh, color = "P10"), linetype = "dashed",, alpha = 0.2)+
+
+  ylim(c(15,32))+
+  scale_color_manual(values = coltab)+
+  heatwaveR::geom_flame(data  = df_flame,
+    aes(x = t, y = temp, y2 = thresh),
+    fill = "darkred",
+    alpha = 0.5
+  )+
+  theme_Bede() +
+  ylab("Temperature (°C)")+
+  theme(axis.title.x = element_blank(),
+        legend.title = element_blank(),
+        legend.position = c(0.9,0.849-0.051), 
+        axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        axis.title.y = element_text(size = 15),
+        legend.text = element_text(size = 15)
+        )+
+  xlim(c(as.Date("2021-08-15"), as.Date("2021-10-15")))+
+  geom_vline(xintercept = as.Date("2021-09-01"), linewidth = 2, linetype = "dashed")+
+    geom_text(mapping = aes(x = as.Date("2021-08-31"), y = 28, label = "Before"), angle = 90, size =5)+
+  geom_vline(xintercept = as.Date("2021-09-07"), linewidth = 2, linetype = "dashed")+
+    geom_text(mapping = aes(x = as.Date("2021-09-08"), y = 28, label = "During"), angle = 90, size =5) +
+  geom_vline(xintercept = as.Date("2021-10-08"), linewidth = 2, linetype = "dashed")+
+    geom_text(mapping = aes(x = as.Date("2021-10-07"), y = 28, label = "After"), angle = 90, size =5) 
+  )
+
+
+ggsave("Slides/Images/plot_Temp_Quiberon4.png", mean_temp, height = 3, width = 10)
 
 # img_before <- readPNG("Data/screenshot_S2/Before_event_quiberon.png") %>%
   # rasterGrob(interpolate=TRUE)
@@ -787,15 +823,14 @@ Heatwaves alter the spectral reflectance of *Zostera noltei* seagrass. This chan
 
 ## Experiment in the Lab
 
+
 ::: {.absolute style="top: 0%; left: 95%; width: 1800px;"}
 ::: sectionhead
 [1]{style="opacity:0.25;"} 2 [3 4 5]{style="opacity:0.25;"}
 :::
 :::
 
-
-
-
+### The Benthic Chambers
 ::: {.absolute  top="16%" left="0%" style="font-size: 40px;"}
 *Intertidal chambers from ElectricBlue*
 :::
@@ -850,15 +885,292 @@ Measure variation of seagrass leaves reflectance over time.
 :::
 
 
-::: {.absolute .fragment .fade-in-then-out fragment-index="4" top="15%" left="55%"}
+::: {.absolute .fragment .fade-in fragment-index="4" top="15%" left="55%"}
 ![](Images/Micasense_Intertidal_Chambers2.jpg){height="1000"}
 :::
 
-::: {.absolute .fragment .fade-in-then-out fragment-index="5" top="10%" left="55%"}
-![](Images/Simon_Sampling.png){height="1000"}
+
+## Experiment in the Lab
+### Sampling & Experimental design 
+
+::: {.absolute style="top: 0%; left: 95%; width: 1800px;"}
+::: sectionhead
+[1]{style="opacity:0.25;"} 2 [3 4 5]{style="opacity:0.25;"}
+:::
 :::
 
-::: {.absolute .fragment .fade-in-then-out fragment-index="5" top="10%" left="75%"}
+::: {.fragment .fade-out fragment-index="5"}
+::: {.absolute top="16%" left="0%" style="font-size: 40px;"}
+*Seagrasses inside of a chamber*
+:::
+
+
+ <div class="absolute" style="top: 20%; left: 0%; ">
+ <video id="droneSeagrasses" muted autoplay height="700">
+   <source src="Videos/Seagrass_inside_chambers1.mp4" type="video/mp4">
+   Your browser does not support the video tag.
+ </video>
+ </div>
+ 
+::: {.fragment .fade-out fragment-index="4"}
+::: {.absolute .fragment .fade-out fragment-index="2" top="10%" left="55%"}
+![](Images/Samplingcores.jpg){height="1000"}
+:::
+
+::: {.absolute .fragment .fade-in-then-out fragment-index="1" top="10%" left="75%"}
 ![](Images/Bede_sampling.png){height="1000"}
 :::
+
+::: {.absolute .fragment .fade-in-then-out fragment-index="2" top="10%" left="55%"}
+![](Images/PapaBox.jpg){height="1000"}
+:::
+
+::: {.absolute .fragment .fade-in-then-out fragment-index="2" top="10%" left="75%"}
+![](Images/LauraBox.jpg){height="1000"}
+:::
+
+
+ <div class="absolute fragment fade-in" data-fragment-index="3" style="top: 5%; left: 55%; ">
+ <video id="SamplingBox" muted autoplay height="1300">
+   <source src="Videos/SamplingBox.mp4" type="video/mp4">
+   Your browser does not support the video tag.
+ </video>
+ </div>
+ 
+:::
+
+
+
+::: {.rotate-img2 .fragment .fade-in fragment-index="4" .absolute top="30%" left="50%"}
+![](Images/Arrow_right_short.png){width="250"}
+:::
+
+::: {.rotate-img1 .fragment .fade-in fragment-index="4" .absolute top="56%" left="50%"}
+![](Images/Arrow_right_short.png){width="250"}
+:::
+
+::: {.fragment .fade-in fragment-index="4" .absolute top="11%" right="0%"}
+![](Images/Control_Profile.png){width="1000"}
+:::
+
+::: {.absolute .fragment .fade-in fragment-index="4" top="5%" left="75%" style="font-size: 60px;"}
+Control
+:::
+
+::: {.absolute .fragment .fade-in fragment-index="4" top="50%" left="75%" style="font-size: 60px;"}
+Treatment
+:::
+
+
+::: {.fragment .fade-in fragment-index="4" .absolute bottom="11%" right="0%"}
+![](Images/Test_Profile.png){width="1000" id="profile-image"}
+:::
+:::
+
+::: {.fragment .fade-out fragment-index="6" .absolute top="15%"}
+::: {.fragment .scale-up fragment-index="5" style="transform-origin:bottom right"}
+![](Images/Test_Profile.png){width="2400"}
+:::
+:::
+
+::: {.fragment .fade-out fragment-index="8"}
+::: {.fragment .fade-in fragment-index="6" .absolute top="15%" .absolute bottom="11%" left="0%"}
+![](Images/Test_Profile2.png){width="1000"}
+:::
+
+::: {.fragment .fade-in fragment-index="6" .absolute top="15%" right="0%"}
+![](Images/plot_Temp_Quiberon.png){width="1300"}
+:::
+
+::: {.fragment .fade-in fragment-index="7" .absolute bottom="0%" right="0%"}
+![](Images/weather_stationsMF.jpg){width="1300"}
+:::
+
+
+::: {.absolute .fragment .fade-in fragment-index="7" top="45%" left="46.5%" style="font-size: 40px; text-align: center;"}
+[Meteo France Weather Station]{style="color: white;"}
+:::
+
+
+::: {.fragment .fade-in fragment-index="7" .absolute bottom="0%" right="0%"}
+![](Images/weather_stationsMF.jpg){width="1300"}
+:::
+:::
+
+::: {.fragment .fade-in-then-out fragment-index="8" .absolute bottom="0%" left="10%"}
+![](Images/Seagrass_under_sun.jpg){width="85%"}
+:::
+
+::: {.fragment .fade-in-then-out fragment-index="9" .absolute top="20%" left="15%"}
+![](Images/EnvLogger.png){width="500"}
+:::
+
+::: {.absolute .fragment .fade-in-then-out fragment-index="9" top="22%" left="10%" style="font-size: 40px; text-align: center;"}
+*EnvLogger system from ElectricBlue*
+:::
+
+::: {.fragment .fade-in-then-out fragment-index="9" .absolute top="10%" right="0%"}
+![](Images/Temperature_compare.png){width="1200"}
+:::
+
+::: {.absolute .fragment .fade-in fragment-index="10" top="15%" left="0%" style="font-size: 60px;"}
+During the experiment : 
+
+- **Leaves sampling** : 
+  - triplicate at the beginning and the end of each day of experiment
+  - HPLC pigment concentration
+  
+- **Hyperspectral measurement**: 
+  - In continuous at low tide
+:::
+
+::: {.fragment .fade-in fragment-index="10" .absolute top="10%" left="80%"}
+![](Images/HPLC.png){width="300"}
+:::
+
+::: {.fragment .fade-in fragment-index="10" .absolute top="70%" left="70%"}
+![](Images/ASD.png){width="500"}
+:::
+
+::: {.fragment .fade-in fragment-index="10" .absolute top="60%" left="40%"}
+![](Images/FiberOptic.jpg){width="500"}
+:::
+
+
+## *in situ* Satellite mapping
+
+::: {.absolute style="top: 0%; left: 95%; width: 1800px;"}
+::: sectionhead
+[1]{style="opacity:0.25;"} 2 [3 4 5]{style="opacity:0.25;"}
+:::
+:::
+
+::: {.fragment .fade-in-then-out fragment-index="1" .absolute top="5%" left="0%"}
+![](Images/plot_Temp_Quiberon1.png){width="1400"}
+:::
+
+::: {.fragment .fade-out fragment-index="5"}
+
+::: {.fragment .fade-in fragment-index="1" style="text-align: center; position: absolute; left: 80%; top: 20%; width: 800px; transform: translate(-50%, -50%)"}
+Atmospheric heatwave between the 4th of September 2021 and the 7th of September 2021
+:::
+
+```{r leaflet maps Quiberon}
+#| echo: false
+#| eval: false
+#| warning: false
+#| fig-width: 10
+#| fig-height: 10
+
+library(htmlwidgets)
+library(leaflet)
+library(tidyverse)
+
+Projects<-data.frame(
+  Name=c("Plouharnel"),
+  Lat = c(47.585714),
+   Long = c(-3.121394)) %>% 
+  sf::st_as_sf(coords=c("Long","Lat") )  %>% 
+  sf::st_set_crs("EPSG:4326")  
+
+# custom_icon <- makeIcon(
+#   iconUrl = "Images/drone_icon.png",
+#   iconWidth = 40, # Adjust the width to fit your needs
+#   iconHeight = 40 # Adjust the height to fit your needs
+# )
+
+m <- leaflet() %>% setView(lng =-3.121394, lat = 47.585714, zoom = 13) %>% 
+  addTiles() %>% 
+  addProviderTiles(provider = providers$Esri.WorldImagery) %>% 
+  leaflet::addMarkers(data = Projects) %>% 
+  addLabelOnlyMarkers(data = Projects,
+    label = ~Name
+  )
+
+m <- htmlwidgets::onRender(
+  m,
+  '
+  function(el, x) {
+    var map = this;
+
+    function toggleLabels() {
+      var zoomLevel = map.getZoom();
+      map.eachLayer(function(layer) {
+        if (layer.getElement && layer.getTooltip && layer.getTooltip()) {
+          var labelElement = layer.getTooltip().getElement();
+          if (zoomLevel < 10) {
+            labelElement.style.display = "none";
+          } else {
+            labelElement.style.display = "block";
+          }
+        }
+      });
+    }
+
+    // Initially toggle labels based on the starting zoom level
+    toggleLabels();
+
+    // Toggle labels on zoom end
+    map.on("zoomend", function() {
+      toggleLabels();
+    });
+  }
+  '
+)
+
+saveWidget(m, "Slides/maps/map_Quiberon_presentation.html", selfcontained = TRUE)
+
+# Print the map
+```
+
+::: {.absolute .fragment .fade-in fragment-index="1" left="0%" top="40%"}
+```{=html}
+<iframe width="1400" height="800" src="maps/map_Quiberon_presentation.html" title="Webpage example"></iframe>
+```
+:::
+
+::: {.fragment .fade-in-then-out fragment-index="2" .absolute top="5%" left="0%"}
+![](Images/plot_Temp_Quiberon2.png){width="1400"}
+:::
+
+::: {.fragment .fade-in-then-out fragment-index="3" .absolute top="5%" left="0%"}
+![](Images/plot_Temp_Quiberon3.png){width="1400"}
+:::
+
+::: {.fragment .fade-in-then-out fragment-index="4" .absolute top="5%" left="0%"}
+![](Images/plot_Temp_Quiberon4.png){width="1400"}
+:::
+
+::: {.fragment .fade-in fragment-index="2" .absolute top="35%" left="65%"}
+![](Images/Sentinel2.png){width="500"}
+:::
+
+::: {.absolute .fragment .fade-in-then-out fragment-index="2" top="70%" left="60%" style="font-size: 50px;"}
+3 Sentinel-2 images, level L2A, Low Tide:
+
+- **Before**: 1st of September 2021
+:::
+
+::: {.absolute .fragment .fade-in-then-out fragment-index="3" top="70%" left="60%" style="font-size: 50px;"}
+3 Sentinel-2 images, level L2A, Low Tide:
+
+- **Before**: 1st of September 2021
+
+- **During**: 6th of September 2021
+:::
+
+::: {.absolute .fragment .fade-in fragment-index="4" top="70%" left="60%" style="font-size: 50px;"}
+3 Sentinel-2 images, level L2A, Low Tide:
+
+- **Before**: 1st of September 2021
+
+- **During**: 6th of September 2021
+
+- **After**: 8th of October 2021
+:::
+:::
+
+
+
+
 
