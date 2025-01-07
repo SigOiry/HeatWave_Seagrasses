@@ -1052,7 +1052,7 @@ During the experiment :
 ::: {.fragment .fade-out fragment-index="5"}
 
 ::: {.fragment .fade-in fragment-index="1" style="text-align: center; position: absolute; left: 80%; top: 20%; width: 800px; transform: translate(-50%, -50%)"}
-Atmospheric heatwave between the 4th of September 2021 and the 7th of September 2021
+Atmospheric heatwave between the 4th of September 2021 and the 7th of September 2021 in Quiberon
 :::
 
 ```{r leaflet maps Quiberon}
@@ -1168,6 +1168,49 @@ saveWidget(m, "Slides/maps/map_Quiberon_presentation.html", selfcontained = TRUE
 
 - **After**: 8th of October 2021
 :::
+:::
+
+::: {.absolute .fragment .fade-in-then-out fragment-index="5" top="15%" left="0%" style="text-align: right; font-size: 70px;"}
+- Well established radiometric Indices:
+
+:::
+
+::: {.absolute .fragment .fade-in-then-out fragment-index="5" top="30%" left="10%" style="text-align: right; font-size: 50px;"}
+
+$$NDVI = \frac{R(NIR)-R(Red)}{R(NIR)+R(Red)}$$
+:::
+::: {.absolute .fragment .fade-in-then-out fragment-index="5" top="50%" left="10%" style="text-align: right; font-size: 50px;"}
+
+$$GLI = \frac{[R(Green)-R(Red)]+[R(Green)-R(Blue)]}{(2 \times R(Green) )+ R(Red) + R(Blue) }$$
+:::
+
+
+::: {.absolute .fragment .fade-in-then-out fragment-index="6" top="15%" left="0%" style="text-align: right; font-size: 70px;"}
+- Introduction of the Seagrass Heat Shock Index (SHSI):
+:::
+
+::: {.absolute .fragment .fade-in-then-out fragment-index="6" top="30%" left="0%" style="text-align: left; font-size: 50px;"}
+
+$$
+\text{SHSI} = I_{SHSI} - R(740)
+$$
+:::
+::: {.absolute .fragment .fade-in-then-out fragment-index="6" top="50%" left="0%" style="text-align: left; font-size: 50px;"}
+
+$$
+I_{SHSI} = R(560) + \tau    [R(842) - R(560)]
+$$
+:::
+::: {.absolute .fragment .fade-in-then-out fragment-index="6" top="70%" left="0%" style="text-align: left; font-size: 50px;"}
+
+$$
+\tau = \frac{740 - 560}{842 - 560}
+$$
+:::
+
+
+::: {.fragment .fade-in-then-out fragment-index="6" .absolute top="30%" right="0%"}
+![](Images/Plot_explain_SHSI.png){width="1450"}
 :::
 
 
