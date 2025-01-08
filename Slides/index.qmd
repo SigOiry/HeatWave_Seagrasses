@@ -1214,6 +1214,250 @@ $$
 :::
 
 
+::: {.absolute .fragment .fade-in fragment-index="7" top="10%" left="0%" style="text-align: right; font-size: 70px;"}
+- Litto3D product
+:::
+
+::: {.absolute .fragment .fade-in fragment-index="7" top="20%" left="0%" style="text-align: right; font-size: 60px;"}
+detailed 3D coastal and nearshore mapping
+:::
+
+::: {.fragment .fade-out fragment-index="10"}
+::: {.absolute .fragment .fade-in fragment-index="7" left="0%" top="30%"}
+```{r LeafletLitto3D}
+#| cache: false
+#| echo: false
+#| eval: true
+#| warning: false
+#| out-width: "1100px"
+#| out-height: "800px"
+
+library(tidyverse)
+library(leaflet)
+library(sf)
+library(leafem)
+library(leaflet.extras2)
+library(terra)
+
+Quiberon_Litto3D <- "../Data/Litto3D/Litto_10m_merged_32630.tif" %>% 
+  rast() %>% 
+  project(crs("EPSG:4326"))
+
+pal2 <- colorNumeric("viridis", domain = values(Quiberon_Litto3D),na.color = "transparent")
+
+(plot <- leaflet() %>%   
+  # addTiles() %>% 
+  setView(lng =-3.121394, lat = 47.585714, zoom = 14) %>% 
+  addMapPane("right", zIndex = 0) %>%
+  addMapPane("left", zIndex = 0) %>%
+  # addProviderTiles(provider = providers$Esri.WorldImagery) %>% 
+    # addProviderTiles(providers$CartoDB, group="carto", layerId = "RGBid", options = pathOptions(pane = "left")) %>% 
+  # addProviderTiles(providers$CartoDB, group="carto", layerId = "DSMid", options = pathOptions(pane = "right")) %>% 
+  addProviderTiles(providers$Esri.WorldImagery,
+                     group = "Toner",
+                     options = c(providerTileOptions(minZoom = 8, maxZoom = 100),
+                                 pathOptions(pane = "left")),
+                     layerId = "RGB"
+                     ) %>%
+  addProviderTiles(providers$OpenStreetMap,
+                     group = "Toner",
+                     options = c(providerTileOptions(minZoom = 8, maxZoom = 100),
+                                 pathOptions(pane = "right")),
+                     layerId = "DSM_pred") %>%
+  addRasterImage(Quiberon_Litto3D,
+                       colors=pal2,
+                       # maxBytes = 200,
+                       options = pathOptions(pane = "right"),
+                       layerId = "DSM_pred") %>%
+  leaflet.extras2::addSidebyside(leftId = "RGB",
+                                  rightId = "DSM_pred")) %>%
+  addLegend(pal = pal2, values = values(Quiberon_Litto3D),
+    title = "Bathymetry (m)",
+    group = "DSM_pred")
+
+# htmlwidgets::saveWidget(plot, file="Slides/maps/map_Bathy_Quiberon.html", selfcontained = F)
+
+```
+:::
+:::
+
+::: {.fragment .fade-in-then-out fragment-index="8" .absolute top="25%" right="-5%"}
+![](Images/plot_waterHeight.png){width="1300"}
+:::
+
+::: {.fragment .fade-in-then-out fragment-index="9" .absolute top="25%" right="-5%"}
+![](Images/WaterHeightPlot.png){width="1300"}
+:::
+
+::: {.absolute .fragment .fade-in fragment-index="10" left="0%" top="30%"}
+```{r LeafletEmersion}
+#| cache: false
+#| echo: false
+#| eval: true
+#| warning: false
+#| out-width: "1100px"
+#| out-height: "800px"
+
+library(tidyverse)
+library(leaflet)
+library(sf)
+library(leafem)
+library(leaflet.extras2)
+library(terra)
+
+stk <- "../Data/Stack_all_variables.tif" %>% 
+  rast() %>% 
+  project(crs("EPSG:4326"))
+
+EmersionTime <- (stk$emersion_time/60)/4
+
+
+
+pal2 <- colorNumeric("magma", domain = c(10,16),na.color = "transparent")
+
+
+(plot <- leaflet() %>%   
+  # addTiles() %>% 
+  setView(lng =-3.121394, lat = 47.585714, zoom = 14) %>% 
+  addMapPane("right", zIndex = 0) %>%
+  addMapPane("left", zIndex = 0) %>%
+  # addProviderTiles(provider = providers$Esri.WorldImagery) %>% 
+    # addProviderTiles(providers$CartoDB, group="carto", layerId = "RGBid", options = pathOptions(pane = "left")) %>% 
+  # addProviderTiles(providers$CartoDB, group="carto", layerId = "DSMid", options = pathOptions(pane = "right")) %>% 
+  addProviderTiles(providers$Esri.WorldImagery,
+                     group = "Toner",
+                     options = c(providerTileOptions(minZoom = 8, maxZoom = 100),
+                                 pathOptions(pane = "left")),
+                     layerId = "RGB"
+                     ) %>%
+  addProviderTiles(providers$OpenStreetMap,
+                     group = "Toner",
+                     options = c(providerTileOptions(minZoom = 8, maxZoom = 100),
+                                 pathOptions(pane = "right")),
+                     layerId = "DSM_pred") %>%
+  addRasterImage(EmersionTime,
+                       colors=pal2,
+                       # maxBytes = 200,
+                       options = pathOptions(pane = "right"),
+                       layerId = "DSM_pred") %>%
+  leaflet.extras2::addSidebyside(leftId = "RGB",
+                                  rightId = "DSM_pred")) %>%
+  addLegend(pal = pal2, values = c(10,16),
+    title = "Emersion Time per Day (hours)",
+    group = "DSM_pred")
+
+# htmlwidgets::saveWidget(plot, file="Slides/maps/map_Bathy_Quiberon.html", selfcontained = F)
+
+```
+:::
+
+```{r plottides}
+#| cache: false
+#| echo: false
+#| eval: false
+#| warning: false
+
+library(tidyverse)
+library(Utilities.Package)
+
+df <- read.csv("Slides/Data/tide_df.csv") %>% 
+  mutate(date = as.POSIXct(date))
+
+
+tblcol = c("Emerged" = "pink", "Submerged" = "lightblue")
+
+
+steps <- seq(1,5.5, by=0.01)
+steps <- c(steps, seq(5.5,1, by=-0.01))
+
+for(i in 1:(length(steps)-1)){
+  
+  print(paste0(i, "/",length(steps)-1))
+  
+  Height = steps[i]
+
+  
+  emersiontime_df <- df %>% 
+    dplyr::filter(smooth <= Height) %>% 
+    nrow()-1
+  
+  plot <- df  %>% 
+    ggplot()+
+    geom_line(aes(x = date, y = smooth ))+
+    theme_Bede()+
+    ylab("Water Height (m)")+
+    
+    heatwaveR::geom_flame(aes(x = date, y = smooth,y2 = Height,fill = "Submerged")
+    )+
+    heatwaveR::geom_flame(aes(x = date, y = Height , y2 = smooth,
+      fill = "Emerged")
+    )+
+    geom_text(aes(x = as.POSIXct("2021-09-07 01:00:00"), y = 5.8, hjust = 0,label = paste0("Emersion Time: ", round((emersiontime_df*10)/60,2), " hours")), size = 10)+
+    geom_hline(aes(yintercept = Height), linetype ="dashed", linewidth = 2) +
+    scale_fill_manual(values = tblcol,
+                      name = NULL)+
+    theme(axis.text.x = element_text(size = 15),
+          axis.text.y = element_text(size = 15),
+          axis.title.x = element_blank(),
+          axis.title.y = element_text(size = 20),
+          legend.text = element_text(size = 15),
+          legend.key.size = unit(1,"cm"),
+          legend.position = c(0.9,0.9))+
+  scale_x_datetime(
+    date_labels = "%H:%M",    # Format for hours and minutes
+    date_breaks = "6 hours"   # Breaks every 6 hours
+  )
+
+  ggsave(paste0("Slides/Data/EmersionPlot/plot_",i,".png"), plot,height =  6.97, width = 10, dpi = 200)
+  
+    # ggsave(paste0("Slides/Images/plot_waterHeight.png"), plot,height =  6.97, width = 10, dpi = 200)
+}
+
+
+#### Gif making
+
+files <- fs::dir_ls("Slides/Data/EmersionPlot/",glob="*.png")
+
+num <- as.numeric(str_extract(files, "\\d+"))
+                  
+frame <- tibble(files, num) %>% arrange(num)
+
+gifski::gifski(frame$files, gif_file = "Slides/Images/Emersion_time.gif",
+               delay = 0.00001, loop = TRUE, progress = TRUE,width=2000,height=1394)
+
+  
+```
+
+::: {.fragment .fade-in fragment-index="10" .absolute top="25%" right="-5%"}
+![](Images/Emersion_time.gif){width="1300"}
+:::
+
+# Results
+## Heatwave Experiment
+
+::: {.absolute style="top: 0%; left: 95%; width: 1800px;"}
+::: sectionhead
+[1 2]{style="opacity:0.25;"} 3 [4 5]{style="opacity:0.25;"}
+:::
+:::
+
+::: {.fragment .fade-in-then-out fragment-index="1" .absolute top="10%" left="0%"}
+![](Images/plot_Spectra_exp.png){width="2400"}
+:::
+
+::: {.fragment .fade-in-then-out fragment-index="2" .absolute top="0%" left="25%"}
+![](Images/merged_indices.png){width="1500"}
+:::
+
+
+
+
+
+
+
+
+
+
 
 
 

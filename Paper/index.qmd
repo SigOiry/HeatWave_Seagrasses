@@ -1737,7 +1737,7 @@ Color_spectra = c("Day 1" = "darkgreen", "Day 2" = "#CDCD00","Day 3" = "#73523E"
       
       # legend.position = c(0.86, 0.13),
       legend.position = "top",
-      plot.background = element_rect(fill = "white"),
+      # plot.background = element_rect(fill = "white"),
       legend.key.width = unit(1,"cm"),
       legend.key.height = unit(5,"mm"),
 
@@ -1750,6 +1750,8 @@ Color_spectra = c("Day 1" = "darkgreen", "Day 2" = "#CDCD00","Day 3" = "#73523E"
 
 ggsave("Paper/Figs/High_res/plot_Spectra_exp.png", plot_Spectra_exp, height = 5, width = 10, dpi = 400)
 ggsave("Paper/Figs/Low_res/plot_Spectra_exp.png", plot_Spectra_exp, height = 5, width = 10, dpi = 200)
+# 
+# ggsave("Slides/Images/plot_Spectra_exp.png", plot_Spectra_exp, height = 5, width = 10, dpi = 400)
 ```
 
 ```{r Fig Exp_Spectra}
@@ -4577,7 +4579,7 @@ stk <- rast("Data/Sentinel2/Before_after_indices_meadowCropped.tif") %>%
   crop(litto_cropped)
 
 stk_all <- c(stk,litto_cropped) %>% 
-  mutate(diff_GLI = GLI_before-GLI_after) %>% 
+  # mutate(diff_GLI = GLI_before-GLI_after) %>% 
   crop(seagrass_mask, mask = T)
 
 writeRaster(stk_all,"Data/Stack_all_variables.tif", overwrite = T)

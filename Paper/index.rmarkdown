@@ -440,7 +440,7 @@ ggplot()+
     scale_x_datetime(date_breaks = "6 hour", date_labels = "%H:%M") +
   geom_line(aes(x = Time, y = Temp_Air, color = "Air Temperature"), linewidth = 1, linetype = "dashed", alpha = 0.3,show.legend = F)+
   geom_line(data = air_polyline_test, aes(x = Time, y = Temp, group = tide_ID, color = "Air Temperature"),, linewidth = 1,show.legend = F)+
-    geom_text(data = data.frame(x = as.POSIXct("2024-07-24 03:00:00", format = "%Y-%m-%d %H:%M", tz = "UTC"), y = 38.5, label = "Treatment"), aes( x = x, y =y , label = label), hjust = 0, size = 10)+
+    # geom_text(data = data.frame(x = as.POSIXct("2024-07-24 03:00:00", format = "%Y-%m-%d %H:%M", tz = "UTC"), y = 38.5, label = "Treatment"), aes( x = x, y =y , label = label), hjust = 0, size = 10)+
     scale_fill_manual(name = "legend",
                       values = cols_fill) +
     scale_color_manual(name = "legend",
@@ -467,7 +467,7 @@ ggplot()+
   label.buffer = unit(5, "mm"))+
   ylab("Temperature (°C)")+
   ylim(c(18,39))+
-  scale_y_continuous(position = "right") +
+  # scale_y_continuous(position = "right") +
   theme_Bede()+
     theme(axis.text.x = element_text(size = 25, angle = 45, vjust = 0.6),
           axis.text.y = element_text(size = 25),
@@ -509,7 +509,7 @@ plot_control <- df %>%
     scale_x_datetime(date_breaks = "6 hour", date_labels = "%H:%M") +
     geom_line(aes(x = Time, y = Temp_Air, color = "Air Temperature"), linewidth = 1, linetype = "dashed", alpha = 0.3)+
     geom_line(data = air_polylines_control, aes(x = Time, y = Temp, group = tide_ID, color = "Air Temperature"), linewidth = 1)+
-    geom_text(data = data.frame(x = as.POSIXct("2024-07-24 03:00:00", format = "%Y-%m-%d %H:%M", tz = "UTC"), y = 38.5, label = "Control"), aes( x = x, y =y , label = label), hjust = 0,size = 10)+
+    # geom_text(data = data.frame(x = as.POSIXct("2024-07-24 03:00:00", format = "%Y-%m-%d %H:%M", tz = "UTC"), y = 38.5, label = "Control"), aes( x = x, y =y , label = label), hjust = 0,size = 10)+
     ggforce::geom_mark_ellipse(data=max_air_temp_control,
                    aes(x=Time,
                        y=round(Temp,0),
@@ -552,8 +552,8 @@ plot_control <- df %>%
 
 plt <- plot_control + plot_treatment
 
-ggsave("Slides/Images/Control_Profile.png",plot_control, width = 10, height = 4.06, dpi = 800)
-ggsave("Slides/Images/Test_Profile.png",plot_treatment, width = 10, height = 4.06, dpi = 800)
+ggsave("Slides/Images/Control_Profile.png",plot_control, width = 1000*5, height = 405*5, unit= "px")
+ggsave("Slides/Images/Test_Profile.png",plot_treatment, width = 1000*5, height = 405*5, unit= "px")
 
 
 ggsave("Paper/Figs/High_res/Chamber_Profils.png",plt, height = 874*4, width = 1911*4, unit= "px")
@@ -689,7 +689,7 @@ df_label_SHSI <- data.frame(x = c(740,740),
 df_label_I_SHSI <- data.frame(x = c(740,740),
                            y = c(0.58,0.4),
                            scenario = c("Unimpacted","Impacted"),
-                           Label = c("Iₛₕₛᵢ","Iₛₕₛᵢ"),
+                           Label = c("ISHSI","ISHSI"),
                            x0 = c(800,810),
                            y0 = c(0.4,0.45))
 
@@ -709,6 +709,7 @@ plot_SHSI <- df_cleaned %>%
   filter(days != 2) %>% 
   mutate(scenario = case_when(days == 1 ~ "Unimpacted",
                               days == 3 ~ "Impacted")) %>% 
+  
 ggplot() +
   geom_line(aes(x = Wavelength, y = mean_ref, color = scenario, group = scenario), 
             linewidth = 1.5) +
@@ -788,7 +789,8 @@ ggplot() +
   theme_Bede()+
   scale_x_continuous(breaks = c(560,600,640,680,720,760,800,840),
                      limits = c(550,850))+
-  theme(plot.background = element_rect(fill = "white",color = NA),
+  theme(
+    # plot.background = element_rect(fill = "white",color = NA),
         strip.text = element_blank(),
         axis.text.x = element_text(size = 15),
         axis.text.y = element_text(size = 15),
@@ -800,8 +802,10 @@ ggplot() +
         legend.text = element_text(size = 15),
         legend.key.width = unit(2,"cm"))
 
-ggsave("Paper/Figs/High_res/Plot_explain_SHSI.png", plot_SHSI,height = 10, width = 10, dpi = 400)
-ggsave("Paper/Figs/Low_res/Plot_explain_SHSI.png", plot_SHSI,height = 10, width = 10, dpi = 200)
+# ggsave("Paper/Figs/High_res/Plot_explain_SHSI.png", plot_SHSI,height = 10, width = 10, dpi = 400)
+# ggsave("Paper/Figs/Low_res/Plot_explain_SHSI.png", plot_SHSI,height = 10, width = 10, dpi = 200)
+
+ggsave("Slides/Images/Plot_explain_SHSI.png", plot_SHSI,height = 10, width = 9, dpi = 400)
 ```
 
 ```{r Fig Site Quiberon Plot}
