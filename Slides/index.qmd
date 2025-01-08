@@ -1441,15 +1441,218 @@ gifski::gifski(frame$files, gif_file = "Slides/Images/Emersion_time.gif",
 :::
 :::
 
+::: {.absolute .fragment .fade-in-then-out fragment-index="1" top="10%" left="0%" style="text-align: right; font-size: 70px;"}
+Spectral signature
+:::
+
+::: {.absolute .fragment .fade-in-then-out fragment-index="2" top="10%" left="0%" style="text-align: right; font-size: 70px;"}
+SHSI design
+:::
+
 ::: {.fragment .fade-in-then-out fragment-index="1" .absolute top="10%" left="0%"}
 ![](Images/plot_Spectra_exp.png){width="2400"}
 :::
 
-::: {.fragment .fade-in-then-out fragment-index="2" .absolute top="0%" left="25%"}
+::: {.fragment .fade-in-then-out fragment-index="2" .absolute top="20%" left="0%"}
+![](Images/plot_Spectra_exp2.png){width="1200"}
+:::
+
+::: {.fragment .fade-in-then-out fragment-index="2" .absolute top="10%" left="50%"}
+![](Images/Plot_explain_SHSI2.png){width="1200"}
+:::
+
+::: {.absolute .fragment .fade-in fragment-index="3" top="10%" left="0%" style="text-align: right; font-size: 70px;"}
+Spectral metrics:
+:::
+
+::: {.fragment .fade-in-then-out fragment-index="3" .absolute top="0%" left="25%"}
 ![](Images/merged_indices.png){width="1500"}
 :::
 
+::: {.fragment .fade-in-then-out fragment-index="4" .absolute top="0%" left="25%"}
+![](Images/merged_indices1.png){width="1500"}
+:::
 
+::: {.fragment .fade-in-then-out fragment-index="5" .absolute top="0%" left="25%"}
+![](Images/merged_indices2.png){width="1500"}
+:::
+
+::: {.fragment .fade-in-then-out fragment-index="6" .absolute top="0%" left="25%"}
+![](Images/merged_indices3.png){width="1500"}
+:::
+
+::: {.fragment .fade-in-then-out fragment-index="7" .absolute top="0%" left="25%"}
+![](Images/merged_indices4.png){width="1500"}
+:::
+
+
+::: {.absolute .fragment .fade-in fragment-index="4" top="20%" left="0%" style="text-align: right; font-size: 50px;"}
+$R''_{665 \, \text{nm}}$ drops by 68 %
+:::
+
+::: {.absolute .fragment .fade-in fragment-index="5" top="30%" left="0%" style="text-align: right; font-size: 50px;"}
+$NDVI$ drops by 31 %
+:::
+
+::: {.absolute .fragment .fade-in fragment-index="6" top="40%" left="0%" style="text-align: right; font-size: 50px;"}
+$GLI$ drops by 54 %
+:::
+
+::: {.absolute .fragment .fade-in fragment-index="7" top="60%" left="0%" style="text-align: right; font-size: 50px;"}
+$SHSI$ increases by 420 %
+:::
+
+
+## *in situ* Satellite Mapping
+
+::: {.absolute style="top: 0%; left: 95%; width: 1800px;"}
+::: sectionhead
+[1 2]{style="opacity:0.25;"} 3 [4 5]{style="opacity:0.25;"}
+:::
+:::
+
+
+::: {.fragment .fade-out fragment-index="5"}
+::: {.fragment .fade-in fragment-index="1"}
+```{r LeafletMap_QPs}
+#| cache: false
+#| echo: false
+#| eval: true
+#| warning: false
+#| out-width: "1100px"
+#| out-height: "1200px"
+
+library(tidyverse)
+library(leaflet)
+library(sf)
+library(leafem)
+library(leaflet.extras2)
+library(terra)
+
+img <- "../Slides/Data/S2/Heatwaves_S2.tif" %>% 
+  raster::stack() %>% 
+  raster::projectRaster(crs = raster::crs("+init=EPSG:3857"))
+
+
+img_before <- "../Slides/Data/S2/Heatwaves_S2_before.tif" %>% 
+  raster::stack() %>% 
+  raster::projectRaster(crs = raster::crs("+init=EPSG:3857"))
+
+
+# NAflag(img) <- NA
+
+Unimpacted  <- sf::st_read("../Slides/Data/S2/GCP_biolittoral.shp",quiet = T) %>% 
+  dplyr::filter(Trgt_ty =="Healthy_seagrass")
+
+Impacted  <- sf::st_read("../Slides/Data/S2/GCP_biolittoral.shp",quiet = T) %>% 
+  dplyr::filter(Trgt_ty !="Healthy_seagrass")
+all_QPs <- sf::st_read("../Slides/Data/S2/GCP_biolittoral.shp",quiet = T,)
+  
+  
+# points <- sf::st_transform(points, crs = 3857)
+
+(plot <- leaflet() %>%   
+  # addTiles() %>% 
+  setView(lng =-3.121394, lat = 47.585714, zoom = 14)  %>% 
+  addMapPane("right", zIndex = 1) %>%
+  addMapPane("left", zIndex = 1) %>%
+  addProviderTiles(providers$Esri.WorldImagery,
+                     group = "Toner",
+                     options = c(providerTileOptions(minZoom = 8, maxZoom = 100),
+                                 pathOptions(pane = "left")),
+                     layerId = "UnImpacted"
+                     ) %>%
+  addProviderTiles(providers$Esri.WorldImagery,
+                     group = "Toner",
+                     options = c(providerTileOptions(minZoom = 8, maxZoom = 100),
+                                 pathOptions(pane = "right")),
+                     layerId = "Impacted") %>% # Add raste
+  addRasterRGB(img, r = 1, g = 2, b = 3, na.color = "transparent",
+                     options = c(pathOptions(pane = "right")),
+                     layerId = "Impacted") %>% 
+  addRasterRGB(img_before, r = 1, g = 2, b = 3, na.color = "transparent",
+                     options = c(pathOptions(pane = "left")),
+                     layerId = "UnImpacted") %>% 
+  addCircleMarkers(
+    data        = Unimpacted,
+    radius      = 2,
+    color       = "lightgreen",
+    fillColor   = "lightgreen",
+    fillOpacity = 0.8,
+    group       = "Unimpacted Points",   # <--- group name
+    # options     = pathOptions(pane = "left"),
+    popup = ~paste0("<img src='",path, "' width='1000'/>"),
+    popupOptions = popupOptions(
+    maxWidth  = 600*5,    # Maximum width of the popup
+    minWidth  = 100*5,    # Minimum width of the popup
+    maxHeight = 600*5)
+  ) %>%
+  addCircleMarkers(
+    data        = Impacted,
+    radius      = 2,
+    color       = "goldenrod",
+    fillColor   = "goldenrod",
+    fillOpacity = 0.8,
+    group       = "Impacted Points",     # <--- group name
+    # options     = pathOptions(pane = "right"),
+    popup = ~paste0("<img src='",path, "' width='1000'/>"),
+    popupOptions = popupOptions(
+    maxWidth  = 600*5,    # Maximum width of the popup
+    minWidth  = 100*5,    # Minimum width of the popup
+    maxHeight = 600*5)
+  ) %>%
+  leaflet.extras2::addSidebyside(leftId = "UnImpacted",
+                                  rightId = "Impacted") %>% 
+    addLegend(
+    position = "bottomright",
+    colors   = c("lightgreen", "goldenrod"),
+    labels   = c("Unimpacted Points", "Impacted Points"),
+    title    = "Legend"
+  ) %>%
+  
+  # Add Layers Control to toggle point layers on/off
+  addLayersControl(
+    overlayGroups = c("Unimpacted Points", "Impacted Points"),
+    options = layersControlOptions(collapsed = TRUE)
+  )%>%
+  
+  # Hide groups by default (turn them off at startup)
+  hideGroup("Unimpacted Points") %>%
+  hideGroup("Impacted Points")
+)
+
+
+
+# htmlwidgets::saveWidget(plot, file="Slides/maps/map_Bathy_Quiberon.html", selfcontained = F)
+
+```
+:::
+
+::: {.fragment .fade-in-then-out fragment-index="1" .absolute top="10%" right="0%"}
+![](Images/plot_Temp_Quiberon3.png){width="1300"}
+:::
+
+::: {.fragment .fade-in fragment-index="2" .absolute top="10%" right="0%"}
+![](Images/plot_Temp_Quiberon3_field.png){width="1300"}
+:::
+
+::: {.absolute .fragment .fade-in fragment-index="1" top="7%" left="3%" style="text-align: right; font-size: 50px;"}
+[Before]{style="color:white;"}
+:::
+
+::: {.absolute .fragment .fade-in fragment-index="1" top="7%" left="37%" style="text-align: right; font-size: 50px;"}
+[During]{style="color:white;"}
+:::
+
+
+::: {.fragment .fade-in-then-out fragment-index="3" .absolute top="40%" right="8%"}
+![](Images/Spectra_before.png){width="1000"}
+:::
+
+::: {.fragment .fade-in fragment-index="4" .absolute top="40%" right="8%"}
+![](Images/Spectra_after.png){width="1000"}
+:::
+:::
 
 
 
