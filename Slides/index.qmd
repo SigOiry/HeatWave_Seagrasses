@@ -1293,7 +1293,7 @@ pal2 <- colorNumeric("viridis", domain = values(Quiberon_Litto3D),na.color = "tr
 ```{r LeafletEmersion}
 #| cache: false
 #| echo: false
-#| eval: true
+#| eval: false
 #| warning: false
 #| out-width: "1100px"
 #| out-height: "800px"
@@ -1311,10 +1311,7 @@ stk <- "../Data/Stack_all_variables.tif" %>%
 
 EmersionTime <- (stk$emersion_time/60)/4
 
-
-
 pal2 <- colorNumeric("magma", domain = c(10,16),na.color = "transparent")
-
 
 (plot <- leaflet() %>%   
   # addTiles() %>% 
@@ -1516,7 +1513,7 @@ $SHSI$ increases by 420 %
 ```{r LeafletMap_QPs}
 #| cache: false
 #| echo: false
-#| eval: true
+#| eval: false
 #| warning: false
 #| out-width: "1100px"
 #| out-height: "1200px"
@@ -1683,7 +1680,7 @@ all_QPs <- sf::st_read("../Slides/Data/S2/GCP_biolittoral.shp",quiet = T,)
 ```{r Maps_SHSI}
 #| cache: false
 #| echo: false
-#| eval: true
+#| eval: false
 #| warning: false
 #| out-width: "2300px"
 #| out-height: "1100px"
@@ -1833,5 +1830,115 @@ After
 
 # Discussion
 
+## Mapping Impacted meadows
+
+::: {.absolute style="top: 0%; left: 95%; width: 1800px;"}
+::: sectionhead
+[1 2 3]{style="opacity:0.25;"} 4 [5]{style="opacity:0.25;"}
+:::
+:::
+
+::: {.fragment .fade-in-then-out fragment-index="1" .absolute top="10%" left="0%" style="text-align: left; font-size: 50px;"}
+- Seagrasses impacted by heatwave have a distinct spectral signature (drops at 560 and 740nm)
+<!-- - Possible to detect it using satellite remote sensing, using the SHSI -->
+:::
+
+::: {.fragment .fade-in-then-out fragment-index="2" .absolute top="10%" left="0%" style="text-align: left; font-size: 50px;"}
+- Seagrasses impacted by heatwave have a distinct spectral signature (drops at 560 and 740nm)
+  -   Thermal stress = Oxydative stress (Dascaliuc et al., 2007; Jones and Clayton-Greene, 1992) 
+      -   Degradation of Chla
+      -   Shift in pigment ratios = carotenoids becoming more prominent 
+:::
+
+::: {.fragment .fade-in-then-out fragment-index="3" .absolute top="10%" left="0%" style="text-align: left; font-size: 50px;"}
+- Seagrasses impacted by heatwave have a distinct spectral signature (drops at 560 and 740nm)
+  -   Thermal stress = Oxydative stress (Dascaliuc et al., 2007; Jones and Clayton-Greene, 1992) 
+      -   Degradation of Chla
+      -   Shift in pigment ratios = carotenoids becoming more prominent
+  -   Oxydative Stress = Membrane damages
+:::
+
+::: {.fragment .fade-in fragment-index="4" .absolute top="10%" left="0%" style="text-align: left; font-size: 50px;"}
+- Seagrasses impacted by heatwave have a distinct spectral signature (drops at 560 and 740nm)
+:::
+
+::: {.fragment .fade-in-then-out fragment-index="4" .absolute top="20%" left="0%" style="text-align: left; font-size: 50px;"}
+- Possible to detect seagrass thermal stress using satellite remote sensing, using the SHSI
+:::
+
+::: {.fragment .fade-in-then-out fragment-index="5" .absolute top="20%" left="0%" style="text-align: left; font-size: 50px;"}
+- Possible to detect seagrass thermal stress using satellite remote sensing, using the SHSI
+  -   Designed to be used by most space missions (Sentinel-2, Pleiades-Neo, WorldView-3, SkySat, GeoSat-2... )...
+:::
+
+::: {.fragment .fade-in fragment-index="5" .absolute bottom="0%" right="0%"}
+![](Images/S2.png){width="500"}
+:::
+
+::: {.fragment .fade-in fragment-index="5" .absolute bottom="20%" right="20%"}
+![](Images/Pleiades.png){width="500"}
+:::
+
+::: {.fragment .fade-in fragment-index="5" .absolute bottom="0%" right="40%"}
+![](Images/WordView3.png){width="500"}
+:::
+
+::: {.fragment .fade-in fragment-index="5" .absolute bottom="20%" right="60%"}
+![](Images/GEOSAT.png){width="500"}
+:::
+
+::: {.fragment .fade-in fragment-index="6" .absolute bottom="0%" right="80%"}
+![](Images/LS_Next.png){width="500"}
+:::
+
+::: {.fragment .fade-in fragment-index="6" .absolute top="20%" left="0%" style="text-align: left; font-size: 50px;"}
+- Possible to detect seagrass thermal stress using satellite remote sensing, using the SHSI
+  -   Designed to be used by most space missions (Sentinel-2, Pleiades-Neo, WorldView-3, SkySat, GeoSat-2... )...
+  -   ... but also by futur missions (Sentinel-2 Next Generation, Landsat Next...)
+:::
 
 
+::: {.fragment .fade-out fragment-index="4"}
+::: {.fragment .fade-in fragment-index="1" .absolute bottom="0%" right="0%"}
+![](Images/spectral_signatures.png){width="1200"}
+:::
+:::
+
+## Heatwaves in a Global Warming Context
+
+::: {.absolute style="top: 0%; left: 95%; width: 1800px;"}
+::: sectionhead
+[1 2 3]{style="opacity:0.25;"} 4 [5]{style="opacity:0.25;"}
+:::
+:::
+
+::: {.fragment .fade-out fragment-index="3"}
+::: {.fragment .fade-in fragment-index="1" .absolute top="10%" left="0%" style="text-align: left; font-size: 50px;"}
+-  Rapid **global** escalation of HW frequency, intensity and duration (Devi et al., 2024; Russo and Domeisen, 2023)... 
+:::
+:::
+
+::: {.fragment .fade-in fragment-index="3" .absolute top="10%" left="0%" style="text-align: left; font-size: 50px;"}
+-  Rapid **global** escalation of HW frequency, intensity and duration (Devi et al., 2024; Russo and Domeisen, 2023)
+- Impact on seagrass resilience to extreme events 
+:::  
+
+::: {.fragment .fade-in-then-out fragment-index="2" .absolute top="30%" left="0%" style="text-align: left; font-size: 50px;"}
+... As obsevered **locally** in Quiberon. 
+:::
+
+::: {.fragment .fade-in-then-out fragment-index="2" .absolute bottom="0%" right="20%"}
+![](Images/plot_HW_CS.png){width="1100"}
+:::
+
+# Conclusion 
+
+##
+
+::: {.absolute bottom="0%" left="0%"}
+![](Images/Experimental_design.png){width="1200"}
+:::
+
+::: {.absolute bottom="0%" right="0%"}
+![](Images/img_Quiberon.png){width="1200"}
+:::
