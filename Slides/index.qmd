@@ -4,7 +4,7 @@ format:
         slide-number: false
         transition: slide
         theme: [default, style.scss]
-        footer: "Simon Oiry, Follow-up Committee Meeting 2024"
+        footer: "Simon Oiry, RSBE² Meeting January 2025"
         logo: Images/nantes-universite.png
         width: 2400
         height: 1350
@@ -1293,7 +1293,7 @@ pal2 <- colorNumeric("viridis", domain = values(Quiberon_Litto3D),na.color = "tr
 ```{r LeafletEmersion}
 #| cache: false
 #| echo: false
-#| eval: false
+#| eval: true
 #| warning: false
 #| out-width: "1100px"
 #| out-height: "800px"
@@ -1513,7 +1513,7 @@ $SHSI$ increases by 420 %
 ```{r LeafletMap_QPs}
 #| cache: false
 #| echo: false
-#| eval: false
+#| eval: true
 #| warning: false
 #| out-width: "1100px"
 #| out-height: "1200px"
@@ -1680,7 +1680,7 @@ all_QPs <- sf::st_read("../Slides/Data/S2/GCP_biolittoral.shp",quiet = T,)
 ```{r Maps_SHSI}
 #| cache: false
 #| echo: false
-#| eval: false
+#| eval: true
 #| warning: false
 #| out-width: "2300px"
 #| out-height: "1100px"
@@ -1936,9 +1936,31 @@ After
 ##
 
 ::: {.absolute bottom="0%" left="0%"}
-![](Images/Experimental_design.png){width="1200"}
+![](Images/FR5300027_HZ1_153325867.jpg){height="1350"}
 :::
 
-::: {.absolute bottom="0%" right="0%"}
-![](Images/img_Quiberon.png){width="1200"}
+::: {.absolute bottom="0%" left="20%"}
+![](Images/FR5300027_HZ1_162903899.jpg){height="800"}
 :::
+
+::: {.absolute top="0%" right="30%"}
+![](Images/20220613_202548_001.png){height="600"}
+:::
+
+::: {.absolute bottom="20%" right="51%"}
+![](Images/20240828_154208.jpg){height="600"}
+:::
+
+::: {.absolute bottom="0%" left="48%"}
+![](Images/20220615_104634.png){height="600"}
+:::
+
+::: {.absolute top="20%" right="27%"}
+![](Images/Simon_Sampling.png){height="600"}
+:::
+
+::: {.absolute top="0%" right="0%"}
+![](Images/Seagrass_under_sun.jpg){height="500"}
+:::
+
+
