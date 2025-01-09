@@ -4661,14 +4661,18 @@ library(ggExtra)
   theme(axis.text.x = element_text(size = 15),
         axis.text.y = element_text(size = 15),
         axis.title.x = element_text(size = 16),
-        axis.title.y = element_text(size = 16),
-        plot.background = element_rect(fill = "white")))
+        axis.title.y = element_text(size = 16))
+        # plot.background = element_rect(fill = "white"))
+  )
 
 # plot_final <- ggMarginal(plot_GAM, type = "density", margins = "y", size = 20)
 
 
 ggsave("Paper/Figs/High_res/GAM_emersion.png", plot_GAM, height = 5 , width = 10, dpi = 400 )
 ggsave("Paper/Figs/Low_res/GAM_emersion.png", plot_GAM, height = 5 , width = 10, dpi = 200 )
+
+ggsave("Slides/Images/GAM_emersion.png", plot_GAM, height = 5 , width = 10, dpi = 400 )
+
 
 ```
 
@@ -5157,8 +5161,8 @@ for(i in 1:length(RGB_plot_names)){
 seagrass_mask <- read_sf("Data/shp/mask_seagrasses.shp") %>% 
   dplyr::filter(ToRemove != 1)
 
-Index_rast <- rast("Data/Sentinel2/Before_During_After_indices_meadowCropped.tif")[[7:9]]%>% 
-  terra::crop(msk) %>% 
+Index_rast <- rast("Data/Sentinel2/Before_During_After_indices_meadowCropped.tif")[[7:9]] %>% 
+  terra::crop(msk) %>%
   terra::crop(seagrass_mask, mask = T)
 
 Index_plot_names <- c("Plot_index_Before","Plot_Index_During","Plot_index_After")

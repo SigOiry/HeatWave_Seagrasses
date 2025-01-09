@@ -1511,8 +1511,7 @@ $SHSI$ increases by 420 %
 :::
 :::
 
-
-::: {.fragment .fade-out fragment-index="5"}
+::: {.fragment .fade-out fragment-index="6"}
 ::: {.fragment .fade-in fragment-index="1"}
 ```{r LeafletMap_QPs}
 #| cache: false
@@ -1529,12 +1528,16 @@ library(leafem)
 library(leaflet.extras2)
 library(terra)
 
-img <- "../Slides/Data/S2/Heatwaves_S2.tif" %>% 
+img_during <- "../Slides/Data/S2/Heatwaves_S2.tif" %>% 
   raster::stack() %>% 
   raster::projectRaster(crs = raster::crs("+init=EPSG:3857"))
 
 
 img_before <- "../Slides/Data/S2/Heatwaves_S2_before.tif" %>% 
+  raster::stack() %>% 
+  raster::projectRaster(crs = raster::crs("+init=EPSG:3857"))
+
+img_after <- "../Slides/Data/S2/Heatwaves_S2_after.tif" %>% 
   raster::stack() %>% 
   raster::projectRaster(crs = raster::crs("+init=EPSG:3857"))
 
@@ -1567,12 +1570,20 @@ all_QPs <- sf::st_read("../Slides/Data/S2/GCP_biolittoral.shp",quiet = T,)
                      options = c(providerTileOptions(minZoom = 8, maxZoom = 100),
                                  pathOptions(pane = "right")),
                      layerId = "Impacted") %>% # Add raste
-  addRasterRGB(img, r = 1, g = 2, b = 3, na.color = "transparent",
+  addRasterRGB(img_during, r = 1, g = 2, b = 3, na.color = "transparent",
                      options = c(pathOptions(pane = "right")),
-                     layerId = "Impacted") %>% 
+                     layerId = "During") %>% 
   addRasterRGB(img_before, r = 1, g = 2, b = 3, na.color = "transparent",
                      options = c(pathOptions(pane = "left")),
-                     layerId = "UnImpacted") %>% 
+                     layerId = "Before") %>% 
+  addRasterRGB(img_after, r = 1, g = 2, b = 3, na.color = "transparent",
+                     options = c(pathOptions(pane = "right")),
+                     layerId = "Impacted",
+                     group = "Image After") %>% 
+  addRasterRGB(img_after, r = 1, g = 2, b = 3, na.color = "transparent",
+                     options = c(pathOptions(pane = "left")),
+                     layerId = "UnImpacted",
+                     group = "Image After") %>% 
   addCircleMarkers(
     data        = Unimpacted,
     radius      = 2,
@@ -1612,13 +1623,14 @@ all_QPs <- sf::st_read("../Slides/Data/S2/GCP_biolittoral.shp",quiet = T,)
   
   # Add Layers Control to toggle point layers on/off
   addLayersControl(
-    overlayGroups = c("Unimpacted Points", "Impacted Points"),
-    options = layersControlOptions(collapsed = TRUE)
+    overlayGroups = c("Unimpacted Points", "Impacted Points", "Image After"),
+    options = layersControlOptions(collapsed = FALSE)
   )%>%
   
   # Hide groups by default (turn them off at startup)
   hideGroup("Unimpacted Points") %>%
-  hideGroup("Impacted Points")
+  hideGroup("Impacted Points") %>%
+  hideGroup("Image After")
 )
 
 
@@ -1632,15 +1644,17 @@ all_QPs <- sf::st_read("../Slides/Data/S2/GCP_biolittoral.shp",quiet = T,)
 ![](Images/plot_Temp_Quiberon3.png){width="1300"}
 :::
 
+::: {.fragment .fade-out fragment-index="5"}
 ::: {.fragment .fade-in fragment-index="2" .absolute top="10%" right="0%"}
 ![](Images/plot_Temp_Quiberon3_field.png){width="1300"}
 :::
+:::
 
-::: {.absolute .fragment .fade-in fragment-index="1" top="7%" left="3%" style="text-align: right; font-size: 50px;"}
+::: {.absolute .fragment .fade-in fragment-index="1" top="12%" left="0.5%" style="text-align: right; font-size: 50px;"}
 [Before]{style="color:white;"}
 :::
 
-::: {.absolute .fragment .fade-in fragment-index="1" top="7%" left="37%" style="text-align: right; font-size: 50px;"}
+::: {.absolute .fragment .fade-in fragment-index="1" top="12%" left="39%" style="text-align: right; font-size: 50px;"}
 [During]{style="color:white;"}
 :::
 
@@ -1649,18 +1663,175 @@ all_QPs <- sf::st_read("../Slides/Data/S2/GCP_biolittoral.shp",quiet = T,)
 ![](Images/Spectra_before.png){width="1000"}
 :::
 
-::: {.fragment .fade-in fragment-index="4" .absolute top="40%" right="8%"}
+::: {.fragment .fade-in-then-out fragment-index="4" .absolute top="40%" right="8%"}
 ![](Images/Spectra_after.png){width="1000"}
 :::
+
+::: {.fragment .fade-in fragment-index="5" .absolute top="10%" right="0%"}
+![](Images/plot_Temp_Quiberon5.png){width="1300"}
+:::
+
+::: {.fragment .fade-in fragment-index="5" .absolute top="44%" right="-3%"}
+![](Images/SHSI_S2.png){width="1300"}
+:::
 :::
 
 
+::: {.fragment .fade-out fragment-index="7"}
+::: {.fragment .fade-in fragment-index="6" .absolute top="11%" left="0%" width="2300px" height="1100px"}
+
+```{r Maps_SHSI}
+#| cache: false
+#| echo: false
+#| eval: true
+#| warning: false
+#| out-width: "2300px"
+#| out-height: "1100px"
+
+library(tidyverse)
+library(leaflet)
+library(sf)
+library(leafem)
+library(leaflet.extras2)
+library(terra)
+library(scico)
+library(leafsync)
+
+
+Index_rast <- rast("../Data/Sentinel2/Before_During_After_indices_meadowCropped.tif")[[7:9]]
+
+names(Index_rast) <- c("SHSI_Before","SHSI_During","SHSI_After")
+
+
+Unimpacted  <- sf::st_read("../Slides/Data/S2/GCP_biolittoral.shp",quiet = T) %>% 
+  dplyr::filter(Trgt_ty =="Healthy_seagrass")
+
+Impacted  <- sf::st_read("../Slides/Data/S2/GCP_biolittoral.shp",quiet = T) %>% 
+  dplyr::filter(Trgt_ty !="Healthy_seagrass")
+
+  
+Before <- Index_rast$SHSI_Before/100
+values(Before)[values(Before) < -2] <- -2
+values(Before)[values(Before) > 2] <- 2
+
+During <- Index_rast$SHSI_During/100
+values(During)[values(During) < -2] <- -2
+values(During)[values(During) > 2] <- 2
+
+After <- Index_rast$SHSI_After/100
+values(After)[values(After) < -2] <- -2
+values(After)[values(After) > 2] <- 2
+
+
+img_during <- "../Slides/Data/S2/Heatwaves_S2.tif" %>% 
+  raster::stack() %>% 
+  raster::projectRaster(crs = raster::crs("+init=EPSG:3857"))
+
+
+img_before <- "../Slides/Data/S2/Heatwaves_S2_before.tif" %>% 
+  raster::stack() %>% 
+  raster::projectRaster(crs = raster::crs("+init=EPSG:3857"))
+
+img_after <- "../Slides/Data/S2/Heatwaves_S2_after.tif" %>% 
+  raster::stack() %>% 
+  raster::projectRaster(crs = raster::crs("+init=EPSG:3857"))
+
+
+  
+# pal2 <- colorNumeric("batlow", domain = c(-2,2),na.color = "transparent")
+pal2 <- colorNumeric(scico(n = 256, palette = "batlow"), domain = c(-2, 2), na.color = "transparent")
 
 
 
 
 
 
+m1 <- leaflet(width = "100%", height = "600px") %>%   
+  # addTiles() %>% 
+  setView(lng =-3.121394, lat = 47.585714, zoom = 14) %>%
+  addProviderTiles(providers$Esri.WorldImagery,
+                     group = "Toner",
+                     options = c(providerTileOptions(minZoom = 8, maxZoom = 100)))%>%
+  addRasterImage(Before,
+                   colors=pal2,
+                   layerId = "Before")
+
+m2 <- leaflet(width = "100%", height = "600px") %>%   
+  # addTiles() %>% 
+  setView(lng =-3.121394, lat = 47.585714, zoom = 14) %>%
+  addProviderTiles(providers$Esri.WorldImagery,
+                     group = "Toner",
+                     options = c(providerTileOptions(minZoom = 8, maxZoom = 100)))%>%
+  addRasterImage(During,
+                   colors=pal2,
+                   layerId = "During")
+
+m3 <- leaflet(width = "100%", height = "600px") %>%   
+  # addTiles() %>% 
+  setView(lng =-3.121394, lat = 47.585714, zoom = 14) %>%
+  addProviderTiles(providers$Esri.WorldImagery,
+                     group = "Toner",
+                     options = c(providerTileOptions(minZoom = 8, maxZoom = 100)))%>%
+  addRasterImage(After,
+                   colors=pal2,
+                   layerId = "After")
+m4 <- leaflet(width = "100%", height = "600px") %>%   
+  # addTiles() %>% 
+  setView(lng =-3.121394, lat = 47.585714, zoom = 14) %>%
+  addProviderTiles(providers$Esri.WorldImagery,
+                     group = "Toner",
+                     options = c(providerTileOptions(minZoom = 8, maxZoom = 100)))%>% 
+  addRasterRGB(img_before, r = 1, g = 2, b = 3, na.color = "transparent",
+                     layerId = "Before")
+
+m5 <- leaflet(width = "100%", height = "600px") %>%   
+  # addTiles() %>% 
+  setView(lng =-3.121394, lat = 47.585714, zoom = 14) %>%
+  addProviderTiles(providers$Esri.WorldImagery,
+                     group = "Toner",
+                     options = c(providerTileOptions(minZoom = 8, maxZoom = 100)))%>% 
+  addRasterRGB(img_during, r = 1, g = 2, b = 3, na.color = "transparent",
+                     layerId = "During")
+
+m6 <- leaflet(width = "100%", height = "600px") %>%   
+  # addTiles() %>% 
+  setView(lng =-3.121394, lat = 47.585714, zoom = 14) %>%
+  addProviderTiles(providers$Esri.WorldImagery,
+                     group = "Toner",
+                     options = c(providerTileOptions(minZoom = 8, maxZoom = 100)))%>% 
+  addRasterRGB(img_after, r = 1, g = 2, b = 3, na.color = "transparent",
+                     layerId = "After")
+
+sync(m1, m2, m3, m4, m5, m6, sync = "all",ncol = 3)
+
+
+# htmlwidgets::saveWidget(plot, file="Slides/maps/map_Bathy_Quiberon.html", selfcontained = F)
+```
+
+:::
+
+::: {.fragment .fade-in fragment-index="6" .absolute top="35%" right="5%"}
+![](Images/Scale__SHSI.png){height="500"}
+:::
+
+::: {.absolute .fragment .fade-in fragment-index="6" top="6%" left="0%" style="text-align: left; font-size: 50px;"}
+Before
+:::
+
+::: {.absolute .fragment .fade-in fragment-index="6" top="6%" left="43%" style="text-align: center; font-size: 50px;"}
+During
+:::
+
+::: {.absolute .fragment .fade-in fragment-index="6" top="6%" right="9%" style="text-align: right; font-size: 50px;"}
+After
+:::
+:::
+
+::: {.fragment .fade-in fragment-index="7" .absolute top="10%" left="0%"}
+![](Images/GAM_emersion.png){width="2400"}
+:::
+
+# Discussion
 
 
 
