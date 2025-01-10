@@ -16,6 +16,7 @@ format:
           after_body: custom.js
 editor_options: 
   chunk_output_type: console
+output-dir: ../docs
 ---
 
 ```{r library}

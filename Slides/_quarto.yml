@@ -1,4 +1,5 @@
 project:
   title: "Slides_CSI_2024"
+  output-dir: ../docs
 
 editor: source
