@@ -802,9 +802,7 @@ ggsave("Slides/Images/plot_Temp_Quiberon4.png", mean_temp, height = 3, width = 1
 :::
 :::
 
-
-
-::: {.absolute .fragment .fade-in fragment-index="1" top="10%" style="font-size: 75px;"}
+::: {.absolute top="10%" style="font-size: 75px;"}
 Heatwaves alter the spectral reflectance of *Zostera noltei* seagrass. This change can be detected using remote sensing technique. 
 :::
 
