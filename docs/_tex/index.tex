@@ -80,17 +80,15 @@
 \makesavenoteenv{longtable}
 \usepackage{graphicx}
 \makeatletter
-\newsavebox\pandoc@box
-\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
-  \sbox\pandoc@box{#1}%
-  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
-  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
-  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
-  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
-  \else\usebox{\pandoc@box}%
-  \fi%
-}
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
 % Set default figure placement to htbp
+\makeatletter
 \def\fps@figure{htbp}
 \makeatother
 % definitions for citeproc citations
@@ -170,6 +168,9 @@
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
 
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
 \usepackage{bookmark}
 
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
@@ -197,7 +198,7 @@ Laura Zoffoli\footnote{Consiglio Nazionale delle Ricerche, Istituto di
 Barillé\footnote{Bio-littoral, Immeuble Le Nevada, 2 Rue du Château de
   l'Eraudière, 44300 Nantes, France} \and Nicolas Harin³ \and Pierre
 Gernez¹ \and Laurent Barillé¹}
-\date{2025-01-23}
+\date{2025-02-14}
 
 \begin{document}
 \maketitle
@@ -469,7 +470,7 @@ temperature during sampling, and a photosynthetically active radiation
 
 \centering{
 
-\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/Experimental_design.png}
+\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/Experimental_design.png}
 
 }
 
@@ -533,7 +534,7 @@ replicates (hereafter referred to as ``Run'').
 
 \centering{
 
-\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/Chamber_Profils.png}
+\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/Chamber_Profils.png}
 
 }
 
@@ -641,7 +642,7 @@ broader remote sensing application.
 
 \centering{
 
-\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/High_res/Plot_explain_SHSI.png}
+\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/High_res/Plot_explain_SHSI.png}
 
 }
 
@@ -673,7 +674,7 @@ estimation of the leaf coloration (Figure~\ref{fig-quiberonMap}).
 
 \centering{
 
-\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/Quiberon_map.png}
+\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/Quiberon_map.png}
 
 }
 
@@ -695,7 +696,7 @@ the field).}
 
 \centering{
 
-\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/img_Quiberon.png}
+\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/img_Quiberon.png}
 
 }
 
@@ -830,7 +831,7 @@ pronounced, suggesting a decrease of chlorophyll-a concentration.
 
 \centering{
 
-\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/plot_Spectra_exp.png}
+\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/plot_Spectra_exp.png}
 
 }
 
@@ -872,7 +873,7 @@ considered for the next steps of the study.
 
 \centering{
 
-\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/merged_indices.png}
+\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/merged_indices.png}
 
 }
 
@@ -903,7 +904,7 @@ positive SHSI will be used as a marker for impacted seagrasses.
 
 \centering{
 
-\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/SDI_exp_overtime.png}
+\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/SDI_exp_overtime.png}
 
 }
 
@@ -957,7 +958,7 @@ true color composition (Figure~\ref{fig-S2_comparison} C)
 
 \centering{
 
-\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/Heatwaves_S2_plot.png}
+\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/Heatwaves_S2_plot.png}
 
 }
 
@@ -1006,7 +1007,7 @@ to values recorded on the 1st of September.
 
 \centering{
 
-\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/SHSI_S2.png}
+\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/SHSI_S2.png}
 
 }
 
@@ -1041,7 +1042,7 @@ their green coloration (Figure~\ref{fig-Map_darkening_Bathy} C).
 
 \centering{
 
-\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/SHSI_S2_map.png}
+\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/SHSI_S2_map.png}
 
 }
 
@@ -1064,7 +1065,7 @@ daily.
 
 \centering{
 
-\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/GAM_emersion.png}
+\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/GAM_emersion.png}
 
 }
 
@@ -1115,39 +1116,39 @@ versus the declines in other indices---highlight the sensitivity of SHSI
 to changes associated with seagrass darkening, which could be indicative
 of stress or adaptation responses specific to the treatment conditions.
 
-The change in color can be multifactorial and has been documented in
-plants under various stress conditions, including thermal stress
+Change in vegetation color can be multifactorial and has been documented
+in plants under various stress conditions, including thermal stress
 (Dascaliuc et al., 2007; Jones and Clayton-Greene, 1992). Leaf
 blackening in angiosperms, as observed in \emph{Protea neriifolia}, is
 primarily driven by oxidative processes involving the enzyme polyphenol
-oxidase (PPO) and the oxidation of phenolic compounds. When
-photosynthesis is inhibited by factors such as low light, chemical
-interference, or thermal stress, the plant's production of essential
-carbohydrates and antioxidants diminishes, increasing oxidative stress
-and leading to darkening. Experimental essays have proved that
-low-oxygen environments and the addition of antioxydants like
-diphenylamine (DPA), have been effective in reducing these oxidative
-reactions. In the absence of photosynthesis, membrane integrity is also
-compromised, allowing PPO to interact with phenolic compounds, thereby
-accelerating darkening. Furthermore, high temperatures can destabilize
-membranes, especially in chloroplasts, disrupting photosystem II and
-impairing recovery of photosynthetic function. As chlorophyll-a
-degrades, the ratio of pigments shifts, with pigments like carotenoids
-becoming more prominent, leading to a darkening of the leaves.
+oxidase and the oxidation of phenolic compounds. When photosynthesis is
+inhibited by factors such as low light, chemical interference, or
+thermal stress, the plant's production of essential carbohydrates and
+antioxidants diminishes, increasing oxidative stress and leading to
+darkening. Experimental essays have proved that low-oxygen environments
+and the addition of antioxydants like diphenylamine, have been effective
+in reducing these oxidative reactions. In the absence of photosynthesis,
+membrane integrity is also compromised, allowing polyphenol oxidase to
+interact with phenolic compounds, thereby accelerating darkening.
+Furthermore, high temperatures can destabilize membranes, especially in
+chloroplasts, disrupting photosystem II and impairing recovery of
+photosynthetic function. As chlorophyll-a degrades, the ratio of
+pigments shifts, with pigments like carotenoids becoming more prominent,
+leading to a darkening of the leaves.
 
 \emph{Zostera noltei}, as a species inhabiting the intertidal zone and
 regularly exposed to air, has developed adaptations to minimize hydric
-stress. For example, it exhibits smaller, narrower leaves compared to
-species residing lower in the intertidal zone, such as \emph{Zostera
-marina}, which helps reduce water loss during air exposure periods
-(Cabaço et al., 2009). However, during intense warming events and under
-high light conditions, desiccation can occur in certain parts of the
-meadow, particularly where seagrass leaves are emerged during prolonged
-periods (Figure~\ref{fig-GAM_Emersion}). Under such hydric stress,
-cellular turgor pressure decreases (the internal cell water pressure
-that maintains cell shape), and concentrations of ions like Na+ and Cl--
-can reach toxic levels. These effects can impair cellular functions,
-enzymatic activity, and membrane stability.
+stress; drying out. For example, it exhibits smaller, narrower leaves
+compared to species residing lower in the intertidal zone, such as
+\emph{Zostera marina}, which helps reduce water loss during air exposure
+periods (Cabaço et al., 2009). However, during intense warming events
+and under high light conditions, desiccation can occur in certain parts
+of the meadow, particularly where seagrass leaves are emerged during
+prolonged periods (Figure~\ref{fig-GAM_Emersion}). Under such hydric
+stress, cellular turgor pressure decreases (the internal cell water
+pressure that maintains cell shape), and concentrations of ions like Na+
+and Cl-- can reach toxic levels. These effects can impair cellular
+functions, enzymatic activity, and membrane stability.
 
 In healthy plant leaves, the high infrared reflectance in the
 near-infrared spectral range (700 - 1300 nm) is primarily due to the
@@ -1157,13 +1158,13 @@ enters the leaf, it is diffused through various layers, particularly the
 spongy mesophyll, which contains air spaces and cell walls with
 different refractive indices. The scattering effect in the NIR is
 intensified because there is minimal absorption allowing light to
-reflect back through the leaf surface. Once the membranes (chloroplasts,
-thylakoids, cell walls) are destroyed due to oxidative stress, the
-reflectance in the Red Edge and the NIR regions decreases significantly
-(Knipling, 1970).
+reflect back through the leaf surface. Therefore, once the membranes
+(chloroplasts, thylakoids, cell walls) are destroyed due to oxidative
+stress, the reflectance in the Red Edge and the NIR regions decreases
+significantly (Knipling, 1970).
 
 The influence of heat stress on seagrass enables the detection of leaves
-darkening using remote sensing. The SHSI (Equation~\ref{eq-SDI}) index
+darkening using remote sensing. The SHSI (Equation~\ref{eq-SDI})
 developed in this study leverages key reflectance bands (560, 740 and
 840 nm) to detect reductions in the green and the Red-Edge regions. SHSI
 can be used to assess the extent and severity of darkening events across
@@ -1175,8 +1176,8 @@ input for SHSI. As climate change advances, remote sensing becomes a
 crucial tool for monitoring cumulative ecological impacts on seagrass
 meadows due to HWs. Although the physiological and structural changes
 occur at the cellular level over short temporal scales, their
-synchronous manifestation across the entire meadow causes changes in
-large spatial extensions. Remote sensing, with its synoptic views and
+synchronous manifestation across the entire meadow causes changes at
+large spatial scales. Remote sensing, with its synoptic views and
 real-time acquisition capabilities, enables the monitoring of these
 rapid biological responses to anthropogenic stressors. However, cloud
 coverage can limit continuous observations, necessitating the
@@ -1189,90 +1190,6 @@ uninterrupted, multi-year data acquisition would strengthen predictive
 ecological models for future heatwave impacts, enhancing the capacity
 for adaptive management and supporting long-term resilience planning for
 seagrass ecosystems.
-
-\subsection{Climate change and
-heatwaves}\label{climate-change-and-heatwaves}
-
-The rapid global escalation of HW frequency, intensity and duration is a
-defining characteristic of the current climate crisis, heavily
-influenced by anthropogenic activities and greenhouse gas emissions
-(Devi et al., 2024; Russo and Domeisen, 2023). Recent research suggests
-that the magnitude of these events has surged in the recent decades,
-with climate projections predicting a continuation of this trend. For
-example, heatwaves that were once considered rare are now up to ten
-times more likely to occur, with some regions experiencing events three
-times as intense as those in the early 20th century. Cumulative indices
-that quantify heatwave intensity are based on total temperature
-exceedances and offer a more comprehensive understanding of event
-severity than average temperature alone. This is because the cumulative
-impact of prolonged high temperatures imposes more extensive stress on
-ecosystems than isolated peak temperatures (Russo and Domeisen, 2023).
-
-From a hazard analysis perspective, the concurrent evaluation of
-intensity, frequency, and duration of atmospheric heatwaves allows for a
-partial understanding of their likely impacts. Models like the Heatwave
-Intensity Duration Frequency (HIDF) provide insights into various
-heatwave scenarios, indicating that both short intense and prolonged
-moderate events present unique risks depending on the region. For
-instance, in the Mediterranean, the frequency of high-intensity
-heatwaves has dramatically increased, leading to severe impacts on urban
-infrastructure, public health, energy consumption but also to
-terrestrial and intertidal ecosystems, such as seagrass meadows
-(Mazdiyasni et al., 2019; Smale et al., 2019). Sharper increase in
-extreme heat events is expected in regions experiencing large daily
-thermic amplitude, which underscores the role of atmospheric variability
-in local heatwave dynamics. In mid-latitudes, where daily variability is
-expected to decrease, heat extremes may stabilize at elevated levels,
-reducing cold extremes while allowing for increasingly frequent hot days
-(Simolo and Corti, 2022).
-
-In the ocean, similar trends were observed with marine heatwaves (MHWs),
-which have increased by more than 50\% in the total number of days per
-year since the early 20th century, and projections suggest that a
-near-permanent state of MHW, based on nowadays baselines, could develop
-by the end of the century if greenhouse gas emissions remain high
-(Oliver et al., 2019). Events like the ``Blob'' in the northeast Pacific
-(2013--2016) have underscored the ecological ramifications of such heat
-anomalies, including shifts in species distributions, mass mortalities,
-and habitat degradation across vast oceanic regions. The physical
-mechanisms driving MHWs, such as altered ocean circulation and air-sea
-heat flux, further illustrate the interconnection of atmospheric and
-marine systems in the context of climate-driven thermal extremes (Smale
-et al., 2019).
-
-The escalating frequency and intensity of heatwaves represent not only
-an atmospheric anomaly but a profound disruption to ecological stability
-across diverse ecosystems (Devi et al., 2024; Stillman, 2019). The
-temperature spikes associated with these events occur over very short
-timescales, with limited recovery periods---giving organisms little to
-no opportunity to acclimate to rapidly changing conditions and often
-exceeding their tolerance limits. The sustained high temperatures
-associated with both atmospheric and marine heatwaves lead to
-physiological stress, habitat degradation, and increased mortality in
-many species, particularly those with limited thermal tolerance (Oliver
-et al., 2019; Simolo and Corti, 2022). Terrestrial and marine ecosystems
-experience shifts in species distributions, altered community dynamics,
-and reduced biodiversity as species are either forced to migrate or face
-local extinction under increasingly inhospitable conditions (Pansch et
-al., 2018). Similarly, in marine environments, prolonged heat stress
-from marine heatwaves has cascading effects on foundational species,
-including corals, kelps, and seagrasses, all of which are crucial for
-providing habitat, food, and shelter to diverse marine life (Oliver et
-al., 2019; Smale et al., 2019). Seagrasses, in particular, play a vital
-role in carbon sequestration and coastal protection but are especially
-vulnerable to extreme heat events. Elevated temperatures can disrupt
-seagrass photosynthesis and metabolic processes, leading to reduced
-growth and heightened susceptibility to disease (Deguette et al., 2022;
-Guerrero-Meseguer et al., 2020; Sawall et al., 2021; Winters et al.,
-2011). With repeated heatwave exposure and limited recovery periods,
-seagrass meadows may suffer severe declines, threatening their ability
-to deliver key ecosystem services such as carbon storage, sediment
-stabilization, and habitat provision (Mazdiyasni et al., 2019). The
-compounded impacts of atmospheric and marine heatwaves thus pose an
-existential threat to intertidal seagrass ecosystems, highlighting the
-urgent need for targeted climate adaptation measures to mitigate these
-escalating thermal stresses and preserve the resilience of these
-essential marine habitats (Russo and Domeisen, 2023; Stillman, 2019).
 
 \subsection{Seagrass resilience to
 heatwaves}\label{seagrass-resilience-to-heatwaves}
@@ -1293,7 +1210,14 @@ typical of tropical regions, such as \emph{Halodule} spp.,
 resilience to warming events and marine heatwaves due to their rapid
 growth and more flexible life strategies (O'Brien et al., 2018).
 
-The impact of HWs on seagrass ecosystems is further intensified by tidal
+In our study, we observed a browning effect in the seagrasses, using an
+experimental setup simulating tides with a uniformed period of daily
+exposure. In natural settings, however, bathymetry plays a significant
+role, and depending on depth variations, seagrasses may be exposed for
+even longer periods during low tides (Figure~\ref{fig-GAM_Emersion}).
+This suggests that in situ exposure times could exacerbate the stress
+effects observed, as seagrasses may endure prolonged air exposure. The
+impact of HWs on seagrass ecosystems is further intensified by tidal
 variations, especially in temperate regions with large tidal ranges that
 can exceed 10 meters, such as Mont Saint Michel Bay , France. This
 pronounced tidal amplitude affects intertidal seagrasses like
@@ -1307,74 +1231,35 @@ MHWs. As a result, both marine and atmospheric HWs can increase stress
 on intertidal seagrass meadows, with effects that may be intensified by
 tidal timing and amplitude. In our study, we observed a darkening effect
 in the seagrasses, using an experimental setup simulating tides with a
-uniformed period of daily exposure. In natural settings, however,
-bathymetry plays a significant role, and depending on depth variations,
-seagrasses may be exposed for even longer periods during low tides. This
-suggests that \emph{in situ} exposure times could exacerbate the stress
-effects observed, as seagrasses may endure prolonged air exposure.
+uniformed period of daily exposure.
 
-Species like \emph{Zostera noltei} display distinct seasonal patterns
-that become increasingly pronounced at higher latitudes (Davies et al.,
-2024a, 2024b). These patterns reflect the species' adaptation to
-seasonal variations in temperature and light, but they also make
-\emph{Z. noltei} particularly sensitive to extreme events depending on
-their timing. For instance, the impact on meadow resilience can be quite
-severe if a heatwave coincides with early developmental stages, and less
-severe if it occurs after the biomass peak when leaf senescence has
-already begun.
-
-Environmental conditions can moderate seagrass resilience to thermal
-stress. Seagrass meadows located in areas benefiting from tidal cooling
-or positioned in the middle of their geographical ranges (i.e., far away
-from the warmer edges) often experience reduced heat stress, resulting
-in higher shoot densities and enhanced resilience (Berger et al., 2024;
-Canadell and Jackson, 2021). In these cooler areas, \emph{Zostera
-noltei} exhibits high survival and photosynthetic performance up to
-37°C, though temperatures above 39°C led to near-total mortality within
-days, underscoring the species' sensitivity to temperature thresholds
-that may become increasingly common under climate change scenarios
-(Franssen et al., 2014). Moreover, the frequency, duration, and
-intervals between heatwaves significantly affect seagrass biomass and
-recovery; prolonged and frequent heatwaves reduce resilience and
-complicate recovery processes (Hatum et al., 2024).
-
-The influence of other stressors, such as eutrophication and sulfide
-accumulation, complicates this resilience. Increased sediment sulfide
-levels, which often accompany nutrient enrichment, can be toxic to
-seagrasses, particularly under elevated temperatures that amplify
-sulfide toxicity. \emph{Zostera noltei}, for example, has a mutualistic
-relationship with lucinid clams that help detoxify sulfides. However,
-this interaction is compromised at high temperatures, reducing the
-efficacy of sulfide removal and further inhibiting nutrient uptake,
-growth, and overall resilience (De Fouw et al., 2022).
-
-In a simulated heatwave experiment on \emph{Zostera noltei}, resilience
-was evident under short-term moderate stress, with no significant
-changes in photosynthetic performance or survival (Franssen et al.,
-2014; Massa et al., 2009). However, prolonged or more intense heat
-events posed a greater challenge, highlighting the species' limited
-capacity to withstand chronic thermal stress.In the present study,
-Sentinel-2 images acquiring before, during, and after an HW event made
-it possible to document the long-term impact of HW on seagrass cover
-(SC). During the HW, Sentinel-2 imagery suggested that impacted seagrass
-patches (i.e.~areas showing seagrass darkening) also displayed a sharp
-decline in seagrass cover. The S2 image acquired one month after the HW
-showed that the SC of impacted seagrasses patches did not recover up to
-its initial level (Figure~\ref{fig-NDVI_GLI_SPC}). However, the
-satellite-derived SC might be misleading because field pictures did not
-show any significant reduction in SC during the HW
-(Figure~\ref{fig-QuiberonImg}). The decrease in SC apparently observed
-on satellite imagery was therefore most likely due to leaf darkening
-rather than to a real decrease in seagrass density. Seagrass darkening
-resulted in a decrease in NDVI, thus creating an apparent decrease in SC
-because seagrass cover was computed from NDVI (Zoffoli et al., 2020).
-The bias introduced by remote sensing in this instance reflects a
-limitation in accurately capturing true seagrass cover during stress
-events. It was only after the heatwave that leaves began to detach,
-leading to an actual decline in seagrass density. The delayed response
-in SC underscores how extreme events can compromise seagrass resilience,
-leaving previously robust patches in a weakened state compared to less
-disturbed areas (Figure~\ref{fig-NDVI_GLI_SPC}).
+In a simulated heatwave experiment on Zostera noltei, resilience was
+evident under short-term moderate stress, with no significant changes in
+photosynthetic performance or survival (Franssen et al., 2014; Massa et
+al., 2009). However, prolonged or more intense heat events posed a
+greater challenge, highlighting the species' limited capacity to
+withstand chronic thermal stress. In the present study, Sentinel-2
+images acquired before, during, and after a heatwave (HW) event enabled
+the assessment of leaf darkening using the SHSI index. During the HW,
+Sentinel-2 imagery indicated that impacted seagrass patches (i.e., areas
+exhibiting seagrass darkening) also experienced a sharp decline in NDVI.
+The Sentinel-2 image acquired one month after the HW showed that the
+NDVI of impacted seagrass patches had not recovered to its initial level
+(Figure~\ref{fig-NDVI_GLI_SPC}). NDVI is commonly used as a proxy for
+seagrass cover (Davies et al., 2024a; Zoffoli et al., 2020), with higher
+NDVI values associated with greater seagrass coverage and lower NDVI
+values indicating reduced cover. Our findings demonstrate that heatwaves
+alter the spectral signature of seagrasses, causing a decrease in
+NDVI---and consequently, in the satellite-derived estimate of seagrass
+cover---while the actual coverage observed in the field remains stable
+(see Figure~\ref{fig-QuiberonImg}). This discrepancy underscores a
+limitation of remote sensing in accurately capturing true seagrass cover
+during stress events. It was only after the heatwave that leaf
+detachment began, leading to an actual decline in seagrass density. The
+delayed response in seagrass cover (SC) highlights how extreme events
+can compromise seagrass resilience, leaving previously robust patches in
+a weakened state compared to less disturbed areas
+(Figure~\ref{fig-NDVI_GLI_SPC}).
 
 \subsection{Big picture}\label{big-picture}
 
@@ -1455,7 +1340,7 @@ experiment}\label{sec-AnnexeA}
 
 \begin{figure}[H]
 
-{\centering \pandocbounded{\includegraphics[keepaspectratio]{Figs/High_res/Temperature_compare.png}}
+{\centering \includegraphics{Figs/High_res/Temperature_compare.png}
 
 }
 
@@ -1584,11 +1469,6 @@ growth. Marine Ecology Progress Series 692, 43--52.
 Deguette, A., Barrote, I., Silva, J., 2022. Physiological and
 morphological effects of a marine heatwave on the seagrass cymodocea
 nodosa. Scientific Reports 12, 7950.
-
-\bibitem[\citeproctext]{ref-devi2024intensity}
-Devi, R., Gouda, K., Lenka, S., 2024. Intensity duration and frequency
-of heat wave in different phases of MJO over india. Atmospheric Research
-300, 107250.
 
 \bibitem[\citeproctext]{ref-douay2022new}
 Douay, F., Verpoorter, C., Duong, G., Spilmont, N., Gevaert, F., 2022.
@@ -1734,12 +1614,6 @@ tolerance and survival of intertidal populations of the seagrass zostera
 noltii (hornemann) in southern europe (ria formosa, portugal).
 Hydrobiologia 619, 195--201.
 
-\bibitem[\citeproctext]{ref-mazdiyasni2019hidf}
-Mazdiyasni, O., Sadegh, M., Chiang, F., AghaKouchak, A., 2019. Heat wave
-intensity duration frequency curve: A multivariate approach for hazard
-and attribution analysis. Scientific Reports 9, 14117.
-\url{https://doi.org/10.1038/s41598-019-50643-w}
-
 \bibitem[\citeproctext]{ref-moore2008environmental}
 Moore, K.A., Jarvis, J.C., 2008. Environmental factors affecting recent
 summertime eelgrass diebacks in the lower chesapeake bay: Implications
@@ -1759,23 +1633,11 @@ macroalgae in european intertidal areas using high-resolution
 multispectral drone imagery. Remote Sensing 16.
 \url{https://doi.org/10.3390/rs16234383}
 
-\bibitem[\citeproctext]{ref-oliver2019projected}
-Oliver, E.C.J., Burrows, M.T., Donat, M.G., others, 2019. Projected
-marine heatwaves in the 21st century and the potential for ecological
-impact. Frontiers in Marine Science 6, 734.
-\url{https://doi.org/10.3389/fmars.2019.00734}
-
 \bibitem[\citeproctext]{ref-olmedo2020far}
 Olmedo-Masat, O.M., Raffo, M.P., Rodrı́guez-Pérez, D., Arijón, M.,
 Sánchez-Carnero, N., 2020. How far can we classify macroalgae remotely?
 An example using a new spectral library of species from the south west
 atlantic (argentine patagonia). Remote Sensing 12, 3870.
-
-\bibitem[\citeproctext]{ref-pansch2018heat}
-Pansch, C., Scotti, M., Barboza, F.R., others, 2018. Heat waves and
-their significance for a temperate benthic community: A near-natural
-experimental approach. Global Change Biology 24, 4357--4367.
-\url{https://doi.org/10.1111/gcb.14282}
 
 \bibitem[\citeproctext]{ref-penuelas2004leaf}
 Peñuelas, J., Munné-Bosch, S., Llusià, J., Filella, I., 2004. Leaf
@@ -1806,11 +1668,6 @@ macrophytes. Frontiers in Marine Science 8, 722698.
 Rouse, J.W., Haas, R.H., Schell, J.A., Deering, D.W., others, 1974.
 Monitoring vegetation systems in the great plains with ERTS. NASA Spec.
 Publ 351, 309.
-
-\bibitem[\citeproctext]{ref-russo2023intensity}
-Russo, E., Domeisen, D.I.V., 2023. Increasing intensity of extreme
-heatwaves: The crucial role of metrics. Geophysical Research Letters 50,
-e2023GL103540. \url{https://doi.org/10.1029/2023GL103540}
 
 \bibitem[\citeproctext]{ref-samper2020characterization}
 Samper-Villarreal, J., Bolaños, R.C., Heidemeyer, M., Vargas, M.M.,
@@ -1848,22 +1705,11 @@ SHOM, 2021.
 hydrographique et océanographique de la marine ; bathymétrie Litto3D®
 bretagne 2018-2021}.
 
-\bibitem[\citeproctext]{ref-simolo2022quantifying}
-Simolo, C., Corti, S., 2022. Quantifying the role of variability in
-future intensification of heat extremes. Nature Communications 13.
-\url{https://doi.org/10.1038/s41467-022-35571-0}
-
 \bibitem[\citeproctext]{ref-skendzic2023drought}
 Skendzic, S., 2023. Drought stress in winter wheat-physiological
 responses and detection using remote and proximal sensing techniques,
 in: Smart Life Sciences and Technology for Sustainable Development. pp.
 39--39.
-
-\bibitem[\citeproctext]{ref-smale2019marine}
-Smale, D.A., Wernberg, T., Oliver, E.C.J., others, 2019. Marine
-heatwaves threaten global biodiversity and the provision of ecosystem
-services. Nature Climate Change 9, 306--312.
-\url{https://doi.org/10.1038/s41558-019-0412-1}
 
 \bibitem[\citeproctext]{ref-sousa2019blue}
 Sousa, A.I., Silva, J.F. da, Azevedo, A., Lillebø, A.I., 2019. Blue
@@ -1873,11 +1719,6 @@ carbon stock in zostera noltei meadows at ria de aveiro coastal lagoon
 \bibitem[\citeproctext]{ref-stan2020rstan}
 Stan Development Team, C., others, 2020. RStan: The r interface to stan.
 R package version 2.21. 2.
-
-\bibitem[\citeproctext]{ref-stillman2019heat}
-Stillman, J.H., 2019. Heat waves, the new normal: Summertime temperature
-extremes will impact animals, ecosystems, and human communities.
-Physiology 34, 86--100. \url{https://doi.org/10.1152/physiol.00040.2018}
 
 \bibitem[\citeproctext]{ref-strydom2020too}
 Strydom, S., Murray, K., Wilson, S., Huntley, B., Rule, M., Heithaus,

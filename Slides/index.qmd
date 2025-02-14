@@ -1741,7 +1741,9 @@ pal2 <- colorNumeric(scico(n = 256, palette = "batlow"), domain = c(-2, 2), na.c
 
 
 
+stk <- c(Before,During,After)
 
+writeRaster(stk,"Data/Sentinel2/SHSI.tif")
 
 m1 <- leaflet(width = "100%", height = "600px") %>%   
   # addTiles() %>% 
