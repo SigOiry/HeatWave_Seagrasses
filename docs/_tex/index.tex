@@ -80,15 +80,17 @@
 \makesavenoteenv{longtable}
 \usepackage{graphicx}
 \makeatletter
-\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
-\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
-\makeatother
-% Scale images if necessary, so that they will not overflow the page
-% margins by default, and it is still possible to overwrite the defaults
-% using explicit options in \includegraphics[width, height, ...]{}
-\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
 % Set default figure placement to htbp
-\makeatletter
 \def\fps@figure{htbp}
 \makeatother
 % definitions for citeproc citations
@@ -168,16 +170,13 @@
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
 
-\ifLuaTeX
-  \usepackage{selnolig}  % disable illegal ligatures
-\fi
 \usepackage{bookmark}
 
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same} % disable monospaced font for URLs
 \hypersetup{
   pdftitle={Impact of Marine and Atmospheric Heatwaves on Intertidal Seagrass: Experimental Spectroradiometry and Satellite-Based Insights},
-  pdfauthor={Simon Oiry; Bede Ffinian Rowe Davies¹; Philippe Rosa¹; Augustin Debly¹; Maria Laura Zoffoli; Anne-Laure Barillé; Nicolas Harin³; Pierre Gernez¹; Laurent Barillé¹},
+  pdfauthor={Simon Oiry; Bede Ffinian Rowe Davies¹; Philippe Rosa¹; Augustin Debly¹; Maria Laura Zoffoli; Anne-Laure Barillé; Nicolas Harin³; Marta Román1¹⁴; Pierre Gernez¹; Laurent Barillé¹},
   pdfkeywords={Remote Sensing, Pigment Composition, Seagrass, Coastal
 Ecosystems, Heatwaves},
   colorlinks=true,
@@ -196,9 +195,9 @@ Ffinian Rowe Davies¹ \and Philippe Rosa¹ \and Augustin Debly¹ \and Maria
 Laura Zoffoli\footnote{Consiglio Nazionale delle Ricerche, Istituto di
   Scienze Marine (CNR-ISMAR), 00133 Rome, Italy} \and Anne-Laure
 Barillé\footnote{Bio-littoral, Immeuble Le Nevada, 2 Rue du Château de
-  l'Eraudière, 44300 Nantes, France} \and Nicolas Harin³ \and Pierre
-Gernez¹ \and Laurent Barillé¹}
-\date{2025-02-17}
+  l'Eraudière, 44300 Nantes, France} \and Nicolas Harin³ \and Marta
+Román1¹⁴ \and Pierre Gernez¹ \and Laurent Barillé¹}
+\date{2025-02-19}
 
 \begin{document}
 \maketitle
@@ -208,7 +207,7 @@ stabilizing sediments, and contributing to carbon sequestration.
 However, climate change has increased the frequency and intensity of
 heatwaves, posing a significant threat to seagrass health. This study
 investigates the effects of marine and atmospheric heatwaves on the
-spectral reflectance of the intertidal seagrass Zostera noltei.
+spectral reflectance of the intertidal seagrass \emph{Zostera noltei}.
 Laboratory experiments were conducted under controlled heatwave
 conditions, where hyperspectral reflectance measurements were taken to
 assess the impacts over time. Heatwaves caused a substantial decline in
@@ -228,10 +227,10 @@ intertidal areas exposed to temperatures exceeding 32°C for over 13.5
 hours per day. These findings highlight the potential of spectral
 reflectance as a tool for detecting early signs of heatwave-induced
 stress in seagrasses, offering a valuable method for remote
-sensing-based habitat assessment, and the need for continuous monitoring
-of seagrass meadows under the current and future climate regimes,
-underscoring the potential of remote sensing to capture rapid
-environmental changes in intertidal zones.
+sensing-based habitat assessment. The present study underscores the
+potential of remote sensing to capture rapid environmental changes in
+intertidal zones, enabling for continuous monitoring of seagrass meadows
+under the current and future climate regimes.
 \end{abstract}
 
 
@@ -247,95 +246,93 @@ marine and atmospheric heatwaves posing profound risks to their health
 and functionality. This study investigates the impact of these extreme
 thermal events on the intertidal seagrass, employing a combination of
 laboratory-controlled experiments and satellite-based remote sensing to
-capture changes in spectral reflectance and assess the broader
-ecological implications.
+capture changes in spectral reflectance and to assess its ecological
+implications.
 
 During laboratory experiments, seagrass of the species \emph{Zostera
-noltei} were exposed to controlled simulated heatwave conditions to
-assess the physiological and structural impacts of extreme thermal
-stress. The experimental design involved placing seagrass samples in
-intertidal chambers that simulated natural tidal cycles, allowing to
-closely regulate temperature conditions during both high and low tides.
-One chamber served as a control, maintaining typical seasonal
-temperatures, while the other was used to simulate heatwave conditions
-with progressively increasing air and water temperatures to mimic an
-actual heatwave event observed in the field. Hyperspectral reflectance
-measurements were recorded at regular intervals during low-tide to
-monitor changes in the seagrass over time. Heatwave exposure resulted in
-a significant reduction in reflectance, particularly in the green
-(around 560 nm) and near-infrared (NIR) regions of the spectrum. This
-decline in reflectance was closely linked to visible leaf browning,
-suggesting alterations in pigment content, in the internal structure of
-seagrass leaves and their overall vitality. The green reflectance
-decline indicates a reduction in the plant's health, while changes in
-NIR reflectance often relate to the internal arrangement of cells and
-air spaces, which are sensitive to heat-induced damage. Vegetation
-indices like the Normalized Difference Vegetation Index (NDVI) and the
-Green Leaf Index (GLI), which are indicative of the overall health and
-structural integrity of vegetation, showed marked decreases under
-heatwave conditions, with NDVI dropping by up to 34\% and GLI by 57\%.
-This significant reduction highlights the adverse effects on the
-seagrass's ability to maintain its normal physiological processes under
-heat stress. To quantify these changes more effectively, a novel
-Seagrass Heat Shock Index (SHSI) was developed. The SHSI, applicable on
-emerged seagrass, was particularly effective in detecting the transition
-from green leaves to darkened, stressed leaves, providing a sensitive
-and reliable tool for assessing thermal stress effects on seagrass. By
-focusing on specific changes in reflectance across certain spectral
-bands, the SHSI allowed for a clear differentiation between unimpacted
-and impacted vegetation, capturing the onset of heat-induced stress with
-high accuracy. This sensitivity makes the SHSI valuable for early
+noltei} were exposed to controlled simulated heatwave conditions during
+three days to assess the physiological and structural impacts of extreme
+thermal stress on their spectral reflectance. The experimental design
+involved placing seagrass samples in intertidal chambers that simulated
+natural tidal cycles, allowing to precisely regulate temperature
+conditions during both high and low tides. One chamber served as a
+control, maintaining typical seasonal temperatures, while the other was
+used to simulate heatwave conditions by progressively increasing air and
+water temperatures to mimic an actual heatwave event observed in the
+field. Hyperspectral reflectance measurements were recorded at regular
+intervals during low-tide to monitor changes in the seagrass over time.
+After two days of heatwave exposure the reflectance decreased
+significantly, particularly in the green (around 560 nm) and
+near-infrared (NIR) regions of the spectrum. This decline in reflectance
+was closely linked to visible leaf browning, suggesting alterations in
+pigment content, in the internal structure of seagrass leaves and their
+overall physiological performance. The green reflectance decline
+indicated a reduction in the plant's photosynthetic capacity, while
+changes in NIR reflectance were related to the heat-indiced damage to
+internal arrangement of cells and air spaces. Vegetation indices like
+the Normalized Difference Vegetation Index (NDVI) and the Green Leaf
+Index (GLI), which are indicative of the overall health and structural
+integrity of vegetation, showed marked decreases under heatwave
+conditions, with NDVI dropping by up to 34\% and GLI by 57\%. This
+reduction highlights the adverse effects on the seagrass's ability to
+maintain its normal physiological processes under heat stress. To
+quantify these changes more effectively, a novel Seagrass Heat Shock
+Index (SHSI) was developed. The SHSI, applicable on emerged seagrass,
+was particularly effective in detecting the transition from green leaves
+to darkened, stressed leaves, providing a sensitive and reliable tool
+for assessing thermal stress effects on seagrass. By focusing on
+specific changes in reflectance across certain spectral bands, the SHSI
+allowed for a clear differentiation between unimpacted and impacted
+vegetation, capturing the onset of heat-induced stress with high
+accuracy. This sensitivity makes the SHSI valuable for early
 intervention, enabling managers and researchers to identify vulnerable
 seagrass meadows before substantial damage occurs, thereby facilitating
 more timely conservation measures.
 
 Complementing the experimental data, Sentinel-2 observations provided
 clear evidence of the effects of a documented heatwave event in South
-Brittany, France, on natural seagrass meadows. These intertidal zones
-were exposed to extreme air temperatures up to 32°C for more than 13.5
-hours per day, leading to significant leaf darkening, which affected up
-to 24\% of the meadow's area. The satellite-derived SHSI indicated a
-strong spatial correlation between prolonged heat exposure and areas
-experiencing spectral darkening, highlighting the susceptibility of
-intertidal seagrasses to extended thermal stress. Spatial analysis
-showed that darkening was especially pronounced in the higher intertidal
-regions, where seagrasses were exposed to air for longer durations
-during low tide, underlining the interaction between tidal exposure and
-thermal stress. However, Sentinel-2 data one month after the heatwave,
-showed partial recovery in some areas, suggesting a certain level of
-resilience in \emph{Zostera noltei}. Despite this recovery, the
+Brittany, France, on natural seagrass meadows in September 2021. These
+intertidal zones were exposed to extreme air temperatures up to 32°C for
+more than 13.5 hours per day, leading to significant leaf darkening,
+which affected up to 24\% of the meadow's area. The satellite-derived
+SHSI indicated a strong spatial correlation between prolonged heat
+exposure and areas experiencing spectral darkening, which was consistent
+with the laboratory experiment. Spatial analysis showed that darkening
+was especially pronounced in the higher intertidal regions, where
+seagrasses were exposed to air for longer durations during low tide,
+underlining the interaction between tidal exposure and thermal stress.
+Using a Sentinel-2 image acquired one month after the heatwave, SHSI
+showed partial recovery of darkened patches. Despite this recovery, the
 seagrasses that had experienced the most severe darkening did not fully
-return to their original state, indicating that while seagrass meadows
-have some capacity for resilience, prolonged or repeated thermal stress
-can have lasting impacts, particularly in the more exposed intertidal
-regions. This highlights the need for focused conservation efforts to
-support their recovery and enhance their resilience in the face of
-increasing climate-driven thermal extremes.
+return to their original state, indicating that while \emph{Z. noltei}
+meadows have some capacity for resilience, prolonged or repeated thermal
+stress can have lasting impacts, particularly in the more exposed
+intertidal regions. This highlights the need for focused conservation
+efforts to support their recovery and enhance their resilience in the
+face of increasing climate-driven thermal extremes.
 
 The combination of laboratory-controlled experiments and satellite-based
 remote sensing provided a comprehensive understanding of the impacts of
 heatwaves on seagrass meadows at multiple scales, from individual
-leaf-level responses to entire meadow-wide effects. This integrated
-approach highlights the potential of leveraging both detailed local
-observations and large-scale satellite data to effectively monitor
-ecosystem changes, offering valuable insights for the management and
-conservation of these vulnerable habitats. The study underscores the
-critical role of spectral reflectance as an early warning indicator of
-heatwave-induced stress, laying the foundation for remote sensing-based
-monitoring and conservation efforts. By employing innovative indices
-like the Seagrass Heat Shock Index (SHSI), we capture subtle yet
-ecologically significant changes, advancing the precision of habitat
-assessments in intertidal zones. As climate scenarios predict more
-frequent and intense heatwaves, the need for continuous monitoring of
-intertidal seagrass meadows becomes increasingly urgent. This research
-demonstrates the efficacy of remote sensing in capturing rapid
-environmental changes, providing a framework for mitigating the impacts
-of climate-driven stressors and calling for adaptive conservation
-strategies. These strategies should integrate advancements in remote
-sensing technologies with targeted field-based interventions to preserve
-the resilience of intertidal seagrass meadows, thereby addressing the
-escalating challenges posed by climate change and ensuring the continued
-health of these indispensable coastal habitats.
+leaf-level responses to entire meadow-wide effects, offering valuable
+insights for the management and conservation of these vulnerable
+habitats. The study underscores the critical role of spectral
+reflectance as an early warning indicator of heatwave-induced stress,
+laying the foundation for remote sensing-based monitoring and
+conservation efforts. By employing innovative indices like the Seagrass
+Heat Shock Index (SHSI), we captured ecologically significant changes in
+the physiological performance of \emph{Z. noltei}, advancing the
+precision of habitat assessments in intertidal zones. As climate
+scenarios predict more frequent and intense heatwaves, the need for
+continuous monitoring of intertidal seagrass meadows becomes
+increasingly urgent. This research demonstrates the efficacy of remote
+sensing in capturing rapid environmental changes, providing a framework
+for mitigating the impacts of climate-driven stressors and calling for
+adaptive conservation strategies. These strategies should integrate
+advancements in remote sensing technologies with targeted field-based
+interventions to preserve the resilience of intertidal seagrass meadows,
+thereby addressing the escalating challenges posed by climate change and
+ensuring the continued health of these indispensable coastal habitats.
 
 \section{Introduction}\label{introduction}
 
@@ -357,24 +354,25 @@ seagrass is vital for maintaining the biodiversity and productivity of
 coastal regions (Ramesh and Mohanraju, 2020; Scott et al., 2018).
 
 Despite their crucial role in marine ecosystems, seagrasses face
-numerous threats that compromise their health and functionality. These
-habitats are subjected to a combination of aquatic and aerial
-conditions, facing impact from terrestrial and aquatic stressors.
-Coastal development and human activities are primary threats, reducing
-the available habitat for seagrasses and increasing water turbidity,
-limiting light penetration, and photosynthesis (Waycott et al., 2009).
-Seagrasses are also threatened by runoff from agricultural fields and
-urban areas leading to nutrient enrichment. Eutrophication promotes the
-growth of seaweed in coastal waters, causing macroalgal blooms that
-compete with seagrasses for light and nutrients (Oiry et al., 2024;
-Thomsen et al., 2023). Pollution from industrial and agricultural
-sources introduces harmful chemicals and heavy metals into coastal
-waters, posing toxic risks to seagrass health (Bastos et al., 2023;
-Green et al., 2021; Zahoor and Mushtaq, 2023). Among manifold
-anthropogenic stressors, heatwaves (HWs), exacerbated by climate change,
-pose a severe threat to seagrasses, with catastrophic dieback events
-observed woldwide (Carlson et al., 2018; Marbà and Duarte, 2010; Moore
-and Jarvis, 2008; Strydom et al., 2020; Thomson et al., 2015).
+numerous threats that compromise their health and functionality.
+Intertidal seagrasses are subjected to a combination of aquatic and
+aerial conditions linked with tidal cycles, and face disturbance from
+terrestrial and aquatic stressors. Coastal development and human
+activities are primary threats, reducing the available habitat for
+seagrasses and increasing water turbidity, limiting light penetration,
+and photosynthesis (Waycott et al., 2009). Seagrasses are also
+threatened by runoff from agricultural fields and urban areas leading to
+nutrient enrichment. Eutrophication promotes the growth of seaweed in
+coastal waters, causing macroalgal blooms that compete with seagrasses
+for light and nutrients (Brun et al., 2003; Oiry et al., 2024; Thomsen
+et al., 2023). Pollution from industrial and agricultural sources
+introduces harmful chemicals and heavy metals into coastal waters,
+posing toxic risks to seagrass health (Bastos et al., 2023; Green et
+al., 2021; Zahoor and Mushtaq, 2023). Among manifold anthropogenic
+stressors, heatwaves (HWs), exacerbated by climate change, pose a severe
+threat to seagrasses, with catastrophic dieback events observed woldwide
+(Carlson et al., 2018; Marbà and Duarte, 2010; Moore and Jarvis, 2008;
+Strydom et al., 2020; Thomson et al., 2015).
 
 Marine Heatwaves (MHWs) are defined by Hobday et al. (2016) as prolonged
 discrete anomalously warm water events, while Atmospheric Heatwaves
@@ -391,12 +389,23 @@ high mortality rates, and reduced biomass (Sawall et al., 2021).
 Similarly, \emph{Cymodocea nodosa} shows increased photosynthetic
 activity during HWs but suffers negative effects on photosynthetic
 performance and leaf biomass during recovery (Deguette et al., 2022).
-Additionally, different populations of \emph{Zostera marina} along the
-European thermal gradient exhibit varied photophysiological responses
-during the recovery phase of HWs, indicating differential adaptation
-capabilities among populations (Winters et al., 2011). These events
-intensify other stressors, such as overgrazing and seed burial,
-compromising recruitment (Guerrero-Meseguer et al., 2020).
+Additionally, different populations of Zostera marina along the European
+thermal gradient exhibit varied photophysiological responses during the
+recovery phase of HWs, indicating differential adaptation capabilities
+among populations (Winters et al., 2011). High-latitude populations
+exhibited prolonged declines in photophysiological performance even
+after temperatures returned to control levels, whereas the low-latitude
+Adriatic population showed full recovery (Winters et al., 2011). These
+events intensify other stressors, such as overgrazing and seed burial,
+compromising recruitment (Guerrero-Meseguer et al., 2020). Although
+extensive research exists on marine heatwaves' effects on subtidal
+seagrasses (Arias-Ortiz et al., 2018; Deguette et al., 2022; Strydom et
+al., 2020), less attention has been given to intertidal habitats and
+even less to the effect of atmospheric extreme events on intertidal
+seagrass. Nonetheless, recent research showed that the low tide exposure
+of \emph{Zostera noltei} to a simulated four-day atmospheric HW caused
+significant decreases in its photosynthetic efficiency, resulting in
+leaf necrosis and decay (Román et al., 2023).
 
 The increased occurrence of extreme climate events calls for the
 implementation of monitoring strategies able to provide detailed and
@@ -433,10 +442,9 @@ impact of heat stress on seagrass reflectance. The findings will then be
 applied to satellite remote sensing images, providing critical insights
 into the spatial extent and temporal dynamics of HW effects on seagrass
 meadows. By linking experimental results with large-scale observations
-of seagrass leaves' browning, the study plans to underscore the
-potential of remote sensing to enhance our understanding of seagrass
-responses to extreme thermal events across diverse settings and
-timescales.
+of seagrass leaves' browning, the study aims to underscore the potential
+of remote sensing to enhance our understanding of seagrass responses to
+extreme thermal events across diverse settings and timescales.
 
 \section{Material \& Methods}\label{material-methods}
 
@@ -450,27 +458,29 @@ Seagrass samples were taken in summer 2024, at low tide, from a
 France (46°57'32.0''N, 2°10'37.0''W). A metal coring devices was used to
 sample seagrass from an area of 30x15x5 cm (length x width x depth,
 respectively), maintaining the sediment structure and avoiding damage to
-seagrass rhizomes and leaves (Figure~\ref{fig-design} A). This coring
-devices reduced the variability between each sample. Samples including
-seagrass, sediment, meiofauna, and macrofauna, were placed in plastic
-trays. Keeping the entire biota allowed for natural interactions between
-components and reduced stress on the seagrass. Seawater was added to
-each tray to avoid hydric stress caused by insufficient moisture during
-transportation (1h drive from the laboratory). Simultaneously, seawater
-was sampled from a nearby site and transported to the lab, where it was
-filtered using a 0.22 µm nitrocellulose filter to remove suspended
-particulate matter. The filtered seawater was used in the acclimation
-tank and the intertidal chambers. The seagrasses were acclimated for one
-week with a water temperature of 17°C, matching the \emph{in situ}
-temperature during sampling, and a photosynthetically active radiation
-(PAR) of 150 µmol.s\textsuperscript{-1}.m\textsuperscript{-2}.
+seagrass rhizomes and leaves (Figure~\ref{fig-design} A). These coring
+device enabled the collection of sediment samples at a consistent depth,
+minimizing variability between samples. A total of six samples were
+collected. Samples including seagrass, sediment, meiofauna, and
+macrofauna, were placed in plastic trays. Keeping the entire biota
+allowed for natural interactions between components and reduced stress
+on the seagrass. Seawater was added to each tray to avoid hydric stress
+caused by insufficient moisture during transportation (1h drive from the
+laboratory). Simultaneously, seawater was sampled 4km away from the
+seagrass sampling site and transported to the lab, where it was filtered
+using a 0.22 µm nitrocellulose filter to remove suspended particulate
+matter. The filtered seawater was used in the acclimation tank and the
+intertidal chambers. The seagrasses were acclimated for one week with a
+water temperature of 17°C, matching the \emph{in situ} temperature
+during sampling, and a photosynthetically active radiation (PAR) of 150
+µmol.s\textsuperscript{-1}.m\textsuperscript{-2}.
 
 \phantomsection\label{cell-fig-design}
 \begin{figure}[H]
 
 \centering{
 
-\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/Experimental_design.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/Experimental_design.png}
 
 }
 
@@ -478,7 +488,7 @@ temperature during sampling, and a photosynthetically active radiation
 field sampling using a coring device; B: Intertidal chamber used during
 the experiment; C: Seagrass sample inside a chamber during the
 experiment at high tide; D: Treatment sample at the start of the
-experiment; E: Treatment sample at the end of the experiment, 2 days
+experiment; E: Treatment sample at the end of the experiment, 3 days
 after the start of the HW event.}
 
 \end{figure}%
@@ -488,9 +498,10 @@ after the start of the HW event.}
 A tidal cycle (i.e.~regularly alternating 6h of low-tide and 6h of
 high-tide) was simulated in the laboratory using an intertidal chamber
 system from ElectricBlue® (Figure~\ref{fig-design} B ; Electric Blue
-(2023)). The transition between low tide and high tide was binary and
-took about 15 minutes to be completed after initiation. During the phase
-of high tide, a volume of 30 L of filtered seawater was pumped and
+(2023)). The experimental setup allowed only two tidal states: high tide
+or low tide, with no intermediate stages. The transition between these
+states took about 15 minutes to complete after initiation. During the
+phase of high tide, a volume of 30 L of filtered seawater was pumped and
 circulated through the chamber (Figure~\ref{fig-design} B, C). During
 low tide, the seagrass sample was emerged. The acclimated seagrasses
 were split into two subsets and placed in two independent chambers used
@@ -501,21 +512,23 @@ achieve a Photosynthetically Active Radiation (PAR) intensity of up to
 400 μmol·m⁻²·s⁻¹, a filament bulb was added inside the chambers. During
 the diurnal phase of the experiment, the PAR was kept constant in both
 intertidal chambers. To follow the circadian cycle, these lights (both
-LED and filament bulb) Were turned on and off each day, at the time of
+LED and filament bulb) were turned on and off each day, at the time of
 sunrise and sunset, respectively.
 
 Air temperature and water temperature were controlled inside the
 experiment chambers in order to reproduce the range of variability
-observed in the field. Field temperature was measured using \emph{in
-situ sensors} (T7.3 EnvLoggers from ElectricBlue®) deployed at the
-sampling site in August 2024. In complement, the daily temperature
-maxima recorded \emph{in situ} were compared with measurements from the
-nearest Météo France weather station (Annexe A1,
-Section~\ref{sec-AnnexeA}). The control chamber was kept at temperatures
-representing typical seasonal conditions, with water temperatures at
-18°C and air temperatures from 19°C to 23°C, following natural daily
-temperature fluctuations (Figure~\ref{fig-Profile}). For the
-experimental treatment, the air temperature was adjusted to mimic an AHW
+observed in the field (Figure~\ref{fig-Profile}). Field temperature was
+measured using \emph{in situ} sensors (T7.3 EnvLoggers from
+ElectricBlue®) deployed at the sampling site in August 2024. The loggers
+were positioned along a transect from the upper to the lower intertidal
+zone, attached to pre-existing wooden poles at the sediment surface. In
+complement, the daily temperature maxima recorded \emph{in situ} were
+compared with measurements from the nearest Météo France weather station
+(Annexe A1, Section~\ref{sec-AnnexeA}). The control chamber was kept at
+temperatures representing typical summer conditions, with water
+temperatures at 18°C and air temperatures from 19°C to 23°C, following
+natural daily temperature fluctuations (Figure~\ref{fig-Profile}). In
+the treatment chamber, the air temperature was adjusted to mimic an AHW
 that affected the seagrass meadow in Quiberon, South Brittany, France
 (47°35'40.0''N, 3°07'30.0''W), from September 2 to September 6, 2021.
 Air temperature in the experimental chamber was set to vary from 23°C
@@ -526,7 +539,7 @@ starting at the seasonal baseline (18°C) and rising incrementally by
 0.5°C daily to simulate the increasing temperatures during the event.
 This aimed to reproduce the thermal stress experienced by the seagrass
 meadow during a MHW (Figure~\ref{fig-Profile}). The experiment, with
-both treatment and control tansk, was repeated three times to obtain
+both treatment and control chambers, was repeated three times to obtain
 replicates (hereafter referred to as ``Run'').
 
 \phantomsection\label{cell-fig-Profile}
@@ -534,7 +547,7 @@ replicates (hereafter referred to as ``Run'').
 
 \centering{
 
-\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/Chamber_Profils.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/Chamber_Profils.png}
 
 }
 
@@ -642,7 +655,7 @@ broader remote sensing application.
 
 \centering{
 
-\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/High_res/Plot_explain_SHSI.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/High_res/Plot_explain_SHSI.png}
 
 }
 
@@ -674,7 +687,7 @@ estimation of the leaf coloration (Figure~\ref{fig-quiberonMap}).
 
 \centering{
 
-\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/Quiberon_map.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/Quiberon_map.png}
 
 }
 
@@ -696,7 +709,7 @@ the field).}
 
 \centering{
 
-\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/img_Quiberon.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/img_Quiberon.png}
 
 }
 
@@ -714,11 +727,10 @@ detection}\label{temperature-data-and-hw-detection}
 
 \paragraph{Air temperature}\label{air-temperature}
 
-Since 2024, Meteo France weather data has been freely and openly
-accessible. Hourly air temperature data from a nearby weather station
-(Lorient-Lann Bihoue, 47°45'46''N 3°26'11''W) was retrieved. For this
-station, more than 395,000 hourly observations were available since
-1952.
+Hourly air temperature data from 1952 to 2024 (more than 395,000
+observation) from a nearby weather station (Lorient-Lann Bihoue,
+47°45'46''N 3°26'11''W) was retrieved from Meteo France
+(https://portail-api.meteofrance.fr).
 
 \paragraph{Water temperature}\label{water-temperature}
 
@@ -735,24 +747,25 @@ characterization}\label{heatwave-detection-and-characterization}
 MHW and AHW detection was performed using the HeatwaveR package in R
 (Schlegel and Smit, 2018). This package utilizes the methodology
 proposed by Hobday et al. (2016) to detect HW events. The annual
-climatology of both air and water temperature was computed. HWs were
-defined as events when the temperature exceeded the 90th percentile of
-the climatology during three consecutive days. Furthermore, the severity
-of each event was assessed using the methodology proposed by Hobday et
-al. (2018).
+climatology (i.e.~the average temperature of each day of the year since
+the start of the time serie) of both air and water temperature was
+computed. HWs were defined as events when the temperature exceeded the
+90th percentile of the climatology during three consecutive days.
+Furthermore, the severity of each event was assessed using the
+methodology proposed by Hobday et al. (2018).
 
 \subsubsection{Satellite observations}\label{satellite-observations}
 
-Three Sentinel-2 images of the study site were selected in 2021 to
-assess the effect of thecombined AHW and MHW (``HW event'', henceforth)
-on the seagrass meadow: the first image was taken 5 days before the HW
-(1st of September 2021), the second image during the HW (6th of
-September 2021) and the third image one month later (8th of October
-2021). Level-2 data were downloaded from the Copernicus open access hub
-(European Space Agency, 2024a) provided by the European Space Agency
-(ESA). Level-2 images consist of orthorectified surface reflectance
-corrected from the effect of the atmosphere using ESA's standard
-correction (i.e., Sen2cor, European Space Agency (2024b)).
+Three 2021 Sentinel-2 images of the study site were selected to assess
+the effect of thecombined AHW and MHW (``HW event'', henceforth) on the
+seagrass meadow: the first image was taken 5 days before the HW (1st of
+September 2021), the second image during the HW (6th of September 2021)
+and the third image one month later (8th of October 2021). Level-2 data
+were downloaded from the Copernicus open access hub (European Space
+Agency, 2024a) provided by the European Space Agency (ESA). Level-2
+images consist of orthorectified surface reflectance corrected from the
+effect of the atmosphere using ESA's standard correction (i.e., Sen2cor,
+European Space Agency (2024b)).
 
 The SHSI (Equation~\ref{eq-SDI}) was computed and mapped for each image.
 For the pixel containing a field QP (Figure~\ref{fig-quiberonMap}), the
@@ -762,17 +775,16 @@ after the HW event.
 \subsubsection{Emersion time of the seagrass
 meadow}\label{emersion-time-of-the-seagrass-meadow}
 
-The post-HW seagrass discoloration is likely related to the emersion
-time and intertidal topography. The spatial distribution of seagrass
-emersion time during low tide was estimated using bathymetric and water
-level data. High resolution bathymetry data (Litto3D® product) for the
-Quiberon intertidal meadow were sourced from the ``Service
-Hydrographique et Océanographique de la Marine'' (SHOM, 2021), while
-one-minute interval water level data were downloaded from
-Intergovernmental Oceanographic Commission data portal (IOC, 2024),
-using measurements from the nearest tide gauge at Le Crouesty. A 2.85 m
-vertical correction was applied to the Litto3D data to align its zero
-reference with that of the water level data (RAM, SHOM (2022))
+The spatial distribution of seagrass emersion time during low tide was
+estimated using bathymetric and water level data. High resolution
+bathymetry data (Litto3D® product) for the Quiberon intertidal meadow
+were sourced from the ``Service Hydrographique et Océanographique de la
+Marine'' (SHOM, 2021), while one-minute interval water level data were
+downloaded from Intergovernmental Oceanographic Commission data portal
+(IOC, 2024), using measurements from the nearest tide gauge at Le
+Crouesty. A 2.85 m vertical correction was applied to the Litto3D data
+to align its zero reference with that of the water level data (RAM, SHOM
+(2022))
 
 Once aligned, the corrected elevation was compared to water height for
 each pixel and each time step during the HW event. The emersion time was
@@ -787,7 +799,7 @@ treatments (Impacted vs Unimpacted). To analyze the effect of HW on the
 reflectance indices observed during the lab experiment, the relative
 change was modeled as a function of Days (1-3: Discrete) with Runs (1-3:
 Factor) and Timestep within Run (1-6: Factor) as cross random factors.
-Satellite-derived indices were modeled as a function of Date (1-3:
+Satellite-derived SHSI were modeled as a function of Date (1-3:
 Discrete) and Treatment (Impacted vs Unimpacted: Categorical). A General
 Additive Model (GAM) was used to assess the relationship between
 relative SHSI change with emersion time. SHSI was modeled as a function
@@ -831,24 +843,24 @@ pronounced, suggesting a decrease of chlorophyll-a concentration.
 
 \centering{
 
-\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/plot_Spectra_exp.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/plot_Spectra_exp.png}
 
 }
 
 \caption{\label{fig-Exp_Spectra}Standardized hyperspectral reflectance
 of \emph{Z. noltei} leaves during the HW experiment, showing the Control
-(Left) and Treatment (Right) measurments. The color indicates the
+(Left) and Treatment (Right) measurements. The color indicates the
 progression along the experiment from the beginning (Day 1: Green),
 middle (Day 2: Yellow) and end (Day 3: Brown). A min-max standardization
-has been applied to each individual spectrum.}
+was applied to each individual spectrum.}
 
 \end{figure}%
 
 \subsubsection{Heatwave effect on radiometric
 indices}\label{heatwave-effect-on-radiometric-indices}
 
-All radiometric indices, \(R''_{665 \, \text{nm}}\), NDVI, GLI and SHSI,
-were impacted by the experimental heatwave
+All radiometric indices, \(R''_{665 \, \text{nm}}\), NDVI, GLI and SHSI
+changed after the experimental heatwave
 (Figure~\ref{fig-Exp_Spectral_indices}).
 
 At the start of the experiment (day 1), the difference between Treatment
@@ -859,9 +871,9 @@ decline of 68\%, 31\% and 54 for \(R''_{665 \, \text{nm}}\), NDVI and
 GLI.
 
 Unlike the other metrics, the SHSI of the Treatment was on average 55 \%
-higher than that of the Control at the start of the experiment (day 1 ;
-Figure~\ref{fig-Exp_Spectral_indices} D). By day 2, the SHSI exhibited a
-rapid increase of approximately 241 \%, eventually reaching an overall
+higher than that of the Control in day 1
+(Figure~\ref{fig-Exp_Spectral_indices} D). By day 2, the SHSI exhibited
+a rapid increase of approximately 241 \%, eventually reaching an overall
 rise of 420 \% by day 3.
 
 With a maximum deviation of 420 \%, SHSI emerges as the most sensitive
@@ -873,13 +885,13 @@ considered for the next steps of the study.
 
 \centering{
 
-\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/merged_indices.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/merged_indices.png}
 
 }
 
 \caption{\label{fig-Exp_Spectral_indices}Comparison of spectral metrics
 for detecting reflectance changes of seagrass leaves after a HW. A:
-Relative difference between the Control and the Treatment over time for
+Relative difference between the Treatment and the Control over time for
 A) the second derivative at 665 nm B) the NDVI C) the GLI and D) the
 SHSI. Points indicate raw data, the line represents a GLM estimates,
 while the shaded area is the model's 89 \% confidence interval. The
@@ -895,20 +907,20 @@ median values of -0.11 and -0.08, respectively. By the end of the
 experiment, seagrasses in the Treatment group exhibited a median SHSI of
 0.15, consistent with their visibly darkened appearance. In contrast,
 the Control group retained a green appearance throughout the experiment,
-with a median SHSI of -0.07. In the following section, a negative SHSI
-will be considered indicative of non-impacted seagrasses, while a
-positive SHSI will be used as a marker for impacted seagrasses.
+with a median SHSI of -0.07. A negative SHSI was considered indicative
+of non-impacted seagrasses, while a positive SHSI was used as a marker
+for impacted seagrasses.
 
 \phantomsection\label{cell-fig-SDI_over_Time}
 \begin{figure}[H]
 
 \centering{
 
-\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/SDI_exp_overtime.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/SDI_exp_overtime.png}
 
 }
 
-\caption{\label{fig-SDI_over_Time}Median of the SHSI across expimental
+\caption{\label{fig-SDI_over_Time}Median of the SHSI across experimental
 runs, on each day of the experiment. Error structure represent the 89 \%
 confidence interval (Quantiles 0.055 and 0.945 for lower and upper
 ribbon, respectively). The green line shows values of the Control group
@@ -958,7 +970,7 @@ true color composition (Figure~\ref{fig-S2_comparison} C)
 
 \centering{
 
-\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/Heatwaves_S2_plot.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/Heatwaves_S2_plot.png}
 
 }
 
@@ -1007,7 +1019,7 @@ to values recorded on the 1st of September.
 
 \centering{
 
-\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/SHSI_S2.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/SHSI_S2.png}
 
 }
 
@@ -1016,7 +1028,7 @@ from Sentinel-2, before (1st of September 2021), during (6th of
 September 2021) and after (8th of October 2021) a HW in the seagrass
 meadow of Quiberon (South Brittany, France). The relative SHSI
 difference was calulated using the 1st of September as a reference. SHSI
-was calculated for two categories of Quardrat Points (QPs;
+was calculated for two categories of Quadrat Points (QPs;
 Figure~\ref{fig-S2_comparison}): unimpacted seagrass (green) and
 impacted seagrass (orange). Points represent the estimated value of the
 SHSI using a GLM, while the error bar represents the 89\% confidence
@@ -1042,13 +1054,14 @@ their green coloration (Figure~\ref{fig-Map_darkening_Bathy} C).
 
 \centering{
 
-\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/SHSI_S2_map.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/SHSI_S2_map.png}
 
 }
 
 \caption{\label{fig-Map_darkening_Bathy}Sentinel-2 color composition of
-the seagrass meadow of Quiberon, South Brittany, France, Before (A),
-During (B) and After (C) the HW and SHSI applied to the same Sentinel-2
+the seagrass meadow of Quiberon, South Brittany, France, Before (A ; 1st
+of September 2021), During (B ; 6th of September 2021) and After (C ;
+8th of October 2021) the HW and SHSI applied to the same Sentinel-2
 images Before (D), During (E) and After (F) the HW.}
 
 \end{figure}%
@@ -1065,7 +1078,7 @@ daily.
 
 \centering{
 
-\includegraphics[width=0.95\textwidth,height=\textheight]{Figs/Low_res/GAM_emersion.png}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{Figs/Low_res/GAM_emersion.png}
 
 }
 
@@ -1079,269 +1092,184 @@ corresponding to a single pixel of the meadow.}
 
 \section{Discussion}\label{discussion}
 
-\subsection{Physiological impacts of heatwaves on
-seagrasses}\label{physiological-impacts-of-heatwaves-on-seagrasses}
+\subsection{\texorpdfstring{Effect of heatwaves on \emph{Zostera noltei}
+reflectance}{Effect of heatwaves on Zostera noltei reflectance}}\label{effect-of-heatwaves-on-zostera-noltei-reflectance}
 
-Although extensive research exists on marine heatwaves' effects on
-subtidal seagrasses (Arias-Ortiz et al., 2018; Deguette et al., 2022;
-Strydom et al., 2020), little attention has been given to intertidal
-habitats and even less to the effect of atmospheric extreme events on
-intertidal seagrass. This study initiates an exploration of how
-intertidal seagrasses respond to the dual influence of MHWs and AHWs,
-underscoring the need for further investigation in this under-explored
-area.
-
-In the present study, significant changes in the reflectance of
-seagrasses exposed to HWs were observed experimentally. These changes
-mainly include a drop in reflectance around 560 nm and another drop
-around 740 nm in the near-infrared part of the spectrum
-(Figure~\ref{fig-Exp_Spectral_indices}). The second derivative at 665 nm
-(R'\,'665), NDVI, and GLI (Figure~\ref{fig-Exp_Spectral_indices} A, B \&
-C) all demonstrated a clear decline over the experimental period. These
-changes suggest a progressive reduction in photosynthetic activity as
-well as potential structural or physiological changes to the leaves,
-such as degraded pigmentation or altered light absorption in the
-treatment group relative to the control as a consequence of the
-simulated HW event. In contrast, SHSI showed a marked increase, reaching
-up to 600\% for some samples by day 3
-(Figure~\ref{fig-Exp_Spectral_indices} D). This positive trend in SHSI
-demonstrates its sensitivity at quantifing seagrass browning. While the
-general trends are consistent across experimental runs, there is some
-variability, particularly evident in the confidence intervals, which are
-wider for SHSI than for the other indices. This suggests that while
-darkening is a consistent response, it may vary in intensity between
-individual samples or experimental runs. Furthermore, the contrasting
-magnitudes of change---especially the pronounced increases in SHSI
-versus the declines in other indices---highlight the sensitivity of SHSI
-to changes associated with seagrass darkening, which could be indicative
-of stress or adaptation responses specific to the treatment conditions.
-
-Change in vegetation color can be multifactorial and has been documented
-in plants under various stress conditions, including thermal stress
-(Dascaliuc et al., 2007; Jones and Clayton-Greene, 1992). Leaf
-blackening in angiosperms, as observed in \emph{Protea neriifolia}, is
-primarily driven by oxidative processes involving the enzyme polyphenol
-oxidase and the oxidation of phenolic compounds. When photosynthesis is
-inhibited by factors such as low light, chemical interference, or
-thermal stress, the plant's production of essential carbohydrates and
-antioxidants diminishes, increasing oxidative stress and leading to
-darkening. Experimental essays have proved that low-oxygen environments
-and the addition of antioxydants like diphenylamine, have been effective
-in reducing these oxidative reactions. In the absence of photosynthesis,
-membrane integrity is also compromised, allowing polyphenol oxidase to
-interact with phenolic compounds, thereby accelerating darkening.
-Furthermore, high temperatures can destabilize membranes, especially in
-chloroplasts, disrupting photosystem II and impairing recovery of
+This study explored the dual effect of MHWs and AHWs on spectral
+reflectance of intertidal seagrasses. Significant changes in the
+reflectance of seagrasses exposed to HWs were observed both in field
+measurements and the laboratory experiment. Effects were drops of
+reflectance around 560 nm and around 740 nm
+(Figure~\ref{fig-Exp_Spectral_indices}) and of the second derivative at
+665 nm (R'\,'665), NDVI, and GLI (Figure~\ref{fig-Exp_Spectral_indices}
+A, B \& C) indexes. These changes suggest a progressive reduction in
+photosynthetic activity as well as potential structural or physiological
+changes to the leaves, such as degraded pigmentation or altered light
+absorption. By contrast, SHSI showed a marked increase, reaching up to
+600\% for some samples by day 3 (Figure~\ref{fig-Exp_Spectral_indices}
+D), which demonstrated its sensitivity at quantifying seagrass browning.
+Moreover, we observed a considerable decrease in the reflectance in the
+NIR regions (700 - 1300 nm) in stressed plants, which is mainly related
+with the destruction of the membranes (chloroplasts, thylakoids, cell
+walls) due to thermal oxidative stress, and the consequent decrease of
+light scattering in NIR range through the leaf surface (Knipling, 1970).
+The leaf darkening observed in plants subjected to thermal stress was
+mainly explained by the oxidation of phenolic compounds by the enzyme
+polyphenol oxidase and with a damage of the photosynthetic apparatus
+(Allakhverdiev et al., 2008). High temperatures destabilize chloroplasts
+membranes, disrupting photosystem II and impairing recovery of
 photosynthetic function. As chlorophyll-a degrades, the ratio of
-pigments shifts, with pigments like carotenoids becoming more prominent,
-leading to a darkening of the leaves.
+pigments shifts, with pigments like carotenoids becoming more prominent
+(Dascaliuc et al., 2007; Jones and Clayton-Greene, 1992). These
+processes can eventually result in growth impairment and plant death.
+The SHSI (Equation~\ref{eq-SDI}) developed in this study leveraged key
+reflectance bands (560, 740 and 840 nm) to detect reductions in the
+green and the Red-Edge regions caused by thermal stress. These
+wavelengths are captured by current multi-spectral satellite missions,
+including Sentinel-2, Pleiades-Neo, WorldView-3, SkySat, and GeoSat-2
+along with upcoming missions (Sentinel-2 Next Generation and Landsat
+Next). Therefore, SHSI can be used to assess the extent and severity of
+darkening events across intertidal seagrass meadows from space. However,
+cloud coverage can limit continuous observations from satellite imagery,
+necessitating the integration of alternative tools, such as
+multi-spectral drone platforms. Combined approaches allow for precise,
+localized monitoring of damaged seagrass meadows immediately after
+extreme events, which is critical for the early detection of ecosystem
+degradation.
 
-\emph{Zostera noltei}, as a species inhabiting the intertidal zone and
-regularly exposed to air, has developed adaptations to minimize hydric
-stress; drying out. For example, it exhibits smaller, narrower leaves
-compared to species residing lower in the intertidal zone, such as
-\emph{Zostera marina}, which helps reduce water loss during air exposure
-periods (Cabaço et al., 2009). However, during intense warming events
-and under high light conditions, desiccation can occur in certain parts
-of the meadow, particularly where seagrass leaves are emerged during
-prolonged periods (Figure~\ref{fig-GAM_Emersion}). Under such hydric
-stress, cellular turgor pressure decreases (the internal cell water
-pressure that maintains cell shape), and concentrations of ions like Na+
-and Cl-- can reach toxic levels. These effects can impair cellular
-functions, enzymatic activity, and membrane stability.
+\subsection{Observations of HW effects in the
+field}\label{observations-of-hw-effects-in-the-field}
 
-In healthy plant leaves, the high infrared reflectance in the
-near-infrared spectral range (700 - 1300 nm) is primarily due to the
-internal cellular structure that scatters light, as well as the absence
-of light absorption by pigments in that spectral range. Once sunlight
-enters the leaf, it is diffused through various layers, particularly the
-spongy mesophyll, which contains air spaces and cell walls with
-different refractive indices. The scattering effect in the NIR is
-intensified because there is minimal absorption allowing light to
-reflect back through the leaf surface. Therefore, once the membranes
-(chloroplasts, thylakoids, cell walls) are destroyed due to oxidative
-stress, the reflectance in the Red Edge and the NIR regions decreases
-significantly (Knipling, 1970).
-
-The influence of heat stress on seagrass enables the detection of leaves
-darkening using remote sensing. The SHSI (Equation~\ref{eq-SDI})
-developed in this study leverages key reflectance bands (560, 740 and
-840 nm) to detect reductions in the green and the Red-Edge regions. SHSI
-can be used to assess the extent and severity of darkening events across
-intertidal seagrass meadows from space. Current multi-spectral satellite
-missions, including Sentinel-2, Pleiades-Neo, WorldView-3, SkySat, and
-GeoSat-2 along with upcoming missions (Sentinel-2 Next Generation and
-Landsat Next), capture reflectance in the three wavelengths used as
-input for SHSI. As climate change advances, remote sensing becomes a
-crucial tool for monitoring cumulative ecological impacts on seagrass
-meadows due to HWs. Although the physiological and structural changes
-occur at the cellular level over short temporal scales, their
-synchronous manifestation across the entire meadow causes changes at
-large spatial scales. Remote sensing, with its synoptic views and
-real-time acquisition capabilities, enables the monitoring of these
-rapid biological responses to anthropogenic stressors. However, cloud
-coverage can limit continuous observations, necessitating the
-integration of alternative tools, such as multi-spectral drone
-platforms. Combined approaches allow for precise, localized monitoring
-of damaged seagrass meadows immediately after extreme events, which is
-critical for the early detection of ecosystem degradation, quick actions
-for habitat conservation and targeted management strategies. Moreover,
-uninterrupted, multi-year data acquisition would strengthen predictive
-ecological models for future heatwave impacts, enhancing the capacity
-for adaptive management and supporting long-term resilience planning for
-seagrass ecosystems.
-
-\subsection{Seagrass resilience to
-heatwaves}\label{seagrass-resilience-to-heatwaves}
-
-Seagrass resilience to heatwaves is a complex and multifaceted issue
-shaped by species-specific traits, geographical location, and concurrent
-environmental stressors (Berger et al., 2024; Canadell and Jackson,
-2021; Hatum et al., 2024). As climate change drives the frequency and
-intensity of marine heatwaves, understanding these dynamics become
-crucial, especially for temperate seagrass meadows composed of
-slow-growing, long-lived species like \emph{Posidonia} spp.,
-\emph{Amphibolis} spp. or \emph{Zostera} spp.. These species, unlike
-their tropical counterparts, tend to be highly vulnerable to abrupt
-environmental changes, struggling to recover from disturbances due to
-their slower growth and longer lifespan. In contrast, colonizing species
-typical of tropical regions, such as \emph{Halodule} spp.,
-\emph{Halophila} spp., and \emph{Syringodium} spp., demonstrate greater
-resilience to warming events and marine heatwaves due to their rapid
-growth and more flexible life strategies (O'Brien et al., 2018).
-
-In our study, we observed a browning effect in the seagrasses, using an
-experimental setup simulating tides with a uniformed period of daily
-exposure. In natural settings, however, bathymetry plays a significant
-role, and depending on depth variations, seagrasses may be exposed for
-even longer periods during low tides (Figure~\ref{fig-GAM_Emersion}).
-This suggests that in situ exposure times could exacerbate the stress
-effects observed, as seagrasses may endure prolonged air exposure. The
-impact of HWs on seagrass ecosystems is further intensified by tidal
-variations, especially in temperate regions with large tidal ranges that
-can exceed 10 meters, such as Mont Saint Michel Bay , France. This
-pronounced tidal amplitude affects intertidal seagrasses like
-\emph{Zostera noltei}, which experience varying durations of air
-exposure based on their position within the intertidal zone. During neap
-tides, seagrasses situated higher in the intertidal zone may remain
-exposed for extended periods, increasing their vulnerability to AHWs.
-Conversely, seagrasses in the lower intertidal zone experience prolonged
-immersion throughout the tidal cycle, making them susceptible to extreme
-MHWs. As a result, both marine and atmospheric HWs can increase stress
-on intertidal seagrass meadows, with effects that may be intensified by
-tidal timing and amplitude. In our study, during the experiment,
-seagrasses were exposed to a symmetric tidal cycle, spending equal
-amounts of time submerged and exposed to air. In the field, this
-configuration occurs only in meadows located at hydrographic zero height
-(mean sea level). Figure~\ref{fig-GAM_Emersion} shows that seagrass
-browning was most pronounced in seagrasses located in the upper
-intertidal zone, where they were exposed to air for approximately 14
-hours per day, while no significant browning was observed around mean
-sea level. This difference can be attributed to the distinct temperature
-conditions experienced by experimental and in situ seagrasses. A way to
-improve our understanding would be to experimentally test different
-temperature scenarios for both air and water, varying in intensity and
-combination, to assess their effects on seagrass browning.
-
-In a simulated heatwave experiment on \emph{Zostera noltei}, resilience
-was evident under short-term moderate stress, with no significant
-changes in photosynthetic performance or survival (Franssen et al.,
-2014; Massa et al., 2009). However, prolonged or more intense heat
-events posed a greater challenge, highlighting the species' limited
-capacity to withstand chronic thermal stress. In the present study,
 Sentinel-2 images acquired before, during, and after a HW event enabled
-the assessment of leaf darkening using the SHSI index. During the HW,
+the assessment of leaf darkening using the SHSI index. Analyses of
+satellite images in Quiberon Bay during the 2021 HW revealed that most
+of the darkening of the meadow took place in the upper intertidal, where
+plants were exposed to air for more than 13 hours per day, while no
+significant browning was observed around mean sea level. This contrasted
+with the experiment, in which seagrasses were exposed to a symmetric
+tidal cycle, spending equal amounts of time submerged and exposed to
+air. However, in the field, this configuration occurs only in meadows
+located at hydrographic zero height (mean sea level). Thus, under the
+same atmospheric temperatures, bathymetry, and therefore, exposure times
+will modulate the stress effects observed, as seagrasses located lower
+in the intertidal may be more resistant to HWs than those in upper
+fringes. Field observations revealed that leaf detachment began after
+the heatwave, causing an apparent decline in seagrass density at the
+upper intertidal. \emph{Zostera noltei}, as a species inhabiting the
+intertidal zone and regularly exposed to air, has developed adaptations
+to minimize hydric stress, such as its narrow leaves, which help reduce
+water loss during air exposure periods (Cabaço et al., 2009).
+Nonetheless, if plants at the upper subtidal are exposed to intense
+heating and irradiance for prolonged periods, these mechanisms may not
+be able to prevent degradation of photosynthetic pigments, decreases in
+photosynthetic capacity and tissue degradation. During the HW,
 Sentinel-2 imagery indicated that impacted seagrass patches (i.e., areas
-exhibiting seagrass darkening) also experienced a sharp decline in NDVI.
-The Sentinel-2 image acquired one month after the HW showed that the
-NDVI of impacted seagrass patches had not recovered to its initial level
-(Figure~\ref{fig-NDVI_GLI_SPC}). NDVI is commonly used as a proxy for
-seagrass cover (Davies et al., 2024a; Zoffoli et al., 2020), with higher
-NDVI values associated with greater seagrass coverage and lower NDVI
-values indicating reduced cover. Our findings demonstrate that heatwaves
-alter the spectral signature of seagrasses, causing a decrease in
-NDVI---and consequently, in the satellite-derived estimate of seagrass
-cover---while the actual coverage observed in the field remains stable
-(see Figure~\ref{fig-QuiberonImg}). This discrepancy underscores a
-limitation of remote sensing in accurately capturing true seagrass cover
-during stress events. It was only after the heatwave that leaf
-detachment began, leading to an actual decline in seagrass density. The
-delayed response in seagrass cover highlights how extreme events can
-compromise seagrass resilience, leaving previously robust patches in a
-weakened state compared to less disturbed areas
-(Figure~\ref{fig-NDVI_GLI_SPC}).
+exhibiting seagrass darkening) experienced a sharp decline in NDVI.
+Moreover, the Sentinel-2 image acquired one month after the HW showed
+that the NDVI of impacted seagrass patches had not recovered to its
+initial level (Figure 10). NDVI is commonly used as a proxy for seagrass
+cover (Figure~\ref{fig-NDVI_GLI_SPC}). NDVI is commonly used as a proxy
+for seagrass cover (Davies et al., 2024a; Zoffoli et al., 2020), with
+higher NDVI values associated with greater seagrass coverage and lower
+NDVI values indicating reduced cover. Our findings demonstrate that
+heatwaves altered the spectral signature of seagrasses, causing a
+decrease in NDVI---and consequently, in the satellite-derived estimate
+of seagrass cover---while the actual coverage observed in the field
+remained stable (see Figure~\ref{fig-QuiberonImg}). This discrepancy
+underscores a limitation of remote sensing in accurately capturing true
+seagrass cover during stress events. As well, the observed changes in
+seagrass reflectance linked with low tide heating and desiccation
+highlight the potential influence of temperature and humidity variations
+on the mapping accuracy of intertidal macrophytes (Peidro-Devesa et al.,
+2024). One month after the heatwave, the SHSI in impacted quadrats
+recovered to similar values to those of the unimpacted ones. Moreover,
+Sentinel-2 images revealed a partial recovery in areas of the mid to low
+intertidal, as shown by their return to green color. These results
+suggested a certain the resilience capacity of \emph{Z. noltei} patches
+after thermal disturbance. \emph{Zostera noltei} is a dynamic,
+fast-growing colonizer species (Roca et al., 2016), with fast leaf
+turnover times and growth rates (Borum et al., 2004) and fast rhizome
+elongation rates (Duarte, 1991). Therefore, the return to green color in
+some parts of the meadow after recovery was the consequence of new leaf
+growth, which was likely sustained by the energy reserves of the
+surviving below ground biomass (Hemminga, 1998).
 
-\subsection{Big picture}\label{big-picture}
+\subsection{\texorpdfstring{Ecological implications od heatwaves impact
+on \emph{Zostera
+noltei}}{Ecological implications od heatwaves impact on Zostera noltei}}\label{ecological-implications-od-heatwaves-impact-on-zostera-noltei}
 
-Given the combined effects of temperature extremes, eutrophication, and
-other anthropogenic pressures, targeted management strategies are
-essential for enhancing seagrass resilience (Loarie et al., 2009).
-Approaches such as reducing local stressors, cultivating heat-tolerant
-genotypes, and investing in restoration initiatives are vital to
-supporting these ecosystems in a warming climate. Although challenges
-remain, the adaptability and potential resilience of certain seagrass
-species offer hope for their persistence amid accelerating ecological
-shifts. In particular, regions that can buffer seagrasses from extreme
-stressors or provide cooler refuges may play a critical role in
-maintaining these valuable ecosystems in the face of global climate
-change (Canadell and Jackson, 2021; De Fouw et al., 2022).
-
-Seagrass meadows function as foundational components of coastal
-ecosystems, sustaining diverse marine communities by providing essential
-habitats, nursery grounds, and trophic resources for fish,
-invertebrates, and migratory birds (Zoffoli et al., 2023). Their dense
-canopies stabilize sediment and protect shorelines from erosion, an
-increasingly crucial role as sea levels rise due to climate change
-(Folmer et al., 2012; Gacia et al., 1999). Recurrent HW events, which
-induce physiological stress like leaf darkening, can severely diminish
-seagrass density, thereby reducing their effectiveness in sediment
-stabilization and wave attenuation, ultimately increasing the risk of
-coastal erosion (Calleja et al., 2007). From a biodiversity perspective,
-degradation of these meadows disrupts intricate food webs, impacting
-commercially significant fish and shellfish populations that rely on
-seagrass for sustenance and refuge. This loss can reduce local
-fisheries' productivity and threaten the livelihoods of coastal
-communities (Unsworth and Cullen-Unsworth, 2014). Furthermore, as
-seagrass meadows decline, their capacity to act as a blue carbon
-sink---critical for climate mitigation---also diminishes, inadvertently
-contributing to increased atmospheric carbon levels (Armitage and
-Fourqurean, 2016; Samper-Villarreal et al., 2020)
+In the present study we observed that heatwave-driven thermal stress
+changed the spectral reflectance of \emph{Z. noltei} leaves, indicating
+photosynthetic pigments degradation, with potential negative
+consequences on health, growth and survival of the above ground biomass.
+In this sense, previous experiments on the effects of warming on
+\emph{Zostera noltei} have shown contrasting results, depending on the
+duration and intensity of heating. In some cases, there were no
+significant changes in photosynthetic performance or survival under
+short-term moderate stress (Franssen et al., 2014), or under gradual
+temperature increases (Román et al., 2022). By contrast, studies focused
+on extreme temperature events have evidenced decreases of photosynthetic
+performance and leaf tissue integrity (Massa et al., 2009; Román et al.,
+2023). Therefore, our findings, jointly with previous research, suggest
+that \emph{Z. noltei} meadows at the upper intertidal could be a
+vulnerable species under the future global warming scenarios, in which
+heatwaves will be more frequent and intense (Climate Change (IPCC),
+2023; Stillman, 2019). The observed tissue degradation, both in the
+laboratory experiment and the field, can eventually result in decreases
+of meadows density and cover under recurrent heatwaves. This decline
+also could affect other species that rely on the provision of refuge
+and/or food by the seagrass canopy (Zoffoli et al., 2023). Moreover, the
+sediment stabilization and wave attenuation could be hampered,
+ultimately increasing the risk of coastal erosion (Calleja et al., 2007;
+Folmer et al., 2012; Gacia et al., 1999). The commercially important
+fish and shellfish populations that rely on seagrass for sustenance and
+refuge could also be impacted, with negative consequences on local
+fisheries' productivity and the livelihoods of coastal communities
+(Unsworth and Cullen-Unsworth, 2014). Furthermore, as seagrass meadows
+decline, their capacity to act as a blue carbon sink---critical for
+climate mitigation---could diminish, contributing to increased
+atmospheric carbon levels (Armitage and Fourqurean, 2016;
+Samper-Villarreal et al., 2020). Given the combined effects of
+temperature extremes, eutrophication, and other anthropogenic pressures,
+targeted management strategies are essential for enhancing seagrass
+resilience (Loarie et al., 2009). Approaches such as reducing local
+stressors, cultivating heat-tolerant genotypes, and investing in
+restoration initiatives are vital to supporting these ecosystems in a
+warming climate. Although challenges remain, the adaptability and
+potential resilience of certain seagrass species offer hope for their
+persistence amid accelerating ecological shifts.
 
 \section{Conclusion}\label{conclusion}
 
-This research has investigated the effects of both marine and
-atmospheric heatwaves on the intertidal seagrass \emph{Zostera noltei},
-a critical component of coastal ecosystems facing increased thermal
-stress due to climate change. By examining reflectance under controlled
-experimental conditions and validating these findings with satellite
-observations, we aimed at understanding how extreme heat events affect
-seagrass health and assess the potential of remote sensing to monitor HW
-impacts. Our findings revealed that heatwaves lead to substantial
-declines in seagrass reflectance, particularly in the green and
-near-infrared regions, likely driven by pigment degradation and
-structural damage. This change is reflected in significant reductions in
-key vegetation indices such as NDVI and GLI. The Seagrass Heat Shock
-Index (SHSI), developed in this study, successfully detected seagrass
-darkening, a visible symptom of heatwave stress, demonstrating the
-viability of spectral monitoring to capture early-stage impacts of heat
-events on intertidal ecosystems. By connecting our findings with
-satellite data, we also documented the broader spatial impact of
-heatwaves on seagrass meadows in Quiberon Bay, France. The correlation
-between heatwave exposure and darkening of seagrass suggests that remote
-sensing, combined with targeted field observations, can enhance our
-understanding of ecosystem responses to climate-driven thermal events.
-These results advocate for integrating continuous spectral monitoring
-into conservation strategies, as it can help predict seagrass resilience
-and guide adaptive management practices. As climate change accelerates,
-with a predicted increase in the frequency and intensity of heatwaves in
-the next decades, the vulnerability of intertidal zones to such events
-will likely intensify, compromising meadows survival and their ecosystem
-functions. This study not only underscores the importance of seagrass
-meadows in coastal ecosystems but also highlights the urgency of
-protecting these critical habitats. Future work should focus on refining
-remote sensing tools and examining the cumulative effects of repeated
-heatwave events to support the conservation of intertidal seagrass
-meadows in a warming world.
+This research investigated the effects of both marine and atmospheric
+heatwaves on the intertidal seagrass \emph{Zostera noltei}, a critical
+component of coastal ecosystems facing increased thermal stress due to
+climate change. By examining reflectance under controlled experimental
+conditions and validating these findings with satellite observations, we
+aimed at understanding how extreme heat events affect seagrass health
+and assess the potential of remote sensing to monitor HW impacts. Our
+findings revealed that heatwaves lead to substantial declines in
+seagrass reflectance, particularly in the green and near-infrared
+regions, likely driven by pigment degradation and structural damage.
+This change was reflected in significant reductions in key vegetation
+indices such as NDVI and GLI. The Seagrass Heat Shock Index (SHSI),
+developed in this study, successfully detected seagrass darkening, a
+visible symptom of heatwave stress, demonstrating the viability of
+spectral monitoring to capture early-stage impacts of heat events on
+intertidal ecosystems. By connecting our findings with satellite data,
+we also documented the broader spatial impact of heatwaves on seagrass
+meadows in Quiberon Bay, France. The correlation between heatwave
+exposure and darkening of seagrass suggests that remote sensing,
+combined with targeted field observations, can enhance our understanding
+of ecosystem responses to climate-driven thermal events. These results
+advocate for integrating continuous spectral monitoring into
+conservation strategies, as it can help predict seagrass resilience and
+guide adaptive management practices. This study not only underscores the
+importance of seagrass meadows in coastal ecosystems but also highlights
+the urgency of protecting these critical habitats. Future work should
+focus on refining remote sensing tools and examining the cumulative
+effects of repeated heatwave events to support the conservation of
+intertidal seagrass meadows in a warming world.
 
 \section{Annexes}\label{annexes}
 
@@ -1350,7 +1278,7 @@ experiment}\label{sec-AnnexeA}
 
 \begin{figure}[H]
 
-{\centering \includegraphics{Figs/High_res/Temperature_compare.png}
+{\centering \pandocbounded{\includegraphics[keepaspectratio]{Figs/High_res/Temperature_compare.png}}
 
 }
 
@@ -1376,6 +1304,11 @@ the seagrasses.
 
 \phantomsection\label{refs}
 \begin{CSLReferences}{1}{0}
+\bibitem[\citeproctext]{ref-allakhverdiev2008heat}
+Allakhverdiev, S.I., Kreslavski, V.D., Klimov, V.V., Los, D.A.,
+Carpentier, R., Mohanty, P., 2008. Heat stress: An overview of molecular
+responses in photosynthesis. Photosynthesis research 98, 541--550.
+
 \bibitem[\citeproctext]{ref-arias2018marine}
 Arias-Ortiz, A., Serrano, O., Masqué, P., Lavery, P.S., Mueller, U.,
 Kendrick, G.A., Rozaimi, M., Esteban, A., Fourqurean, J.W., Marbà, N.,
@@ -1393,16 +1326,21 @@ L., 2023. High risk water pollution hazards affecting aveiro coastal
 lagoon (portugal)--a habitat risk assessment using InVEST. Ecological
 Informatics 76, 102144.
 
-\bibitem[\citeproctext]{ref-berger2024eelgrass}
-Berger, A.C., Berg, P., McGlathery, K.J., Aoki, L.R., Kerns, K., 2024.
-Eelgrass meadow response to heat stress. II. Impacts of ocean warming
-and marine heatwaves measured by novel metrics. Marine Ecology Progress
-Series 736, 47--62. \url{https://doi.org/10.3354/meps14588}
+\bibitem[\citeproctext]{ref-borum2004european}
+Borum, J., Duarte, C.M., Krause-Jensen, D., Greve, T.M., 2004. European
+seagrasses: An introduction to monitoring and management. Monitoring;
+Managing of European Seagrasses Project.
 
 \bibitem[\citeproctext]{ref-boyer1988senescence}
 Boyer, M., Miller, J., Belanger, M., Hare, E., Wu, J., 1988. Senescence
 and spectral reflectance in leaves of northern pin oak (quercus
 palustris muenchh.). Remote Sensing of Environment 25, 71--87.
+
+\bibitem[\citeproctext]{ref-brun2003effect}
+Brun, F.G., Vergara, J.J., Navarro, G., Hernández, I., Pérez-Lloréns,
+J.L., 2003. Effect of shading by ulva rigida canopies on growth and
+carbon balance of the seagrass zostera noltii. Marine Ecology Progress
+Series 265, 85--96.
 
 \bibitem[\citeproctext]{ref-JSSv100i05}
 Bürkner, P.-C., 2021. Bayesian item response modeling in r with brms and
@@ -1420,10 +1358,6 @@ seagrass (posidonia oceanica) decline and sulfide porewater
 concentration in carbonate sediments. Estuarine, Coastal and Shelf
 Science 73, 583--588.
 
-\bibitem[\citeproctext]{ref-canadell2021ecosystem}
-Canadell, J.G., Jackson, R.B., 2021. Ecosystem collapse and climate
-change. Springer.
-
 \bibitem[\citeproctext]{ref-carlson2018sea}
 Carlson, D.F., Yarbro, L.A., Scolaro, S., Poniatowski, M., McGee-Absten,
 V., Carlson Jr, P.R., 2018. Sea surface temperatures and seagrass
@@ -1435,6 +1369,11 @@ Carpenter, B., Gelman, A., Hoffman, M.D., Lee, D., Goodrich, B.,
 Betancourt, M., Brubaker, M., Guo, J., Li, P., Riddell, A., 2017. Stan:
 A probabilistic programming language. Journal of Statistical Software
 76, 1--32. \url{https://doi.org/10.18637/jss.v076.i01}
+
+\bibitem[\citeproctext]{ref-IPCC2023}
+Climate Change (IPCC), I.P. on, 2023. Summary for policymakers. IPCC,
+Geneva, Switzerland.
+\url{https://doi.org/10.59327/IPCC/AR6-9789291691647.001}
 
 \bibitem[\citeproctext]{ref-CMEMS_1}
 CMEMS, 2024. European north west shelf/iberia biscay irish seas -- high
@@ -1469,12 +1408,6 @@ O.R., Smale, D.A., Austen, M.C., Biermann, L., Attrill, M.J., others,
 distinct trajectories in western europe. Remote Sensing of Environment
 312, 114340. \url{https://doi.org/10.1016/j.rse.2024.114340}
 
-\bibitem[\citeproctext]{ref-de2022increased}
-De Fouw, J., Rehlmeyer, K., Geest, M. van der, Smolders, A.J., Van Der
-Heide, T., 2022. Increased temperature reduces the positive effect of
-sulfide-detoxification mutualism on zostera noltii nutrient uptake and
-growth. Marine Ecology Progress Series 692, 43--52.
-
 \bibitem[\citeproctext]{ref-deguette2022physiological}
 Deguette, A., Barrote, I., Silva, J., 2022. Physiological and
 morphological effects of a marine heatwave on the seagrass cymodocea
@@ -1484,6 +1417,10 @@ nodosa. Scientific Reports 12, 7950.
 Douay, F., Verpoorter, C., Duong, G., Spilmont, N., Gevaert, F., 2022.
 New hyperspectral procedure to discriminate intertidal macroalgae.
 Remote Sensing 14, 346.
+
+\bibitem[\citeproctext]{ref-duarte1991allometric}
+Duarte, C.M., 1991. Allometric scaling of seagrass form and
+productivity. Marine ecology progress series. Oldendorf 77, 289--300.
 
 \bibitem[\citeproctext]{ref-electricblue_intertidal_chamber}
 Electric Blue, 2023.
@@ -1541,12 +1478,9 @@ intensity can vary the cumulative effects of multiple environmental
 stressors on posidonia oceanica seedlings. Marine Environmental Research
 159, 105001.
 
-\bibitem[\citeproctext]{ref-hatum2024predicting}
-Hatum, P.S., McMahon, K., Mengersen, K., Kilminster, K., Wu, P.P.-Y.,
-2024. Predicting seagrass ecosystem resilience to marine heatwave events
-of variable duration, frequency and re-occurrence patterns with gaps.
-Aquatic Conservation: Marine and Freshwater Ecosystems 34, e4210.
-\url{https://doi.org/10.1002/aqc.4210}
+\bibitem[\citeproctext]{ref-hemminga1998root}
+Hemminga, M., 1998. The root/rhizome system of seagrasses: An asset and
+a burden. Journal of Sea Research 39, 183--196.
 
 \bibitem[\citeproctext]{ref-hobday2016hierarchical}
 Hobday, A.J., Alexander, L.V., Perkins, S.E., Smale, D.A., Straub, S.C.,
@@ -1629,13 +1563,6 @@ Moore, K.A., Jarvis, J.C., 2008. Environmental factors affecting recent
 summertime eelgrass diebacks in the lower chesapeake bay: Implications
 for long-term persistence. Journal of Coastal Research 135--147.
 
-\bibitem[\citeproctext]{ref-o2018seagrass}
-O'Brien, K.R., Waycott, M., Maxwell, P., Kendrick, G.A., Udy, J.W.,
-Ferguson, A.J., Kilminster, K., Scanes, P., McKenzie, L.J., McMahon, K.,
-others, 2018. Seagrass ecosystem trajectory depends on the relative
-timescales of resistance, recovery and disturbance. Marine Pollution
-Bulletin 134, 166--176.
-
 \bibitem[\citeproctext]{ref-rs16234383}
 Oiry, S., Davies, B.F.R., Sousa, A.I., Rosa, P., Zoffoli, M.L., Brunier,
 G., Gernez, P., Barillé, L., 2024. Discriminating seagrasses from green
@@ -1648,6 +1575,12 @@ Olmedo-Masat, O.M., Raffo, M.P., Rodrı́guez-Pérez, D., Arijón, M.,
 Sánchez-Carnero, N., 2020. How far can we classify macroalgae remotely?
 An example using a new spectral library of species from the south west
 atlantic (argentine patagonia). Remote Sensing 12, 3870.
+
+\bibitem[\citeproctext]{ref-peidro2024quantifying}
+Peidro-Devesa, M.J., Martı́nez-Movilla, A., Rodrı́guez-Somoza, J.L.,
+Sánchez, J.M., Román, M., 2024. Quantifying intertidal macroalgae stocks
+in the NW iberian peninsula using unmanned aerial vehicle (UAV)
+multispectral imagery. Regional Studies in Marine Science 103621.
 
 \bibitem[\citeproctext]{ref-penuelas2004leaf}
 Peñuelas, J., Munné-Bosch, S., Llusià, J., Filella, I., 2004. Leaf
@@ -1669,10 +1602,29 @@ Ramesh, C., Mohanraju, R., 2020. Seagrass ecosystems of andaman and
 nicobar islands: Status and future perspective. Environmental \& Earth
 Sciences Research Journal 7.
 
+\bibitem[\citeproctext]{ref-roca2016response}
+Roca, G., Alcoverro, T., Krause-Jensen, D., Balsby, T.J.S., Katwijk,
+M.M. van, Marbà, N., Santos, R., Arthur, R., Mascaró, O.,
+Fernández-Torquemada, Y., others, 2016. Response of seagrass indicators
+to shifts in environmental stressors: A global review and management
+synthesis. Ecological Indicators 63, 310--323.
+
 \bibitem[\citeproctext]{ref-roman2021using}
 Román, A., Tovar-Sánchez, A., Olivé, I., Navarro, G., 2021. Using a
 UAV-mounted multispectral camera for the monitoring of marine
 macrophytes. Frontiers in Marine Science 8, 722698.
+
+\bibitem[\citeproctext]{ref-roman2023clam}
+Román, M., Gilbert, F., Viejo, R.M., Román, S., Troncoso, J.S., Vázquez,
+E., Olabarria, C., 2023. Are clam-seagrass interactions affected by
+heatwaves during emersion? Marine Environmental Research 186, 105906.
+
+\bibitem[\citeproctext]{ref-roman2022effects}
+Román, S., Vázquez, E., Román, M., Viejo, R.M., Woodin, S.A., Wethey,
+D.S., Troncoso, J.S., Olabarria, C., 2022. Effects of warming on
+biological interactions between clams and the seagrass zostera noltei: A
+case study using open top chambers. Estuarine, Coastal and Shelf Science
+276, 108027.
 
 \bibitem[\citeproctext]{ref-rouse1974monitoring}
 Rouse, J.W., Haas, R.H., Schell, J.A., Deering, D.W., others, 1974.
@@ -1729,6 +1681,11 @@ carbon stock in zostera noltei meadows at ria de aveiro coastal lagoon
 \bibitem[\citeproctext]{ref-stan2020rstan}
 Stan Development Team, C., others, 2020. RStan: The r interface to stan.
 R package version 2.21. 2.
+
+\bibitem[\citeproctext]{ref-stillman2019heat}
+Stillman, J.H., 2019. Heat waves, the new normal: Summertime temperature
+extremes will impact animals, ecosystems, and human communities.
+Physiology 34, 86--100.
 
 \bibitem[\citeproctext]{ref-strydom2020too}
 Strydom, S., Murray, K., Wilson, S., Huntley, B., Rule, M., Heithaus,
