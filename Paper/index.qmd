@@ -62,7 +62,7 @@ author:
       - Revision
     affiliations:
       - Bio-littoral, Immeuble Le Nevada, 2 Rue du Château de l'Eraudière, 44300 Nantes, France
-  - name: Marta Román1¹⁴
+  - name: Marta Román¹⁴
     orcid: 0000-0002-7082-0763
     corresponding: false
     roles: 
