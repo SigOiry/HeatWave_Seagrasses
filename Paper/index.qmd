@@ -1,5 +1,5 @@
 ---
-title: "Impact of Marine and Atmospheric Heatwaves on Intertidal Seagrass: Experimental Spectroradiometry and Satellite-Based Insights"
+title: "Heatwaves's impact on intertidal seagrass reflectance: from laboratory experiment to satellite mapping of seagrass heat shock index"
 shorttitle: Effect of heatwaves on seagrasses
 author:
   - name: Simon Oiry^[Institut des Substances et Organismes de la Mer, ISOMer, Nantes Université, UR 2160, F-44000 Nantes, France]
