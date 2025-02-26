@@ -127,6 +127,18 @@
 \newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
 \newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 
+\usepackage{fontspec}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{colortbl}
+\usepackage{hhline}
+\newlength\Oldarrayrulewidth
+\newlength\Oldtabcolsep
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{wrapfig}
 \KOMAoption{captions}{tableheading}
 \makeatletter
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
@@ -175,7 +187,7 @@
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same} % disable monospaced font for URLs
 \hypersetup{
-  pdftitle={Heatwaves's impact on intertidal seagrass reflectance: from laboratory experiment to satellite mapping of seagrass heat shock index},
+  pdftitle={Heatwave impacts on intertidal seagrass reflectance: from laboratory experiment to satellite mapping of seagrass heat shock index},
   pdfauthor={Simon Oiry; Bede Ffinian Rowe Davies¹; Philippe Rosa¹; Augustin Debly¹; Maria Laura Zoffoli; Anne-Laure Barillé; Nicolas Harin³; Marta Román¹⁴; Pierre Gernez¹; Laurent Barillé¹},
   pdfkeywords={Remote Sensing, Pigment Composition, Seagrass, Coastal
 Ecosystems, Heatwaves},
@@ -187,7 +199,7 @@ Ecosystems, Heatwaves},
   pdfcreator={LaTeX via pandoc}}
 
 
-\title{Heatwaves's impact on intertidal seagrass reflectance: from
+\title{Heatwave impacts on intertidal seagrass reflectance: from
 laboratory experiment to satellite mapping of seagrass heat shock index}
 \author{Simon Oiry\footnote{Institut des Substances et Organismes de la
   Mer, ISOMer, Nantes Université, UR 2160, F-44000 Nantes, France} \and Bede
@@ -197,7 +209,7 @@ Laura Zoffoli\footnote{Consiglio Nazionale delle Ricerche, Istituto di
 Barillé\footnote{Bio-littoral, Immeuble Le Nevada, 2 Rue du Château de
   l'Eraudière, 44300 Nantes, France} \and Nicolas Harin³ \and Marta
 Román¹⁴ \and Pierre Gernez¹ \and Laurent Barillé¹}
-\date{2025-02-24}
+\date{2025-02-26}
 
 \begin{document}
 \maketitle
@@ -861,7 +873,7 @@ indices}\label{heatwave-effect-on-radiometric-indices}
 
 All radiometric indices, \(R''_{665 \, \text{nm}}\), NDVI, GLI and SHSI
 changed after the experimental heatwave
-(Figure~\ref{fig-Exp_Spectral_indices}).
+(Figure~\ref{fig-Exp_Spectral_indices} ; Section~\ref{sec-AnnexeB}).
 
 At the start of the experiment (day 1), the difference between Treatment
 and Control was not significant in \(R''_{665 \, \text{nm}}\), NDVI and
@@ -1036,6 +1048,8 @@ interval.}
 
 \end{figure}%
 
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/gam outputs-1.pdf}}
+
 Using the SHSI (Equation~\ref{eq-SDI}), we detected large darkened
 seagrass patches in the meadow on 6th of September
 (Figure~\ref{fig-Map_darkening_Bathy}). A total of 26.9 hectares of
@@ -1067,11 +1081,11 @@ images Before (D), During (E) and After (F) the HW.}
 \end{figure}%
 
 Additionally, there was a clear relationship between seagrass emersion
-time and seagrass darkening (Figure~\ref{fig-GAM_Emersion}). Seagrass
-emerged during less than 13 hours a day were not impacted, whereas
-seagrass emerged during more than 13 hours turned brown with the maximum
-darkening occuring on seagrass emerged during more than 14.5 hours
-daily.
+time and seagrass darkening (Figure~\ref{fig-GAM_Emersion} ;
+Section~\ref{sec-AnnexeC}). Seagrass emerged during less than 13 hours a
+day were not impacted, whereas seagrass emerged during more than 13
+hours turned brown with the maximum darkening occuring on seagrass
+emerged during more than 14.5 hours daily.
 
 \phantomsection\label{cell-fig-GAM_Emersion}
 \begin{figure}[H]
@@ -1102,97 +1116,98 @@ measurements and the laboratory experiment. Effects were drops of
 reflectance around 560 nm and around 740 nm
 (Figure~\ref{fig-Exp_Spectral_indices}) and of the second derivative at
 665 nm (R'\,'665), NDVI, and GLI (Figure~\ref{fig-Exp_Spectral_indices}
-A, B \& C) indexes. These changes suggest a progressive reduction in
-photosynthetic activity as well as potential structural or physiological
-changes to the leaves, such as degraded pigmentation or altered light
-absorption. By contrast, SHSI showed a marked increase, reaching up to
-600\% for some samples by day 3 (Figure~\ref{fig-Exp_Spectral_indices}
-D), which demonstrated its sensitivity at quantifying seagrass browning.
-Moreover, we observed a considerable decrease in the reflectance in the
-NIR regions (700 - 1300 nm) in stressed plants, which is mainly related
-with the destruction of the membranes (chloroplasts, thylakoids, cell
-walls) due to thermal oxidative stress, and the consequent decrease of
-light scattering in NIR range through the leaf surface (Knipling, 1970).
-The leaf darkening observed in plants subjected to thermal stress was
-mainly explained by the oxidation of phenolic compounds by the enzyme
-polyphenol oxidase and with a damage of the photosynthetic apparatus
-(Allakhverdiev et al., 2008). High temperatures destabilize chloroplasts
-membranes, disrupting photosystem II and impairing recovery of
-photosynthetic function. As chlorophyll-a degrades, the ratio of
-pigments shifts, with pigments like carotenoids becoming more prominent
-(Dascaliuc et al., 2007; Jones and Clayton-Greene, 1992). These
-processes can eventually result in growth impairment and plant death.
-The SHSI (Equation~\ref{eq-SDI}) developed in this study leveraged key
-reflectance bands (560, 740 and 840 nm) to detect reductions in the
-green and the Red-Edge regions caused by thermal stress. These
-wavelengths are captured by current multi-spectral satellite missions,
-including Sentinel-2, Pleiades-Neo, WorldView-3, SkySat, and GeoSat-2
-along with upcoming missions (Sentinel-2 Next Generation and Landsat
-Next). Therefore, SHSI can be used to assess the extent and severity of
-darkening events across intertidal seagrass meadows from space. However,
-cloud coverage can limit continuous observations from satellite imagery,
-necessitating the integration of alternative tools, such as
-multi-spectral drone platforms. Combined approaches allow for precise,
-localized monitoring of damaged seagrass meadows immediately after
-extreme events, which is critical for the early detection of ecosystem
-degradation.
+A, B \& C) indexes. By contrast, SHSI showed a marked increase, reaching
+up to 600\% for some samples by day 3
+(Figure~\ref{fig-Exp_Spectral_indices} D), which demonstrated its
+sensitivity at quantifying seagrass browning. These changes suggest a
+progressive reduction in photosynthetic activity as well as potential
+structural or physiological changes to the leaves, such as degraded
+pigmentation or altered light absorption. Moreover, we observed a
+considerable decrease in the reflectance in the NIR region (700 - 1300
+nm) in stressed plants, which is mainly related with the destruction of
+the membranes (chloroplasts, thylakoids, cell walls) due to thermal
+oxidative stress, and the consequent decrease of light scattering
+through the leaf surface (Knipling, 1970). The leaf darkening observed
+in plants subjected to thermal stress was mainly explained by the
+oxidation of phenolic compounds by the enzyme polyphenol oxidase and
+with a damage of the photosynthetic apparatus (Allakhverdiev et al.,
+2008). High temperatures destabilize chloroplasts membranes, disrupting
+photosystem II and impairing recovery of photosynthetic function. As
+chlorophyll-a degrades, the ratio of pigments shifts, with pigments like
+carotenoids becoming more prominent (Dascaliuc et al., 2007; Jones and
+Clayton-Greene, 1992). These processes can eventually result in growth
+impairment and plant death.
 
-\subsection{Observations of HW effects in the
-field}\label{observations-of-hw-effects-in-the-field}
+The Seagrass Heat Shock Index (Equation~\ref{eq-SDI}) developed in this
+study makes it possible to detect reductions in the green and the
+Red-Edge regions caused by thermal stress using only three reflectance
+bands (560 740 and 840 nm). These spectral bands are available in
+current (i.e.~Sentinel-2, Pleiades-Neo, WorldView-3, SkySat, and
+GeoSat-2) and future multi-spectral missions (i.e.~Sentinel-2 Next
+Generation and Landsat Next), opening new perspectives for the detection
+and monitoring of heatwave effects on intertidal seagrass. As shown in
+the next section, SHSI can be used to assess the extent and severity of
+darkening events across intertidal seagrass meadows from high resolution
+satellite images.
 
-Sentinel-2 images acquired before, during, and after a HW event enabled
-the assessment of leaf darkening using the SHSI index. Analyses of
-satellite images in Quiberon Bay during the 2021 HW revealed that most
-of the darkening of the meadow took place in the upper intertidal, where
-plants were exposed to air for more than 13 hours per day, while no
-significant browning was observed around mean sea level. This contrasted
-with the experiment, in which seagrasses were exposed to a symmetric
-tidal cycle, spending equal amounts of time submerged and exposed to
-air. However, in the field, this configuration occurs only in meadows
-located at hydrographic zero height (mean sea level). Thus, under the
-same atmospheric temperatures, bathymetry, and therefore, exposure times
-will modulate the stress effects observed, as seagrasses located lower
-in the intertidal may be more resistant to HWs than those in upper
-fringes. Field observations revealed that leaf detachment began after
-the heatwave, causing an apparent decline in seagrass density at the
-upper intertidal. \emph{Zostera noltei}, as a species inhabiting the
-intertidal zone and regularly exposed to air, has developed adaptations
-to minimize hydric stress, such as its narrow leaves, which help reduce
-water loss during air exposure periods (Cabaço et al., 2009).
-Nonetheless, if plants at the upper subtidal are exposed to intense
-heating and irradiance for prolonged periods, these mechanisms may not
-be able to prevent degradation of photosynthetic pigments, decreases in
-photosynthetic capacity and tissue degradation. During the HW,
-Sentinel-2 imagery indicated that impacted seagrass patches (i.e., areas
-exhibiting seagrass darkening) experienced a sharp decline in NDVI.
-Moreover, the Sentinel-2 image acquired one month after the HW showed
-that the NDVI of impacted seagrass patches had not recovered to its
-initial level (Figure 10). NDVI is commonly used as a proxy for seagrass
-cover (Figure~\ref{fig-NDVI_GLI_SPC}). NDVI is commonly used as a proxy
-for seagrass cover (Davies et al., 2024a; Zoffoli et al., 2020), with
-higher NDVI values associated with greater seagrass coverage and lower
-NDVI values indicating reduced cover. Our findings demonstrate that
-heatwaves altered the spectral signature of seagrasses, causing a
+\subsection{Satellite observations of HW effects on intertidal
+seagrass}\label{satellite-observations-of-hw-effects-on-intertidal-seagrass}
+
+Using our new Seagrass Heat Shock Index, Sentinel-2 images acquired
+before, during, and after a HW event made it possible to detect seagrass
+leaf darkening at high spatial resolution, as well as to describe the
+spatial distribution of the heatwave impact over the whole meadow. The
+analyse of satellite images in Quiberon Bay during the 2021 HW revealed
+that most of the meadow darkening took place in the upper intertidal
+area, where plants were exposed to air for more than 13 hours per day,
+while no significant browning was observed in the lower intertidal zone.
+This contrasted with the experiment, in which seagrasses were exposed to
+a symmetric tidal cycle, spending equal amounts of time submerged and
+exposed to air. However, in the field, this configuration occurs only in
+meadows located at hydrographic zero height (mean sea level). Thus,
+under the same atmospheric temperatures, bathymetry, and therefore,
+exposure times will modulate the stress effects observed, as seagrasses
+located lower in the intertidal may be more resistant to HWs than those
+in upper fringes. Field observations further revealed that leaf
+detachment began after the heatwave, causing an apparent decline in
+seagrass density at the upper intertidal. \emph{Zostera noltei}, as a
+species inhabiting the intertidal zone and regularly exposed to air, has
+developed adaptations to minimize hydric stress, such as its narrow
+leaves, which help reduce water loss during air exposure periods (Cabaço
+et al., 2009). Nonetheless, if plants at the upper subtidal are exposed
+to intense heating and irradiance for prolonged periods, these
+mechanisms may not be able to prevent degradation of photosynthetic
+pigments, decreases in photosynthetic capacity and tissue degradation.
+
+During the HW, Sentinel-2 imagery indicated that impacted seagrass
+patches (i.e., areas exhibiting seagrass darkening) experienced a sharp
+decline in NDVI. Moreover, the Sentinel-2 image acquired one month after
+the HW showed that the NDVI of impacted seagrass patches had not
+recovered to its initial level (Figure~\ref{fig-NDVI_GLI_SPC}). NDVI is
+commonly used as a proxy for seagrass cover (Davies et al., 2024a;
+Zoffoli et al., 2020), with high NDVI associated with greater seagrass
+coverage and low NDVI indicating reduced cover. Our findings demonstrate
+that heatwaves altered the spectral signature of seagrasses, causing a
 decrease in NDVI---and consequently, in the satellite-derived estimate
 of seagrass cover---while the actual coverage observed in the field
 remained stable (see Figure~\ref{fig-QuiberonImg}). This discrepancy
-underscores a limitation of remote sensing in accurately capturing true
-seagrass cover during stress events. As well, the observed changes in
-seagrass reflectance linked with low tide heating and desiccation
-highlight the potential influence of temperature and humidity variations
-on the mapping accuracy of intertidal macrophytes (Peidro-Devesa et al.,
-2024). One month after the heatwave, the SHSI in impacted quadrats
-recovered to similar values to those of the unimpacted ones. Moreover,
-Sentinel-2 images revealed a partial recovery in areas of the mid to low
+underscores a potential limitation of remote sensing in accurately
+capturing true seagrass cover during stress events. We demonstrate that
+such bias could be corrected by the combined analysis of both NDVI and
+SHSI indices, as proxies of seagrass cover and heatwave impact.
+
+One month after the heatwave, the SHSI in impacted quadrats recovered to
+similar values to those of the unimpacted ones. Moreover, Sentinel-2
+images revealed a partial recovery in areas of the mid to low
 intertidal, as shown by their return to green color. These results
 suggested a certain the resilience capacity of \emph{Z. noltei} patches
 after thermal disturbance. \emph{Zostera noltei} is a dynamic,
 fast-growing colonizer species (Roca et al., 2016), with fast leaf
 turnover times and growth rates (Borum et al., 2004) and fast rhizome
-elongation rates (Duarte, 1991). Therefore, the return to green color in
-some parts of the meadow after recovery was the consequence of new leaf
-growth, which was likely sustained by the energy reserves of the
-surviving below ground biomass (Hemminga, 1998).
+elongation rates (Duarte, 1991). The return to green color in some parts
+of the meadow after recovery might be due to new leaf growth, which was
+likely sustained by the energy reserves of the surviving below ground
+biomass (Hemminga, 1998).
 
 \subsection{\texorpdfstring{Ecological implications of heatwaves impact
 on \emph{Zostera
@@ -1214,62 +1229,64 @@ performance and leaf tissue integrity (Massa et al., 2009; Román et al.,
 that \emph{Z. noltei} meadows at the upper intertidal could be a
 vulnerable species under the future global warming scenarios, in which
 heatwaves will be more frequent and intense (Climate Change (IPCC),
-2023; Stillman, 2019). The observed tissue degradation, both in the
-laboratory experiment and the field, can eventually result in decreases
-of meadows density and cover under recurrent heatwaves. This decline
-also could affect other species that rely on the provision of refuge
-and/or food by the seagrass canopy (Zoffoli et al., 2023). Moreover, the
-sediment stabilization and wave attenuation could be hampered,
-ultimately increasing the risk of coastal erosion (Calleja et al., 2007;
-Folmer et al., 2012; Gacia et al., 1999). The commercially important
-fish and shellfish populations that rely on seagrass for sustenance and
+2023; Stillman, 2019).
+
+The observed tissue degradation, both in the laboratory experiment and
+the field, can eventually result in decreases of meadows density and
+cover under recurrent heatwaves. This decline could have cascading
+effect on species that rely on the provision of refuge and/or food by
+the seagrass canopy (Zoffoli et al., 2023). Commercially important fish
+and shellfish populations that rely on seagrass for sustenance and
 refuge could also be impacted, with negative consequences on local
 fisheries' productivity and the livelihoods of coastal communities
 (Unsworth and Cullen-Unsworth, 2014). Furthermore, as seagrass meadows
 decline, their capacity to act as a blue carbon sink---critical for
 climate mitigation---could diminish, contributing to increased
 atmospheric carbon levels (Armitage and Fourqurean, 2016;
-Samper-Villarreal et al., 2020). Given the combined effects of
-temperature extremes, eutrophication, and other anthropogenic pressures,
-targeted management strategies are essential for enhancing seagrass
-resilience (Loarie et al., 2009). Approaches such as reducing local
-stressors, cultivating heat-tolerant genotypes, and investing in
-restoration initiatives are vital to supporting these ecosystems in a
-warming climate. Although challenges remain, the adaptability and
-potential resilience of certain seagrass species offer hope for their
-persistence amid accelerating ecological shifts.
+Samper-Villarreal et al., 2020). Moreover, the sediment stabilization
+and wave attenuation could be hampered, ultimately increasing the risk
+of coastal erosion (Calleja et al., 2007; Folmer et al., 2012; Gacia et
+al., 1999).
+
+Given the combined effects of temperature extremes, eutrophication, and
+other anthropogenic pressures, targeted management strategies are
+essential for enhancing seagrass resilience (Loarie et al., 2009).
+Approaches such as reducing local stressors, cultivating heat-tolerant
+genotypes, and investing in restoration initiatives are vital to
+supporting these ecosystems in a warming climate. Although challenges
+remain, the adaptability and potential resilience of certain seagrass
+species offer hope for their persistence amid accelerating ecological
+shifts.
 
 \section{Conclusion}\label{conclusion}
 
 This research investigated the effects of both marine and atmospheric
 heatwaves on the intertidal seagrass \emph{Zostera noltei}, a critical
 component of coastal ecosystems facing increased thermal stress due to
-climate change. By examining reflectance under controlled experimental
-conditions and validating these findings with satellite observations, we
-aimed at understanding how extreme heat events affect seagrass health
-and assess the potential of remote sensing to monitor HW impacts. Our
-findings revealed that heatwaves lead to substantial declines in
-seagrass reflectance, particularly in the green and near-infrared
-regions, likely driven by pigment degradation and structural damage.
-This change was reflected in significant reductions in key vegetation
-indices such as NDVI and GLI. The Seagrass Heat Shock Index (SHSI),
-developed in this study, successfully detected seagrass darkening, a
-visible symptom of heatwave stress, demonstrating the viability of
-spectral monitoring to capture early-stage impacts of heat events on
-intertidal ecosystems. By connecting our findings with satellite data,
-we also documented the broader spatial impact of heatwaves on seagrass
-meadows in Quiberon Bay, France. The correlation between heatwave
-exposure and darkening of seagrass suggests that remote sensing,
-combined with targeted field observations, can enhance our understanding
-of ecosystem responses to climate-driven thermal events. These results
-advocate for integrating continuous spectral monitoring into
-conservation strategies, as it can help predict seagrass resilience and
-guide adaptive management practices. This study not only underscores the
-importance of seagrass meadows in coastal ecosystems but also highlights
-the urgency of protecting these critical habitats. Future work should
-focus on refining remote sensing tools and examining the cumulative
-effects of repeated heatwave events to support the conservation of
-intertidal seagrass meadows in a warming world.
+climate change. Heat stress effects on seagrass reflectance were
+documented in the laboratory using a controlled experiment in order to
+understand how extreme heat events affect seagrass health and to assess
+the potential of remote sensing for HW impacts monitoring. Our findings
+revealed that heatwaves lead to substantial declines in seagrass
+reflectance, particularly in the green and near-infrared regions, likely
+driven by pigment degradation and structural damage. This change was
+reflected in significant reductions in key vegetation indices such as
+NDVI and GLI. The Seagrass Heat Shock Index (SHSI), developed in this
+study, successfully detected seagrass darkening, a visible symptom of
+heatwave stress, demonstrating the viability of spectral monitoring to
+capture early-stage impacts of heat events on intertidal ecosystems. We
+applied and validated the newly developed Seagrass Heat Shock Index to
+Sentinel-2 satellite images acquired during an heatwave event, and
+documented the broad spatial impact of heatwaves on seagrass meadows in
+Quiberon Bay, France. The correlation between heatwave exposure and
+darkening of seagrass suggests that remote sensing, combined with
+targeted field observations, can enhance our understanding of ecosystem
+responses to climate-driven thermal events. These results advocate for
+integrating regular spectral monitoring into conservation strategies, as
+it can help predict seagrass resilience and guide adaptive management
+practices. Future work should focus on refining remote sensing tools and
+examining the cumulative effects of repeated heatwave events to support
+the conservation of intertidal seagrass meadows in a warming world.
 
 \section{Annexes}\label{annexes}
 
@@ -1298,6 +1315,208 @@ likely due to the sheltered and shaded location of the Meteo France
 equipment. This difference was used to adjust heatwave temperatures
 measured by Meteo France to better reflect the conditions experienced by
 the seagrasses.
+
+\subsection{Annexes B - Outputs of GLMM}\label{sec-AnnexeB}
+
+\global\setlength{\Oldarrayrulewidth}{\arrayrulewidth}
+
+\global\setlength{\Oldtabcolsep}{\tabcolsep}
+
+\setlength{\tabcolsep}{2pt}
+
+\renewcommand*{\arraystretch}{1.5}
+
+
+
+\providecommand{\ascline}[3]{\noalign{\global\arrayrulewidth #1}\arrayrulecolor[HTML]{#2}\cline{#3}}
+
+\begin{longtable}[c]{ccccccccc}
+
+\caption{\label{tbl-GLMM}Outputs of the Generalised Linear model
+assessing the relationship between time (days) and the relative change
+to the control of different vegetation indices
+(Figure~\ref{fig-Exp_Spectral_indices}, Second Derivative, NDVI, GLI,
+and SHSI). Each index has two terms: Intercept and Slope. The Intercept
+represents the expected value of the index at the reference time point
+(e.g., day 0), while the Slope quantifies the effect of time, indicating
+how the index changes per unit increase in days. The Estimate represents
+the posterior mean of the regression coefficient, while Std. Error
+indicates its standard deviation. The Lower 95\% CI and Upper 95\% CI
+define the 95\% credible interval, showing the range within which the
+true parameter is expected to fall with 95\% probability. The Rhat
+statistic assesses model convergence (values close to 1 indicate proper
+convergence). Bulk\_ESS and Tail\_ESS denote the effective sample sizes
+for bulk estimation and tail uncertainty, respectively, reflecting the
+reliability of the posterior estimates.}
+
+\tabularnewline
+
+\ascline{1.5pt}{666666}{1-9}
+
+\multicolumn{1}{>{}l}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Index}}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Term}}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Estimate}}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Std.Error}}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Lower\ 95\%\ CI}}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Upper\ 95\%\ CI}}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Rhat}}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Bulk\_ESS}}}}} & \multicolumn{1}{>{}r}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Tail\_ESS}}}}} \\
+
+\ascline{1.5pt}{666666}{1-9}\endfirsthead 
+
+\ascline{1.5pt}{666666}{1-9}
+
+\multicolumn{1}{>{}l}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Index}}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Term}}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Estimate}}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Std.Error}}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Lower\ 95\%\ CI}}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Upper\ 95\%\ CI}}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Rhat}}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Bulk\_ESS}}}}} & \multicolumn{1}{>{}r}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Tail\_ESS}}}}} \\
+
+\ascline{1.5pt}{666666}{1-9}\endhead
+
+
+
+\multicolumn{1}{>{}l}{} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{Intercept}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.54}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.35}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{-0.17}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{1.29}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{1}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{5,296.50}}}} & \multicolumn{1}{>{}r}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{3,668.84}}}} \\
+
+\ascline{0.75pt}{666666}{2-9}
+
+
+
+\multicolumn{1}{>{}l}{\multirow[c]{-2}{*}{\parbox{1.61in}{\raggedright \textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Second\ Derivative}}}}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{Slope}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{-0.41}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.04}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{-0.48}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{-0.34}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{1}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{31,580.27}}}} & \multicolumn{1}{>{}r}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{12,321.97}}}} \\
+
+\ascline{0.75pt}{666666}{1-9}
+
+
+
+\multicolumn{1}{>{}l}{} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{Intercept}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.11}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.12}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{-0.11}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.35}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{1}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{3,436.59}}}} & \multicolumn{1}{>{}r}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{2,239.77}}}} \\
+
+\ascline{0.75pt}{666666}{2-9}
+
+
+
+\multicolumn{1}{>{}l}{\multirow[c]{-2}{*}{\parbox{1.61in}{\raggedright \textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{NDVI}}}}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{Slope}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{-0.14}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.02}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{-0.17}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{-0.10}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{1}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{32,903.97}}}} & \multicolumn{1}{>{}r}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{13,585.03}}}} \\
+
+\ascline{0.75pt}{666666}{1-9}
+
+
+
+\multicolumn{1}{>{}l}{} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{Intercept}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.20}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.33}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{-0.45}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.77}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{1}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{3,953.87}}}} & \multicolumn{1}{>{}r}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{2,318.63}}}} \\
+
+\ascline{0.75pt}{666666}{2-9}
+
+
+
+\multicolumn{1}{>{}l}{\multirow[c]{-2}{*}{\parbox{1.61in}{\raggedright \textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{GLI}}}}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{Slope}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{-0.26}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.03}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{-0.32}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{-0.20}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{1}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{27,154.17}}}} & \multicolumn{1}{>{}r}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{13,247.23}}}} \\
+
+\ascline{0.75pt}{666666}{1-9}
+
+
+
+\multicolumn{1}{>{}l}{} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{Intercept}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{-1.65}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{1.03}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{-3.84}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.37}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{1}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{7,862.03}}}} & \multicolumn{1}{>{}r}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{8,468.20}}}} \\
+
+\ascline{0.75pt}{666666}{2-9}
+
+
+
+\multicolumn{1}{>{}l}{\multirow[c]{-2}{*}{\parbox{1.61in}{\raggedright \textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{SHSI}}}}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{Slope}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{1.82}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.20}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{1.42}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{2.22}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{1}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{24,434.98}}}} & \multicolumn{1}{>{}r}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{13,093.41}}}} \\
+
+\ascline{1.5pt}{666666}{1-9}
+
+
+\end{longtable}
+
+\arrayrulecolor[HTML]{000000}
+
+\global\setlength{\arrayrulewidth}{\Oldarrayrulewidth}
+
+\global\setlength{\tabcolsep}{\Oldtabcolsep}
+
+\renewcommand*{\arraystretch}{1}
+
+\subsection{Annexes C - Outputs of GAM}\label{sec-AnnexeC}
+
+\global\setlength{\Oldarrayrulewidth}{\arrayrulewidth}
+
+\global\setlength{\Oldtabcolsep}{\tabcolsep}
+
+\setlength{\tabcolsep}{2pt}
+
+\renewcommand*{\arraystretch}{1.5}
+
+
+
+\providecommand{\ascline}[3]{\noalign{\global\arrayrulewidth #1}\arrayrulecolor[HTML]{#2}\cline{#3}}
+
+\begin{longtable}[c]{|p{2.00in}|p{1.73in}|p{0.92in}|p{0.95in}|p{0.84in}|p{0.82in}|p{0.40in}}
+
+\caption{\label{tbl-GAM}Outputs of the Generalized Additive Model (GAM)
+assessing the relationship between emersion time per day (hours) and the
+relative change in SHSI (Figure Figure~\ref{fig-GAM_Emersion}). The
+Intercept represents the expected SHSI value at the reference level of
+emersion time. The Estimate indicates the mean effect, with its Standard
+Error quantifying variability. The t-value and p-value assess
+statistical significance. The smooth term captures the nonlinear effect
+of emersion time, where the effective degrees of freedom (edf) reflect
+the function's complexity. The F-value and p-value evaluate the
+significance of this effect. Model fit is described by the adjusted R²,
+deviance explained, and Generalized Cross-Validation (GCV) score, while
+N represents the sample size.}
+
+\tabularnewline
+
+\ascline{1pt}{666666}{1-7}
+
+\multicolumn{1}{>{\raggedright}m{\dimexpr 2in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Component}}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 1.73in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Term}}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.92in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Estimate}}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.95in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Std\ Error}}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.84in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{t-value}}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.82in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{p-value}}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 0.4in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{}}}}} \\
+
+\ascline{1pt}{666666}{1-7}\endfirsthead 
+
+\ascline{1pt}{666666}{1-7}
+
+\multicolumn{1}{>{\raggedright}m{\dimexpr 2in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Component}}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 1.73in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Term}}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.92in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Estimate}}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.95in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Std\ Error}}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.84in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{t-value}}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.82in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{p-value}}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 0.4in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{}}}}} \\
+
+\ascline{1pt}{666666}{1-7}\endhead
+
+
+
+\multicolumn{1}{>{\raggedright}p{\dimexpr 2in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{A.\ parametric\ coefficients}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 1.73in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{(Intercept)}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.92in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.488}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.95in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.006}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.84in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{81.574}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.82in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{<0.0001}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 0.4in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{***}}}} \\
+
+\ascline{1pt}{666666}{1-7}
+
+
+
+\multicolumn{1}{>{\raggedright}p{\dimexpr 2in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Component}}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 1.73in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Term}}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.92in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{edf}}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.95in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Ref.\ df}}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.84in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{F-value}}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.82in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{p-value}}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 0.4in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{}}}}} \\
+
+\ascline{1pt}{666666}{1-7}
+
+
+
+\multicolumn{1}{>{\raggedright}p{\dimexpr 2in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{B.\ smooth\ terms}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 1.73in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{s(emersion\_per\_day)}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.92in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{4.953}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.95in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{4.999}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.84in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{973.282}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.82in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{<0.0001}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 0.4in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{***}}}} \\
+
+\ascline{1pt}{666666}{1-7}
+
+
+
+\multicolumn{7}{>{\raggedleft}m{\dimexpr 7.66in+12\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{Signif.\ codes:\ 0\ <=\ '***'\ <\ 0.001\ <\ '**'\ <\ 0.01\ <\ '*'\ <\ 0.05}}}} \\
+
+
+
+
+
+\multicolumn{7}{>{\raggedright}m{\dimexpr 7.66in+12\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{}}}} \\
+
+
+
+
+
+\multicolumn{7}{>{\raggedright}m{\dimexpr 7.66in+12\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{Adjusted\ R-squared:\ 0.357,\ Deviance\ explained\ 0.357}}}} \\
+
+
+
+
+
+\multicolumn{7}{>{\raggedright}m{\dimexpr 7.66in+12\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{GCV\ :\ 0.313,\ Scale\ est:\ 0.313,\ N:\ 8768}}}} \\
+
+
+
+
+\end{longtable}
+
+\arrayrulecolor[HTML]{000000}
+
+\global\setlength{\arrayrulewidth}{\Oldarrayrulewidth}
+
+\global\setlength{\tabcolsep}{\Oldtabcolsep}
+
+\renewcommand*{\arraystretch}{1}
 
 \section*{References}\label{references}
 \addcontentsline{toc}{section}{References}
@@ -1575,12 +1794,6 @@ Olmedo-Masat, O.M., Raffo, M.P., Rodrı́guez-Pérez, D., Arijón, M.,
 Sánchez-Carnero, N., 2020. How far can we classify macroalgae remotely?
 An example using a new spectral library of species from the south west
 atlantic (argentine patagonia). Remote Sensing 12, 3870.
-
-\bibitem[\citeproctext]{ref-peidro2024quantifying}
-Peidro-Devesa, M.J., Martı́nez-Movilla, A., Rodrı́guez-Somoza, J.L.,
-Sánchez, J.M., Román, M., 2024. Quantifying intertidal macroalgae stocks
-in the NW iberian peninsula using unmanned aerial vehicle (UAV)
-multispectral imagery. Regional Studies in Marine Science 103621.
 
 \bibitem[\citeproctext]{ref-penuelas2004leaf}
 Peñuelas, J., Munné-Bosch, S., Llusià, J., Filella, I., 2004. Leaf

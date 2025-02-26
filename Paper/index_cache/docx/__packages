@@ -11,3 +11,6 @@ lubridate
 sf
 terra
 magrittr
+flextable
+Rcpp
+brms
