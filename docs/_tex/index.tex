@@ -209,7 +209,7 @@ Laura Zoffoli\footnote{Consiglio Nazionale delle Ricerche, Istituto di
 Barillé\footnote{Bio-littoral, Immeuble Le Nevada, 2 Rue du Château de
   l'Eraudière, 44300 Nantes, France} \and Nicolas Harin³ \and Marta
 Román¹⁴ \and Pierre Gernez¹ \and Laurent Barillé¹}
-\date{2025-02-26}
+\date{2025-02-28}
 
 \begin{document}
 \maketitle
@@ -769,7 +769,7 @@ methodology proposed by Hobday et al. (2018).
 \subsubsection{Satellite observations}\label{satellite-observations}
 
 Three 2021 Sentinel-2 images of the study site were selected to assess
-the effect of thecombined AHW and MHW (``HW event'', henceforth) on the
+the effect of the combined AHW and MHW (``HW event'', henceforth) on the
 seagrass meadow: the first image was taken 5 days before the HW (1st of
 September 2021), the second image during the HW (6th of September 2021)
 and the third image one month later (8th of October 2021). Level-2 data
@@ -805,13 +805,13 @@ along the duration of the AHW.
 
 \subsection{Statistics}\label{statistics}
 
-General Linear Models (GLMs) were used to assess relative differences
-over time in response variables (Spectral Indices) with different
-treatments (Impacted vs Unimpacted). To analyze the effect of HW on the
-reflectance indices observed during the lab experiment, the relative
-change was modeled as a function of Days (1-3: Discrete) with Runs (1-3:
-Factor) and Timestep within Run (1-6: Factor) as cross random factors.
-Satellite-derived SHSI were modeled as a function of Date (1-3:
+General Linear Mixed effects Models (GLMMs) were used to assess relative
+differences over time in response variables (Spectral Indices) with
+different treatments (Impacted vs Unimpacted). To analyze the effect of
+HW on the reflectance indices observed during the lab experiment, the
+relative change was modeled as a function of Days (1-3: Discrete) with
+Runs (1-3: Factor) and Timestep within Run (1-6: Factor) as cross random
+factors. Satellite-derived SHSI were modeled as a function of Date (1-3:
 Discrete) and Treatment (Impacted vs Unimpacted: Categorical). A General
 Additive Model (GAM) was used to assess the relationship between
 relative SHSI change with emersion time. SHSI was modeled as a function
@@ -875,12 +875,12 @@ All radiometric indices, \(R''_{665 \, \text{nm}}\), NDVI, GLI and SHSI
 changed after the experimental heatwave
 (Figure~\ref{fig-Exp_Spectral_indices} ; Section~\ref{sec-AnnexeB}).
 
-At the start of the experiment (day 1), the difference between Treatment
-and Control was not significant in \(R''_{665 \, \text{nm}}\), NDVI and
-GLI (Figure~\ref{fig-Exp_Spectral_indices} A, B \& C). During days 2 and
-3 the radiometric indices all decreased significantly, with an overall
-decline of 68\%, 31\% and 54 for \(R''_{665 \, \text{nm}}\), NDVI and
-GLI.
+At the start of the experiment (day 1), there was no notable difference
+in \(R''_{665 \, \text{nm}}\), NDVI and GLI between the Treatment and
+Control groups (Figure~\ref{fig-Exp_Spectral_indices} A, B \& C,
+AnnexeB). During days 2 and 3 the radiometric indices all decreased
+significantly, with an overall decline of 68\%, 31\% and 54 for
+\(R''_{665 \, \text{nm}}\), NDVI and GLI.
 
 Unlike the other metrics, the SHSI of the Treatment was on average 55 \%
 higher than that of the Control in day 1
@@ -1048,8 +1048,6 @@ interval.}
 
 \end{figure}%
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/gam outputs-1.pdf}}
-
 Using the SHSI (Equation~\ref{eq-SDI}), we detected large darkened
 seagrass patches in the meadow on 6th of September
 (Figure~\ref{fig-Map_darkening_Bathy}). A total of 26.9 hectares of
@@ -1084,7 +1082,7 @@ Additionally, there was a clear relationship between seagrass emersion
 time and seagrass darkening (Figure~\ref{fig-GAM_Emersion} ;
 Section~\ref{sec-AnnexeC}). Seagrass emerged during less than 13 hours a
 day were not impacted, whereas seagrass emerged during more than 13
-hours turned brown with the maximum darkening occuring on seagrass
+hours turned brown with the maximum darkening occurring on seagrass
 emerged during more than 14.5 hours daily.
 
 \phantomsection\label{cell-fig-GAM_Emersion}
@@ -1221,7 +1219,7 @@ In this sense, previous experiments on the effects of warming on
 \emph{Zostera noltei} have shown contrasting results, depending on the
 duration and intensity of heating. In some cases, there were no
 significant changes in photosynthetic performance or survival under
-short-term moderate stress (Franssen et al., 2014), or under gradual
+short-term moderate stress (Franssen et al., 2014), or quaunder gradual
 temperature increases (Román et al., 2022). By contrast, studies focused
 on extreme temperature events have evidenced decreases of photosynthetic
 performance and leaf tissue integrity (Massa et al., 2009; Román et al.,
@@ -1288,6 +1286,12 @@ practices. Future work should focus on refining remote sensing tools and
 examining the cumulative effects of repeated heatwave events to support
 the conservation of intertidal seagrass meadows in a warming world.
 
+\section{Fundings}\label{fundings}
+
+This research was funded by the REWRITE (Rewilding European Shorelines
+and Beyond) project funded by the European Union under Grant Agreement
+101081357.
+
 \section{Annexes}\label{annexes}
 
 \subsection{Annexes A - Temperatures of the
@@ -1332,22 +1336,23 @@ the seagrasses.
 
 \begin{longtable}[c]{ccccccccc}
 
-\caption{\label{tbl-GLMM}Outputs of the Generalised Linear model
-assessing the relationship between time (days) and the relative change
-to the control of different vegetation indices
+\caption{\label{tbl-GLMM}Outputs of the Generalised Linear mixed effects
+model assessing the relationship between time of heatwave (days) and the
+relative change to the control of different vegetation indices
 (Figure~\ref{fig-Exp_Spectral_indices}, Second Derivative, NDVI, GLI,
 and SHSI). Each index has two terms: Intercept and Slope. The Intercept
 represents the expected value of the index at the reference time point
-(e.g., day 0), while the Slope quantifies the effect of time, indicating
-how the index changes per unit increase in days. The Estimate represents
-the posterior mean of the regression coefficient, while Std. Error
-indicates its standard deviation. The Lower 95\% CI and Upper 95\% CI
-define the 95\% credible interval, showing the range within which the
-true parameter is expected to fall with 95\% probability. The Rhat
-statistic assesses model convergence (values close to 1 indicate proper
-convergence). Bulk\_ESS and Tail\_ESS denote the effective sample sizes
-for bulk estimation and tail uncertainty, respectively, reflecting the
-reliability of the posterior estimates.}
+(e.g., day 0), while the Slope quantifies the effect of time of
+heatwave, indicating how the index changes per unit increase in days.
+The Estimate represents the posterior mean of the regression
+coefficient, while Std. Error indicates its standard deviation. The
+Lower 95\% CI and Upper 95\% CI define the 95\% credible interval,
+showing the range within which the true parameter is expected to fall
+with 95\% probability. The Rhat statistic assesses model convergence
+(values close to 1 indicate proper convergence). Bulk\_ESS and Tail\_ESS
+denote the effective sample sizes for bulk estimation and tail
+uncertainty, respectively, reflecting the reliability of the posterior
+estimates.}
 
 \tabularnewline
 
@@ -1436,76 +1441,48 @@ reliability of the posterior estimates.}
 
 \providecommand{\ascline}[3]{\noalign{\global\arrayrulewidth #1}\arrayrulecolor[HTML]{#2}\cline{#3}}
 
-\begin{longtable}[c]{|p{2.00in}|p{1.73in}|p{0.92in}|p{0.95in}|p{0.84in}|p{0.82in}|p{0.40in}}
+\begin{longtable}[c]{cccccccc}
 
 \caption{\label{tbl-GAM}Outputs of the Generalized Additive Model (GAM)
 assessing the relationship between emersion time per day (hours) and the
-relative change in SHSI (Figure Figure~\ref{fig-GAM_Emersion}). The
-Intercept represents the expected SHSI value at the reference level of
-emersion time. The Estimate indicates the mean effect, with its Standard
-Error quantifying variability. The t-value and p-value assess
-statistical significance. The smooth term captures the nonlinear effect
-of emersion time, where the effective degrees of freedom (edf) reflect
-the function's complexity. The F-value and p-value evaluate the
-significance of this effect. Model fit is described by the adjusted R²,
-deviance explained, and Generalized Cross-Validation (GCV) score, while
-N represents the sample size.}
+relative change in SHSI (Figure~\ref{fig-GAM_Emersion}). The Intercept
+represents the expected value of the relative change of SHSI at the
+reference time point, while the s(emersion\_per\_day) is a function of
+the effect of emersion time per day on the relative change of SHSI. The
+Estimate represents the posterior mean of the regression coefficient,
+while Std. Error indicates its standard deviation. The Lower 95\% CI and
+Upper 95\% CI define the 95\% credible interval, showing the range
+within which the true parameter is expected to fall with 95\%
+probability. The Rhat statistic assesses model convergence (values close
+to 1 indicate proper convergence). Bulk\_ESS and Tail\_ESS denote the
+effective sample sizes for bulk estimation and tail uncertainty,
+respectively, reflecting the reliability of the posterior estimates.}
 
 \tabularnewline
 
-\ascline{1pt}{666666}{1-7}
+\ascline{1.5pt}{666666}{1-8}
 
-\multicolumn{1}{>{\raggedright}m{\dimexpr 2in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Component}}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 1.73in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Term}}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.92in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Estimate}}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.95in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Std\ Error}}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.84in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{t-value}}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.82in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{p-value}}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 0.4in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{}}}}} \\
+\multicolumn{1}{>{}l}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Term}}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Estimate}}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Std.Error}}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Lower\ 95\%\ CI}}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Upper\ 95\%\ CI}}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Rhat}}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Bulk\_ESS}}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Tail\_ESS}}}}} \\
 
-\ascline{1pt}{666666}{1-7}\endfirsthead 
+\ascline{1.5pt}{666666}{1-8}\endfirsthead 
 
-\ascline{1pt}{666666}{1-7}
+\ascline{1.5pt}{666666}{1-8}
 
-\multicolumn{1}{>{\raggedright}m{\dimexpr 2in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Component}}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 1.73in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Term}}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.92in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Estimate}}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.95in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Std\ Error}}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.84in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{t-value}}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.82in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{p-value}}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 0.4in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{}}}}} \\
+\multicolumn{1}{>{}l}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Term}}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Estimate}}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Std.Error}}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Lower\ 95\%\ CI}}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Upper\ 95\%\ CI}}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Rhat}}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Bulk\_ESS}}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Tail\_ESS}}}}} \\
 
-\ascline{1pt}{666666}{1-7}\endhead
-
-
-
-\multicolumn{1}{>{\raggedright}p{\dimexpr 2in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{A.\ parametric\ coefficients}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 1.73in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{(Intercept)}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.92in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.488}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.95in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.006}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.84in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{81.574}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.82in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{<0.0001}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 0.4in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{***}}}} \\
-
-\ascline{1pt}{666666}{1-7}
+\ascline{1.5pt}{666666}{1-8}\endhead
 
 
 
-\multicolumn{1}{>{\raggedright}p{\dimexpr 2in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Component}}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 1.73in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Term}}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.92in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{edf}}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.95in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Ref.\ df}}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.84in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{F-value}}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.82in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{p-value}}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 0.4in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{}}}}} \\
+\multicolumn{1}{>{}l}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{Intercept}}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.49}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.01}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.48}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.50}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{1}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{11,075.03}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{10,478.49}}}} \\
 
-\ascline{1pt}{666666}{1-7}
-
-
-
-\multicolumn{1}{>{\raggedright}p{\dimexpr 2in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{B.\ smooth\ terms}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 1.73in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{s(emersion\_per\_day)}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.92in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{4.953}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.95in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{4.999}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.84in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{973.282}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.82in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{<0.0001}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 0.4in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{***}}}} \\
-
-\ascline{1pt}{666666}{1-7}
+\ascline{0.75pt}{666666}{1-8}
 
 
 
-\multicolumn{7}{>{\raggedleft}m{\dimexpr 7.66in+12\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{Signif.\ codes:\ 0\ <=\ '***'\ <\ 0.001\ <\ '**'\ <\ 0.01\ <\ '*'\ <\ 0.05}}}} \\
+\multicolumn{1}{>{}l}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textbf{semersion\_per\_day\_1}}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{-4.82}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.61}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{-6.03}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{-3.62}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{1}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{3,143.78}}}} & \multicolumn{1}{>{}c}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{5,830.38}}}} \\
 
-
-
-
-
-\multicolumn{7}{>{\raggedright}m{\dimexpr 7.66in+12\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{}}}} \\
-
-
-
-
-
-\multicolumn{7}{>{\raggedright}m{\dimexpr 7.66in+12\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{Adjusted\ R-squared:\ 0.357,\ Deviance\ explained\ 0.357}}}} \\
-
-
-
-
-
-\multicolumn{7}{>{\raggedright}m{\dimexpr 7.66in+12\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{GCV\ :\ 0.313,\ Scale\ est:\ 0.313,\ N:\ 8768}}}} \\
-
-
+\ascline{1.5pt}{666666}{1-8}
 
 
 \end{longtable}
