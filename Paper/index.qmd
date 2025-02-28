@@ -1454,7 +1454,7 @@ MHW and AHW detection was performed using the HeatwaveR package in R [@heatwaveR
 
 ### Satellite observations
 
-Three 2021 Sentinel-2 images of the study site were selected to assess the effect of thecombined AHW and MHW ("HW event", henceforth) on the seagrass meadow: the first image was taken 5 days before the HW (1st of September 2021), the second image during the HW (6th of September 2021) and the third image one month later (8th of October 2021). Level-2 data were downloaded from the Copernicus open access hub [@copernicus_sentinel2] provided by the European Space Agency (ESA). Level-2 images consist of orthorectified surface reflectance corrected from the effect of the atmosphere using ESA's standard correction (i.e., Sen2cor, @sen2cor). 
+Three 2021 Sentinel-2 images of the study site were selected to assess the effect of the combined AHW and MHW ("HW event", henceforth) on the seagrass meadow: the first image was taken 5 days before the HW (1st of September 2021), the second image during the HW (6th of September 2021) and the third image one month later (8th of October 2021). Level-2 data were downloaded from the Copernicus open access hub [@copernicus_sentinel2] provided by the European Space Agency (ESA). Level-2 images consist of orthorectified surface reflectance corrected from the effect of the atmosphere using ESA's standard correction (i.e., Sen2cor, @sen2cor). 
 
 The SHSI (@eq-SDI) was computed and mapped for each image. For the pixel containing a field QP (@fig-quiberonMap), the satellite-derived reflectance was extracted, and compared before and after the HW event.
 
@@ -1479,7 +1479,7 @@ Once aligned, the corrected elevation was compared to water height for each pixe
 
 ## Statistics
 
-General Linear Models (GLMs) were used to assess relative differences over time in response variables (Spectral Indices) with different treatments (Impacted vs Unimpacted). To analyze the effect of HW on the reflectance indices observed during the lab experiment, the relative change was modeled as a function of Days (1-3: Discrete) with Runs (1-3: Factor) and Timestep within Run (1-6: Factor) as cross random factors. Satellite-derived SHSI were modeled as a function of Date (1-3: Discrete) and Treatment (Impacted vs Unimpacted: Categorical). A General Additive Model (GAM) was used to assess the relationship between relative SHSI change with emersion time. SHSI was modeled as a function of emersion time with a basis spline. All model parameters were estimated within a Bayesian framework using the “brms” and “RStan” packages in R to leverage the stan language [@JSSv100i05; @stan2020rstan; @JSSv076i01; @Rbase]. The response variables were modeled assuming a Gaussian distribution, with weakly informative priors (Student-T(3,0,2.5)). Model parameters were estimated using Markov Chain Monte Carlo (MCMC) sampling, with 4 chains of 5000 iterations and a warm-up of 500.
+General Linear Mixed effects Models (GLMMs) were used to assess relative differences over time in response variables (Spectral Indices) with different treatments (Impacted vs Unimpacted). To analyze the effect of HW on the reflectance indices observed during the lab experiment, the relative change was modeled as a function of Days (1-3: Discrete) with Runs (1-3: Factor) and Timestep within Run (1-6: Factor) as cross random factors. Satellite-derived SHSI were modeled as a function of Date (1-3: Discrete) and Treatment (Impacted vs Unimpacted: Categorical). A General Additive Model (GAM) was used to assess the relationship between relative SHSI change with emersion time. SHSI was modeled as a function of emersion time with a basis spline. All model parameters were estimated within a Bayesian framework using the “brms” and “RStan” packages in R to leverage the stan language [@JSSv100i05; @stan2020rstan; @JSSv076i01; @Rbase]. The response variables were modeled assuming a Gaussian distribution, with weakly informative priors (Student-T(3,0,2.5)). Model parameters were estimated using Markov Chain Monte Carlo (MCMC) sampling, with 4 chains of 5000 iterations and a warm-up of 500.
 
 # Results
 
@@ -2928,7 +2928,7 @@ flextable_table <- df_stat_indices %>%
 
 All radiometric indices, $R''_{665 \, \text{nm}}$, NDVI, GLI and SHSI changed after the experimental heatwave (@fig-Exp_Spectral_indices ; @sec-AnnexeB). 
 
-At the start of the experiment (day 1), the difference between Treatment and Control was not significant in $R''_{665 \, \text{nm}}$, NDVI and GLI (@fig-Exp_Spectral_indices A, B & C). During days 2 and 3 the radiometric indices all decreased significantly, with an overall decline of `r abs(round(df_model_hyperspectral |> dplyr::filter(days == 3 & variable == "abs_chla") |> dplyr::pull(y) *100))`%, `r abs(round(df_model_hyperspectral |> dplyr::filter(days == 3 & variable == "NDVI") |> dplyr::pull(y) *100))`% and `r abs(round(df_model_hyperspectral |> dplyr::filter(days == 3 & variable == "GLI") |> dplyr::pull(y) *100))` for $R''_{665 \, \text{nm}}$, NDVI and GLI. 
+At the start of the experiment (day 1), there was no notable difference in $R''_{665 \, \text{nm}}$, NDVI and GLI between the Treatment and Control groups (@fig-Exp_Spectral_indices A, B & C, AnnexeB). During days 2 and 3 the radiometric indices all decreased significantly, with an overall decline of `r abs(round(df_model_hyperspectral |> dplyr::filter(days == 3 & variable == "abs_chla") |> dplyr::pull(y) *100))`%, `r abs(round(df_model_hyperspectral |> dplyr::filter(days == 3 & variable == "NDVI") |> dplyr::pull(y) *100))`% and `r abs(round(df_model_hyperspectral |> dplyr::filter(days == 3 & variable == "GLI") |> dplyr::pull(y) *100))` for $R''_{665 \, \text{nm}}$, NDVI and GLI. 
 
 
 Unlike the other metrics, the SHSI of the Treatment was on average `r round(df_model_hyperspectral |> dplyr::filter(days == 1 & variable == "SDI") |> dplyr::pull(y) *100)` % higher than that of the Control in day 1 (@fig-Exp_Spectral_indices D). By day 2, the SHSI exhibited a rapid increase of approximately `r round(df_model_hyperspectral |> dplyr::filter(days == 2 & variable == "SDI") |> dplyr::pull(y) *100)` %, eventually reaching an overall rise of `r round(df_model_hyperspectral |> dplyr::filter(days == 3 & variable == "SDI") |> dplyr::pull(y) *100)` % by day 3.
@@ -4790,11 +4790,11 @@ stk_all_df_gam_sdi <- stk_all_df %>%
 #   ggplot(aes(x = emersion_per_day, y = diff))+
 #   # geom_density2d()
 #   geom_point()
-
-stk_all_df_gam_sdi %>% 
-  ggplot(aes(x = emersion_per_day, y = Relative_SDI))+
-  # geom_density2d()
-  geom_point()
+# 
+# stk_all_df_gam_sdi %>% 
+#   ggplot(aes(x = emersion_per_day, y = Relative_SDI))+
+#   # geom_density2d()
+#   geom_point()
 
   
   
@@ -4849,10 +4849,298 @@ ggsave("Slides/Images/GAM_emersion.png", plot_GAM, height = 5 , width = 10, dpi 
 
 ```
 
+```{r GAM Bathy to Emersion BRMS}
+#| cache: true
+#| echo: false
+#| eval: false
+#| warning: false
+
+library(tidyverse)
+library(Utilities.Package)
+library(heatwaveR)
+library(sf)
+
+dates <- c("2021-09-04", "2021-09-05","2021-09-06","2021-09-07")
+coords <- c(47.586782, -3.121514)
+
+seagrass_mask <- read_sf("Data/shp/mask_seagrasses.shp")
+
+for(i in 1:length(dates)){
+  tide_data <- Tide_info(coords = coords, tide_date = dates[i])
+  
+  if(i == 1){
+    df_tide = tide_data$tide %>% 
+      as_tibble()
+  }else{
+    df_tide = rbind(df_tide,tide_data$tide)
+  }
+
+}
+
+
+tabfill <- c("UnderWater" = "darkblue","Exposed" = "darkred")
+
+plot_tide <- ggplot2::ggplot(df_tide)+
+  geom_line(aes(x = date, y = smooth))+
+  geom_hline(yintercept = 3.9, color = "goldenrod2", linewidth = 1)+
+  geom_flame(
+    aes(x = date, y = smooth, y2 = 3.9,
+    fill = "UnderWater"),
+    alpha = 0.2
+  )+
+   geom_flame(
+    aes(x = date, y2 = smooth, y = 3.9,
+        fill = "Exposed"),
+    alpha = 0.1
+  )+
+  scale_fill_manual(values = tabfill,
+                    labels = c("Exposed Seagrass", "Under Water Seagrasses"),
+                    name = NULL)+
+  ylab("Water Height (m)")+
+  theme_Bede()+
+  theme(legend.position = c(0.22, 0.1),
+        # legend.text = element_text(hjust = 0),
+        
+    strip.text.y = element_blank(),  # Remove facet titles (strip text)
+    strip.text.x = element_blank(),
+    strip.background = element_blank(),
+    # legend.position = "bottom",
+
+    plot.background = element_rect(fill = "white"),
+    legend.box = "vertical",  # Stack legends vertically
+    legend.box.just = "left",  # Align the legends to the left
+    legend.spacing.y = unit(0.1, 'mm'),  # Adjust vertical spacing
+    legend.spacing.x = unit(0.1, 'mm') ,  # Adjust horizontal spacing   
+    # legend.key = element_rect(fill = "white", color = "black"),  # Ensure clear legend keys
+    legend.box.margin = margin(1,1,1,1),
+    legend.text = element_text(hjust = 0, size =19),
+    axis.text.x = element_text(size = 19),
+    axis.text.y = element_text(size = 19),
+    # axis.title.x = element_text(size = 25),
+    axis.title.y = element_text(size = 25),
+    axis.title.x = element_blank(),
+    panel.spacing = unit(0, "lines"))
+
+
+ggsave("Paper/Figs/High_res/graph_tide.png", plot_tide, height = 8, width = 10, dpi = 400)  
+
+
+### emersion time processing
+library(terra)
+
+litto_10m_df <- rast("Data/Litto3D/Litto_10m_merged_32630.tif") %>% 
+  as.data.frame(xy=T) %>% 
+  mutate(emersion_time = NA,
+         submerged_time = NA)
+
+tidal_df <- df_tide %>% 
+  dplyr::select(date,smooth) %>%
+  complete(date = seq(min(date), max(date), by = "1 min")) %>%
+  mutate(smooth = zoo::na.approx(smooth, na.rm = FALSE))
+
+for (i in 1:nrow(litto_10m_df)) {
+  
+  df_emerged <- tidal_df %>% 
+    dplyr::filter(smooth < litto_10m_df$bathy[i])
+  df_submerged <- tidal_df %>% 
+    dplyr::filter(smooth > litto_10m_df$bathy[i])
+  
+  litto_10m_df$emersion_time[i] <- (nrow(df_emerged))+1
+  litto_10m_df$submerged_time[i] <- (nrow(df_submerged))+1
+}
+
+litto_cropped <- litto_10m_df %>% 
+  rast(type = "xyz", crs = crs("EPSG:32630"))%>% 
+  crop(seagrass_mask, mask = T)
+
+stk <- rast("Data/Sentinel2/Before_after_indices_meadowCropped.tif") %>% 
+  crop(seagrass_mask, mask = T) %>% 
+  crop(litto_cropped)
+
+stk_all <- c(stk,litto_cropped) %>% 
+  # mutate(diff_GLI = GLI_before-GLI_after) %>% 
+  crop(seagrass_mask, mask = T)
+
+writeRaster(stk_all,"Data/Stack_all_variables.tif", overwrite = T)
+
+
+
+stk_all <- rast("Data/Stack_all_variables.tif") %>% 
+  mutate(Relative_SDI = (SDI_after-SDI_before)/abs(SDI_before))
+
+stk_all_df <- stk_all %>% 
+  as.data.frame(xy = T) %>% 
+  as_tibble() %>% 
+  # as_tibble() %>% 
+  mutate(emersion_per_day = (emersion_time/60)/4, 
+         SDI_after = (SDI_after / 1000)+0.1, 
+         SDI_before = (SDI_before / 1000)+0.1)%>% 
+  as.data.frame()
+
+
+
+stk_all_df_gam_sdi <- stk_all_df %>% 
+  dplyr::filter(
+    # NDVI_before > 0.5,
+    SDI_before < 0,
+    # !(NDVI_before > NDVI_after & SDI_before > SDI_after),
+    # !(GLI_before < GLI_after & SDI_before > SDI_after),
+    # 
+    # Relative_SDI < 10,
+    # # Relative_SDI > -5,
+    emersion_per_day < 16
+    )
+# 
+# stk_all_df_gam %>% 
+#   # dplyr::filter(NDVI_before > 0.5) %>% 
+#   ggplot(aes(x = emersion_per_day, y = diff))+
+#   # geom_density2d()
+#   geom_point()
+# 
+# stk_all_df_gam_sdi %>% 
+#   ggplot(aes(x = emersion_per_day, y = Relative_SDI))+
+#   # geom_density2d()
+#   geom_point()
+
+  
+  
+
+library(brms)
+
+
+model_gam_brms <- brm(
+  formula = bf(Relative_SDI ~ s(emersion_per_day,k=6)),
+  data = stk_all_df_gam_sdi, 
+  family = gaussian(), 
+  cores = 8, 
+  iter = 5000,
+  warmup = 500, 
+  control = list(adapt_delta = 0.9999),
+  save_pars = save_pars(latent = TRUE),
+  file = "Output/gam/gam_SHSI_vs_Emersion_5000iter_k6"
+  )
+
+plot(model_gam_brms)
+summary(model_gam_brms)
+
+
+                     
+NewData_gam_brms<-data.frame(emersion_per_day = seq(from = min(stk_all_df_gam_sdi$emersion_per_day), 
+                                                    to = max(stk_all_df_gam_sdi$emersion_per_day), 
+                                                    by = 0.01))
+
+InitialData_SHSI_brms<-NewData_gam_brms %>%
+  tidybayes::add_linpred_draws(model_gam_brms, ndraws=2000,seed=123)%>% 
+  group_by(emersion_per_day)%>% 
+  summarise(tidybayes::median_qi(.linpred,.width=c(0.89))) %>% 
+  mutate(variable = "Relative_SHSI")
+
+
+
+
+
+(plot_GAM <- ggplot()+
+    geom_line(data = InitialData_SHSI_brms, aes(x = emersion_per_day, y = y*100), color = "black",linewidth = 1)+
+    geom_ribbon(data = InitialData_SHSI_brms, aes(x = emersion_per_day, y = y*100, ymin = ymin*100, ymax = ymax*100) ,fill = "black", color = NA, alpha = 0.2)+
+  ylab("Relative change of SDI (%)")+
+  xlab("Emerged time per day (hour)")+
+  geom_point(data = stk_all_df_gam_sdi , aes(x = emersion_per_day , y = Relative_SDI*100),alpha = 0.01)+
+    geom_hline(yintercept = 0)+
+    ylim(c(-100,150))+
+  theme_Bede()+
+  xlim(c(10,15))+
+  theme(axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        axis.title.x = element_text(size = 16),
+        axis.title.y = element_text(size = 16))
+        # plot.background = element_rect(fill = "white"))
+  )
+
+
+
+
+(plot_NDVI <- Relative_NDVI_glmm %>% 
+    mutate(timeDiff = (timeDiff)) %>% 
+    ggplot()+
+    # geom_point(aes(x = timestep, y = Relative,shape = Experiment), alpha = 0.5, size = 2)+
+    geom_jitter(aes(x = days, y = Relative*100,shape = Experiment), show.legend = F, color = "darkred", height = 0, width = 0.2, alpha = 0.5)+
+    geom_line(data = InitialData_NDVI, aes(x = days, y = y*100), color = "darkred",linewidth = 1)+
+    geom_ribbon(data = InitialData_NDVI, aes(x = days, y = y*100, ymin = ymin*100, ymax = ymax*100) ,fill = "darkred", color = NA, alpha = 0.2)+
+        geom_hline(yintercept = 0, linetype = "dashed", linewidth = 1, color = "grey40")+
+      labs(y = expression("Relative change of NDVI  (%)"))+
+
+    # ylab("Relative SDI (Test to Control)") +
+  theme_Bede() + 
+  xlab("Experimental Timesteps")+
+    # facet_wrap(~ Experiment, scales = "free")+
+    # ylim(c(0,20))+
+    scale_x_continuous(breaks = c(1,2,3),
+                       labels = c("Day 1","Day 2","Day 3"),
+                       position = "top")+
+    scale_y_continuous(position = "right")+
+    # scale_color_manual(values = coltab)+
+    # scale_fill_manual(values = coltab)+
+    theme(
+      strip.text.x = element_text(size =17),
+      # legend.title = element_text(size =17, hjust = 0.5),
+      legend.title = element_blank(),
+      legend.title.position = "top",
+      legend.text = element_text(size =13),
+
+      # legend.text = element_text(hjust = 0, size =13),
+      axis.text.x = element_text(size = 13,color = "white"),
+      axis.ticks.x = element_blank(),
+
+      axis.text.y = element_text(size = 13),
+      axis.title.x = element_text(size = 13, color = "white"),
+      axis.title.y = element_text(size = 13),
+      
+      # legend.position = c(0.86, 0.13),
+      legend.position = "top",
+      plot.background = element_rect(fill = "white"),
+      legend.key.width = unit(1,"cm"),
+      legend.key.height = unit(2,"mm")
+
+    # plot.margin = margin(t = 5, r = 5, b = 5, l = 5), # Adjusts plot margins
+    # legend.spacing.y = unit(0.1, "cm"),  # Reduces space between legend items vertically
+    # legend.margin = margin(t = 0, b = -10)  
+      # panel.border = element_blank(),
+    )
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# plot_final <- ggMarginal(plot_GAM, type = "density", margins = "y", size = 20)
+
+
+ggsave("Paper/Figs/High_res/GAM_emersion.png", plot_GAM, height = 5 , width = 10, dpi = 400 )
+ggsave("Paper/Figs/Low_res/GAM_emersion.png", plot_GAM, height = 5 , width = 10, dpi = 200 )
+
+ggsave("Slides/Images/GAM_emersion.png", plot_GAM, height = 5 , width = 10, dpi = 400 )
+
+
+```
+
 ```{r gam outputs}
 #| cache: true
 #| echo: false
-#| eval: true
+#| eval: false
 #| warning: false
 
 library(tidyverse)
@@ -4889,10 +5177,10 @@ stk_all_df_gam_sdi <- stk_all_df %>%
 #   # geom_density2d()
 #   geom_point()
 
-stk_all_df_gam_sdi %>% 
-  ggplot(aes(x = emersion_per_day, y = Relative_SDI))+
-  # geom_density2d()
-  geom_point()
+# stk_all_df_gam_sdi %>% 
+#   ggplot(aes(x = emersion_per_day, y = Relative_SDI))+
+#   # geom_density2d()
+#   geom_point()
 
   
   
@@ -4916,6 +5204,51 @@ ft_gam <- ft_gam %>%
     j = "p.value", # Column to modify
     value = paragraph
   )
+
+```
+
+```{r gam outputsbrms}
+#| cache: true
+#| echo: false
+#| eval: true
+#| warning: false
+
+library(tidyverse)
+library(flextable)
+library(brms)
+
+
+model_gam_brms <- brm(
+  formula = bf(Relative_SDI ~ s(emersion_per_day,k=6)),
+  data = stk_all_df_gam_sdi, 
+  family = gaussian(), 
+  cores = 8, 
+  iter = 5000,
+  warmup = 500, 
+  control = list(adapt_delta = 0.9999),
+  save_pars = save_pars(latent = TRUE),
+  file = "../Output/gam/gam_SHSI_vs_Emersion_5000iter_k6"
+  )
+
+summary_gam_SHSI <- summary(model_gam_brms)
+
+# Convert to a clean data frame
+table_gam_SHSI <- as.data.frame(summary_gam_SHSI$fixed) %>%
+  rownames_to_column(var = "Variable") %>% 
+  # mutate(Index = "GLI") %>%
+  dplyr::select(
+    # Index = Index,
+    Term = Variable,
+    `Estimate` = Estimate,
+    `Std.Error` = Est.Error,
+    `Lower 95% CI` = `l-95% CI`,
+    `Upper 95% CI` = `u-95% CI`,
+    `Rhat` = Rhat,
+    `Bulk_ESS` = Bulk_ESS,
+    `Tail_ESS` = Tail_ESS
+) %>% 
+  mutate(across(where(is.numeric), round, 2))  
+
 
 ```
 
@@ -5614,7 +5947,7 @@ Using the SHSI (@eq-SDI), we detected large darkened seagrass patches in the mea
 knitr::include_graphics("Figs/Low_res/SHSI_S2_map.png")
 ```
 
-Additionally, there was a clear relationship between seagrass emersion time and seagrass darkening (@fig-GAM_Emersion ; @sec-AnnexeC). Seagrass emerged during less than 13 hours a day were not impacted, whereas seagrass emerged during more than 13 hours turned brown with the maximum darkening occuring on seagrass emerged during more than 14.5 hours daily. 
+Additionally, there was a clear relationship between seagrass emersion time and seagrass darkening (@fig-GAM_Emersion ; @sec-AnnexeC). Seagrass emerged during less than 13 hours a day were not impacted, whereas seagrass emerged during more than 13 hours turned brown with the maximum darkening occurring on seagrass emerged during more than 14.5 hours daily. 
 
 ```{r Fig GAM_Emersion}
 #| cache: false
@@ -5712,6 +6045,11 @@ Given the combined effects of temperature extremes, eutrophication, and other an
 
 This research investigated the effects of both marine and atmospheric heatwaves on the intertidal seagrass *Zostera noltei*, a critical component of coastal ecosystems facing increased thermal stress due to climate change. Heat stress effects on seagrass reflectance were documented in the laboratory using a controlled experiment in order to understand how extreme heat events affect seagrass health and to assess the potential of remote sensing for HW impacts monitoring. Our findings revealed that heatwaves lead to substantial declines in seagrass reflectance, particularly in the green and near-infrared regions, likely driven by pigment degradation and structural damage. This change was reflected in significant reductions in key vegetation indices such as NDVI and GLI. The Seagrass Heat Shock Index (SHSI), developed in this study, successfully detected seagrass darkening, a visible symptom of heatwave stress, demonstrating the viability of spectral monitoring to capture early-stage impacts of heat events on intertidal ecosystems. We applied and validated the newly developed Seagrass Heat Shock Index to Sentinel-2 satellite images acquired during an heatwave event, and documented the broad spatial impact of heatwaves on seagrass meadows in Quiberon Bay, France. The correlation between heatwave exposure and darkening of seagrass suggests that remote sensing, combined with targeted field observations, can enhance our understanding of ecosystem responses to climate-driven thermal events. These results advocate for integrating regular spectral monitoring into conservation strategies, as it can help predict seagrass resilience and guide adaptive management practices. Future work should focus on refining remote sensing tools and examining the cumulative effects of repeated heatwave events to support the conservation of intertidal seagrass meadows in a warming world. 
 
+
+# Fundings
+
+This research was funded by the REWRITE (Rewilding European Shorelines and Beyond) project funded by the European Union under Grant Agreement 101081357.
+
 # Annexes
 
 ## Annexes A - Temperatures of the experiment {#sec-AnnexeA}
@@ -5724,7 +6062,7 @@ On average, *in situ* temperatures were 3 ± 3.2°C higher than those recorded b
 
 ```{r GLMM output table}
 #| label: tbl-GLMM
-#| tbl-cap: "Outputs of the Generalised Linear model assessing the relationship between time (days) and the relative change to the control of different vegetation indices (@fig-Exp_Spectral_indices, Second Derivative, NDVI, GLI, and SHSI). Each index has two terms: Intercept and Slope. The Intercept represents the expected value of the index at the reference time point (e.g., day 0), while the Slope quantifies the effect of time, indicating how the index changes per unit increase in days. The Estimate represents the posterior mean of the regression coefficient, while Std. Error indicates its standard deviation. The Lower 95% CI and Upper 95% CI define the 95% credible interval, showing the range within which the true parameter is expected to fall with 95% probability. The Rhat statistic assesses model convergence (values close to 1 indicate proper convergence). Bulk_ESS and Tail_ESS denote the effective sample sizes for bulk estimation and tail uncertainty, respectively, reflecting the reliability of the posterior estimates."
+#| tbl-cap: "Outputs of the Generalised Linear mixed effects model assessing the relationship between time of heatwave (days) and the relative change to the control of different vegetation indices (@fig-Exp_Spectral_indices, Second Derivative, NDVI, GLI, and SHSI). Each index has two terms: Intercept and Slope. The Intercept represents the expected value of the index at the reference time point (e.g., day 0), while the Slope quantifies the effect of time of heatwave, indicating how the index changes per unit increase in days. The Estimate represents the posterior mean of the regression coefficient, while Std. Error indicates its standard deviation. The Lower 95% CI and Upper 95% CI define the 95% credible interval, showing the range within which the true parameter is expected to fall with 95% probability. The Rhat statistic assesses model convergence (values close to 1 indicate proper convergence). Bulk_ESS and Tail_ESS denote the effective sample sizes for bulk estimation and tail uncertainty, respectively, reflecting the reliability of the posterior estimates."
 #| echo: false
 #| error: false
 #| message: false
@@ -5740,7 +6078,7 @@ flextable_table
 
 ```{r GAM output table and caption}
 #| label: tbl-GAM
-#| tbl-cap: "Outputs of the Generalized Additive Model (GAM) assessing the relationship between emersion time per day (hours) and the relative change in SHSI (@fig-GAM_Emersion). The Intercept represents the expected SHSI value at the reference level of emersion time. The Estimate indicates the mean effect, with its Standard Error quantifying variability. The t-value and p-value assess statistical significance. The smooth term captures the nonlinear effect of emersion time, where the effective degrees of freedom (edf) reflect the function's complexity. The F-value and p-value evaluate the significance of this effect. Model fit is described by the adjusted R², deviance explained, and Generalized Cross-Validation (GCV) score, while N represents the sample size."
+#| tbl-cap: "Outputs of the Generalized Additive Model (GAM) assessing the relationship between emersion time per day (hours) and the relative change in SHSI (@fig-GAM_Emersion). The Intercept represents the expected value of the relative change of SHSI at the reference time point, while the s(emersion_per_day) is a function of the effect of emersion time per day on the relative change of SHSI. The Estimate represents the posterior mean of the regression coefficient, while Std. Error indicates its standard deviation. The Lower 95% CI and Upper 95% CI define the 95% credible interval, showing the range within which the true parameter is expected to fall with 95% probability. The Rhat statistic assesses model convergence (values close to 1 indicate proper convergence). Bulk_ESS and Tail_ESS denote the effective sample sizes for bulk estimation and tail uncertainty, respectively, reflecting the reliability of the posterior estimates."
 #| echo: false
 #| error: false
 #| message: false
@@ -5748,7 +6086,7 @@ flextable_table
 
 library(flextable)
 
-ft_gam
+table_gam_SHSI
 
 ```
 
