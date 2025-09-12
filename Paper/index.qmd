@@ -2096,6 +2096,7 @@ library(tidyverse)
 # library(broom)
 library(brms)
 # library(lme4)
+library(Utilities.Package)
 
 green_wavelength <- 560 
 NIR_wavelength <- 842
@@ -2268,7 +2269,7 @@ InitialData_SDI<-NewData_SDI %>%
     geom_jitter(aes(x = days, y = Relative*100,shape = Experiment), height = 0, width = 0.2, alpha = 0.5)+
     geom_line(data = InitialData_SDI, aes(x = days, y = y*100), linewidth = 1)+
     geom_ribbon(data = InitialData_SDI, aes(x = days, y = y*100, ymin = ymin*100, ymax = ymax*100) , color = NA, alpha = 0.2)+
-      labs(y = expression("Relative change of SDI (%)"))+
+      labs(y = expression("Relative change of SHSI (%)"))+
         geom_hline(yintercept = 0, linetype = "dashed", linewidth = 1, color = "grey40")+
 
 
@@ -2279,7 +2280,7 @@ InitialData_SDI<-NewData_SDI %>%
     # ylim(c(0,20))+
     scale_x_continuous(breaks = c(1,2,3),
                        labels = c("Day 1","Day 2","Day 3"))+
-    scale_y_continuous(position = "right")+
+    # scale_y_continuous(position = "right")+
     # scale_color_manual(values = coltab)+
     # scale_fill_manual(values = coltab)+
     theme(
@@ -2311,6 +2312,7 @@ InitialData_SDI<-NewData_SDI %>%
 # ggsave("Paper/Figs/High_res/glm_SDI.png",plot_SDI, height = 10, width = 10, dpi = 400)
 # ggsave("Paper/Figs/Low_res/glm_SDI.png",plot_SDI, height = 10, width = 10, dpi = 200)
 
+ggsave("Plot_SHSI_exp.svg",plot_SDI, heigh = 5, width = 10)
 ```
 
 ```{r NDVI_exp}
