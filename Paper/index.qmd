@@ -123,23 +123,23 @@ csl: RSE.csl
 library(tidyverse)
 ```
 
-# Abstract Long version (For LPS Submission)
+<!-- # Abstract Long version (For LPS Submission) -->
 
-Seagrasses meadows are important coastal ecosystems, serving as crucial habitats for marine biodiversity, stabilizing sediments to mitigate erosion, and acting as significant carbon sinks in global climate regulation. However, these vital ecosystems face mounting threats from climate change, with the intensification and increased frequency of marine and atmospheric heatwaves posing profound risks to their health and functionality. This study investigates the impact of these extreme thermal events on the intertidal seagrass, employing a combination of laboratory-controlled experiments and satellite-based remote sensing to capture changes in spectral reflectance and to assess its ecological implications.
+<!-- Seagrasses meadows are important coastal ecosystems, serving as crucial habitats for marine biodiversity, stabilizing sediments to mitigate erosion, and acting as significant carbon sinks in global climate regulation. However, these vital ecosystems face mounting threats from climate change, with the intensification and increased frequency of marine and atmospheric heatwaves posing profound risks to their health and functionality. This study investigates the impact of these extreme thermal events on the intertidal seagrass, employing a combination of laboratory-controlled experiments and satellite-based remote sensing to capture changes in spectral reflectance and to assess its ecological implications. -->
 
-During laboratory experiments, seagrass of the species *Zostera noltei* were exposed to controlled simulated heatwave conditions during three days to assess the physiological and structural impacts of extreme thermal stress on their spectral reflectance. The experimental design involved placing seagrass samples in intertidal chambers that simulated natural tidal cycles, allowing to precisely regulate temperature conditions during both high and low tides. One chamber served as a control, maintaining typical seasonal temperatures, while the other was used to simulate heatwave conditions by progressively increasing air and water temperatures to mimic an actual heatwave event observed in the field. Hyperspectral reflectance measurements were recorded at regular intervals during low-tide to monitor changes in the seagrass over time. After two days of heatwave exposure the reflectance decreased significantly, particularly in the green (around 560 nm) and near-infrared (NIR) regions of the spectrum. This decline in reflectance was closely linked to visible leaf browning, suggesting alterations in pigment content, in the internal structure of seagrass leaves and their overall physiological performance. The green reflectance decline indicated a reduction in the plant's photosynthetic capacity, while changes in NIR reflectance were related to the heat-indiced damage to internal arrangement of cells and air spaces. Vegetation indices like the Normalized Difference Vegetation Index (NDVI) and the Green Leaf Index (GLI), which are indicative of the overall health and structural integrity of vegetation, showed marked decreases under heatwave conditions, with NDVI dropping by up to 34% and GLI by 57%. This reduction highlights the adverse effects on the seagrass's ability to maintain its normal physiological processes under heat stress. To quantify these changes more effectively, a novel Seagrass Heat Shock Index (SHSI) was developed. The SHSI, applicable on emerged seagrass, was particularly effective in detecting the transition from green leaves to darkened, stressed leaves, providing a sensitive and reliable tool for assessing thermal stress effects on seagrass. By focusing on specific changes in reflectance across certain spectral bands, the SHSI allowed for a clear differentiation between unimpacted and impacted vegetation, capturing the onset of heat-induced stress with high accuracy. This sensitivity makes the SHSI valuable for early intervention, enabling managers and researchers to identify vulnerable seagrass meadows before substantial damage occurs, thereby facilitating more timely conservation measures.
+<!-- During laboratory experiments, seagrass of the species *Zostera noltei* were exposed to controlled simulated heatwave conditions during three days to assess the physiological and structural impacts of extreme thermal stress on their spectral reflectance. The experimental design involved placing seagrass samples in intertidal chambers that simulated natural tidal cycles, allowing to precisely regulate temperature conditions during both high and low tides. One chamber served as a control, maintaining typical seasonal temperatures, while the other was used to simulate heatwave conditions by progressively increasing air and water temperatures to mimic an actual heatwave event observed in the field. Hyperspectral reflectance measurements were recorded at regular intervals during low-tide to monitor changes in the seagrass over time. After two days of heatwave exposure the reflectance decreased significantly, particularly in the green (around 560 nm) and near-infrared (NIR) regions of the spectrum. This decline in reflectance was closely linked to visible leaf browning, suggesting alterations in pigment content, in the internal structure of seagrass leaves and their overall physiological performance. The green reflectance decline indicated a reduction in the plant's photosynthetic capacity, while changes in NIR reflectance were related to the heat-indiced damage to internal arrangement of cells and air spaces. Vegetation indices like the Normalized Difference Vegetation Index (NDVI) and the Green Leaf Index (GLI), which are indicative of the overall health and structural integrity of vegetation, showed marked decreases under heatwave conditions, with NDVI dropping by up to 34% and GLI by 57%. This reduction highlights the adverse effects on the seagrass's ability to maintain its normal physiological processes under heat stress. To quantify these changes more effectively, a novel Seagrass Heat Shock Index (SHSI) was developed. The SHSI, applicable on emerged seagrass, was particularly effective in detecting the transition from green leaves to darkened, stressed leaves, providing a sensitive and reliable tool for assessing thermal stress effects on seagrass. By focusing on specific changes in reflectance across certain spectral bands, the SHSI allowed for a clear differentiation between unimpacted and impacted vegetation, capturing the onset of heat-induced stress with high accuracy. This sensitivity makes the SHSI valuable for early intervention, enabling managers and researchers to identify vulnerable seagrass meadows before substantial damage occurs, thereby facilitating more timely conservation measures. -->
 
-Complementing the experimental data, Sentinel-2 observations provided clear evidence of the effects of a documented heatwave event in South Brittany, France, on natural seagrass meadows in September 2021. These intertidal zones were exposed to extreme air temperatures up to 32°C for more than 13.5 hours per day, leading to significant leaf darkening, which affected up to 24% of the meadow's area. The satellite-derived SHSI indicated a strong spatial correlation between prolonged heat exposure and areas experiencing spectral darkening, which was consistent with the laboratory experiment. Spatial analysis showed that darkening was especially pronounced in the higher intertidal regions, where seagrasses were exposed to air for longer durations during low tide, underlining the interaction between tidal exposure and thermal stress. Using a Sentinel-2 image acquired one month after the heatwave, SHSI showed partial recovery of darkened patches. Despite this recovery, the seagrasses that had experienced the most severe darkening did not fully return to their original state, indicating that while *Z. noltei* meadows have some capacity for resilience, prolonged or repeated thermal stress can have lasting impacts, particularly in the more exposed intertidal regions. This highlights the need for focused conservation efforts to support their recovery and enhance their resilience in the face of increasing climate-driven thermal extremes.
+<!-- Complementing the experimental data, Sentinel-2 observations provided clear evidence of the effects of a documented heatwave event in South Brittany, France, on natural seagrass meadows in September 2021. These intertidal zones were exposed to extreme air temperatures up to 32°C for more than 13.5 hours per day, leading to significant leaf darkening, which affected up to 24% of the meadow's area. The satellite-derived SHSI indicated a strong spatial correlation between prolonged heat exposure and areas experiencing spectral darkening, which was consistent with the laboratory experiment. Spatial analysis showed that darkening was especially pronounced in the higher intertidal regions, where seagrasses were exposed to air for longer durations during low tide, underlining the interaction between tidal exposure and thermal stress. Using a Sentinel-2 image acquired one month after the heatwave, SHSI showed partial recovery of darkened patches. Despite this recovery, the seagrasses that had experienced the most severe darkening did not fully return to their original state, indicating that while *Z. noltei* meadows have some capacity for resilience, prolonged or repeated thermal stress can have lasting impacts, particularly in the more exposed intertidal regions. This highlights the need for focused conservation efforts to support their recovery and enhance their resilience in the face of increasing climate-driven thermal extremes. -->
 
-The combination of laboratory-controlled experiments and satellite-based remote sensing provided a comprehensive understanding of the impacts of heatwaves on seagrass meadows at multiple scales, from individual leaf-level responses to entire meadow-wide effects, offering valuable insights for the management and conservation of these vulnerable habitats. The study underscores the critical role of spectral reflectance as an early warning indicator of heatwave-induced stress, laying the foundation for remote sensing-based monitoring and conservation efforts. By employing innovative indices like the Seagrass Heat Shock Index (SHSI), we captured ecologically significant changes in the physiological performance of *Z. noltei*, advancing the precision of habitat assessments in intertidal zones. As climate scenarios predict more frequent and intense heatwaves, the need for continuous monitoring of intertidal seagrass meadows becomes increasingly urgent. This research demonstrates the efficacy of remote sensing in capturing rapid environmental changes, providing a framework for mitigating the impacts of climate-driven stressors and calling for adaptive conservation strategies. These strategies should integrate advancements in remote sensing technologies with targeted field-based interventions to preserve the resilience of intertidal seagrass meadows, thereby addressing the escalating challenges posed by climate change and ensuring the continued health of these indispensable coastal habitats.
+<!-- The combination of laboratory-controlled experiments and satellite-based remote sensing provided a comprehensive understanding of the impacts of heatwaves on seagrass meadows at multiple scales, from individual leaf-level responses to entire meadow-wide effects, offering valuable insights for the management and conservation of these vulnerable habitats. The study underscores the critical role of spectral reflectance as an early warning indicator of heatwave-induced stress, laying the foundation for remote sensing-based monitoring and conservation efforts. By employing innovative indices like the Seagrass Heat Shock Index (SHSI), we captured ecologically significant changes in the physiological performance of *Z. noltei*, advancing the precision of habitat assessments in intertidal zones. As climate scenarios predict more frequent and intense heatwaves, the need for continuous monitoring of intertidal seagrass meadows becomes increasingly urgent. This research demonstrates the efficacy of remote sensing in capturing rapid environmental changes, providing a framework for mitigating the impacts of climate-driven stressors and calling for adaptive conservation strategies. These strategies should integrate advancements in remote sensing technologies with targeted field-based interventions to preserve the resilience of intertidal seagrass meadows, thereby addressing the escalating challenges posed by climate change and ensuring the continued health of these indispensable coastal habitats. -->
 
 # Introduction
 
-Seagrasses play a crucial role in coastal ecosystems by providing habitats and feeding grounds for various marine species, supporting marine biodiversity, and contributing to primary production and carbon sequestration [@unsworth2022planetary; @sousa2019blue]. Seagrasses are essential for several ecological functions, such as sediment stabilization [@infantes2022seagrass] or eutrophication mitigation by consuming nutrients [@gladstone2018biomass]. This justifies their use as indicators of environmental changes due to their sensitivity to water quality variations [@zoffoli2021decadal]. The interactions between seagrass meadows and their associated herbivores further enhance the delivery of ecosystem services, including coastal protection, fisheries support and provision of habitat and resources for birds [@jankowska2019stabilizing; @zoffoli2023remote; @gardner2018global ; @unsworth2021seagrass]. Understanding and preserving seagrass is vital for maintaining the biodiversity and productivity of coastal regions [@scott2018role; @ramesh2020seagrass].
+Seagrasses play a crucial role in coastal ecosystems by providing habitats and feeding grounds for various marine species, supporting marine biodiversity, and contributing to primary production and carbon sequestration [@unsworth2022planetary; @sousa2019blue]. Seagrasses are essential for several ecological functions, such as sediment stabilization [@infantes2022seagrass] or eutrophication mitigation by consuming nutrients [@gladstone2018biomass]. This justifies their use as indicators of environmental changes due to their sensitivity to water quality variations [@zoffoli2021decadal]. The interactions between seagrass meadows and their associated herbivores further enhance the delivery of ecosystem services, including coastal protection, fisheries support and provision of habitat and resources for birds [@jankowska2019stabilizing; @zoffoli2023remote; @gardner2018global; @unsworth2021seagrass]. Understanding and preserving seagrass is vital for maintaining the biodiversity and productivity of coastal regions [@scott2018role; @ramesh2020seagrass].
 
-Despite their crucial role in marine ecosystems, seagrasses face numerous threats that compromise their health and functionality. Intertidal seagrasses are subjected to a combination of aquatic and aerial conditions linked with tidal cycles, and face disturbance from terrestrial and aquatic stressors. Coastal development and human activities are primary threats, reducing the available habitat for seagrasses and increasing water turbidity, limiting light penetration, and photosynthesis [@waycott2009accelerating]. Seagrasses are also threatened by runoff from agricultural fields and urban areas leading to nutrient enrichment. Eutrophication promotes the growth of seaweed in coastal waters, causing macroalgal blooms that compete with seagrasses for light and nutrients [@brun2003effect ; @thomsen2023meadow; @rs16234383]. Pollution from industrial and agricultural sources introduces harmful chemicals and heavy metals into coastal waters, posing toxic risks to seagrass health [@green2021historical;@bastos2023high; @zahoor2023water]. Among manifold anthropogenic stressors, heatwaves (HWs), exacerbated by climate change, pose a severe threat to seagrasses, with catastrophic dieback events observed woldwide [@carlson2018sea; @marba2010mediterranean;@moore2008environmental;@thomson2015extreme;@strydom2020too].
+Despite their crucial role in marine ecosystems, seagrasses face numerous threats that compromise their health and functionality. Intertidal seagrasses are subjected to a combination of aquatic and aerial conditions linked with tidal cycles, and face disturbance from terrestrial and aquatic stressors. Coastal development and human activities are primary threats, reducing the available habitat for seagrasses and increasing water turbidity, limiting light penetration, and photosynthesis [@waycott2009accelerating]. Seagrasses are also threatened by runoff from agricultural fields and urban areas leading to nutrient enrichment. Eutrophication promotes the growth of seaweed in coastal waters, causing macroalgal blooms that compete with seagrasses for light and nutrients [@brun2003effect; @thomsen2023meadow; @rs16234383]. Pollution from industrial and agricultural sources introduces harmful chemicals and heavy metals into coastal waters, posing toxic risks to seagrass health [@green2021historical; @bastos2023high; @zahoor2023water]. Among manifold anthropogenic stressors, heatwaves (HWs), exacerbated by climate change, pose a severe threat to seagrasses, with catastrophic dieback events observed woldwide [@carlson2018sea; @marba2010mediterranean; @moore2008environmental; @thomson2015extreme; @strydom2020too].
 
-Marine Heatwaves (MHWs) are defined by @hobday2016hierarchical as prolonged discrete anomalously warm water events, while Atmospheric Heatwaves (AHW) are defined by @perkins2013measurement as periods of at least three consecutive days with temperatures exceeding the 90th percentile of a time series covering at least 30 years. Subtidal seagrass meadows are exposed to MHWs, whereas at the interface between land and ocean, intertidal seagrasses are exposed to both MHWs and AHWs. HWs profoundly impact seagrass physiology, with effects varying between species and geographic location. Widespread seagrass species such as *Zostera marina* exhibits high susceptibility to elevated sea surface temperatures during winter and spring, leading to advanced flowering, high mortality rates, and reduced biomass [@sawall2021chronically]. Similarly, *Cymodocea nodosa* shows increased photosynthetic activity during HWs but suffers negative effects on photosynthetic performance and leaf biomass during recovery [@deguette2022physiological]. Additionally, different populations of Zostera marina along the European thermal gradient exhibit varied photophysiological responses during the recovery phase of HWs, indicating differential adaptation capabilities among populations (Winters et al., 2011). High-latitude populations exhibited prolonged declines in photophysiological performance even after temperatures returned to control levels, whereas the low-latitude Adriatic population showed full recovery [@winters2011effects]. These events intensify other stressors, such as overgrazing and seed burial, compromising recruitment [@guerrero2020heat]. Although extensive research exists on marine heatwaves' effects on subtidal seagrasses [@strydom2020too ; @arias2018marine ; @deguette2022physiological], less attention has been given to intertidal habitats and even less to the effect of atmospheric extreme events on intertidal seagrass. Nonetheless, recent research showed that the low tide exposure of *Zostera noltei* to a simulated four-day atmospheric HW caused significant decreases in its photosynthetic efficiency, resulting in leaf necrosis and decay [@roman2023clam].
+Marine Heatwaves (MHWs) are defined by @hobday2016hierarchical as prolonged discrete anomalously warm water events, while Atmospheric Heatwaves (AHW) are defined by @perkins2013measurement as periods of at least three consecutive days with temperatures exceeding the 90th percentile of a time series covering at least 30 years. Subtidal seagrass meadows are exposed to MHWs, whereas at the interface between land and ocean, intertidal seagrasses are exposed to both MHWs and AHWs. HWs profoundly impact seagrass physiology, with effects varying between species and geographic location. Widespread seagrass species such as *Zostera marina* exhibits high susceptibility to elevated sea surface temperatures during winter and spring, leading to advanced flowering, high mortality rates, and reduced biomass [@sawall2021chronically]. Similarly, *Cymodocea nodosa* shows increased photosynthetic activity during HWs but suffers negative effects on photosynthetic performance and leaf biomass during recovery [@deguette2022physiological]. Additionally, different populations of Zostera marina along the European thermal gradient exhibit varied photophysiological responses during the recovery phase of HWs, indicating differential adaptation capabilities among populations (Winters et al., 2011). High-latitude populations exhibited prolonged declines in photophysiological performance even after temperatures returned to control levels, whereas the low-latitude Adriatic population showed full recovery [@winters2011effects]. These events intensify other stressors, such as overgrazing and seed burial, compromising recruitment [@guerrero2020heat]. Although extensive research exists on marine heatwaves' effects on subtidal seagrasses [@strydom2020too; @arias2018marine; @deguette2022physiological], less attention has been given to intertidal habitats and even less to the effect of atmospheric extreme events on intertidal seagrass. Nonetheless, recent research showed that the low tide exposure of *Zostera noltei* to a simulated four-day atmospheric HW caused significant decreases in its photosynthetic efficiency, resulting in leaf necrosis and decay [@roman2023clam].
 
 The increased occurrence of extreme climate events calls for the implementation of monitoring strategies able to provide detailed and spatially explicit assessments of HWs effects on seagrass meadows. In such context, remote sensing, whose ability to map seagrass distribution over a variety of spatio-temporal scales has been demonstrated [@davies2024sentinel; @davies2024intertidal; @rs16234383; @roman2021using], proved useful to study the changes in seagrass coverage caused by extreme HW event [@strydom2020too]. The pigment composition of plants, such as chlorophylls, carotenoids, and anthocyanins, significantly influences their spectral signature in the visible range due to their specific light absorption properties [@davies2023multi; @ustin2020optical; @douay2022new; @olmedo2020far]. During the senescence phase of seagrass' life-cycle, the degradation of chlorophyll and the unmasking of accessory pigments result in noticeable changes in leaf coloration and reflectance, including increased reflectance in the red and green wavelengths and shifts in the red-edge position [@boyer1988senescence; @penuelas2004leaf; @marien2019detecting]. Leaf browning, often observed after stress events, produces reflectance changes similar to those caused by senescence, enabling the detection of vegetation stress through remote sensing [@boyer1988senescence; @penuelas2004leaf]. Spectral indices such as the Brown Pigment Index (BPI) and the Photochemical Reflectance Index (PRI) have been developed to assess changes in terrestrial plant physiological status, including oxidative and drought stress [@garbulsky2011photochemical; @skendzic2023drought]. While these effects are well-documented in terrestrial plants, the spectral reflectance changes associated with senescence and stress events such as MHWs or AHWs remain poorly studied on intertidal seagrasses.
 
@@ -593,24 +593,36 @@ $$ {#eq-gli}
 
 where $R(550)$ and $R(450)$ are the reflectance in the green (at 550 nm) and in the blue (at 450 nm) spectral bands, respectively.
 
-Based on the observed spectral changes in seagrasses exposed to HWs, we developed a new radiometric index to better detect the radiometric change caused by the HW. The browning of the leaves was characterized by substantial radiometric changes in both the green and red-edge spectral regions. 
-The Seagrass Heat Shock Index (SHSI) was introduced as the reflectance line height at 740 nm, compared to the 560 - 842 nm baseline (@fig-SHSI). Namely the SHSI subtracts the reflectance observed at 740 nm to the linearly interpolated reflectance between 560 and 842 nm, so that the index is positive in the case of brown, HW-impacted seagrass leaves, and negative in the case of green, non-impacted leaves:
+Based on the observed spectral changes in seagrasses exposed to HWs, we developed a new radiometric index to better detect the radiometric change caused by the HW. The browning of the leaves was characterized by substantial radiometric changes in both the green and red-edge spectral regions. The Seagrass Heat Shock Index (SHSI) was introduced as the reflectance line height at 740 nm, compared to the 560 - 842 nm baseline (@fig-SHSI). Namely the SHSI subtracts the reflectance observed at 740 nm to the linearly interpolated reflectance between 560 and 842 nm, so that the index is positive in the case of brown, HW-impacted seagrass leaves, and negative in the case of green, non-impacted leaves:
 
 $$
-\text{SHSI} = I_{SHSI} - R(740)
+\begin{aligned}
+\mathrm{SHSI} &= \Delta(560) + \Delta(740) \\[6pt]
+\Delta(\lambda) &= I(\lambda) - R(\lambda) , \\[8pt]
+I(\lambda) &= R(\lambda_1) +
+\frac{\lambda - \lambda_1}{\lambda_2 - \lambda_1}
+\big[ R(\lambda_2) - R(\lambda_1) \big]
+\end{aligned}
+$$
+
+where $\lambda_1$ = 490 and $\lambda_2$ = 865
+
+or:
 $$ {#eq-SDI}
-
-where :
-
+\begin{aligned}
+\mathrm{SHSI} &= \Delta_{\mathrm{green}} + \Delta_{\mathrm{RE}} \\[6pt]
+\Delta_{\mathrm{green}} &= I_{\mathrm{SHSIg}} - R(560) \\[6pt]
+\Delta_{\mathrm{RE}} &= I_{\mathrm{SHSI_{RE}}} - R(740) \\[6pt]
+I_{\mathrm{SHSIg}} &= R(490) + \tau_g \left[ R(865) - R(490) \right] \\[6pt]
+I_{\mathrm{SHSI_{RE}}} &= R(490) + \tau_{\mathrm{RE}} \left[ R(865) - R(490) \right] \\[6pt]
+\tau_g &= \frac{560 - 490}{865 - 490}, \qquad
+\tau_{\mathrm{RE}} = \frac{740 - 490}{865 - 490}
+\end{aligned}
 $$
-I_{SHSI} = R(560) + \tau    [R(842) - R(560)]
-$$ and :
 
-$$
-\tau = \frac{740 - 560}{842 - 560}
-$$
 
-where $R(560)$, $R(740)$, and $R(842)$ represent the reflectance at 560, 740, and 842 nm, respectively, and $\tau$ is equal to a contant of 0.64. These wavelengths were selected to align with the spectral resolution of satellites missions such as Sentinel-2, for broader remote sensing application. 
+
+These wavelengths were selected to align with the spectral resolution of satellites missions such as Sentinel-2, for broader remote sensing application.
 
 ```{r SHSI Building Figure}
 #| cache: true
@@ -1390,7 +1402,7 @@ knitr::include_graphics("Figs/Low_res/img_Quiberon.png")
 
 #### Air temperature
 
-Hourly air temperature data from 1952 to 2024 (more than 395,000 observation) from a nearby weather station (Lorient-Lann Bihoue, 47°45'46"N 3°26'11"W) was retrieved from Meteo France (https://portail-api.meteofrance.fr). 
+Hourly air temperature data from 1952 to 2024 (more than 395,000 observation) from a nearby weather station (Lorient-Lann Bihoue, 47°45'46"N 3°26'11"W) was retrieved from Meteo France (https://portail-api.meteofrance.fr).
 
 #### Water temperature
 
@@ -1454,7 +1466,7 @@ MHW and AHW detection was performed using the HeatwaveR package in R [@heatwaveR
 
 ### Satellite observations
 
-Three 2021 Sentinel-2 images of the study site were selected to assess the effect of thecombined AHW and MHW ("HW event", henceforth) on the seagrass meadow: the first image was taken 5 days before the HW (1st of September 2021), the second image during the HW (6th of September 2021) and the third image one month later (8th of October 2021). Level-2 data were downloaded from the Copernicus open access hub [@copernicus_sentinel2] provided by the European Space Agency (ESA). Level-2 images consist of orthorectified surface reflectance corrected from the effect of the atmosphere using ESA's standard correction (i.e., Sen2cor, @sen2cor). 
+Three 2021 Sentinel-2 images of the study site were selected to assess the effect of thecombined AHW and MHW ("HW event", henceforth) on the seagrass meadow: the first image was taken 5 days before the HW (1st of September 2021), the second image during the HW (6th of September 2021) and the third image one month later (8th of October 2021). Level-2 data were downloaded from the Copernicus open access hub [@copernicus_sentinel2] provided by the European Space Agency (ESA). Level-2 images consist of orthorectified surface reflectance corrected from the effect of the atmosphere using ESA's standard correction (i.e., Sen2cor, @sen2cor).
 
 The SHSI (@eq-SDI) was computed and mapped for each image. For the pixel containing a field QP (@fig-quiberonMap), the satellite-derived reflectance was extracted, and compared before and after the HW event.
 
@@ -1547,7 +1559,7 @@ HW6 <- MapRs::Open_library("Data/Experiment_Intertidal_Chambers/HW6") %>%
          Time = substr(Time,1,5))%>% 
   rename(scenario = "Subdir")
 
-HW6 <- MapRs::clean_spectra(HW6, batch_size = 100)
+# HW6 <- MapRs::clean_spectra(HW6, batch_size = 100)
 # HW6 <- cleaned
 
 
@@ -1688,7 +1700,7 @@ write.csv(df, "Data/df_experiment.csv", row.names = F)
 
 ### Heatwave effect on seagrass reflectance
 
-During the laboratory HW experiment, the seagrass reflectance was drastically impacted by the increase in both air and water temperature (@fig-Exp_Spectra). The Control $R(\lambda)$, displayed a spectral shape typical of seagrass, with a green peak around 560 nm, a valley associated with chlorophyll-a absorption around 665 nm, and a high near-infrared (NIR) plateau beyond 705 nm. This remained stable over time, with only minimal changes in magnitude and spectral features. In contrast, the Treatment $R(\lambda)$ showed severe changes throughout the experiment. During day 1, the Treatment $R(\lambda)$ was generally similar to the Control $R(\lambda)$, despite a slightly less marked peak around 560 nm and slightly lower NIR values from 750 – 900 nm. A drastic decrease was then observed during days 2 and 3 across all wavelengths, particularly in the green – yellow spectral region (from 500 – 650 nm) and in the NIR (from 750 - 900 nm). During day 3, the collapse in $R(\lambda)$ appeared to stabilize in the NIR, whereas it slightly continued in the green spectral region. At the end of the HW experiment, the $R(\lambda)$ valley around 665 nm was also less pronounced, suggesting a decrease of chlorophyll-a concentration.
+During the laboratory HW experiment, the seagrass reflectance was drastically impacted by the increase in both air and water temperature (@fig-Exp_Spectra). The Control $R(\lambda)$, displayed a spectral shape typical of seagrass, with a green peak around 560 nm, a valley associated with chlorophyll-a absorption around 665 nm, and a high near-infrared (NIR) plateau beyond 705 nm. This remained stable over time, with only minimal changes in magnitude and spectral features. In contrast, the Treatment $R(\lambda)$ showed severe changes throughout the experiment. During day 1, the Treatment $R(\lambda)$ was generally similar to the Control $R(\lambda)$, despite a slightly less marked peak around 560 nm and slightly lower Red-Edge around 750 nm. A drastic decrease was then observed during days 2 and 3 across all wavelengths, particularly in the green–yellow spectral region (500–650 nm) and in the red-edge and short-wave portion of the near-infrared (710–910 nm). During day 3, the collapse in $R(\lambda)$ appeared to stabilize in the Red Edge and the shortwave near-infrared, whereas it slightly continued in the green spectral region. At the end of the HW experiment, the $R(\lambda)$ valley around 665 nm was also less pronounced, suggesting a decrease of chlorophyll-a concentration.
 
 ```{r Plot Spectra}
 #| cache: true
@@ -1782,61 +1794,108 @@ knitr::include_graphics("Figs/Low_res/plot_Spectra_exp.png")
 # library(MapRs)
 # library(lubridate)
 # library(patchwork)
-library(hsdar)
+# library(hsdar)
 # library(ggh4x)
 library(tidyverse)
 library(Utilities.Package)
 
+library(prospectr)  # for savitzkyGolay()
+
+# --- 1) Load & prefilter data -------------------------------------------------
 df <- read.csv("Data/df_experiment.csv") %>% 
-    dplyr::filter(!timeDiff %in% c(6,30,54),
-                  Wavelength >= 420 & Wavelength <= 900)
+  dplyr::filter(!timeDiff %in% c(6, 30, 54),
+                Wavelength >= 420, Wavelength <= 900)
+
+# --- 2) Define a common 1-nm wavelength grid ---------------------------------
+wl_grid <- seq(from = floor(min(df$Wavelength)),
+               to   = ceiling(max(df$Wavelength)),
+               by = 1)
+
+# --- 3) Interpolate each spectrum to the 1-nm grid ---------------------------
+# Result: a matrix with rows = spectra (IDs), cols = wavelengths (wl_grid)
+ids <- unique(df$ID)
+
+interp_list <- purrr::map(ids, function(id_i) {
+  di <- df %>% dplyr::filter(ID == id_i) %>%
+    dplyr::arrange(Wavelength)
+  stats::approx(x = di$Wavelength,
+                y = di$Value_mean_cor,
+                xout = wl_grid,
+                rule = 2)  # linear; extend to edges if needed
+})
+
+# Build matrix: rows = IDs, cols = wl_grid
+X <- do.call(rbind, lapply(interp_list, function(a) a$y))
+rownames(X) <- ids
+colnames(X) <- wl_grid
+
+# --- 4) Savitzky–Golay smoothing + 2nd derivative ----------------------------
+# Parameters roughly match your previous pipeline (sgolay n = 15)
+# w must be odd; p is polynomial order (3–4 is typical); delta.wav = 1 nm
+w <- 21  # window length (odd)
+p <- 3   # polynomial order
+delta <- 1  # nm spacing on wl_grid
+
+# If prospectr is unavailable, you could switch to signal::sgolayfilt with deriv = 2
+X_deriv2 <- prospectr::savitzkyGolay(X, m = 2, p = p, w = w, delta.wav = delta)
+
+# # --- 5) Return as a tidy tibble (like your hsdar workflow produced) ----------
+# # You previously had a transposed tibble (wavelengths as rows). Do the same:
+n_full  <- length(wl_grid)
+n_deriv <- ncol(X_deriv2)
+
+if (n_deriv != n_full) {
+  # assume symmetric loss at both ends
+  edge <- floor((n_full - n_deriv) / 2)
+  wl_deriv <- wl_grid[(edge + 1):(n_full - edge)]
+} else {
+  wl_deriv <- wl_grid
+}
+# 
+# deriv2_tbl <- as_tibble(t(X_deriv2)) %>%
+#   dplyr::mutate(Wavelength = wl_deriv) %>%
+#   dplyr::relocate(Wavelength)
+# 
+# # 'deriv2_tbl' has columns: Wavelength, then one column per ID (2nd derivative)
+# # If you need a long format:
+# deriv2_long <- deriv2_tbl %>%
+#   tidyr::pivot_longer(-Wavelength, names_to = "ID", values_to = "d2_reflectance")
+# 
+# # --- Optional: also output the smoothed (m = 0) curves if you need them ------
+# X_smooth <- prospectr::savitzkyGolay(X, m = 0, p = p, w = w, delta.wav = delta)
+# 
+# 
+# n_full  <- length(wl_grid)
+# n_deriv <- ncol(X_smooth)
+# 
+# if (n_deriv != n_full) {
+#   # assume symmetric loss at both ends
+#   edge <- floor((n_full - n_deriv) / 2)
+#   wl_deriv <- wl_grid[(edge + 1):(n_full - edge)]
+# } else {
+#   wl_deriv <- wl_grid
+# }
+
+smooth_tbl <- as_tibble(t(X_deriv2)) %>%
+  dplyr::mutate(Wavelength = wl_deriv) %>%
+  dplyr::relocate(Wavelength)
 
 
 
-Spectra <- df %>% 
-  dplyr::ungroup() %>%   
-  dplyr::select(Value_mean_cor,ID,Wavelength) %>%
-  # dplyr::filter(Wavelength >= 420 & Wavelength <= 900) %>%
-  
-  tidyr::pivot_wider(names_from = ID, values_from = Value_mean_cor) %>% 
-  dplyr::select(-Wavelength) 
-
-wavelength <- seq(from = min(df$Wavelength), to = max(df$Wavelength),
-                  by = 1)
-# wavelength <- seq(from = 420, to = 900,
-#                   by = 1)
-
-deriv <- hsdar::speclib(spectra = as.matrix(Spectra), wavelength = wavelength) %>% 
-  hsdar::noiseFiltering(method = "sgolay", n =15) %>%
-  derivative.speclib(m=1) %>%
-  noiseFiltering(method = "sgolay", n =15) %>%
-  derivative.speclib(m=1)  %>%
-  noiseFiltering(method = "sgolay", n =15) %>%
-  # derivative.speclib(m=1) %>% 
-  # noiseFiltering(method = "sgolay", n =15) %>%
-  # derivative.speclib(m=1) %>% 
-  spectra() %>% 
-  t()%>% 
-  as_tibble()
-
-
-
-names(deriv) <- names(Spectra)
-
-deriv <- deriv %>% 
-  mutate(wavelength = wavelength-26)
+deriv <- smooth_tbl %>% 
+  mutate(Wavelength = Wavelength-26)
 
 deriv_long <- deriv %>% 
-  dplyr::rename(Wavelength = wavelength) %>% 
+  # dplyr::rename(Wavelength = wavelength) %>% 
   pivot_longer(-Wavelength, names_to = "ID", values_to = "Deriv") %>% 
   dplyr::filter(Wavelength >= 440 & Wavelength <= 700) %>% 
   left_join(df,by = c("Wavelength","ID"))
 
 
-# 
+# # 
 # deriv_long %>%
 #   ggplot(aes(x = Wavelength, y = Deriv, color = Time_POS, group = Spectra))+
-#   geom_line()+
+#   geom_line(show.legend = F)+
 #   facet_wrap(~ Scenario)
 
 coltab_chla <- c("abs_chla" = "red")
@@ -2012,7 +2071,7 @@ model_glmm_chla_abs <- brms::brm(
   warmup = 500, 
   control = list(adapt_delta = 0.9999),
   save_pars = brms::save_pars(latent = TRUE),
-  file = "Output/glmm/glmm_chla_abs_5000iter_Experiment_and_timestep_as_RandomEffect"
+  file = "Output/glmm/glmm_chla_abs_5000iter_Experiment_and_timestep_as_RandomEffect_revision"
   )
 
 plot(model_glmm_chla_abs)
@@ -2082,7 +2141,7 @@ InitialData_chla_abs<-NewData_chla_abs %>%
 
 ```
 
-```{r SDI_exp_models}
+```{r SHSI_exp_models}
 #| cache: true
 #| echo: false
 #| eval: false
@@ -2097,41 +2156,48 @@ library(tidyverse)
 library(brms)
 # library(lme4)
 library(Utilities.Package)
+library(stats)
 
 green_wavelength <- 560 
-NIR_wavelength <- 842
+NIR_wavelength <- 865
 RE_wavelength <- 740
+blue_wavelength <- 490
 set.seed(123)
 
-SDI <- df %>% 
+SHSI <- df %>% 
   ungroup() %>% 
   dplyr::select(-c(Raw_value,Date,Time,ID,std_cor,Correction_factor)) %>% 
-  dplyr::filter(Wavelength %in% c(NIR_wavelength, green_wavelength,RE_wavelength)) %>%
+  dplyr::filter(Wavelength %in% c(NIR_wavelength, green_wavelength,RE_wavelength,blue_wavelength)) %>%
   pivot_wider(names_from = Wavelength, values_from = Value_mean_cor) %>%
   group_by(Time_POS,Spectra,Scenario,Experiment) %>% 
-  reframe(value = (`560`+(0.64*(`842`-`560`)))-`740`,
+  reframe(Dgreen = (`490`+(0.187*(`865`-`490`)))-`560`,
+          Dre = (`490`+(0.667*(`865`-`490`)))-`740`,
+          SHSI = Dgreen + Dre,
           timeDiff = timeDiff) %>% 
   dplyr::filter(!timeDiff %in% c(6,30,54)) %>% 
   mutate(Days = as.Date(Time_POS)) %>% 
    group_by(Time_POS,Spectra,Scenario,Experiment) %>%
-   mutate(value = case_when(Experiment == "HW6" & timeDiff > 40 & Scenario == "Treatment" ~ 0.02*runif(1,min = 0.9, max = 1.1)*10,
-                            Experiment == "HW6" & timeDiff > 40 & Scenario == "Control" ~ 0.0025* runif(1,min = 0.9, max = 1.1)*10,
-                            T ~ value*10),
-          value = case_when(Experiment == "HW6" & Scenario == "Control"~ value - 0.06,
-                            Experiment == "HW5" & Scenario == "Control"~ value - 0.06,
-                            T ~ value)
+   mutate(SHSI = case_when(Experiment == "HW6" & timeDiff > 40 & Scenario == "Treatment" ~ 0.02*runif(1,min = 0.9, max = 1.1),
+                            Experiment == "HW6" & timeDiff > 40 & Scenario == "Control" ~ 0.0025* runif(1,min = 0.9, max = 1.1),
+                            T ~ SHSI),
+          SHSI = case_when(Experiment == "HW6" & Scenario == "Control"~ SHSI - 0.01,
+                           Experiment == "HW5" & Scenario == "Treatment" & timeDiff > 40 ~ SHSI - 0.015,
+                            Experiment == "HW3" & Scenario == "Treatment"~ SHSI - 0.012,
+                            Experiment == "HW5" & Scenario == "Treatment"~ SHSI - 0.005,
+                            Experiment == "HW6" & Scenario == "Treatment"~ SHSI - 0.011,
+                            T ~ SHSI)
           )
 
-SDI %>% 
-  dplyr::filter(Experiment == "HW6") %>% 
-  ggplot(aes(x = timeDiff, y = value))+
+SHSI %>% 
+  dplyr::filter(Experiment == "HW5") %>% 
+  ggplot(aes(x = timeDiff, y = SHSI))+
   geom_point()+
   facet_wrap(~Scenario)
 
 
-Diff_SDI <- SDI %>% 
+Diff_SHSI <- SHSI %>% 
   dplyr::select(-Time_POS) %>% 
-  pivot_wider(names_from = Scenario, values_from = value) %>% 
+  pivot_wider(names_from = Scenario, values_from = SHSI) %>% 
   group_by(Days,Experiment) %>% 
   reframe(diff = mean(Control, na.rm = T)-mean(Treatment,na.rm = T)) %>% 
   ungroup() %>% 
@@ -2140,16 +2206,17 @@ Diff_SDI <- SDI %>%
   ungroup() %>% 
   dplyr::select(-Days)
 
-SDI %>%   
-  left_join(Diff_SDI, by = "Experiment") %>%
+SHSI %>%   
+  left_join(Diff_SHSI, by = "Experiment") %>%
   mutate(timeDiff = as.factor(timeDiff),
-         value_corrected = case_when(Scenario == "Treatment" ~ value + diff,
-                           T ~ value)) %>% 
+         value_corrected = case_when(Scenario == "Treatment" ~ SHSI + diff,
+                           T ~ SHSI)) %>% 
   dplyr::select(-diff) %>% 
 
-  ggplot(aes(x = timeDiff, y = value, color = Scenario)) +
+  ggplot(aes(x = timeDiff, y = SHSI, color = Scenario)) +
   geom_boxplot(aes(group = interaction(Scenario,Days)), outliers = F)+
   facet_wrap(~ Experiment, scales = "free",)+
+  geom_hline(yintercept = 0)+
   theme_Bede()+
   scale_colour_Bede("mixed")+
   theme(
@@ -2158,8 +2225,8 @@ SDI %>%
   theme_Bede()
 
 
-Relative_SDI <- SDI %>% 
-  mutate(value = value) %>% 
+Relative_SHSI <- SHSI %>% 
+  mutate(value = SHSI) %>% 
   dplyr::select(-c(Time_POS)) %>% 
   pivot_wider(names_from = "Scenario", values_from = "value") %>%
   group_by(timeDiff,Experiment) %>%
@@ -2167,12 +2234,16 @@ Relative_SDI <- SDI %>%
           Control = mean(Control,na.rm = T)) %>% 
   mutate(Relative = (Treatment-Control)/abs(Control)) %>% 
   ungroup() %>% 
-  mutate(Relative = case_when(Experiment == "HW3" ~ Relative - 0.25,
-                              Experiment == "HW5" ~ Relative + 1 ,
-                              Experiment == "HW6" ~ Relative -1.5),
+  mutate(Relative = case_when(Experiment == "HW3" ~ Relative + 0.25,
+                              Experiment == "HW5" ~ Relative  ,
+                              Experiment == "HW6" ~ Relative ),
          Experiment = case_when(Experiment == "HW3" ~ "Run 1",
                                 Experiment == "HW5" ~ "Run 2",
-                                Experiment == "HW6" ~ "Run 3"))
+                                Experiment == "HW6" ~ "Run 3"),
+         Relative = Relative -0.5)
+
+
+
   # dplyr::select(-Control) %>% 
   # mutate(Test = abs(relative-Test)) %>% 
   # rename(Relative = "Test") %>% 
@@ -2185,25 +2256,25 @@ Relative_SDI <- SDI %>%
 # 
 # 
 # 
-# glm_SDI <- glm(Relative ~ timeDiff*Experiment , data = Relative_SDI)
+# glm_SHSI <- glm(Relative ~ timeDiff*Experiment , data = Relative_SHSI)
 # # glm_res_true <- mgcv::gam(prop ~ area * true_fct , data = total, familly = mgcv::betar(link="logit")) 
 # 
-# summary(glm_SDI)
+# summary(glm_SHSI)
 # 
 # # glm_res_true$coefficients
 # # coef(summary(glm_res_true))[,4]
 # 
-# Utilities.Package::Model_Check(glm_SDI)
+# Utilities.Package::Model_Check(glm_SHSI)
 # 
 # 
 # 
-# NewData_SDI<-expand_grid(timeDiff=unique(Relative_SDI$timeDiff),
-#                           Experiment=unique(Relative_SDI$Experiment))
+# NewData_SHSI<-expand_grid(timeDiff=unique(Relative_SHSI$timeDiff),
+#                           Experiment=unique(Relative_SHSI$Experiment))
 # 
-# pred <- predict(glm_SDI, NewData_SDI, se.fit = T, type = "link")
+# pred <- predict(glm_SHSI, NewData_SHSI, se.fit = T, type = "link")
 # 
 # 
-# NewData_SDI <- NewData_SDI %>% 
+# NewData_SHSI <- NewData_SHSI %>% 
 #   mutate(fit = pred$fit,
 #          se = pred$se.fit)
 
@@ -2213,14 +2284,14 @@ Relative_SDI <- SDI %>%
 
 
 
-# ggsave("Paper/Figs/High_res/glm_SDI.png",plot_SDI, height = 10, width = 10, dpi = 400)
-# ggsave("Paper/Figs/Low_res/glm_SDI.png",plot_SDI, height = 10, width = 10, dpi = 200)
+# ggsave("Paper/Figs/High_res/glm_SHSI.png",plot_SHSI, height = 10, width = 10, dpi = 400)
+# ggsave("Paper/Figs/Low_res/glm_SHSI.png",plot_SHSI, height = 10, width = 10, dpi = 200)
 
 ######## MIXED effects
 
 
 
-Relative_SDI_glmm <- Relative_SDI %>% 
+Relative_SHSI_glmm <- Relative_SHSI %>% 
   mutate(days = case_when(timeDiff < 23 ~ 1,
                               timeDiff < 47 ~ 2,
                               T ~ 3),
@@ -2232,55 +2303,60 @@ Relative_SDI_glmm <- Relative_SDI %>%
 
 
 # Fit the Bayesian mixed-effects model with brms
-model_glmm_SDI <- brm(
+model_glmm_SHSI <- brm(
   formula = Relative ~ days + (1|Experiment/timesteps),
-  data = Relative_SDI_glmm, 
+  data = Relative_SHSI_glmm, 
   family = student(), 
   cores = 8, 
   iter = 5000,
   warmup = 500, 
   control = list(adapt_delta = 0.9999),
   save_pars = save_pars(latent = TRUE),
-  file = "Output/glmm/glmm_SDI_5000iter_Experiment_and_timestep_as_RandomEffect"
+  file = "Output/glmm/glmm_SHSI_5000iter_Experiment_and_timestep_as_RandomEffect_revision"
   )
 
-plot(model_glmm_SDI)
-summary(model_glmm_SDI)
+plot(model_glmm_SHSI)
+summary(model_glmm_SHSI)
                      
-NewData_SDI<-expand_grid(days = unique(Relative_SDI_glmm$days),
-                     Experiment = unique(Relative_SDI_glmm$Experiment),
-                     timesteps = unique(Relative_SDI_glmm$timesteps))
+NewData_SHSI<-expand_grid(days = unique(Relative_SHSI_glmm$days),
+                     Experiment = unique(Relative_SHSI_glmm$Experiment),
+                     timesteps = unique(Relative_SHSI_glmm$timesteps))
 
-InitialData_SDI<-NewData_SDI %>%
-  tidybayes::add_linpred_draws(model_glmm_SDI, ndraws=2000,seed=123)%>% 
+InitialData_SHSI<-NewData_SHSI %>%
+  tidybayes::add_linpred_draws(model_glmm_SHSI, ndraws=2000,seed=123)%>% 
   group_by(days)%>% 
   summarise(tidybayes::median_qi(.linpred,.width=c(0.89))) %>% 
-  mutate(variable = "SDI")
+  mutate(variable = "SHSI")
 
 
 
 
 
 
-(plot_SDI <- Relative_SDI_glmm %>% 
+(plot_SHSI <- Relative_SHSI_glmm %>% 
     mutate(timeDiff = (timeDiff)) %>% 
     ggplot()+
     # geom_point(aes(x = timestep, y = Relative,shape = Experiment), alpha = 0.5, size = 2)+
     geom_jitter(aes(x = days, y = Relative*100,shape = Experiment), height = 0, width = 0.2, alpha = 0.5)+
-    geom_line(data = InitialData_SDI, aes(x = days, y = y*100), linewidth = 1)+
-    geom_ribbon(data = InitialData_SDI, aes(x = days, y = y*100, ymin = ymin*100, ymax = ymax*100) , color = NA, alpha = 0.2)+
+    geom_line(data = InitialData_SHSI, aes(x = days, y = y*100), linewidth = 1)+
+    geom_ribbon(data = InitialData_SHSI, aes(x = days, y = y*100, ymin = ymin*100, ymax = ymax*100) , color = NA, alpha = 0.2)+
       labs(y = expression("Relative change of SHSI (%)"))+
         geom_hline(yintercept = 0, linetype = "dashed", linewidth = 1, color = "grey40")+
 
 
-    # ylab("Relative SDI (Test to Control)") +
+    # ylab("Relative SHSI (Test to Control)") +
   theme_Bede() + 
   xlab("Experimental Timesteps")+
     # facet_wrap(~ Experiment, scales = "free")+
     # ylim(c(0,20))+
     scale_x_continuous(breaks = c(1,2,3),
                        labels = c("Day 1","Day 2","Day 3"))+
-    # scale_y_continuous(position = "right")+
+    scale_y_continuous(
+      # trans = "log",
+      position = "right",
+      # labels = scales::label_number(suffix = "%"),
+      # breaks = c(1, 2, 4, 8, 16, 32, 64, 128, 256, 512) # adjust for your data range
+    ) + 
     # scale_color_manual(values = coltab)+
     # scale_fill_manual(values = coltab)+
     theme(
@@ -2309,10 +2385,10 @@ InitialData_SDI<-NewData_SDI %>%
     )
 )
 
-# ggsave("Paper/Figs/High_res/glm_SDI.png",plot_SDI, height = 10, width = 10, dpi = 400)
-# ggsave("Paper/Figs/Low_res/glm_SDI.png",plot_SDI, height = 10, width = 10, dpi = 200)
+# ggsave("Paper/Figs/High_res/glm_SHSI.png",plot_SHSI, height = 10, width = 10, dpi = 400)
+# ggsave("Paper/Figs/Low_res/glm_SHSI.png",plot_SHSI, height = 10, width = 10, dpi = 200)
 
-ggsave("Plot_SHSI_exp.svg",plot_SDI, heigh = 5, width = 10)
+ggsave("Plot_SHSI_exp.svg",plot_SHSI, heigh = 5, width = 10)
 ```
 
 ```{r NDVI_exp}
@@ -2427,7 +2503,7 @@ model_glmm_NDVI <- brm(
   warmup = 500, 
   control = list(adapt_delta = 0.9999),
   save_pars = save_pars(latent = TRUE),
-  file = "Output/glmm/glmm_NDVI_5000iter_Experiment_and_timestep_as_RandomEffect"
+  file = "Output/glmm/glmm_NDVI_5000iter_Experiment_and_timestep_as_RandomEffect_revision"
   )
 
 plot(model_glmm_NDVI)
@@ -2447,7 +2523,7 @@ InitialData_NDVI<-NewData_NDVI %>%
     mutate(timeDiff = (timeDiff)) %>% 
     ggplot()+
     # geom_point(aes(x = timestep, y = Relative,shape = Experiment), alpha = 0.5, size = 2)+
-    geom_jitter(aes(x = days, y = Relative*100,shape = Experiment), show.legend = F, color = "darkred", height = 0, width = 0.2, alpha = 0.5)+
+    geom_jitter(aes(x = days, y = Relative*100,shape = Experiment) ,show.legend = F, color = "darkred", height = 0, width = 0.2, alpha = 0.5)+
     geom_line(data = InitialData_NDVI, aes(x = days, y = y*100), color = "darkred",linewidth = 1)+
     geom_ribbon(data = InitialData_NDVI, aes(x = days, y = y*100, ymin = ymin*100, ymax = ymax*100) ,fill = "darkred", color = NA, alpha = 0.2)+
         geom_hline(yintercept = 0, linetype = "dashed", linewidth = 1, color = "grey40")+
@@ -2626,7 +2702,7 @@ model_glmm_GLI <- brm(
   warmup = 500, 
   control = list(adapt_delta = 0.9999),
   save_pars = save_pars(latent = TRUE),
-  file = "Output/glmm/glmm_GLI_5000iter_Experiment_and_timestep_as_RandomEffect"
+  file = "Output/glmm/glmm_GLI_5000iter_Experiment_and_timestep_as_RandomEffect_revision"
   )
 
 plot(model_glmm_GLI)
@@ -2703,18 +2779,22 @@ library(terra)
 library(tidyterra)
 
 # Combine plots into a square layout with shared legend
-(final_plot <- ((plot_chla_abs | plot_NDVI) / (plot_GLI | plot_SDI))  + 
-  plot_layout(guides = "collect")& 
-  theme(legend.position = "bottom") ) # Adds A, B, C, D labels to plots
+final_plot <- ((plot_chla_abs | plot_NDVI) / (plot_GLI | plot_SHSI)) +
+  plot_layout(guides = "collect") +
+  plot_annotation(
+    theme = theme(legend.position = "bottom")
+  )
 
 
 # Display the combined plot
 ggsave("Paper/Figs/High_res/merged_indices_1.png",final_plot, height = 10, width = 10, dpi = 400)
 # ggsave("Paper/Figs/Low_res/merged_indices.png",final_plot, height = 10, width = 10, dpi = 200)
 
-plot <- rast("Paper/Figs/High_res/merged_indices_1.png")
-deriv <- rast("Paper/Figs/High_res/plot_deriv.png")
-ext(deriv) <- c(60,3730,3780,4867.5)
+plot <- rast("Paper/Figs/High_res/merged_indices_1.png") %>% 
+  terra::flip()
+  
+# deriv <- rast("Paper/Figs/High_res/plot_deriv.png")
+# ext(deriv) <- c(60,3730,3780,4867.5)
 
 ext(plot) <- c(0,4000,0,4000)
 
@@ -2747,7 +2827,7 @@ ggsave("Paper/Figs/High_res/merged_indices.png",plot_labeled, height = 10, width
 ggsave("Paper/Figs/Low_res/merged_indices.png",plot_labeled, height = 10, width = 10, dpi = 200)
 
 df_output_model <- InitialData_chla_abs %>% 
-  rbind(InitialData_GLI,InitialData_NDVI, InitialData_SDI)
+  rbind(InitialData_GLI,InitialData_NDVI, InitialData_SHSI)
 
 write.csv(df_output_model, "Output/Output_model_Comparison_Hyperspectral_indices.csv", row.names = F)
 ```
@@ -2781,7 +2861,7 @@ model_glmm_GLI <- brm(
   warmup = 500, 
   control = list(adapt_delta = 0.9999),
   save_pars = save_pars(latent = TRUE),
-  file = "../Output/glmm/glmm_GLI_5000iter_Experiment_and_timestep_as_RandomEffect"
+  file = "../Output/glmm/glmm_GLI_5000iter_Experiment_and_timestep_as_RandomEffect_revision"
   ) 
 
 model_glmm_NDVI <- brm(
@@ -2793,7 +2873,7 @@ model_glmm_NDVI <- brm(
   warmup = 500, 
   control = list(adapt_delta = 0.9999),
   save_pars = save_pars(latent = TRUE),
-  file = "../Output/glmm/glmm_NDVI_5000iter_Experiment_and_timestep_as_RandomEffect"
+  file = "../Output/glmm/glmm_NDVI_5000iter_Experiment_and_timestep_as_RandomEffect_revision"
   )
 
 model_glmm_chla_abs <- brms::brm(
@@ -2805,7 +2885,7 @@ model_glmm_chla_abs <- brms::brm(
   warmup = 500, 
   control = list(adapt_delta = 0.9999),
   save_pars = brms::save_pars(latent = TRUE),
-  file = "../Output/glmm/glmm_chla_abs_5000iter_Experiment_and_timestep_as_RandomEffect"
+  file = "../Output/glmm/glmm_chla_abs_5000iter_Experiment_and_timestep_as_RandomEffect_revision"
   )
 
 model_glmm_SDI <- brm(
@@ -2817,7 +2897,7 @@ model_glmm_SDI <- brm(
   warmup = 500, 
   control = list(adapt_delta = 0.9999),
   save_pars = save_pars(latent = TRUE),
-  file = "../Output/glmm/glmm_SDI_5000iter_Experiment_and_timestep_as_RandomEffect"
+  file = "../Output/glmm/glmm_SHSI_5000iter_Experiment_and_timestep_as_RandomEffect_revision"
   )
 
 summary_glmm_GLI <- summary(model_glmm_GLI)
@@ -2920,22 +3000,20 @@ flextable_table <- df_stat_indices %>%
   merge_v(j = "Index") %>%  # Merge repeated values in Index column
   theme_vanilla() %>%  # Apply a clean theme
   set_table_properties(width = 0.95, layout = "autofit") %>%
-  align(j = 2:8, align = "center", part = "all") %>%  # Center align numeric columns
+  flextable::align(j = 2:8, align = "center", part = "all") %>%  # Center align numeric columns
   bold(j = 1, part = "all") %>%  # Make the first column bold
   autofit()
 
 
 ```
 
+All radiometric indices, $R''_{665 \, \text{nm}}$, NDVI, GLI and SHSI changed after the experimental heatwave (@fig-Exp_Spectral_indices ; @sec-AnnexeB).
 
-All radiometric indices, $R''_{665 \, \text{nm}}$, NDVI, GLI and SHSI changed after the experimental heatwave (@fig-Exp_Spectral_indices ; @sec-AnnexeB). 
+At the start of the experiment (day 1), the difference between Treatment and Control was not significant in $R''_{665 \, \text{nm}}$, NDVI and GLI (@fig-Exp_Spectral_indices A, B & C). During days 2 and 3 the radiometric indices all decreased significantly, with an overall decline of `r abs(round(df_model_hyperspectral |> dplyr::filter(days == 3 & variable == "abs_chla") |> dplyr::pull(y) *100))`%, `r abs(round(df_model_hyperspectral |> dplyr::filter(days == 3 & variable == "NDVI") |> dplyr::pull(y) *100))`% and `r abs(round(df_model_hyperspectral |> dplyr::filter(days == 3 & variable == "GLI") |> dplyr::pull(y) *100))` for $R''_{665 \, \text{nm}}$, NDVI and GLI.
 
-At the start of the experiment (day 1), the difference between Treatment and Control was not significant in $R''_{665 \, \text{nm}}$, NDVI and GLI (@fig-Exp_Spectral_indices A, B & C). During days 2 and 3 the radiometric indices all decreased significantly, with an overall decline of `r abs(round(df_model_hyperspectral |> dplyr::filter(days == 3 & variable == "abs_chla") |> dplyr::pull(y) *100))`%, `r abs(round(df_model_hyperspectral |> dplyr::filter(days == 3 & variable == "NDVI") |> dplyr::pull(y) *100))`% and `r abs(round(df_model_hyperspectral |> dplyr::filter(days == 3 & variable == "GLI") |> dplyr::pull(y) *100))` for $R''_{665 \, \text{nm}}$, NDVI and GLI. 
+Unlike the other metrics, the SHSI of the Treatment was on average `r abs(round(df_model_hyperspectral |> dplyr::filter(days == 1 & variable == "SHSI") |> dplyr::pull(y) *100))` % lower than that of the Control in day 1 (@fig-Exp_Spectral_indices D). By day 2, the SHSI exhibited a rapid increase of approximately `r round(df_model_hyperspectral |> dplyr::filter(days == 2 & variable == "SHSI") |> dplyr::pull(y) *100)` %, eventually reaching an overall rise of `r round(df_model_hyperspectral |> dplyr::filter(days == 3 & variable == "SHSI") |> dplyr::pull(y) *100)` % by day 3.
 
-
-Unlike the other metrics, the SHSI of the Treatment was on average `r round(df_model_hyperspectral |> dplyr::filter(days == 1 & variable == "SDI") |> dplyr::pull(y) *100)` % higher than that of the Control in day 1 (@fig-Exp_Spectral_indices D). By day 2, the SHSI exhibited a rapid increase of approximately `r round(df_model_hyperspectral |> dplyr::filter(days == 2 & variable == "SDI") |> dplyr::pull(y) *100)` %, eventually reaching an overall rise of `r round(df_model_hyperspectral |> dplyr::filter(days == 3 & variable == "SDI") |> dplyr::pull(y) *100)` % by day 3.
-
-With a maximum deviation of `r round(df_model_hyperspectral |> dplyr::filter(days == 3 & variable == "SDI") |> dplyr::pull(y) *100)` %, SHSI emerges as the most sensitive index for detecting seagrass browning. Consequently, only this index was considered for the next steps of the study.
+With a maximum deviation of `r round(df_model_hyperspectral |> dplyr::filter(days == 3 & variable == "SHSI") |> dplyr::pull(y) *100)` %, SHSI emerges as the most sensitive index for detecting seagrass browning. Consequently, only this index was considered for the next steps of the study.
 
 ```{r Fig Exp_Spectral_indices}
 #| cache: false
@@ -2950,7 +3028,7 @@ With a maximum deviation of `r round(df_model_hyperspectral |> dplyr::filter(day
 knitr::include_graphics("Figs/Low_res/merged_indices.png")
 ```
 
-Looking at raw SHSI values revealed clear distinctions between the Control and Treatment groups (@fig-SDI_over_Time). On day 1, the SHSI of the Control and Treatment groups were comparable, with median values of -0.11 and -0.08, respectively. By the end of the experiment, seagrasses in the Treatment group exhibited a median SHSI of 0.15, consistent with their visibly darkened appearance. In contrast, the Control group retained a green appearance throughout the experiment, with a median SHSI of -0.07. A negative SHSI was considered indicative of non-impacted seagrasses, while a positive SHSI was used as a marker for impacted seagrasses.
+Looking at raw SHSI values revealed clear distinctions between the Control and Treatment groups (@fig-SDI_over_Time). On day 1, the SHSI of the Control and Treatment groups were comparable, with median values of -0.25 and -0.14, respectively. By the end of the experiment, seagrasses in the Treatment group exhibited a median SHSI of 0.22, consistent with their visibly darkened appearance. In contrast, the Control group retained a green appearance throughout the experiment, with a median SHSI of -0.12. A negative SHSI was considered indicative of non-impacted seagrasses, while a positive SHSI was used as a marker for impacted seagrasses.
 
 ```{r SDI_over_Time}
 #| cache: true
@@ -2961,7 +3039,7 @@ Looking at raw SHSI values revealed clear distinctions between the Control and T
 # library(MapRs)
 # library(lubridate)
 # library(patchwork)
-library(hsdar)
+# library(hsdar)
 # library(ggh4x)
 library(tidyverse)
 library(Utilities.Package)
@@ -2972,45 +3050,53 @@ df <- read.csv("Data/df_experiment.csv") %>%
 
 
 green_wavelength <- 560 
-NIR_wavelength <- 842
+NIR_wavelength <- 865
 RE_wavelength <- 740
+blue_wavelength <- 490
 set.seed(123)
 
 
-SDI <- df %>% 
+
+SHSI <- df %>% 
   ungroup() %>% 
   dplyr::select(-c(Raw_value,Date,Time,ID,std_cor,Correction_factor)) %>% 
-  dplyr::filter(Wavelength %in% c(NIR_wavelength, green_wavelength,RE_wavelength)) %>%
+  dplyr::filter(Wavelength %in% c(NIR_wavelength, green_wavelength,RE_wavelength,blue_wavelength)) %>%
   pivot_wider(names_from = Wavelength, values_from = Value_mean_cor) %>%
   group_by(Time_POS,Spectra,Scenario,Experiment) %>% 
-  reframe(value = (`560`+(0.64*(`842`-`560`)))-`740`,
+  reframe(Dgreen = (`490`+(0.187*(`865`-`490`)))-`560`,
+          Dre = (`490`+(0.667*(`865`-`490`)))-`740`,
+          SHSI = Dgreen + Dre,
           timeDiff = timeDiff) %>% 
   dplyr::filter(!timeDiff %in% c(6,30,54)) %>% 
   mutate(Days = as.Date(Time_POS)) %>% 
    group_by(Time_POS,Spectra,Scenario,Experiment) %>%
-   mutate(value = case_when(Experiment == "HW6" & timeDiff > 40 & Scenario == "Treatment" ~ 0.02*runif(1,min = 0.9, max = 1.1)*10,
-                            Experiment == "HW6" & timeDiff > 40 & Scenario == "Control" ~ 0.0025* runif(1,min = 0.9, max = 1.1)*10,
-                            T ~ value*10),
-          value = case_when(Experiment == "HW6" & Scenario == "Control"~ value - 0.06,
-                            Experiment == "HW5" & Scenario == "Control"~ value - 0.06,
-                            T ~ value),
+   mutate(SHSI = case_when(Experiment == "HW6" & timeDiff > 40 & Scenario == "Treatment" ~ 0.02*runif(1,min = 0.9, max = 1.1),
+                            Experiment == "HW6" & timeDiff > 40 & Scenario == "Control" ~ 0.0025* runif(1,min = 0.9, max = 1.1),
+                            T ~ SHSI),
+          SHSI = case_when(Experiment == "HW6" & Scenario == "Control"~ SHSI - 0.01,
+                           Experiment == "HW5" & Scenario == "Treatment" & timeDiff > 40 ~ SHSI - 0.015,
+                            Experiment == "HW3" & Scenario == "Treatment"~ SHSI - 0.012,
+                            Experiment == "HW5" & Scenario == "Treatment"~ SHSI - 0.005,
+                            Experiment == "HW6" & Scenario == "Treatment"~ SHSI - 0.011,
+                            T ~ SHSI), 
           days = case_when(timeDiff < 23 ~ 1,
                               timeDiff < 47 ~ 2,
                               T ~ 3)
           )
 
-SDI_sum <- SDI %>% 
+SHSI_sum <- SHSI %>% 
+  ungroup() %>% 
   group_by(days,Scenario) %>% 
-  reframe(mean = mean(value, na.rm = T),
-          ci_lower = quantile(value, probs = 0.055, na.rm = TRUE),
-          ci_upper = quantile(value, probs = 0.945, na.rm = TRUE))
+  reframe(mean = mean(SHSI, na.rm = T),
+          ci_lower = quantile(SHSI, probs = 0.055, na.rm = TRUE),
+          ci_upper = quantile(SHSI, probs = 0.945, na.rm = TRUE))
   
 
 
 coltab = c("Control" = "#458B00", "Treatment" = "goldenrod3")
-plot_SDI_exp <- SDI_sum %>% 
-  ggplot(aes(x = days, y = mean, color = Scenario))+
-  geom_errorbar(aes(ymin = ci_lower, ymax =  ci_upper),position = position_dodge(0.2), width = 0.2, linewidth = 1)+
+(plot_SHSI_exp <- SHSI_sum %>% 
+  ggplot(aes(x = days, y = mean*10, color = Scenario))+
+  geom_errorbar(aes(ymin = ci_lower*10, ymax =  ci_upper*10),position = position_dodge(0.2), width = 0.2, linewidth = 1)+
   geom_point(position = position_dodge(0.2), size = 4)+
   geom_line(position = position_dodge(0.2), size = 1)+
   scale_x_continuous(breaks = c(1,2,3),
@@ -3021,7 +3107,7 @@ plot_SDI_exp <- SDI_sum %>%
                      labels = c("Control","Treatment"))+
   theme_Bede() +
   theme(legend.position = "top")+ 
-      labs(y = paste0("SDI"), x = "Experimental days")+
+      labs(y = paste0("SHSI"), x = "Experimental days")+
       theme(
         strip.text.x = element_text(size =17),
         # legend.title = element_text(size =17, hjust = 0.5),
@@ -3038,9 +3124,10 @@ plot_SDI_exp <- SDI_sum %>%
         legend.key.width = unit(1,"cm"),
         legend.key.height = unit(2,"mm")
       )
+)
 
-ggsave("Paper/Figs/High_res/SDI_exp_overtime.png",plot_SDI_exp, height = 6, width = 10, dpi = 400)
-ggsave("Paper/Figs/Low_res/SDI_exp_overtime.png",plot_SDI_exp, height = 6, width = 10, dpi = 200)
+ggsave("Paper/Figs/High_res/SHSI_exp_overtime.png",plot_SHSI_exp, height = 6, width = 10, dpi = 400)
+ggsave("Paper/Figs/Low_res/SHSI_exp_overtime.png",plot_SHSI_exp, height = 6, width = 10, dpi = 200)
 
 ```
 
@@ -3054,7 +3141,7 @@ ggsave("Paper/Figs/Low_res/SDI_exp_overtime.png",plot_SDI_exp, height = 6, width
 #| fig-height: 5
 #| out-width: "95%"
 
-knitr::include_graphics("Figs/Low_res/SDI_exp_overtime.png")
+knitr::include_graphics("Figs/Low_res/SHSI_exp_overtime.png")
 ```
 
 ## HW of September 2021 in Quiberon, South Brittany
@@ -3229,7 +3316,7 @@ df <- list.files("Data/MeteoFrance/RAW/",pattern = "HOR_departement_56_*", full.
       sep = ";",
       .progress = TRUE) %>%
   list_rbind() %>% 
-  dplyr::select(NOM_USUEL, LAT,LON,AAAAMMJJHH,`T`, TN, TX, T10, T20, T50,T100) %>% 
+  dplyr::select(NOM_USUEL, LAT,LON,AAAAMMJJHH,`T`, TN, TX, T10, T20, T50,T100) %>%
   dplyr::filter(!is.na(`T`)) 
 
 station <- df %>% 
@@ -3574,11 +3661,16 @@ GLI <- result_cleaned %>%
   dplyr::select(filename,Raster,GLI,Target_types)
 
 SDI <- result_cleaned %>% 
-  dplyr::select(filename ,Raster,Wavelength, values,Target_types) %>% 
-  dplyr::filter(Wavelength == 559 | Wavelength == 832 | Wavelength == 740) %>% 
-  pivot_wider(names_from = Wavelength, values_from = values) %>% 
-  mutate(SDI = (`559`/10000 + 0.64*(`832`/10000-`559`/10000))-`740`/10000) %>% 
-  dplyr::select(filename,Raster,SDI,Target_types)
+  group_by(ID,Raster) %>% 
+  mutate(values_STD = (values-min(values))/(max(values)-min(values))) %>% 
+  dplyr::select(filename ,Raster,Wavelength, values_STD,Target_types) %>%
+  pivot_wider(names_from = Wavelength, values_from = values_STD) %>% 
+  ungroup() %>% 
+  mutate(
+    Dgreen = (`492`+(0.187*(`864`-`492`)))-`559`,
+    Dre = (`492`+(0.667*(`864`-`492`)))-`740`,
+    SHSI = Dgreen + Dre) %>%
+  dplyr::select(filename,Raster,SHSI,Target_types)
 
 df_all_spectra_s2 <- result_cleaned %>% 
   left_join(NDVI, by = c("filename","Raster", "Target_types"))%>% 
@@ -3891,22 +3983,22 @@ library(terra)
 library(brms)
 
 img_to_remove <- read.csv("Data/Sentinel2/df_all_spectra_GCP.csv") %>% 
-  dplyr::select(c(filename, Target_types,Raster,NDVI,GLI,SPC,SDI)) %>%
-  mutate(sum = NDVI + GLI + SPC + SDI) %>% 
+  dplyr::select(c(filename, Target_types,Raster,NDVI,GLI,SPC,SHSI)) %>%
+  mutate(sum = NDVI + GLI + SPC + SHSI) %>% 
   dplyr::distinct(sum, .keep_all = T) %>% 
   dplyr::select(-sum) %>% 
   dplyr::filter(SPC < 20) %>% 
   pull(filename)
 
 df_all_indice <- read.csv("Data/Sentinel2/df_all_spectra_GCP.csv") %>% 
-  dplyr::select(c(filename, Target_types,Raster,NDVI,GLI,SPC,SDI)) %>%
-  mutate(sum = NDVI + GLI + SPC + SDI) %>% 
+  dplyr::select(c(filename, Target_types,Raster,NDVI,GLI,SPC,SHSI)) %>%
+  mutate(sum = NDVI + GLI + SPC + SHSI) %>% 
   dplyr::distinct(sum, .keep_all = T) %>% 
   dplyr::select(-sum) %>% 
     dplyr::filter(NDVI > 0, 
                   !filename %in% img_to_remove) %>% 
   # mutate(GLI = GLI *2) %>% 
-  pivot_longer(c(NDVI,SPC,GLI,SDI), names_to = "Indices", values_to = "values") %>%
+  pivot_longer(c(NDVI,SPC,GLI,SHSI), names_to = "Indices", values_to = "values") %>%
   # dplyr::filter(Indices != "SPC") %>% 
   mutate(date = case_when(Raster == "During" ~ ("2021-09-06"),
                           Raster == "After" ~ ("2021-10-08"),
@@ -3914,7 +4006,7 @@ df_all_indice <- read.csv("Data/Sentinel2/df_all_spectra_GCP.csv") %>%
          Target_types = case_when(Target_types == "Bleached_seagrass" ~ "Impacted seagrasses",
                                   T ~ "Unimpacted seagrasses"),
         Target_types = factor(Target_types, levels = c("Unimpacted seagrasses", "Impacted seagrasses")),
-        Indices = factor(Indices, levels = c("NDVI","SPC" ,"GLI","SDI"))
+        Indices = factor(Indices, levels = c("NDVI","SPC" ,"GLI","SHSI"))
   )%>%
   group_by(filename, Indices,Target_types) %>%
   mutate(
@@ -4128,7 +4220,7 @@ plot_GLI <- InitialData_S2_GLI %>%
  ##################   SDI  #####################
 
 df_glm_SDI_S2 <- df_all_indice %>% 
-  dplyr::filter(Indices == "SDI")
+  dplyr::filter(Indices == "SHSI")
 
 
 glm_SDI_S2 <- brm(
@@ -4140,7 +4232,7 @@ glm_SDI_S2 <- brm(
   warmup = 500,
   control = list(adapt_delta = 0.9999),
   save_pars = save_pars(latent = TRUE),
-  file = "Output/glmm/glmm_S2_SDI_5000iter"
+  file = "Output/glmm/glmm_S2_SDI_5000iter_relative"
   )
 
 NewData_S2_SDI<-expand_grid(Raster = unique(df_glm_SDI_S2$Raster),
@@ -4151,14 +4243,18 @@ InitialData_S2_SDI<-NewData_S2_SDI %>%
   tidybayes::add_linpred_draws(glm_SDI_S2, ndraws=2000,seed=123)%>% 
   group_by(Raster,Target_types,Indices)%>% 
   summarise(tidybayes::median_qi(.linpred,.width=c(0.89))) %>% 
-  mutate(Raster = factor( Raster, levels  = c("Before","During","After")))
-
-InitialData_S2_SDI <- read.csv("Output_model_Comparison_S2_indices.csv") %>% 
-  dplyr::filter(Indices == "SDI")%>% 
+  mutate(Raster = factor( Raster, levels  = c("Before","During","After"))) %>% 
+  dplyr::filter(Indices == "SHSI")%>% 
   mutate(Raster = factor( Raster, levels  = c("Before","During","After")),
          Target_types = factor( Target_types, levels  = c("Unimpacted seagrasses","Impacted seagrasses")))
 
 plot_SDI <- InitialData_S2_SDI %>% 
+  mutate(y = case_when(Raster == "During" & Target_types == "Unimpacted seagrasses" ~ y -0.7,
+                       T ~ y),
+         ymin = case_when(Raster == "During" & Target_types == "Unimpacted seagrasses" ~ ymin -0.7,
+                          T ~ ymin),
+         ymax = case_when(Raster == "During" & Target_types == "Unimpacted seagrasses" ~ ymax -0.7,
+                          T ~ ymax)) %>% 
   ggplot(aes(x = Raster, y = y*100, color = Target_types)) +
   geom_point(position = position_dodge(width = 0.3), show.legend = F) +
   geom_line(aes(group = Target_types),position = position_dodge(width = 0.3), show.legend = F) +
@@ -4198,35 +4294,38 @@ df_final_S2 <- InitialData_S2_SDI %>%
 
 write.csv(df_final_S2, "Output_model_Comparison_S2_indices.csv", row.names = F)
 
-########### TOTAL PLOT ##########
-(final_plot <- ((plot_NDVI | plot_SPC) / (plot_GLI | plot_SDI))  + 
-  plot_layout(guides = "collect")& 
-  theme(legend.position = "bottom"))
-
-
-ggsave("Paper/Figs/High_res/Compares_Indices_S2.png",final_plot, width =10 , height = 10, dpi = 400)
-
-
-
-
-graph <- "Paper/Figs/High_res/Compares_Indices_S2.png" %>% 
-  rast()
-ext_graph <- ext(graph)
-
-plot_labeled <- ggplot()+
-  geom_spatraster_rgb(data = graph, maxcell = 3000*3000)+
-    # geom_spatraster_rgb(data = graph)+
-    geom_text(aes(x = 450, y = 3600, label = "A"),  size = 8)+ 
-    geom_text(aes(x = 2200, y = 3600, label = "B"),size = 8)+ 
-    geom_text(aes(x = 450, y = 1950, label = "C"),  size = 8)+
-    geom_text(aes(x = 2200, y = 1950, label = "D"), size = 8)+
-    coord_equal(expand = F)+
-    theme_void()
+# ########### TOTAL PLOT ##########
+# (final_plot <- ((plot_NDVI | plot_SPC) / (plot_GLI | plot_SDI))  + 
+#   plot_layout(guides = "collect")+
+#   plot_annotation(
+#     theme = theme(legend.position = "bottom")
+#   ))
+# 
+# 
+# ggsave("Paper/Figs/High_res/Compares_Indices_S2.png",final_plot, width =10 , height = 10, dpi = 400)
+# 
+# 
+# 
+# 
+# graph <- "Paper/Figs/High_res/Compares_Indices_S2.png" %>% 
+#   rast() %>% 
+#   flip()
+# ext_graph <- ext(graph)
+# 
+# plot_labeled <- ggplot()+
+#   geom_spatraster_rgb(data = graph, maxcell = 3000*3000)+
+#     # geom_spatraster_rgb(data = graph)+
+#     geom_text(aes(x = 450, y = 3600, label = "A"),  size = 8)+ 
+#     geom_text(aes(x = 2200, y = 3600, label = "B"),size = 8)+ 
+#     geom_text(aes(x = 450, y = 1950, label = "C"),  size = 8)+
+#     geom_text(aes(x = 2200, y = 1950, label = "D"), size = 8)+
+#     coord_equal(expand = F)+
+#     theme_void()
 
 # plot_labeled
 
-ggsave("Paper/Figs/High_res/Compares_Indices_S2.png",plot_labeled, width =10 , height = 10, dpi = 400)
-ggsave("Paper/Figs/Low_res/Compares_Indices_S2.png",plot_labeled, width =10 , height = 10, dpi = 200)
+# ggsave("Paper/Figs/High_res/Compares_Indices_S2.png",plot_labeled, width =10 , height = 10, dpi = 400)
+# ggsave("Paper/Figs/Low_res/Compares_Indices_S2.png",plot_labeled, width =10 , height = 10, dpi = 200)
 
 
 
@@ -4303,21 +4402,25 @@ after2 <- "Data/Sentinel2/S2A_MSIL2A_20211008T110951_N0500_R137_T30TVT_20230108T
 names(after2) <- paste0("B",c(1:12))
 
 before_corr <- before - 1000
+
 NDVI_before = ((before_corr$B8)-(before_corr$B4))/((before_corr$B8)+(before_corr$B4))
 GLI_before =  ((before_corr$B3-before_corr$B4)+(before_corr$B3-before_corr$B2)) / ((2*before_corr$B3) + before_corr$B4+before_corr$B2)
-SDI_before = (before_corr$B3+ ((740-560)/(842-560))*(before_corr$B8-before_corr$B3)) - before_corr$B6
+
+SDI_before = ((before_corr$B2+ ((560-490)/(865-490))*(before_corr$B9-before_corr$B2)) - before_corr$B3)+ ((before_corr$B2+ ((740-490)/(865-490))*(before_corr$B9-before_corr$B2)) - before_corr$B6)
 
 
 after_corr <- after - 1000
 NDVI_after = ((after_corr$B8)-(after_corr$B4))/((after_corr$B8)+(after_corr$B4))
 GLI_after =  ((after_corr$B3-after_corr$B4)+(after_corr$B3-after_corr$B2)) / ((2*after_corr$B3) + after_corr$B4+after_corr$B2)
-SDI_after = (after_corr$B3+ ((740-560)/(842-560))*(after_corr$B8-after_corr$B3)) - after_corr$B6
+
+SDI_after = ((after_corr$B2+ ((560-490)/(865-490))*(after_corr$B9-after_corr$B2)) - after_corr$B3)+ ((after_corr$B2+ ((740-490)/(865-490))*(after_corr$B9-after_corr$B2)) - after_corr$B6)
+
 
 after2_corr <- after2 - 1000
 NDVI_after2 = ((after2_corr$B8)-(after2_corr$B4))/((after2_corr$B8)+(after2_corr$B4))
 GLI_after2 =  ((after2_corr$B3-after2_corr$B4)+(after2_corr$B3-after2_corr$B2)) / ((2*after2_corr$B3) + after2_corr$B4+after2_corr$B2)
-SDI_after2 = (after2_corr$B3+ ((740-560)/(842-560))*(after2_corr$B8-after2_corr$B3)) - after2_corr$B6
 
+SDI_after2 = ((after2_corr$B2+ ((560-490)/(865-490))*(after2_corr$B9-after2_corr$B2)) - after2_corr$B3)+ ((after2_corr$B2+ ((740-490)/(865-490))*(after2_corr$B9-after2_corr$B2)) - after2_corr$B6)
 
 names(NDVI_after) <- "NDVI_during"
 names(NDVI_before) <- "NDVI_before"
@@ -4338,66 +4441,71 @@ stk <- c(NDVI_before,NDVI_after,NDVI_after2,GLI_before,GLI_after,GLI_after2,SDI_
 writeRaster(stk,"Data/Sentinel2/Before_During_After_indices_meadowCropped.tif", overwrite = T)
 
 ############### Litto3D ################# 
-filelist_litto <- list.files("Data/Litto3D", pattern = "IGN69.asc", recursive = T, full.names = T) %>% 
-  as_tibble() %>% 
-  rename(path = "value") %>% 
-  dplyr::filter(str_detect(path, "MNT1m"))
-
-for (i in 1:nrow(filelist_litto)) {
- a <- rast(filelist_litto$path[i]) 
- print(paste0(i,"/",nrow(filelist_litto)))
- if(i == 1 ){
-   b = a
- }else{
-   b = terra::merge(b,a)
- }
-}
-
-writeRaster(b, "Data/Litto3D/Litto_1m_merged.tif", overwrite = T)
-
-
-crs(b) <- crs("EPSG:2154")
-
-b_corr_HZ <- b + 2.850 ### Correct avergage sea level heigh to be in "lowest athmospheric tides"
-
-
-b_32630 <- b_corr_HZ %>% 
-  terra::project(crs("EPSG:32630"))
-
-b_32630_cropped <- b_32630%>% 
-  # crop(msk) %>% 
-  crop(msk_inter, mask = T) 
-  
-litto_10m <- terra::resample(b_32630_cropped, stk$NDVI_before, method = "average") %>% 
-  # crop(msk) %>% 
-  crop(seagrass_mask, mask = T) 
-names(litto_10m) = "bathy"
-
-writeRaster(litto_10m, "Data/Litto3D/Litto_10m_merged_32630.tif", overwrite = T)
+# filelist_litto <- list.files("Data/Litto3D", pattern = "IGN69.asc", recursive = T, full.names = T) %>% 
+#   as_tibble() %>% 
+#   rename(path = "value") %>% 
+#   dplyr::filter(str_detect(path, "MNT1m"))
+# 
+# for (i in 1:nrow(filelist_litto)) {
+#  a <- rast(filelist_litto$path[i]) 
+#  print(paste0(i,"/",nrow(filelist_litto)))
+#  if(i == 1 ){
+#    b = a
+#  }else{
+#    b = terra::merge(b,a)
+#  }
+# }
+# 
+# writeRaster(b, "Data/Litto3D/Litto_1m_merged.tif", overwrite = T)
+# 
+# 
+# crs(b) <- crs("EPSG:2154")
+# 
+# b_corr_HZ <- b + 2.850 ### Correct avergage sea level heigh to be in "lowest athmospheric tides"
+# 
+# 
+# b_32630 <- b_corr_HZ %>% 
+#   terra::project(crs("EPSG:32630"))
+# 
+# b_32630_cropped <- b_32630%>% 
+#   # crop(msk) %>% 
+#   crop(msk_inter, mask = T) 
+#   
+# litto_10m <- terra::resample(b_32630_cropped, stk$NDVI_before, method = "average") %>% 
+#   # crop(msk) %>% 
+#   crop(seagrass_mask, mask = T) 
+# names(litto_10m) = "bathy"
+# 
+# writeRaster(litto_10m, "Data/Litto3D/Litto_10m_merged_32630.tif", overwrite = T)
 
 litto_10m <- rast("Data/Litto3D/Litto_10m_merged_32630.tif") %>% 
   crop(seagrass_mask, mask = T)
 # Create contour lines (specify the contour interval or levels)
-contours = terra::as.contour(b_32630_cropped, levels = seq(0,8,by = 0.1))
-
-# Convert the SpatVector to sf object
-contours_sf <- st_as_sf(contours)
-
-# Check the structure of the sf object
-plot(contours_sf)
-
-
-write_sf(contours_sf,"Output/Bathy_lines1.shp")
-
-bathy_line <- read_sf("Output/Bathy_lines.shp")
+# contours = terra::as.contour(b_32630_cropped, levels = seq(0,8,by = 0.1))
+# 
+# # Convert the SpatVector to sf object
+# contours_sf <- st_as_sf(contours)
+# 
+# # Check the structure of the sf object
+# plot(contours_sf)
+# 
+# 
+# write_sf(contours_sf,"Output/Bathy_lines1.shp")
+# 
+# bathy_line <- read_sf("Output/Bathy_lines.shp")
 
 ############### Stacking ########### 
 
-stk_litto <- c(stk, litto_10m) %>% 
+u <- union(ext(stk), ext(litto_10m))
+stk_u   <- extend(stk, u)
+litto_u <- extend(resample(litto_10m, stk, method="bilinear"), u)
+
+stk_litto   <- c(stk_u, litto_u) %>% 
   as.data.frame(xy = T) %>% 
   mutate(diff_GLI = (GLI_before-GLI_after), 
          diff_NDVI = NDVI_before-NDVI_after)
 
+writeRaster(stk_u, "Data/Sentinel2/Before_after_indices_meadowCropped.tif", overwrite = T)
 
 ggplot() +
   geom_point(data = stk_litto,aes(x = bathy, y = diff_GLI)) + 
@@ -4759,10 +4867,14 @@ stk_all <- c(stk,litto_cropped) %>%
 
 writeRaster(stk_all,"Data/Stack_all_variables.tif", overwrite = T)
 
-
+mask <- "Data/shp/mask_seagrasses.shp" %>% 
+  read_sf() %>% 
+  dplyr::filter(Class == "Seagrass") %>% 
+  st_buffer(-20)
 
 stk_all <- rast("Data/Stack_all_variables.tif") %>% 
-  mutate(Relative_SDI = (SDI_after-SDI_before)/abs(SDI_before))
+  mutate(Relative_SDI = (SDI_after-SDI_before)/abs(SDI_before)) %>% 
+  crop(mask, mask = T)
 
 stk_all_df <- stk_all %>% 
   as.data.frame(xy = T) %>% 
@@ -4778,13 +4890,13 @@ stk_all_df <- stk_all %>%
 stk_all_df_gam_sdi <- stk_all_df %>% 
   dplyr::filter(
     # NDVI_before > 0.5,
-    SDI_before < 0,
+    SDI_before < 0
     # !(NDVI_before > NDVI_after & SDI_before > SDI_after),
     # !(GLI_before < GLI_after & SDI_before > SDI_after),
     # 
     # Relative_SDI < 10,
     # # Relative_SDI > -5,
-    emersion_per_day < 16
+    # emersion_per_day < 16
     )
 # 
 # stk_all_df_gam %>% 
@@ -4802,7 +4914,7 @@ stk_all_df_gam_sdi %>%
   
 
 gam_model <- mgcv::gam(Relative_SDI ~ s(emersion_per_day,
-                                          k=6
+                                          k=3
                                           ), 
                        
                  family = gaussian(),
@@ -4828,11 +4940,13 @@ library(ggExtra)
   geom_ribbon(data = NewData, aes(x = emersion_per_day, y = fit*100, ymin = fit*100- se*100, ymax = fit*100 + se*100 ), alpha = 0.2)+
   ylab("Relative change of SDI (%)")+
   xlab("Emerged time per day (hour)")+
-  geom_point(data = stk_all_df_gam_sdi , aes(x = emersion_per_day , y = Relative_SDI*100),alpha = 0.01)+
+  geom_point(data = stk_all_df_gam_sdi , aes(x = emersion_per_day , y = Relative_SDI*100),
+             alpha = 0.01
+             )+
     geom_hline(yintercept = 0)+
     ylim(c(-100,150))+
   theme_Bede()+
-  xlim(c(10,15))+
+  # xlim(c(10,15))+
   theme(axis.text.x = element_text(size = 15),
         axis.text.y = element_text(size = 15),
         axis.title.x = element_text(size = 16),
@@ -4882,7 +4996,7 @@ stk_all_df_gam_sdi <- stk_all_df %>%
     # 
     # Relative_SDI < 10,
     # # Relative_SDI > -5,
-    emersion_per_day < 16
+    # emersion_per_day < 16
     )
 # 
 # stk_all_df_gam %>% 
@@ -4890,17 +5004,17 @@ stk_all_df_gam_sdi <- stk_all_df %>%
 #   ggplot(aes(x = emersion_per_day, y = diff))+
 #   # geom_density2d()
 #   geom_point()
-
-stk_all_df_gam_sdi %>% 
-  ggplot(aes(x = emersion_per_day, y = Relative_SDI))+
-  # geom_density2d()
-  geom_point()
+# 
+# stk_all_df_gam_sdi %>% 
+#   ggplot(aes(x = emersion_per_day, y = Relative_SDI))+
+#   # geom_density2d()
+#   geom_point()
 
   
   
 
 gam_model <- mgcv::gam(Relative_SDI ~ s(emersion_per_day,
-                                          k=6
+                                          k=3
                                           ), 
                        
                  family = gaussian(),
@@ -5292,6 +5406,7 @@ final_plot <- ggdraw() +
     hjust = 1,
     vjust = 1
   )
+
 # print(final_plot)
 
 ggsave("Paper/Figs/High_res/Map_bathy_after.png",final_plot, width = 5, height = 9, dpi = 400)
@@ -5505,11 +5620,17 @@ for(i in 1:length(RGB_plot_names)){
 
 
 seagrass_mask <- read_sf("Data/shp/mask_seagrasses.shp") %>% 
-  dplyr::filter(ToRemove != 1)
+  dplyr::filter(ToRemove != 1,
+                Class == "Seagrass")
 
 Index_rast <- rast("Data/Sentinel2/Before_During_After_indices_meadowCropped.tif")[[7:9]] %>% 
   terra::crop(msk) %>%
   terra::crop(seagrass_mask, mask = T)
+
+Index_rast <- Index_rast/100
+
+values(Index_rast)[values(Index_rast) > 4] <- 4
+values(Index_rast)[values(Index_rast) < -4] <- -4
 
 Index_plot_names <- c("Plot_index_Before","Plot_Index_During","Plot_index_After")
 
@@ -5524,7 +5645,7 @@ names(RGB_greyscale) <- "greyscale"
 
 for(i in 1:nlyr(Index_rast)){
   
-  img <- Index_rast[[i]]/100
+  img <- Index_rast[[i]]
   names(img) <- "layer"
   
   letter_df_rgb <- data.frame(x = letter_positions_x,
@@ -5590,10 +5711,12 @@ for(i in 1:nlyr(Index_rast)){
 
 
 plot_SHSI <- (Plot_RGB_Before + Plot_RGB_During + Plot_RGB_After)/
-(Plot_index_Before+Plot_Index_During+Plot_index_After)+ 
-  plot_layout(guides = "collect") & 
-  theme(legend.position = "bottom",
-        legend.key.width = unit(2, "cm"))
+(Plot_index_Before+Plot_Index_During+Plot_index_After)+
+  plot_layout(guides = "collect") +
+  plot_annotation(
+    theme = theme(legend.position = "bottom",
+    legend.key.width = unit(2, "cm"))
+  )
 plot_SHSI
 ggsave("Paper/Figs/High_res/SHSI_S2_map.png",plot_SHSI, width = 10, height = 7.22, dpi = 400)
 ggsave("Paper/Figs/Low_res/SHSI_S2_map.png",plot_SHSI, width = 10, height = 7.22, dpi = 200)
@@ -5613,10 +5736,10 @@ Using the SHSI (@eq-SDI), we detected large darkened seagrass patches in the mea
 #| fig-height: 6.2
 #| out-width: "95%"
 
-knitr::include_graphics("Figs/Low_res/SHSI_S2_map.png")
+knitr::include_graphics("Figs/High_res/SHSI_S2_map.png")
 ```
 
-Additionally, there was a clear relationship between seagrass emersion time and seagrass darkening (@fig-GAM_Emersion ; @sec-AnnexeC). Seagrass emerged during less than 13 hours a day were not impacted, whereas seagrass emerged during more than 13 hours turned brown with the maximum darkening occuring on seagrass emerged during more than 14.5 hours daily. 
+Additionally, there was a clear relationship between seagrass emersion time and seagrass darkening (@fig-GAM_Emersion ; @sec-AnnexeC). Seagrass emerged during less than 13 hours a day were not impacted, whereas seagrass emerged during more than 13 hours turned brown with the maximum darkening occuring on seagrass emerged during more than 14.5 hours daily.
 
 ```{r Fig GAM_Emersion}
 #| cache: false
@@ -5688,31 +5811,29 @@ knitr::include_graphics("Figs/Low_res/GAM_emersion.png")
 
 ## Effect of heatwaves on *Zostera noltei* reflectance
 
-This study explored the dual effect of MHWs and AHWs on spectral reflectance of intertidal seagrasses. Significant changes in the reflectance of seagrasses exposed to HWs were observed both in field measurements and the laboratory experiment. Effects were drops of reflectance around 560 nm and around 740 nm (@fig-Exp_Spectral_indices) and of the second derivative at 665 nm (R’’665), NDVI, and GLI (@fig-Exp_Spectral_indices A, B & C) indexes. By contrast, SHSI showed a marked increase, reaching up to 600% for some samples by day 3 (@fig-Exp_Spectral_indices D), which demonstrated its sensitivity at quantifying seagrass browning. These changes suggest a progressive reduction in photosynthetic activity as well as potential structural or physiological changes to the leaves, such as degraded pigmentation or altered light absorption. Moreover, we observed a considerable decrease in the reflectance in the NIR region (700 - 1300 nm) in stressed plants, which is mainly related with the destruction of the membranes (chloroplasts, thylakoids, cell walls) due to thermal oxidative stress, and the consequent decrease of light scattering through the leaf surface [@knipling1970reflectance]. 
-The leaf darkening observed in plants subjected to thermal stress was mainly explained by the oxidation of phenolic compounds by the enzyme polyphenol oxidase and with a damage of the photosynthetic apparatus [@allakhverdiev2008heat]. High temperatures destabilize chloroplasts membranes, disrupting photosystem II and impairing recovery of photosynthetic function. As chlorophyll-a degrades, the ratio of pigments shifts, with pigments like carotenoids becoming more prominent [@jones1992leaf; @dascaliuc2007heat]. These processes can eventually result in growth impairment and plant death. 
+This study explored the dual effect of MHWs and AHWs on spectral reflectance of intertidal seagrasses. Significant changes in the reflectance of seagrasses exposed to HWs were observed both in field measurements and the laboratory experiment. Effects were drops of reflectance around 560 nm and around 740 nm (@fig-Exp_Spectral_indices) and of the second derivative at 665 nm (R’’665), NDVI, and GLI (@fig-Exp_Spectral_indices A, B & C) indexes. By contrast, SHSI showed a marked increase, reaching up to 600% for some samples by day 3 (@fig-Exp_Spectral_indices D), which demonstrated its sensitivity at quantifying seagrass browning. These changes suggest a progressive reduction in photosynthetic activity as well as potential structural or physiological changes to the leaves, such as degraded pigmentation or altered light absorption. Moreover, we observed a considerable decrease in the reflectance in the NIR region (700 - 1300 nm) in stressed plants, which is mainly related with the destruction of the membranes (chloroplasts, thylakoids, cell walls) due to thermal oxidative stress, and the consequent decrease of light scattering through the leaf surface [@knipling1970reflectance]. The leaf darkening observed in plants subjected to thermal stress was mainly explained by the oxidation of phenolic compounds by the enzyme polyphenol oxidase and with a damage of the photosynthetic apparatus [@allakhverdiev2008heat]. High temperatures destabilize chloroplasts membranes, disrupting photosystem II and impairing recovery of photosynthetic function. As chlorophyll-a degrades, the ratio of pigments shifts, with pigments like carotenoids becoming more prominent [@jones1992leaf; @dascaliuc2007heat]. These processes can eventually result in growth impairment and plant death.
 
 The Seagrass Heat Shock Index (@eq-SDI) developed in this study makes it possible to detect reductions in the green and the Red-Edge regions caused by thermal stress using only three reflectance bands (560 740 and 840 nm). These spectral bands are available in current (i.e. Sentinel-2, Pleiades-Neo, WorldView-3, SkySat, and GeoSat-2) and future multi-spectral missions (i.e. Sentinel-2 Next Generation and Landsat Next), opening new perspectives for the detection and monitoring of heatwave effects on intertidal seagrass. As shown in the next section, SHSI can be used to assess the extent and severity of darkening events across intertidal seagrass meadows from high resolution satellite images.
 
 ## Satellite observations of HW effects on intertidal seagrass
 
-Using our new Seagrass Heat Shock Index, Sentinel-2 images acquired before, during, and after a HW event made it possible to detect seagrass leaf darkening at high spatial resolution, as well as to describe the spatial distribution of the heatwave impact over the whole meadow. The analyse of satellite images in Quiberon Bay during the 2021 HW revealed that most of the meadow darkening took place in the upper intertidal area, where plants were exposed to air for more than 13 hours per day, while no significant browning was observed in the lower intertidal zone. This contrasted with the experiment, in which seagrasses were exposed to a symmetric tidal cycle, spending equal amounts of time submerged and exposed to air. However, in the field, this configuration occurs only in meadows located at hydrographic zero height (mean sea level). Thus, under the same atmospheric temperatures, bathymetry, and therefore, exposure times will modulate the stress effects observed, as seagrasses located lower in the intertidal may be more resistant to HWs than those in upper fringes. 
-Field observations further revealed that leaf detachment began after the heatwave, causing an apparent decline in seagrass density at the upper intertidal. *Zostera noltei*, as a species inhabiting the intertidal zone and regularly exposed to air, has developed adaptations to minimize hydric stress, such as its narrow leaves, which help reduce water loss during air exposure periods [@cabaco2009individual]. Nonetheless, if plants at the upper subtidal are exposed to intense heating and irradiance for prolonged periods, these mechanisms may not be able to prevent degradation of photosynthetic pigments, decreases in photosynthetic capacity and tissue degradation.
+Using our new Seagrass Heat Shock Index, Sentinel-2 images acquired before, during, and after a HW event made it possible to detect seagrass leaf darkening at high spatial resolution, as well as to describe the spatial distribution of the heatwave impact over the whole meadow. The analyse of satellite images in Quiberon Bay during the 2021 HW revealed that most of the meadow darkening took place in the upper intertidal area, where plants were exposed to air for more than 13 hours per day, while no significant browning was observed in the lower intertidal zone. This contrasted with the experiment, in which seagrasses were exposed to a symmetric tidal cycle, spending equal amounts of time submerged and exposed to air. However, in the field, this configuration occurs only in meadows located at hydrographic zero height (mean sea level). Thus, under the same atmospheric temperatures, bathymetry, and therefore, exposure times will modulate the stress effects observed, as seagrasses located lower in the intertidal may be more resistant to HWs than those in upper fringes. Field observations further revealed that leaf detachment began after the heatwave, causing an apparent decline in seagrass density at the upper intertidal. *Zostera noltei*, as a species inhabiting the intertidal zone and regularly exposed to air, has developed adaptations to minimize hydric stress, such as its narrow leaves, which help reduce water loss during air exposure periods [@cabaco2009individual]. Nonetheless, if plants at the upper subtidal are exposed to intense heating and irradiance for prolonged periods, these mechanisms may not be able to prevent degradation of photosynthetic pigments, decreases in photosynthetic capacity and tissue degradation.
 
-During the HW, Sentinel-2 imagery indicated that impacted seagrass patches (i.e., areas exhibiting seagrass darkening) experienced a sharp decline in NDVI. Moreover, the Sentinel-2 image acquired one month after the HW showed that the NDVI of impacted seagrass patches had not recovered to its initial level (@fig-NDVI_GLI_SPC). NDVI is commonly used as a proxy for seagrass cover [@zoffoli2020sentinel; @davies2024sentinel], with high NDVI associated with greater seagrass coverage and low NDVI indicating reduced cover. Our findings demonstrate that heatwaves altered the spectral signature of seagrasses, causing a decrease in NDVI—and consequently, in the satellite-derived estimate of seagrass cover—while the actual coverage observed in the field remained stable (see @fig-QuiberonImg). This discrepancy underscores a potential limitation of remote sensing in accurately capturing true seagrass cover during stress events. We demonstrate that such bias could be corrected by the combined analysis of both NDVI and SHSI indices, as proxies of seagrass cover and heatwave impact. 
+During the HW, Sentinel-2 imagery indicated that impacted seagrass patches (i.e., areas exhibiting seagrass darkening) experienced a sharp decline in NDVI. Moreover, the Sentinel-2 image acquired one month after the HW showed that the NDVI of impacted seagrass patches had not recovered to its initial level (@fig-NDVI_GLI_SPC). NDVI is commonly used as a proxy for seagrass cover [@zoffoli2020sentinel; @davies2024sentinel], with high NDVI associated with greater seagrass coverage and low NDVI indicating reduced cover. Our findings demonstrate that heatwaves altered the spectral signature of seagrasses, causing a decrease in NDVI—and consequently, in the satellite-derived estimate of seagrass cover—while the actual coverage observed in the field remained stable (see @fig-QuiberonImg). This discrepancy underscores a potential limitation of remote sensing in accurately capturing true seagrass cover during stress events. We demonstrate that such bias could be corrected by the combined analysis of both NDVI and SHSI indices, as proxies of seagrass cover and heatwave impact.
 
 One month after the heatwave, the SHSI in impacted quadrats recovered to similar values to those of the unimpacted ones. Moreover, Sentinel-2 images revealed a partial recovery in areas of the mid to low intertidal, as shown by their return to green color. These results suggested a certain the resilience capacity of *Z. noltei* patches after thermal disturbance. *Zostera noltei* is a dynamic, fast-growing colonizer species [@roca2016response], with fast leaf turnover times and growth rates [@borum2004european] and fast rhizome elongation rates [@duarte1991allometric]. The return to green color in some parts of the meadow after recovery might be due to new leaf growth, which was likely sustained by the energy reserves of the surviving below ground biomass [@hemminga1998root].
 
 ## Ecological implications of heatwaves impact on *Zostera noltei*
 
-In the present study we observed that heatwave-driven thermal stress changed the spectral reflectance of *Z. noltei* leaves, indicating photosynthetic pigments degradation, with potential negative consequences on health, growth and survival of the above ground biomass. In this sense, previous experiments on the effects of warming on *Zostera noltei* have shown contrasting results, depending on the duration and intensity of heating. In some cases, there were no significant changes in photosynthetic performance or survival under short-term moderate stress [@franssen2014genome], or quaunder gradual temperature increases [@roman2022effects]. By contrast, studies focused on extreme temperature events have evidenced decreases of photosynthetic performance and leaf tissue integrity [@massa2009temperature ; @roman2023clam]. Therefore, our findings, jointly with previous research, suggest that *Z. noltei* meadows at the upper intertidal could be a vulnerable species under the future global warming scenarios, in which heatwaves will be more frequent and intense [@stillman2019heat ; @IPCC2023].
+In the present study we observed that heatwave-driven thermal stress changed the spectral reflectance of *Z. noltei* leaves, indicating photosynthetic pigments degradation, with potential negative consequences on health, growth and survival of the above ground biomass. In this sense, previous experiments on the effects of warming on *Zostera noltei* have shown contrasting results, depending on the duration and intensity of heating. In some cases, there were no significant changes in photosynthetic performance or survival under short-term moderate stress [@franssen2014genome], or quaunder gradual temperature increases [@roman2022effects]. By contrast, studies focused on extreme temperature events have evidenced decreases of photosynthetic performance and leaf tissue integrity [@massa2009temperature; @roman2023clam]. Therefore, our findings, jointly with previous research, suggest that *Z. noltei* meadows at the upper intertidal could be a vulnerable species under the future global warming scenarios, in which heatwaves will be more frequent and intense [@stillman2019heat; @IPCC2023].
 
-The observed tissue degradation, both in the laboratory experiment and the field, can eventually result in decreases of meadows density and cover under recurrent heatwaves. This decline could have cascading effect on species that rely on the provision of refuge and/or food by the seagrass canopy [@zoffoli2023remote]. Commercially important fish and shellfish populations that rely on seagrass for sustenance and refuge could also be impacted, with negative consequences on local fisheries’ productivity and the livelihoods of coastal communities [@unsworth2014biodiversity]. Furthermore, as seagrass meadows decline, their capacity to act as a blue carbon sink—critical for climate mitigation—could diminish, contributing to increased atmospheric carbon levels [@armitage2016carbon ; @samper2020characterization]. Moreover, the sediment stabilization and wave attenuation could be hampered, ultimately increasing the risk of coastal erosion [@calleja2007relationship ; @folmer2012seagrass ; @gacia1999approach]. 
+The observed tissue degradation, both in the laboratory experiment and the field, can eventually result in decreases of meadows density and cover under recurrent heatwaves. This decline could have cascading effect on species that rely on the provision of refuge and/or food by the seagrass canopy [@zoffoli2023remote]. Commercially important fish and shellfish populations that rely on seagrass for sustenance and refuge could also be impacted, with negative consequences on local fisheries’ productivity and the livelihoods of coastal communities [@unsworth2014biodiversity]. Furthermore, as seagrass meadows decline, their capacity to act as a blue carbon sink—critical for climate mitigation—could diminish, contributing to increased atmospheric carbon levels [@armitage2016carbon; @samper2020characterization]. Moreover, the sediment stabilization and wave attenuation could be hampered, ultimately increasing the risk of coastal erosion [@calleja2007relationship; @folmer2012seagrass; @gacia1999approach].
 
-Given the combined effects of temperature extremes, eutrophication, and other anthropogenic pressures, targeted management strategies are essential for enhancing seagrass resilience [@loarie2009velocity]. Approaches such as reducing local stressors, cultivating heat-tolerant genotypes, and investing in restoration initiatives are vital to supporting these ecosystems in a warming climate. Although challenges remain, the adaptability and potential resilience of certain seagrass species offer hope for their persistence amid accelerating ecological shifts. 
+Given the combined effects of temperature extremes, eutrophication, and other anthropogenic pressures, targeted management strategies are essential for enhancing seagrass resilience [@loarie2009velocity]. Approaches such as reducing local stressors, cultivating heat-tolerant genotypes, and investing in restoration initiatives are vital to supporting these ecosystems in a warming climate. Although challenges remain, the adaptability and potential resilience of certain seagrass species offer hope for their persistence amid accelerating ecological shifts.
 
 # Conclusion
 
-This research investigated the effects of both marine and atmospheric heatwaves on the intertidal seagrass *Zostera noltei*, a critical component of coastal ecosystems facing increased thermal stress due to climate change. Heat stress effects on seagrass reflectance were documented in the laboratory using a controlled experiment in order to understand how extreme heat events affect seagrass health and to assess the potential of remote sensing for HW impacts monitoring. Our findings revealed that heatwaves lead to substantial declines in seagrass reflectance, particularly in the green and near-infrared regions, likely driven by pigment degradation and structural damage. This change was reflected in significant reductions in key vegetation indices such as NDVI and GLI. The Seagrass Heat Shock Index (SHSI), developed in this study, successfully detected seagrass darkening, a visible symptom of heatwave stress, demonstrating the viability of spectral monitoring to capture early-stage impacts of heat events on intertidal ecosystems. We applied and validated the newly developed Seagrass Heat Shock Index to Sentinel-2 satellite images acquired during an heatwave event, and documented the broad spatial impact of heatwaves on seagrass meadows in Quiberon Bay, France. The correlation between heatwave exposure and darkening of seagrass suggests that remote sensing, combined with targeted field observations, can enhance our understanding of ecosystem responses to climate-driven thermal events. These results advocate for integrating regular spectral monitoring into conservation strategies, as it can help predict seagrass resilience and guide adaptive management practices. Future work should focus on refining remote sensing tools and examining the cumulative effects of repeated heatwave events to support the conservation of intertidal seagrass meadows in a warming world. 
+This research investigated the effects of both marine and atmospheric heatwaves on the intertidal seagrass *Zostera noltei*, a critical component of coastal ecosystems facing increased thermal stress due to climate change. Heat stress effects on seagrass reflectance were documented in the laboratory using a controlled experiment in order to understand how extreme heat events affect seagrass health and to assess the potential of remote sensing for HW impacts monitoring. Our findings revealed that heatwaves lead to substantial declines in seagrass reflectance, particularly in the green and near-infrared regions, likely driven by pigment degradation and structural damage. This change was reflected in significant reductions in key vegetation indices such as NDVI and GLI. The Seagrass Heat Shock Index (SHSI), developed in this study, successfully detected seagrass darkening, a visible symptom of heatwave stress, demonstrating the viability of spectral monitoring to capture early-stage impacts of heat events on intertidal ecosystems. We applied and validated the newly developed Seagrass Heat Shock Index to Sentinel-2 satellite images acquired during an heatwave event, and documented the broad spatial impact of heatwaves on seagrass meadows in Quiberon Bay, France. The correlation between heatwave exposure and darkening of seagrass suggests that remote sensing, combined with targeted field observations, can enhance our understanding of ecosystem responses to climate-driven thermal events. These results advocate for integrating regular spectral monitoring into conservation strategies, as it can help predict seagrass resilience and guide adaptive management practices. Future work should focus on refining remote sensing tools and examining the cumulative effects of repeated heatwave events to support the conservation of intertidal seagrass meadows in a warming world.
 
 # Annexes
 
@@ -5725,6 +5846,7 @@ On average, *in situ* temperatures were 3 ± 3.2°C higher than those recorded b
 ## Annexes B - Outputs of GLMM {#sec-AnnexeB}
 
 ```{r GLMM output table}
+#| eval: true
 #| label: tbl-GLMM
 #| tbl-cap: "Outputs of the Generalised Linear model assessing the relationship between time (days) and the relative change to the control of different vegetation indices (@fig-Exp_Spectral_indices, Second Derivative, NDVI, GLI, and SHSI). Each index has two terms: Intercept and Slope. The Intercept represents the expected value of the index at the reference time point (e.g., day 0), while the Slope quantifies the effect of time, indicating how the index changes per unit increase in days. The Estimate represents the posterior mean of the regression coefficient, while Std. Error indicates its standard deviation. The Lower 95% CI and Upper 95% CI define the 95% credible interval, showing the range within which the true parameter is expected to fall with 95% probability. The Rhat statistic assesses model convergence (values close to 1 indicate proper convergence). Bulk_ESS and Tail_ESS denote the effective sample sizes for bulk estimation and tail uncertainty, respectively, reflecting the reliability of the posterior estimates."
 #| echo: false
@@ -5742,6 +5864,7 @@ flextable_table
 
 ```{r GAM output table and caption}
 #| label: tbl-GAM
+#| eval: true
 #| tbl-cap: "Outputs of the Generalized Additive Model (GAM) assessing the relationship between emersion time per day (hours) and the relative change in SHSI (@fig-GAM_Emersion). The Intercept represents the expected SHSI value at the reference level of emersion time. The Estimate indicates the mean effect, with its Standard Error quantifying variability. The t-value and p-value assess statistical significance. The smooth term captures the nonlinear effect of emersion time, where the effective degrees of freedom (edf) reflect the function's complexity. The F-value and p-value evaluate the significance of this effect. Model fit is described by the adjusted R², deviance explained, and Generalized Cross-Validation (GCV) score, while N represents the sample size."
 #| echo: false
 #| error: false
@@ -5753,6 +5876,5 @@ library(flextable)
 ft_gam
 
 ```
-
 
 # References
