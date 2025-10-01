@@ -593,36 +593,33 @@ $$ {#eq-gli}
 
 where $R(550)$ and $R(450)$ are the reflectance in the green (at 550 nm) and in the blue (at 450 nm) spectral bands, respectively.
 
-Based on the observed spectral changes in seagrasses exposed to HWs, we developed a new radiometric index to better detect the radiometric change caused by the HW. The browning of the leaves was characterized by substantial radiometric changes in both the green and red-edge spectral regions. The Seagrass Heat Shock Index (SHSI) was introduced as the reflectance line height at 740 nm, compared to the 560 - 842 nm baseline (@fig-SHSI). Namely the SHSI subtracts the reflectance observed at 740 nm to the linearly interpolated reflectance between 560 and 842 nm, so that the index is positive in the case of brown, HW-impacted seagrass leaves, and negative in the case of green, non-impacted leaves:
+To quantify heatwave-induced changes in seagrass reflectance, we developed the Seagrass Heat Shock Index (SHSI). This metric captures deviations in reflectance at 740 nm, located in the red-edge region where the difference between impacted and non-impacted seagrass is most pronounced (@fig-Exp_Spectra). The reflectance at 560 and at 740 nm are compared to a linear baseline drawn between two anchor wavelengths: 490 nm in the blue region and 865 nm in the near-infrared. The blue anchor (490 nm) was chosen because impacted and non-impacted seagrass exhibit very similar reflectance in this region, providing a stable baseline reference. The near-infrared anchor (865 nm) was selected because the two spectra converge at longer wavelengths, making it the most suitable endpoint available in multispectral sensors such as Sentinel-2. This configuration allows the SHSI to capture not only the loss of reflectance in the red-edge region but also changes in the green spectral region, thereby enhancing its sensitivity to stress-induced spectral alterations.
 
-$$
+$$ 
 \begin{aligned}
-\mathrm{SHSI} &= \Delta(560) + \Delta(740) \\[6pt]
-\Delta(\lambda) &= I(\lambda) - R(\lambda) , \\[8pt]
+\mathrm{SHSI} &= \sum_{\lambda \in \{560,\,740\}} \Delta(\lambda) \\[6pt]
+\Delta(\lambda) &= I(\lambda) - R(\lambda), \\[8pt]
 I(\lambda) &= R(\lambda_1) +
 \frac{\lambda - \lambda_1}{\lambda_2 - \lambda_1}
 \big[ R(\lambda_2) - R(\lambda_1) \big]
 \end{aligned}
-$$
-
-where $\lambda_1$ = 490 and $\lambda_2$ = 865
-
-or:
 $$ {#eq-SDI}
-\begin{aligned}
-\mathrm{SHSI} &= \Delta_{\mathrm{green}} + \Delta_{\mathrm{RE}} \\[6pt]
-\Delta_{\mathrm{green}} &= I_{\mathrm{SHSIg}} - R(560) \\[6pt]
-\Delta_{\mathrm{RE}} &= I_{\mathrm{SHSI_{RE}}} - R(740) \\[6pt]
-I_{\mathrm{SHSIg}} &= R(490) + \tau_g \left[ R(865) - R(490) \right] \\[6pt]
-I_{\mathrm{SHSI_{RE}}} &= R(490) + \tau_{\mathrm{RE}} \left[ R(865) - R(490) \right] \\[6pt]
-\tau_g &= \frac{560 - 490}{865 - 490}, \qquad
-\tau_{\mathrm{RE}} = \frac{740 - 490}{865 - 490}
-\end{aligned}
-$$
 
+where $\lambda_1$ = 490 and $\lambda_2$ = 865. A positive SHSI indicates stressed (browned) seagrass, while a negative value characterizes healthy green seagrass. These wavelengths were selected to align with the spectral resolution of satellites missions such as Sentinel-2, for broader remote sensing application.
 
+<!-- or: -->
+<!-- $$ {#eq-SDI} -->
+<!-- \begin{aligned} -->
+<!-- \mathrm{SHSI} &= \Delta_{\mathrm{green}} + \Delta_{\mathrm{RE}} \\[6pt] -->
+<!-- \Delta_{\mathrm{green}} &= I_{\mathrm{SHSIg}} - R(560) \\[6pt] -->
+<!-- \Delta_{\mathrm{RE}} &= I_{\mathrm{SHSI_{RE}}} - R(740) \\[6pt] -->
+<!-- I_{\mathrm{SHSIg}} &= R(490) + \tau_g \left[ R(865) - R(490) \right] \\[6pt] -->
+<!-- I_{\mathrm{SHSI_{RE}}} &= R(490) + \tau_{\mathrm{RE}} \left[ R(865) - R(490) \right] \\[6pt] -->
+<!-- \tau_g &= \frac{560 - 490}{865 - 490}, \qquad -->
+<!-- \tau_{\mathrm{RE}} = \frac{740 - 490}{865 - 490} -->
+<!-- \end{aligned} -->
+<!-- $$ -->
 
-These wavelengths were selected to align with the spectral resolution of satellites missions such as Sentinel-2, for broader remote sensing application.
 
 ```{r SHSI Building Figure}
 #| cache: true
