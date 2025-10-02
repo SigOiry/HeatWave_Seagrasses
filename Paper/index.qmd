@@ -706,82 +706,82 @@ plot_SHSI <- df_cleaned %>%
 ggplot() +
   geom_line(aes(x = Wavelength, y = mean_ref, color = scenario, group = scenario), 
             linewidth = 1.5) +
-  geom_segment(data = df_segment, 
-               aes(x = xmin, y = ymin, xend = xmax, yend = ymax, group = scenario), 
-               linewidth = 1,
-               linetype = "dashed") +
-  geom_segment(data = df_segment_SHSI, 
-               aes(x = xmin, y = ymin, xend = xmax, yend = ymax, group = scenario), 
-               linewidth = 2,
-               color = "red") +
-  # Add the text labels along the segments
-  geom_text(data = df_segment_labels,
-            aes(x = xmid, y = ymid, label = Label, angle = angle, group = scenario),
-            color = "black",
-            vjust = -0.5, # adjust vertical positioning as desired
-            size = 7, # adjust text size as desired
-            show.legend = FALSE) +
+  # geom_segment(data = df_segment,
+  #              aes(x = xmin, y = ymin, xend = xmax, yend = ymax, group = scenario), 
+  #              linewidth = 1,
+  #              linetype = "dashed") +
+  # geom_segment(data = df_segment_SHSI, 
+  #              aes(x = xmin, y = ymin, xend = xmax, yend = ymax, group = scenario), 
+  #              linewidth = 2,
+  #              color = "red") +
+  # # Add the text labels along the segments
+  # geom_text(data = df_segment_labels,
+  #           aes(x = xmid, y = ymid, label = Label, angle = angle, group = scenario),
+  #           color = "black",
+  #           vjust = -0.5, # adjust vertical positioning as desired
+  #           size = 7, # adjust text size as desired
+  #           show.legend = FALSE) +
   facet_wrap(~scenario, scales = "free", ncol = 1) +
-  ggforce::geom_mark_ellipse(
-    data = Label_ref,
-    aes(x = x, y = y, y0 = y0,label = label, group = interaction(scenario,x)),
-    size = 0.3,
-    fill = "goldenrod",
-    con.colour = "goldenrod4",
-    show.legend = F,
-    label.fontsize = 20,
-    label.hjust = 0.5,
-    con.size = 1,
-    alpha = 0.8,
-    expand = unit(0.5, "mm"),
-    radius = unit(1.5, "mm"),
-    label.fill = NA,
-    label.buffer = unit(5, "mm")
-  ) +
-  ggforce::geom_mark_ellipse(
-    data = df_label_I_SHSI,
-    aes(x = x, y = y, y0 = y0,label = Label, group = interaction(scenario,x)),
-    size = 0.3,
-    fill = "goldenrod",
-    con.colour = "goldenrod4",
-    show.legend = F,
-    label.fontsize = 20,
-    label.hjust = 0.5,
-    con.size = 1,
-    alpha = 0.8,
-    expand = unit(0.5, "mm"),
-    radius = unit(1.5, "mm"),
-    label.fill = NA,
-    label.buffer = unit(5, "mm")
-  ) +
-  ggforce::geom_mark_ellipse(
-    data = df_label_SHSI,
-    aes(x = x, y = y, y0 = y0, x0 = x0,label = Label, group = scenario),
-    size = 0,
-    fill = "darkred",
-    con.colour = "red",
-    show.legend = F,
-    label.fontsize = 25,
-    label.hjust = 0.5,
-    con.size = 1,
-    alpha = 0.8,
-    expand = unit(0, "mm"),
-    radius = unit(0, "mm"),
-    label.fill = NA,
-    label.buffer = unit(5, "mm")
-  )+
-  # Add the panel labels
-  geom_text(data = panel_labels,
-            aes(x = x, y = y, label = label),
-            hjust = 0,    # Left align the text
-            vjust = 1,    # Top align the text
-            size = 10) +
+  # ggforce::geom_mark_ellipse(
+  #   data = Label_ref,
+  #   aes(x = x, y = y, y0 = y0,label = label, group = interaction(scenario,x)),
+  #   size = 0.3,
+  #   fill = "goldenrod",
+  #   con.colour = "goldenrod4",
+  #   show.legend = F,
+  #   label.fontsize = 20,
+  #   label.hjust = 0.5,
+  #   con.size = 1,
+  #   alpha = 0.8,
+  #   expand = unit(0.5, "mm"),
+  #   radius = unit(1.5, "mm"),
+  #   label.fill = NA,
+  #   label.buffer = unit(5, "mm")
+  # ) +
+  # ggforce::geom_mark_ellipse(
+  #   data = df_label_I_SHSI,
+  #   aes(x = x, y = y, y0 = y0,label = Label, group = interaction(scenario,x)),
+  #   size = 0.3,
+  #   fill = "goldenrod",
+  #   con.colour = "goldenrod4",
+  #   show.legend = F,
+  #   label.fontsize = 20,
+  #   label.hjust = 0.5,
+  #   con.size = 1,
+  #   alpha = 0.8,
+  #   expand = unit(0.5, "mm"),
+  #   radius = unit(1.5, "mm"),
+  #   label.fill = NA,
+  #   label.buffer = unit(5, "mm")
+  # ) +
+  # ggforce::geom_mark_ellipse(
+  #   data = df_label_SHSI,
+  #   aes(x = x, y = y, y0 = y0, x0 = x0,label = Label, group = scenario),
+  #   size = 0,
+  #   fill = "darkred",
+  #   con.colour = "red",
+  #   show.legend = F,
+  #   label.fontsize = 25,
+  #   label.hjust = 0.5,
+  #   con.size = 1,
+  #   alpha = 0.8,
+  #   expand = unit(0, "mm"),
+  #   radius = unit(0, "mm"),
+  #   label.fill = NA,
+  #   label.buffer = unit(5, "mm")
+  # )+
+  # # Add the panel labels
+  # geom_text(data = panel_labels,
+  #           aes(x = x, y = y, label = label),
+  #           hjust = 0,    # Left align the text
+  #           vjust = 1,    # Top align the text
+  #           size = 10) +
   scale_color_manual(values = col_scale) +
   ylab("Reflectance")+
-  ylim(c(0,0.8)) +
+  ylim(c(0,1)) +
   theme_Bede()+
-  scale_x_continuous(breaks = c(560,600,640,680,720,760,800,840),
-                     limits = c(550,850))+
+  scale_x_continuous(breaks = c(400,440,480,520,560,600,640,680,720,760,800,840, 880),
+                     limits = c(400,900), expand = F)+
   theme(
     # plot.background = element_rect(fill = "white",color = NA),
         strip.text = element_blank(),
@@ -795,7 +795,7 @@ ggplot() +
         legend.text = element_text(size = 15),
         legend.key.width = unit(2,"cm"))
 
-# ggsave("Paper/Figs/High_res/Plot_explain_SHSI.png", plot_SHSI,height = 10, width = 10, dpi = 400)
+ggsave("Paper/Figs/High_res/Plot_explain_SHSI.svg", plot_SHSI,height = 10, width = 10,)
 # ggsave("Paper/Figs/Low_res/Plot_explain_SHSI.png", plot_SHSI,height = 10, width = 10, dpi = 200)
 
 ggsave("Slides/Images/Plot_explain_SHSI.png", plot_SHSI,height = 10, width = 9, dpi = 400)

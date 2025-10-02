@@ -1,0 +1,115 @@
+---
+title: "Trying to use S2 from Aveiro 2025 to validation SHSI"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r library}
+#| echo: false
+#| warning: false
+library(tidyverse)
+library(terra)
+library(MapRs)
+```
+
+
+```{r SHSI aveiro}
+#| echo: false
+#| eval: true
+#| warning: false
+
+
+library(leafsync)
+library(terra)
+library(tidyverse)
+library(sf)
+library(leaflet)
+
+mask <- read_sf("../../../../../Data/shp/mask_land_intertidal_Aveiro.shp") %>% 
+  dplyr::filter(Type == "Intertidal")
+  
+
+img <- MapRs::Read_S2("../../../../../Data/Sentinel2/S2C_MSIL2A_20250715T113341_N0511_R080_T29TNF_20250715T165315.SAFE") %>% 
+  crop(mask, mask = T) / 10000
+
+
+
+SHSI <- MapRs::S2_SHSI(img,STD = F)
+SHSI_STD <- MapRs::S2_SHSI(img)
+```
+
+```{r map}
+#| fig-cap: Map of satellite derived SHSI in the study sites of Ria de Aveiro Lagoon
+#| echo: false
+#| error: false
+#| message: false
+#| warning: false
+#| out-width: "100%"
+
+
+
+
+pal_SHSI <- colorNumeric(
+  palette  = colorRampPalette(c("#228B22",   # −0.1 → green
+                                "white",    #  0   → white
+                                "#8B4513")) #  0.1 → brown
+              (255),           # 255‑step gradient
+  domain   = c(-0.1, 0.1),
+  na.color = "transparent"
+)
+
+# values(SHSI)[values(NDVI_mask) <0] <- NA
+values(SHSI_STD)[values(SHSI_STD) < -0.1] <- -0.099
+values(SHSI_STD)[values(SHSI_STD) > 0.1] <- 0.099
+
+# build the leaflet map
+leaflet() %>% 
+  addProviderTiles(providers$Esri.WorldImagery) %>%
+  # add the raster, assign a layerId so leafem knows which layer to query
+  addRasterImage(
+    x       = SHSI_STD, 
+    # project = TRUE,
+    colors  = pal_SHSI ,
+    opacity = 1, 
+    layerId = "SHSI",
+    group = "SHSI"
+  ) %>% 
+  # add a continuous legend
+  addLegend(
+    pal    = pal_SHSI, 
+    values = c(-0.1,0.1),
+    title  = "SHSI value",
+    position = "bottomright",
+    ) %>% 
+  # wire up click‐popup: show value with 2 decimals
+  leafem::addImageQuery(
+    # map    = .,
+    x = SHSI_STD,
+    project = TRUE,
+    layerId= "SHSI",
+    type   = "mousemove",
+    digits = 2,
+    prefix = "",
+    position = "bottomright",
+
+  ) %>% 
+  
+  leafem::addMouseCoordinates(css = list(
+    "font-size" = "20px",
+    "text-align" = "center",
+    "background-color" = "white",
+    "color" = "rgb(0, 0, 0)"
+  )) %>%
+  
+  # (6) Measurement tool (click to start drawing; click again to add points; double‐click to finish)
+  addMeasure(
+    position           = "topright",     # control’s corner on the map
+    primaryLengthUnit  = "meters",       # or "kilometers", "miles", etc.
+    primaryAreaUnit    = "sqmeters",     # or "hectares", "acres", etc.
+    activeColor        = "#3D535D",      # line color while drawing
+    completedColor     = "#7D4479",      # line color after finishing
+    captureZ           = FALSE           # if your CRS has elevation you can include Z
+  ) %>% 
+      addLayersControl(overlayGroups = "SHSI")
+```
+
