@@ -6095,7 +6095,7 @@ ggsave("Paper/Figs/High_res/Aveiro_StudyArea_WithInsets.svg", final_plot_all, wi
 #| label: fig-Map_Aveiro
 #| out-width: "95%"
 
-knitr::include_graphics("Figs/high_res/Aveiro_StudyArea_WithInsets.png")
+knitr::include_graphics("Figs/High_res/Aveiro_StudyArea_WithInsets.png")
 ```
 
 To complement the in situ observations, a Level-2 Sentinel-2 MSI image acquired on July 15, 2025 was downloaded from the Copernicus Open Access Hub [@copernicus_sentinel2], provided by the European Space Agency (ESA). Level-2 products correspond to atmospherically corrected surface reflectance (Sen2Cor processor; @sen2cor) and are delivered as orthorectified data at 10–20 m spatial resolution.
@@ -6355,7 +6355,7 @@ ggsave("paper/Figs/High_res/plot_SHSI_Aveiro.svg",plot_4,width = 10, height = 10
 #| label: fig-Map_Aveiro_SHSI
 #| out-width: "95%"
 
-knitr::include_graphics("Figs/high_res/plot_SHSI_Aveiro-01.png")
+knitr::include_graphics("Figs/High_res/plot_SHSI_Aveiro-01.png")
 ```
 
 Pixels of SHSI were then categorized as:
