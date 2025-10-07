@@ -15,7 +15,7 @@ library(MapRs)
 
 ```{r SHSI aveiro}
 #| echo: false
-#| eval: true
+#| eval: false
 #| warning: false
 
 
@@ -44,10 +44,21 @@ SHSI_STD <- MapRs::S2_SHSI(img)
 #| error: false
 #| message: false
 #| warning: false
+#| eval: false
 #| out-width: "100%"
 
+df_cat <- read.csv("Data/Aveiro/Quadrat_metadata_Laurent.csv") %>% 
+  dplyr::select(Target_types, filename) %>% 
+  mutate(filename = gsub(".JPG","",filename))
 
+df_GPS <- readxl::read_xlsx("Data/Aveiro/Aveiro_grid_info.xlsx") %>% 
+  left_join(df_cat, by = c("picture" = "filename"))%>% 
+  st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
 
+pal_pts <- colorFactor(
+  palette = "Set1",          
+  domain  = df_GPS$Target_types
+)
 
 pal_SHSI <- colorNumeric(
   palette  = colorRampPalette(c("#228B22",   # −0.1 → green
@@ -73,6 +84,19 @@ leaflet() %>%
     opacity = 1, 
     layerId = "SHSI",
     group = "SHSI"
+  ) %>%                                  
+  addCircleMarkers(
+    data        = df_GPS,            
+    radius      = 6,
+    stroke      = FALSE,
+    fillColor   = ~pal_pts(Target_types),               
+    fillOpacity = 0.9,
+    label       = ~name,                     
+    labelOptions = labelOptions(
+      direction = "auto",
+      textsize  = "12px",
+      style     = list("font-weight" = "normal")
+    )
   ) %>% 
   # add a continuous legend
   addLegend(
@@ -112,4 +136,307 @@ leaflet() %>%
   ) %>% 
       addLayersControl(overlayGroups = "SHSI")
 ```
+
+```{r process images Jim}
+#| echo: false
+#| eval: false
+#| warning: false
+
+
+library(tidyverse)
+library(exiftoolr)
+library(shiny)
+library(bslib)
+
+image_list <- list.files("Data/Aveiro", pattern = ".JPG", recursive = T, full.names = T) %>% 
+  as_tibble() %>% 
+  dplyr::rename(path = "value") %>% 
+  dplyr::mutate(filename = gsub(".*/","",path),
+                lat = NA,
+                lon=NA,
+                Target_types=NA)
+
+
+#   for (i in 1:nrow(image_list)) {
+#     a <- exiftoolr::exif_read(image_list$path[i])
+#     
+#     lat_a <- a$GPSLatitude
+#     lon_B <- a$GPSLongitude
+#     
+#     image_list$lat[i] <- lat_a
+#     image_list$lon[i] <- lon_B
+#   } 
+#  if (!"Target_types" %in% names(image_list)) {
+#   image_list$Target_types <- NA_character_
+# }
+update_global <- function(df) {
+  # write back to the global image_list (for local R sessions)
+  assign("image_list", df, envir = .GlobalEnv)
+}
+# ---- UI ----
+ui <- page_fluid(
+  theme = bs_theme(bootswatch = "flatly"),
+  tags$head(
+    tags$style(HTML("
+      /* --- No scrolling anywhere --- */
+      html, body {
+        height: 100vh !important;
+        width: 100vw !important;
+        overflow: hidden !important;
+        margin: 0; padding: 0;
+      }
+      .app-root {
+        height: 100vh; width: 100vw;
+        display: flex; flex-direction: column;
+      }
+      .topbar {
+        display:flex; align-items:center; justify-content:space-between;
+        gap: 1rem; padding: 8px 16px;
+      }
+      .progress-wrap { flex: 1; margin: 0 1rem; }
+      .main-wrap {
+        flex: 1;
+        display: grid;
+        grid-template-columns: 320px 1fr;  /* fixed sidebar + main */
+        grid-template-rows: 1fr;
+        gap: 0; padding: 0 16px 16px 16px;
+        overflow: hidden; /* still no scroll inside */
+      }
+      .sidebar {
+        padding: 12px 8px 12px 0;
+        border-right: 1px solid #e9ecef;
+        overflow: hidden; /* no scroll as requested */
+      }
+      .side-section-title { margin-bottom: 8px; }
+      .category-grid {
+        display: grid;
+        grid-template-columns: 1fr; /* one per line (clear, big targets) */
+        gap: 8px;
+        margin-top: 12px;
+      }
+      .cat-btn.btn {
+        padding: 10px 14px;
+        border-radius: 9999px;
+        font-weight: 600;
+        width: 100%;
+      }
+      .main-panel {
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+        overflow: hidden; /* no scroll */
+      }
+      .image-frame {
+        width: 1000px; height: 1000px; /* hard size */
+        border-radius: 12px;
+        background: #fff;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        display: flex; align-items: center; justify-content: center;
+      }
+      .image-frame img {
+        width: 1000px !important; height: 1000px !important;
+        object-fit: cover; /* fill the square; use 'contain' if you prefer full image with bars */
+        border-radius: 12px;
+      }
+      .footer-controls {
+        position: absolute; bottom: 16px; right: 24px;
+        display:flex; gap:10px;
+      }
+    "))
+  ),
+
+  div(class = "app-root",
+    # Top bar
+    div(class = "topbar",
+      h3("Image Annotation", style = "margin:0;"),
+      div(class = "progress-wrap", uiOutput("progress_ui")),
+      span(uiOutput("counter_ui"))
+    ),
+
+    # Main area (sidebar + main)
+    div(class = "main-wrap",
+      # LEFT: categories & add
+      div(class = "sidebar",
+        h4(class = "side-section-title", "Categories"),
+        textInput("new_category", NULL, placeholder = "Add new category"),
+        actionButton("add_category_btn", "Add", class = "btn btn-primary mb-2"),
+        div(class="text-muted small mt-2",
+            "Tip: Use keys 1–9 to select the first nine categories."),
+        uiOutput("category_buttons")  # <— buttons now live here
+      ),
+      # RIGHT: fixed 1000x1000 image
+      div(class = "main-panel",
+        div(class = "image-frame",
+          imageOutput("image_display", width = "1000px", height = "1000px")
+        ),
+        div(class="footer-controls",
+          actionButton("back_btn", "Back", class="btn btn-outline-secondary"),
+          actionButton("skip_btn", "Skip", class="btn btn-outline-secondary")
+        )
+      )
+    )
+  ),
+
+  # Keyboard shortcuts
+  tags$script(HTML("
+    document.addEventListener('keydown', function(e) {
+      if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+      const k = e.key;
+      if (k >= '1' && k <= '9') {
+        const idx = parseInt(k, 10);
+        const btn = document.getElementById('cat_' + idx);
+        if (btn) { btn.click(); }
+      }
+      if (k === 'ArrowRight') {
+        const skip = document.getElementById('skip_btn');
+        if (skip) skip.click();
+      }
+      if (k === 'ArrowLeft') {
+        const back = document.getElementById('back_btn');
+        if (back) back.click();
+      }
+    });
+  "))
+)
+
+# ---- SERVER ----
+server <- function(input, output, session) {
+
+  # --- Local, reactive copy of your table (no globals, no <<-) ---
+  ds <- reactiveVal({
+    df <- image_list
+    # ensure a full-length, character Target_types column
+    if (!"Target_types" %in% names(df) || length(df$Target_types) != nrow(df)) {
+      df$Target_types <- rep(NA_character_, nrow(df))
+    } else {
+      df$Target_types <- as.character(df$Target_types)
+    }
+    df
+  })
+
+  # Current row
+  current_index <- reactiveVal(1)
+
+  # Categories state
+  rv <- reactiveValues(categories = character(), cat_observers = list())
+
+  # Initialize categories from existing labels (if any)
+  observe({
+    ex <- unique(na.omit(ds()$Target_types))
+    if (length(ex) && length(rv$categories) == 0) rv$categories <- ex
+  })
+
+  # --- Image (reads from ds()) ---
+  output$image_display <- renderImage({
+    d <- ds(); idx <- current_index()
+    if (is.na(idx) || idx < 1 || idx > nrow(d)) {
+      return(list(
+        src = "https://via.placeholder.com/1000x1000?text=No+Image",
+        contentType = "image/png", width = 1000, height = 1000, alt = "No Image"
+      ))
+    }
+    path <- d$path[idx]
+    if (file.exists(path)) {
+      list(
+        src = path,
+        contentType = if (grepl("\\.png$", path, TRUE)) "image/png" else "image/jpeg",
+        width = 1000, height = 1000, alt = sprintf("Image %d", idx)
+      )
+    } else {
+      list(
+        src = "https://via.placeholder.com/1000x1000?text=Image+Not+Found",
+        contentType = "image/png", width = 1000, height = 1000, alt = "Image Not Found"
+      )
+    }
+  }, deleteFile = FALSE)
+
+  # --- Progress / counter (reads from ds()) ---
+  output$progress_ui <- renderUI({
+    d <- ds()
+    done  <- sum(!is.na(d$Target_types))
+    total <- nrow(d)
+    pct <- round(100 * done / max(1, total))
+    div(class="progress", style="height:10px;margin:0;",
+      div(class="progress-bar", role="progressbar",
+          style=paste0("width:", pct, "%"),
+          `aria-valuenow`=pct, `aria-valuemin`="0", `aria-valuemax`="100")
+    )
+  })
+  output$counter_ui <- renderUI({
+    d <- ds(); idx <- current_index()
+    HTML(sprintf("<b>%d / %d</b> annotated · Now viewing <b>%d</b>",
+                 sum(!is.na(d$Target_types)), nrow(d), idx))
+  })
+
+  # --- Nav helpers ---
+  go_next <- function() {
+    if (current_index() < nrow(ds())) {
+      current_index(current_index() + 1)
+    } else {
+      showModal(modalDialog(title = "All done!", "You have reached the end of the images.", easyClose = TRUE))
+    }
+  }
+  observeEvent(input$back_btn, { if (current_index() > 1) current_index(current_index() - 1) })
+  observeEvent(input$skip_btn, { go_next() })
+
+  # --- Add category ---
+  observeEvent(input$add_category_btn, {
+    new_cat <- trimws(input$new_category)
+    if (nzchar(new_cat)) {
+      rv$categories <- unique(c(rv$categories, new_cat))
+      updateTextInput(session, "new_category", value = "")
+    }
+  })
+
+  # --- Category buttons in sidebar ---
+  output$category_buttons <- renderUI({
+    cats <- rv$categories
+    if (!length(cats)) return(div(class="text-muted", "No categories yet. Add one above."))
+    lapply(seq_along(cats), function(i) {
+      actionButton(inputId = paste0("cat_", i),
+                   label = tags$span(cats[i]),
+                   class = "btn btn-primary cat-btn")
+    })
+  })
+
+  # clear old observers
+  destroy_observers <- function() {
+    if (length(rv$cat_observers)) {
+      lapply(rv$cat_observers, function(obs) try(obs$destroy(), silent = TRUE))
+      rv$cat_observers <- list()
+    }
+  }
+
+  # --- On category click: write ONE row in ds(), then next ---
+  observeEvent(rv$categories, {
+    destroy_observers()
+    cats <- rv$categories
+    if (!length(cats)) return()
+    for (i in seq_along(cats)) {
+      local({
+        ii <- i; cat_name <- cats[ii]
+        obs <- observeEvent(input[[paste0("cat_", ii)]], ignoreInit = TRUE, {
+          df <- ds()
+          idx <- current_index()
+          if (!is.na(idx) && idx >= 1 && idx <= nrow(df)) {
+            df$Target_types[idx] <- as.character(cat_name)
+            ds(df)                # update reactive copy (drives UI)
+            update_global(df)     # <- keep your global in sync
+          }
+          go_next()
+        })
+        rv$cat_observers[[paste0("obs_", ii)]] <- obs
+      })
+    }
+  }, ignoreInit = FALSE)
+}
+
+shinyApp(ui, server)
+
+
+ 
+write.csv(image_list, "Data/Aveiro/Quadrat_metadata_Laurent.csv", row.names = F)
+```
+
+
+
 
