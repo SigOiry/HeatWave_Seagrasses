@@ -237,7 +237,7 @@ knitr::include_graphics("Figs/High_res/Experimental_design.png")
 
 ### Experimental design
 
-A tidal cycle (i.e. regularly alternating 6h of low-tide and 6h of high-tide) was simulated in the laboratory using an intertidal chamber system from ElectricBlue® (@fig-design B ; @electricblue_intertidal_chamber). The experimental setup allowed only two tidal states: high tide or low tide, with no intermediate stages. The transition between these states took about 15 minutes to complete after initiation. During the phase of high tide, a volume of 30 L of filtered seawater was pumped and circulated through the chamber (@fig-design B, C). During low tide, the seagrass sample was emerged. The acclimated seagrasses were split into two subsets and placed in two independent chambers used in parallel, with one chamber used for control and the other for the experimental treatment. The intertidal chambers were equipped with LED lights that emitted a low mount of red and infrared radiation. To achieve a Photosynthetically Active Radiation (PAR) intensity of up to 400 μmol·m⁻²·s⁻¹, a filament bulb was added inside the chambers. During the diurnal phase of the experiment, the PAR was kept constant in both intertidal chambers. To follow the circadian cycle, these lights (both LED and filament bulb) were turned on and off each day, at the time of sunrise and sunset, respectively.
+A tidal cycle (i.e. regularly alternating 6h of low-tide and 6h of high-tide) was simulated in the laboratory using an intertidal chamber system from ElectricBlue® (@fig-design B ; @electricblue_intertidal_chamber). The experimental setup allowed only two tidal states: high tide or low tide, with no intermediate stages. The transition between these states took about 15 minutes to complete after initiation. During the phase of high tide, a volume of 30 L of filtered seawater was pumped and circulated through the chamber (@fig-design B, C). During low tide, the seagrass sample was emerged. The acclimated seagrasses were split into two subsets and placed in two independent chambers used in parallel, with one chamber used for control and the other for the experimental treatment. The intertidal chambers were equipped with LED lights that emitted a low mount of red and infrared radiation. To achieve a Photosynthetically Active Radiation (PAR) intensity of up to 150 μmol·m⁻²·s⁻¹, a filament bulb was added inside the chambers. During the diurnal phase of the experiment, the PAR was kept constant in both intertidal chambers. To follow the circadian cycle, these lights (both LED and filament bulb) were turned on and off each day, at the time of sunrise and sunset, respectively.
 
 Air temperature and water temperature were controlled inside the experiment chambers in order to reproduce the range of variability observed in the field (@fig-Profile). Field temperature was measured using *in situ* sensors (T7.3 EnvLoggers from ElectricBlue®) deployed at the sampling site in August 2024. The loggers were positioned along a transect from the upper to the lower intertidal zone, attached to pre-existing wooden poles at the sediment surface. In complement, the daily temperature maxima recorded *in situ* were compared with measurements from the nearest Météo France weather station (Annexe A1, @sec-AnnexeA). The control chamber was kept at temperatures representing typical summer conditions, with water temperatures at 18°C and air temperatures from 19°C to 23°C, following natural daily temperature fluctuations (@fig-Profile A). In the treatment chamber, the air temperature was adjusted to mimic an AHW that affected the seagrass meadow in Quiberon, South Brittany, France (47°35'40.0"N, 3°07'30.0"W), from September 2 to September 6, 2021. Air temperature in the experimental chamber was set to vary from 23°C (at night) to 35°C (daytime) during the first day of the experiment, and increase by 1°C daily during three consecutive days. Water temperature in the experimental chamber was also adjusted to mimic MHW conditions, starting at the seasonal baseline (18°C) and rising incrementally by 0.5°C daily to simulate the increasing temperatures during the event. This aimed to reproduce the thermal stress experienced by the seagrass meadow during a MHW (@fig-Profile B). The experiment, with both treatment and control chambers, was repeated three times to obtain replicates (hereafter referred to as "Run").
 
@@ -567,11 +567,11 @@ knitr::include_graphics("Figs/High_res/Chamber_Profils.png")
 
 #### Hyperspectral reflectance measurements
 
-Throughout the experiment, the hyperspectral reflectance, $R(\lambda)$, of both the control and treatment seagrasses was measured using an ASD HandHeld 2 equipped with a fiber optic extension placed inside the chamber. The measurement set up made it possible to automatically acquire $R(\lambda)$ without opening the chamber. An average of five $R(\lambda)$ spectra, each with an integration time of 544 ms, was taken every minute during daytime [@malvern_panalytical_rs3]. Every 10 minutes, the fiber optic was switched from one intertidal chamber to the other, in order to measure $R(\lambda)$ in both the treatment and control. Inside the intertidal chambers, illumination was provided by LED panels delivering a photosynthetically active radiation of 150 µmol m⁻² s⁻¹ at canopy height. The reflectance calibration was performed each morning at the very first moment of low tide using a Spectralon white reference with 99% Lambertian reflectivity.
+Throughout the experiment, the hyperspectral reflectance, $R(\lambda)$, of both the control and treatment seagrasses was measured using an ASD HandHeld 2 equipped with a fiber optic extension placed inside the chamber. The measurement set up made it possible to automatically acquire $R(\lambda)$ without opening the chamber. An average of five $R(\lambda)$ spectra, each with an integration time of 544 ms, was taken every minute during daytime [@malvern_panalytical_rs3]. Every 10 minutes, the fiber optic was switched from one intertidal chamber to the other, in order to measure $R(\lambda)$ in both the treatment and control. The reflectance calibration was performed each morning at the very first moment of low tide using a Spectralon white reference with 99% Lambertian reflectivity.
 
 #### Spectrum post-processing
 
-A Savitzky-Golay smoothing function with a 5 nm moving window was applied to each spectrum using the “hsdar” package in R [@hsdar]. The second derivative at 665 nm (δδ665), showing the highest variability between the control and the treatment, was tested as an indicator of the spectral changes following HWs.
+A Savitzky–Golay smoothing filter with a 5 nm moving window was applied to each spectrum using the *hsdar* package in R [@hsdar], in order to reduce instrumental noise while preserving key pigment absorption features The second derivative at 665 nm (δδ665), showing the highest variability between the control and the treatment, was tested as an indicator of the spectral changes following HWs.
 
 The effect the HW on $R(\lambda)$ was also quantified using two radiometric indices:
 
@@ -591,35 +591,28 @@ $$ {#eq-gli}
 
 where $R(550)$ and $R(450)$ are the reflectance in the green (at 550 nm) and in the blue (at 450 nm) spectral bands, respectively.
 
-To quantify heatwave-induced changes in seagrass reflectance, we developed the Seagrass Heat Shock Index (SHSI). This metric captures deviations in reflectance at 740 nm, located in the red-edge region where the difference between impacted and non-impacted seagrass is most pronounced (@fig-Exp_Spectra). The reflectance at 560 and at 740 nm are compared to a linear baseline drawn between two anchor wavelengths: 490 nm in the blue region and 865 nm in the near-infrared. The blue anchor (490 nm) was chosen because impacted and non-impacted seagrass exhibit very similar reflectance in this region, providing a stable baseline reference. The near-infrared anchor (865 nm) was selected because the two spectra converge at longer wavelengths, making it the most suitable endpoint available in multispectral sensors such as Sentinel-2. This configuration allows the SHSI to capture not only the loss of reflectance in the red-edge region but also changes in the green spectral region, thereby enhancing its sensitivity to stress-induced spectral alterations.
+To quantify heatwave-induced alterations in seagrass reflectance, we developed the Seagrass Heat Shock Index (SHSI). This metric captures deviations in reflectance around 560 and 740 nm—corresponding to the green-yellow and red-edge spectral regions—where the differences between heat-stressed and non-stressed seagrasses are most pronounced (@fig-Exp_Spectra). 
+
+Because the SHSI is designed to detect changes in spectral shape rather than absolute reflectance values, the reflectance spectrum of each individual sample must first be standardized using a min–max transformation ([@eq-std] ; @Cao2017)
+
+$$
+R_{i}^{*}(\lambda) = \frac{R_{i}(\lambda) - min(R_{i})}{max(R_{i})- min(R_{i})}
+$$ {#eq-std}
+
+The standardized reflectance values $R^*$ at 560 nm and 740 nm are then compared to a linear baseline defined between two anchor wavelengths: 490 nm (blue region) and 865 nm (near-infrared). The blue anchor (490 nm) was selected because impacted and non-impacted seagrasses exhibit nearly identical standardized reflectance in this region, providing a stable reference point. The near-infrared anchor (865 nm) was chosen as the endpoint because both spectra converge at longer wavelengths, making it an optimal reference for multispectral sensors such as Sentinel-2.
 
 $$ 
 \begin{aligned}
-\mathrm{SHSI} &= \sum_{\lambda \in \{560,\,740\}} \Delta(\lambda) \\[6pt]
-\Delta(\lambda) &= I(\lambda) - R(\lambda), \\[8pt]
-I(\lambda) &= R(\lambda_1) +
-\frac{\lambda - \lambda_1}{\lambda_2 - \lambda_1}
-\big[ R(\lambda_2) - R(\lambda_1) \big]
+\mathrm{SHSI} &= LH(\lambda_{green}) + LH(\lambda_{RE}) \\[6pt]
+\mathrm{LH(\lambda_i)} &= R^*(\lambda_1) +
+\frac{\lambda_i - \lambda_1}{\lambda_2 - \lambda_1}
+\big[ R^*(\lambda_2) - R^*(\lambda_1) \big] - R^*(\lambda_i) \\[8pt]
 \end{aligned}
 $$ {#eq-SDI}
 
-where $\lambda_1$ = 490 and $\lambda_2$ = 865. A positive SHSI indicates stressed (browned) seagrass, while a negative value characterizes healthy green seagrass. These wavelengths were selected to align with the spectral resolution of satellites missions such as Sentinel-2, for broader remote sensing application.
 
-Because near-infrared wavelengths are strongly absorbed by water, the SHSI can only be reliably computed on emerged seagrasses during low-tide conditions. Even minimal water coverage substantially reduces reflectance in this spectral region, making the index unsuitable for use under submerged or partially inundated conditions.
-
-<!-- or: -->
-<!-- $$ {#eq-SDI} -->
-<!-- \begin{aligned} -->
-<!-- \mathrm{SHSI} &= \Delta_{\mathrm{green}} + \Delta_{\mathrm{RE}} \\[6pt] -->
-<!-- \Delta_{\mathrm{green}} &= I_{\mathrm{SHSIg}} - R(560) \\[6pt] -->
-<!-- \Delta_{\mathrm{RE}} &= I_{\mathrm{SHSI_{RE}}} - R(740) \\[6pt] -->
-<!-- I_{\mathrm{SHSIg}} &= R(490) + \tau_g \left[ R(865) - R(490) \right] \\[6pt] -->
-<!-- I_{\mathrm{SHSI_{RE}}} &= R(490) + \tau_{\mathrm{RE}} \left[ R(865) - R(490) \right] \\[6pt] -->
-<!-- \tau_g &= \frac{560 - 490}{865 - 490}, \qquad -->
-<!-- \tau_{\mathrm{RE}} = \frac{740 - 490}{865 - 490} -->
-<!-- \end{aligned} -->
-<!-- $$ -->
-
+where $R^*$ si the min-max standardised reflectance (@eq-std), $\lambda_1$ = 490 nm, $\lambda_2$ = 865 nm, $\lambda_{green}$ = 560 nm, and $\lambda_{RE}$ = 740 nm. By definition, the SHSI is mathematically constrained between −2 and +2, although these extreme values cannot be reached under natural conditions.
+A positive SHSI indicates darkened seagrass, whereas a negative SHSI characterizes green vegetation. These specific wavelengths were selected to match the spectral configuration of current and upcoming multispectral satellite missions (e.g., Sentinel-2, Landsat Next), ensuring broad applicability for remote sensing analyses. Because near-infrared wavelengths are strongly absorbed by water, the SHSI can be reliably computed only for emerged seagrasses during low-tide conditions. Even minimal water coverage markedly attenuates reflectance in the NIR region, rendering the index unsuitable under submerged or partially inundated conditions.
 
 ```{r SHSI Building Figure}
 #| cache: true
@@ -805,10 +798,8 @@ ggsave("Slides/Images/Plot_explain_SHSI.png", plot_SHSI,height = 10, width = 9, 
 #| cache: false
 #| echo: false
 #| warning: false
-#| fig-cap: "Computation of the reflectance Seagrass Heat Shock Index (SHSI) for Impacted (A) and Unimpacted (B) seagrass leaves. The dashed line represents the reflectance interpolation between 560 and 842 nm. The red vertical at 740 nm represents the SHSI line height."
+#| fig-cap: "Computation of the reflectance Seagrass Heat Shock Index (SHSI) for Impacted (A) and Unimpacted (B) seagrass leaves. The orange line represents the reflectance interpolation between 490 and 865 nm. The red vertical dashed lines at 560 and 740 nm represent the SHSI line heights."
 #| label: fig-SHSI
-#| fig-width: 10
-#| fig-height: 10
 #| out-width: "95%"
 
 knitr::include_graphics("Figs/High_res/Plot_explain_SHSI.png")
@@ -3135,7 +3126,7 @@ ggsave("Paper/Figs/Low_res/SHSI_exp_overtime.png",plot_SHSI_exp, height = 6, wid
 #| cache: false
 #| echo: false
 #| warning: false
-#| fig-cap: "A - Median of the SHSI across experimental runs, on each day of the experiment. Error structure represent the 89 % confidence interval (Quantiles 0.055 and 0.945 for lower and upper ribbon, respectively). The green line shows values of the Control group while the orange line indicates values of the Treatment group. B - Changes in the relative SHSI estimated from Sentinel-2, before (1st of September 2021), during (6th of September 2021) and after (8th of October 2021) a HW in the seagrass meadow of Quiberon (South Brittany, France). The relative SHSI difference was calulated using the 1st of September as a reference. SHSI was calculated for two categories of Quadrat Points (QPs; @fig-S2_comparison): unimpacted seagrass (green) and impacted seagrass (orange). Points represent the estimated value of the SHSI using a GLM, while the error bar represents the 89% confidence interval."
+#| fig-cap: "A - Median of the SHSI across experimental runs, on each day of the experiment. Error structure represent the 89 % confidence interval (Quantiles 0.055 and 0.945 for lower and upper ribbon, respectively). The green line shows values of the Control group while the orange line indicates values of the Treatment group. B - Changes in the SHSI estimated from Sentinel-2, before (1st of September 2021), during (6th of September 2021) and after (8th of October 2021) a HW in the seagrass meadow of Quiberon (South Brittany, France). SHSI was calculated for two categories of Quadrat Points (QPs; @fig-S2_comparison): unimpacted seagrass (green) and impacted seagrass (orange). Points represent the estimated value of the SHSI using a GLM, while the error bar represents the 89% confidence interval."
 #| label: fig-SDI_over_Time
 #| out-width: "95%"
 
@@ -4222,7 +4213,7 @@ df_glm_SDI_S2 <- df_all_indice %>%
 
 
 glm_SDI_S2 <- brm(
-  formula = Relative ~ Raster*Target_types,
+  formula = values ~ Raster*Target_types,
   data = df_glm_SDI_S2, 
   family = gaussian(), 
   cores = 8, 
@@ -4230,7 +4221,7 @@ glm_SDI_S2 <- brm(
   warmup = 500,
   control = list(adapt_delta = 0.9999),
   save_pars = save_pars(latent = TRUE),
-  file = "Output/glmm/glmm_S2_SDI_5000iter_relative"
+  file = "Output/glmm/glmm_S2_SDI_5000iter_relative_rawValues"
   )
 
 NewData_S2_SDI<-expand_grid(Raster = unique(df_glm_SDI_S2$Raster),
@@ -4247,16 +4238,16 @@ InitialData_S2_SDI<-NewData_S2_SDI %>%
          Target_types = factor( Target_types, levels  = c("Unimpacted seagrasses","Impacted seagrasses")))
 
 plot_SDI <- InitialData_S2_SDI %>% 
-  mutate(y = case_when(Raster == "During" & Target_types == "Unimpacted seagrasses" ~ y -0.7,
+  mutate(y = case_when(Raster == "During" & Target_types == "Unimpacted seagrasses" ~ y,
                        T ~ y),
-         ymin = case_when(Raster == "During" & Target_types == "Unimpacted seagrasses" ~ ymin -0.7,
+         ymin = case_when(Raster == "During" & Target_types == "Unimpacted seagrasses" ~ ymin,
                           T ~ ymin),
-         ymax = case_when(Raster == "During" & Target_types == "Unimpacted seagrasses" ~ ymax -0.7,
+         ymax = case_when(Raster == "During" & Target_types == "Unimpacted seagrasses" ~ ymax,
                           T ~ ymax)) %>% 
-  ggplot(aes(x = Raster, y = y*100, color = Target_types)) +
+  ggplot(aes(x = Raster, y = y, color = Target_types)) +
   geom_point(position = position_dodge(width = 0.3), show.legend = F) +
   geom_line(aes(group = Target_types),position = position_dodge(width = 0.3), show.legend = F) +
-  geom_errorbar(aes(ymin = ymin*100, ymax = ymax*100), width = 0.2, position = position_dodge(width = 0.3), show.legend = F) +
+  geom_errorbar(aes(ymin = ymin, ymax = ymax), width = 0.2, position = position_dodge(width = 0.3), show.legend = F) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "grey40", linewidth=1)+
   scale_color_manual(values = coltab, 
                      labels = c("Unimpacted","Impacted"))+
@@ -6005,7 +5996,7 @@ Although Sentinel-2 imagery provides valuable coverage and spectral information 
 
 In the present study we observed that heatwave-driven thermal stress changed the spectral reflectance of *Z. noltii* leaves, indicating photosynthetic pigments degradation, with potential negative consequences on health, growth and survival of the above ground biomass. In this sense, previous experiments on the effects of warming on *Zostera noltii* have shown contrasting results, depending on the duration and intensity of heating. In some cases, there were no significant changes in photosynthetic performance or survival under short-term moderate stress [@franssen2014genome], or quaunder gradual temperature increases [@roman2022effects]. By contrast, studies focused on extreme temperature events have evidenced decreases of photosynthetic performance and leaf tissue integrity [@massa2009temperature; @roman2023clam]. Therefore, our findings, jointly with previous research, suggest that *Z. noltii* meadows at the upper intertidal could be a vulnerable species under the future global warming scenarios, in which heatwaves will be more frequent and intense [@stillman2019heat; @IPCC2023].
 
-The observed tissue degradation, both in the laboratory experiment and the field, can eventually result in decreases of meadows density and cover under recurrent heatwaves. This decline could have cascading effect on species that rely on the provision of refuge and/or food by the seagrass canopy [@zoffoli2023remote]. Commercially important fish and shellfish populations that rely on seagrass for sustenance and refuge could also be impacted, with negative consequences on local fisheries’ productivity and the livelihoods of coastal communities [@unsworth2014biodiversity]. Furthermore, as seagrass meadows decline, their capacity to act as a blue carbon sink—critical for climate mitigation—could diminish, contributing to increased atmospheric carbon levels [@armitage2016carbon; @samper2020characterization]. Moreover, the sediment stabilization and wave attenuation could be hampered, ultimately increasing the risk of coastal erosion [@calleja2007relationship; @folmer2012seagrass; @gacia1999approach].
+The observed tissue degradation, both in the laboratory experiment and the field, can eventually result in decreases of meadows density and cover under recurrent heatwaves. Such darkening and loss of photosynthetic capacity at the leaf scale may ultimately translate into spatial fragmentation of meadows, as observed after major marine heatwave events (@taylor2025breaking). Incorporating fragmentation metrics alongside optical indicators like SHSI could thus improve assessments of seagrass vulnerability and recovery trajectories. This decline could have cascading effect on species that rely on the provision of refuge and/or food by the seagrass canopy [@zoffoli2023remote]. Commercially important fish and shellfish populations that rely on seagrass for sustenance and refuge could also be impacted, with negative consequences on local fisheries’ productivity and the livelihoods of coastal communities [@unsworth2014biodiversity]. Furthermore, as seagrass meadows decline, their capacity to act as a blue carbon sink—critical for climate mitigation—could diminish, contributing to increased atmospheric carbon levels [@armitage2016carbon; @samper2020characterization]. Moreover, the sediment stabilization and wave attenuation could be hampered, ultimately increasing the risk of coastal erosion [@calleja2007relationship; @folmer2012seagrass; @gacia1999approach].
 
 Heatwaves rarely occur in isolation, and their ecological impact on seagrass meadows is likely to be amplified by interactions with other chronic stressors such as eutrophication, grazing pressure, and tidal exposure dynamics. Nutrient enrichment and eutrophication, for example, have been shown to synergistically worsen the effects of elevated temperatures—reducing photosynthetic efficiency and accelerating stress-induced decline [@dias2025marine]. Similarly, warming may foster epiphyte proliferation; under extreme temperatures, grazers may fail to control epiphyte growth, intensifying shading and delaying recovery [@lawrence2023experimental. In intertidal zones, tidal exposure modulates both desiccation and heat stress, meaning meadows in higher intertidal positions may suffer more aerial heat damage, while those in lower zones may face intense marine heatwaves. These interactive processes emphasize that heat stress acts as a compounding driver, potentially pushing already pressured meadows beyond their physiological thresholds. The combined influence of local and global stressors is also evident in recovery dynamics: when other stressors co-occur, seagrass resilience and regrowth rates are often constrained [@smulders2025temperature].
 
