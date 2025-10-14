@@ -803,7 +803,279 @@ ggsave("Slides/Images/Plot_explain_SHSI.png", plot_SHSI,height = 10, width = 9, 
 knitr::include_graphics("Figs/High_res/Plot_explain_SHSI.png")
 ```
 
-## Observation of a seagrass bed impacted by a HWs
+## Validation of the SHSI
+
+A field campaign was conducted in the seagrass meadow of the Ria de Aveiro Coastal Lagoon (Portugal) from July 14 to 18, 2025. Two distinct study areas were selected, and within each, a grid of randomly distributed sampling stations was established, covering a total surface of 5.6 ha (@fig-Map_Aveiro). At every station, a photo-quadrat of the meadow was collected. Each quadrat image was subsequently analyzed in the laboratory by independent observers, who classified the meadow condition as either impacted by heat stress (i.e., leaves showing visible discoloration or darkening) or unimpacted (i.e., leaves appearing green and healthy). This set of visual classifications was used as the ground-truth dataset.
+
+```{r Process map aveiro}
+#| cache: false
+#| echo: false
+#| warning: false
+#| eval: false
+
+# ---- Packages ----
+library(tidyverse)
+library(sf)
+library(readr)
+library(ggspatial)       # scale bar, north arrow
+library(rnaturalearth)   # country basemap
+library(rnaturalearthdata)
+library(patchwork)       # combine main map + inserts
+library(scales)
+
+# ---- Paths & data ----
+csv_path <- "Data/Aveiro/Quadrat_metadata_Laurent.csv"
+
+grid <- readxl::read_xlsx("Data/Aveiro/Aveiro_grid_info.xlsx") %>% 
+  dplyr::select(picture,longitude,latitude)
+
+df_raw <- read_csv(csv_path, show_col_types = FALSE) %>% 
+  dplyr::select(filename, Target_types) %>%
+  mutate(filename = gsub(".JPG","",filename)) %>% 
+  left_join(grid, by = c("filename" = "picture")) %>% 
+  rename(lat = "latitude",
+         lon = "longitude") %>% 
+  dplyr::filter(!is.na(lat))
+
+
+Aveiro_Intertidal <- read_sf("Data/shp/mask_land_intertidal_Aveiro.shp")
+
+# Basic checks
+stopifnot(all(c("lat","lon","Target_types") %in% names(df_raw)))
+
+# Normalize labels (in case of case/spacing variations)
+df <- df_raw %>%
+  mutate(Target_types = str_trim(str_to_title(Target_types))) %>%
+  mutate(Target_types = recode(Target_types,
+                               "Impacted" = "Impacted",
+                               "Unimpacted" = "Unimpacted",
+                               .default = Target_types))
+
+# ---- Make sf points ----
+pts <- st_as_sf(df, coords = c("lon","lat"), crs = 4326, remove = FALSE)
+
+# ---- Split into two study sites (auto) ----
+# If your CSV already has a site column, replace this block by that column.
+set.seed(42)
+km <- kmeans(st_coordinates(pts), centers = 2, nstart = 50)
+pts <- pts %>% mutate(Site = factor(km$cluster, labels = c("Site A","Site B")))
+
+# ---- Color mapping ----
+col_map <- c("Impacted" = "goldenrod3",
+             "Unimpacted" = "#458B00")
+
+# ---- Helper to expand a bbox by a margin (in degrees) ----
+expand_bbox <- function(bbox, dx = 0.002, dy = 0.002) {
+  # dx, dy in degrees (~200 m per 0.002 deg at these latitudes; adjust if needed)
+  c(xmin = bbox["xmin"] - dx,
+    xmax = bbox["xmax"] + dx,
+    ymin = bbox["ymin"] - dy,
+    ymax = bbox["ymax"] + dy)
+}
+
+# ---- BBoxes ----
+# Overall study area bbox (expanded)
+bb_all <- st_bbox(pts)
+bb_all_exp <- expand_bbox(bb_all, dx = 0.05, dy = 0.05)
+
+names(bb_all_exp) <- c("xmin","xmax","ymin","ymax")
+# Per-site bboxes (tighter, for insets)
+site_bboxes <- pts %>%
+  st_drop_geometry() %>%
+  select(Site, lon, lat) %>%
+  nest(data = c(lon, lat)) %>%
+  mutate(bbox = map(data, ~{
+    bb <- c(xmin = min(.x$lon), xmax = max(.x$lon),
+            ymin = min(.x$lat), ymax = max(.x$lat))
+    expand_bbox(bb, dx = 0.004, dy = 0.004)
+  }))
+
+bb_siteA <- site_bboxes$bbox[[which(site_bboxes$Site == "Site A")]]
+bb_siteB <- site_bboxes$bbox[[which(site_bboxes$Site == "Site B")]]
+
+names(bb_siteA) <- c("xmin","xmax","ymin","ymax")
+names(bb_siteB) <- c("xmin","xmax","ymin","ymax")
+
+# ---- Basemap (Portugal) ----
+prt <- ne_countries(country = "Portugal", scale = 10, returnclass = "sf")%>%
+  st_cast("MULTIPOLYGON") %>%      # split into individual polygons
+  st_cast("POLYGON") %>%
+  mutate(area = st_area(.)) %>%
+  slice_max(area, n = 1) %>%       # keep the biggest one
+  st_sf() %>%                      # back to sf
+  select(-area)
+
+# ---- Inset rectangles (as sf polygons) ----
+rect_from_bb <- function(bb) {
+  m <- matrix(c(bb[[1]], bb[[3]],
+                bb[[1]], bb[[4]],
+                bb[[2]], bb[[4]],
+                bb[[2]], bb[[3]],
+                bb[[1]], bb[[3]]), ncol = 2, byrow = TRUE)
+  
+  poly <- st_polygon(list(m)) |> st_sfc(crs = 4326)
+  st_sf(geometry = poly)   # directly return sf object
+}
+
+rectA <- rect_from_bb(bb_siteA) %>% mutate(Site = "Site A")
+rectB <- rect_from_bb(bb_siteB) %>% mutate(Site = "Site B")
+rects <- rbind(rectA, rectB)
+
+# ---- Compute average coordinate ----
+center_pt <- pts %>%
+  st_drop_geometry() %>%
+  summarise(lon = mean(lon, na.rm = TRUE),
+            lat = mean(lat, na.rm = TRUE))
+
+
+# Red dot at the average location of your sampling points
+center_pt <- pts %>%
+  st_drop_geometry() %>%
+  summarise(lon = mean(lon, na.rm = TRUE),
+            lat = mean(lat, na.rm = TRUE))
+
+portugal_panel <-
+  ggplot() +
+  geom_sf(data = prt, fill = "grey95", color = "grey65", linewidth = 0.3) +
+  geom_point(data = center_pt, aes(x = lon, y = lat), color = "red", size = 3) +
+  coord_sf(expand = FALSE) +
+      scale_x_continuous(n.breaks = 3) + 
+  # labs(title = "Portugal", x = NULL, y = NULL) +
+  theme_minimal(base_size = 11) +
+  theme(panel.grid.minor = element_blank(),
+        axis.title = element_blank())
+
+# ---- Main map with red centroid ----
+(main_map <-
+  ggplot() +
+  geom_sf(data = prt, fill = NA, color = NA, linewidth = 0.3) +
+  geom_sf(data = Aveiro_Intertidal, fill = "grey95", color = "grey65", linewidth = 0.3)+
+  # centroid point
+  # geom_point(data = center_pt,
+  #            aes(x = lon, y = lat),
+  #            color = "red", size = 4) +
+  geom_sf(data = rects, fill = NA, color = "black", linewidth = 1, linetype = "dashed") +
+  coord_sf(xlim = c(bb_all_exp["xmin"], bb_all_exp["xmax"]),
+           ylim = c(bb_all_exp["ymin"], bb_all_exp["ymax"])) +
+  annotation_scale(location = "bl", text_cex = 0.7, line_width = 0.6,
+                   pad_x = unit(0.2,"cm"), pad_y = unit(0.2,"cm")) +
+  annotation_north_arrow(location = "tl", style = north_arrow_fancy_orienteering) +
+  labs(title = "Ria de Aveiro Coastal Lagoon — Study Area",
+       # subtitle = "Centroid of sampling stations",
+       x = NULL, y = NULL) +
+  theme_minimal(base_size = 11) +
+  theme(
+    legend.position = "bottom",
+    panel.grid.minor = element_blank()
+  )
+)
+# Safety: coerce bbox to numeric + add a tiny margin
+bbA <- as.numeric(bb_siteA[c("xmin","xmax","ymin","ymax")])
+
+names(bbA) <- c("xmin","xmax","ymin","ymax")
+pad <- 0.0025
+bbA[c("xmin","ymin")] <- bbA[c("xmin","ymin")] + pad
+bbA[c("xmax","ymax")] <- bbA[c("xmax","ymax")] - pad
+
+# Crop mainland polygon to inset extent (faster plotting & correct zoom)
+prt_A <- st_crop(prt, c(xmin = bbA[[1]], xmax = bbA[[2]],
+                                 ymin = bbA[[3]], ymax = bbA[[4]]))
+
+(inset_A <-
+  ggplot() +
+  geom_sf(data = prt_A, fill = NA, color = NA, linewidth = 0.25) +
+  geom_sf(data = Aveiro_Intertidal, fill = "grey95", color = "grey65", linewidth = 0.3)+
+
+  geom_point(data = pts %>% filter(Site == "Site A"),
+             aes(x = lon, y = lat, color = Target_types),
+             size = 2.4, alpha = 0.95) +
+  coord_sf(xlim = c(bbA["xmin"], bbA["xmax"]),
+           ylim = c(bbA["ymin"], bbA["ymax"]),
+           expand = FALSE)+ 
+    scale_x_continuous(n.breaks = 3) + 
+    scale_y_continuous(n.breaks = 3) +
+  scale_color_manual(values = col_map, guide = "none") +
+  annotation_scale(location = "bl", text_cex = 0.6, line_width = 0.5) +
+  labs(title = "Site B", x = NULL, y = NULL) +
+  theme_minimal(base_size = 10) +
+  theme(panel.grid.minor = element_blank())
+)
+# ---- Inset: Site B ----
+
+# Safety: coerce bbox to numeric + add a tiny margin
+bbB <- as.numeric(bb_siteB[c("xmin","xmax","ymin","ymax")])
+
+names(bbB) <- c("xmin","xmax","ymin","ymax")
+padB <- 0.0025
+bbB[c("xmin","ymin")] <- bbB[c("xmin","ymin")] + padB
+bbB[c("xmax","ymax")] <- bbB[c("xmax","ymax")] - padB
+
+# Crop mainland polygon to inset extent (faster plotting & correct zoom)
+prt_B <- st_crop(prt, c(xmin = bbB[[1]], xmax = bbB[[2]],
+                                 ymin = bbB[[3]], ymax = bbB[[4]]))
+
+(inset_B <-
+  ggplot() +
+  geom_sf(data = prt_B, fill = NA, color = NA, linewidth = 0.25) +
+  geom_sf(data = Aveiro_Intertidal, fill = "grey95", color = "grey65", linewidth = 0.3)+
+  geom_point(data = pts %>% filter(Site == "Site B"),
+             aes(x = lon, y = lat, color = Target_types),
+             size = 2.4, alpha = 0.95) +
+  coord_sf(xlim = c(bbB["xmin"], bbB["xmax"]),
+           ylim = c(bbB["ymin"], bbB["ymax"]),
+           expand = FALSE) + 
+    scale_x_continuous(n.breaks = 3) + 
+    scale_y_continuous(n.breaks = 3) +
+  scale_color_manual(values = col_map, guide = "none") +
+  annotation_scale(location = "bl", text_cex = 0.6, line_width = 0.5) +
+  labs(title = "Site A", x = NULL, y = NULL) +
+  theme_minimal(base_size = 10) +
+  theme(panel.grid.minor = element_blank())
+)
+
+
+final_plot_all <-
+  (portugal_panel | main_map | (inset_B / inset_A)) +
+  plot_layout(widths = c(0.9, 1.8, 1.2), guides = "collect") +
+  plot_annotation(
+    theme = theme(legend.position = "bottom")
+  )
+
+final_plot_all
+
+# Optional: save to file
+ggsave("Paper/Figs/High_res/Aveiro_StudyArea_WithInsets.png", final_plot_all, width = 12, height = 6, dpi = 600)
+
+ggsave("Paper/Figs/High_res/Aveiro_StudyArea_WithInsets.svg", final_plot_all, width = 12, height = 6)
+
+```
+
+```{r map_Aveiro}
+#| cache: false
+#| echo: false
+#| warning: false
+#| fig-cap: "Location of field observations in a seagrass meadow impacted by a HW that occurred on the 14th of July 2025 in Ria de Aveiro coastal lagoon, Portugal. Green points indicate the location of quadrat pictures over unimpacted seagrasses (i.e. showing a green colour on the field), and orange points indicate the location of quadrats taken over impacted seagrasses (i.e. showing a brown color on the field)."
+#| label: fig-Map_Aveiro
+#| out-width: "95%"
+
+knitr::include_graphics("Figs/High_res/Aveiro_StudyArea_WithInsets.png")
+```
+
+### Satellite observations of Ria de Aveiro Coastal Lagoon, Portugal
+
+To complement the in situ observations, a Level-2 Sentinel-2 MSI image acquired on July 15, 2025 was downloaded from the Copernicus Open Access Hub [@copernicus_sentinel2], provided by the European Space Agency (ESA). Level-2 products correspond to atmospherically corrected surface reflectance (Sen2Cor processor; @sen2cor) and are delivered as orthorectified data at 10–20 m spatial resolution. SHSI was computed using @eq-SDI.
+
+Because the ground-truth dataset consists of georeferenced points classified into two categories (i.e., impacted or unimpacted), the continuous SHSI values were subsequently categorized as follows:
+
+SHSI \> 0 : Impacted
+
+SHSI \< 0 : Unimpacted
+
+### Validation Metrics
+
+This binary classification derived from the satellite data was compared against the ground-truth labels obtained from the photo-quadrats. A confusion matrix was computed, from which standard performance metrics (overall accuracy, sensitivity, specificity, user and producer accuracies, F1-score, and Cohen’s κ) were derived to assess the reliability of Sentinel-2–based SHSI in detecting heat-stressed seagrass patches.
+
+## Focus on a Study Site: Seagrass Meadow of Quiberon, France
 
 ```{r filedtrip Quadrats}
 #| cache: true
@@ -1450,7 +1722,7 @@ Sea Surface Temperature (SST) data from 1982–2022 over the Quiberon coastal ar
 
 MHW and AHW detection was performed using the HeatwaveR package in R [@heatwaveR]. This package utilizes the methodology proposed by @hobday2016hierarchical to detect HW events. The annual climatology (i.e. the average temperature of each day of the year since the start of the time serie) of both air and water temperature was computed. HWs were defined as events when the temperature exceeded the 90th percentile of the climatology during three consecutive days. Furthermore, the severity of each event was assessed using the methodology proposed by @hobday2018categorizing.
 
-### Satellite observations
+### Satellite observations of Quiberon
 
 Three 2021 Sentinel-2 images of the study site were selected to assess the effect of the combined AHW and MHW ("HW event", henceforth) on the seagrass meadow: the first image was taken 5 days before the HW (1st of September 2021), the second image during the HW (6th of September 2021) and the third image one month later (8th of October 2021). Level-2 data were downloaded from the Copernicus open access hub [@copernicus_sentinel2] provided by the European Space Agency (ESA). Level-2 images consist of orthorectified surface reflectance corrected from the effect of the atmosphere using ESA's standard correction (i.e., Sen2cor, @sen2cor).
 
@@ -3130,6 +3402,268 @@ ggsave("Paper/Figs/Low_res/SHSI_exp_overtime.png",plot_SHSI_exp, height = 6, wid
 
 knitr::include_graphics("Figs/High_res/SDI_exp_overtime.png")
 ```
+
+## Validation in Ria de Aveiro Coastal Lagoon, Portugal
+
+The two study sites of the Ria de Aveiro Lagoon exhibited contrasting responses to heat stress (@fig-Map_Aveiro_SHSI). Site A showed extensive areas of darkened seagrass, with large portions of the meadow displaying positive SHSI values (@fig-Map_Aveiro_SHSI A). At this site, most quadrat points (QPs) corresponded to visibly browned seagrass leaves (@fig-Map_Aveiro_SHSI C). In contrast, Site B appeared largely unaffected, with seagrass maintaining a green coloration and negative SHSI values across most of the area (@fig-Map_Aveiro_SHSI B & D).
+
+```{r SHSI Aveiro}
+#| cache: false
+#| echo: false
+#| warning: false
+#| eval: false
+
+library(terra)
+library(tidyterra)
+library(sf)
+library(dplyr)
+library(ggplot2)
+library(patchwork)
+library(MapRs)
+library(leaflet)
+
+mask <- read_sf("Data/shp/mask_land_intertidal_Aveiro.shp") %>% 
+  dplyr::filter(Type == "Intertidal")
+  
+
+# img <- MapRs::Read_S2("Data/Sentinel2/S2C_MSIL2A_20250715T113341_N0511_R080_T29TNF_20250715T165315.SAFE") %>%
+#   crop(mask, mask = T) / 10000
+
+# SHSI <- MapRs::S2_SHSI(img,STD = F)
+SHSI_STD <- MapRs::S2_SHSI(img) %>%
+  project("EPSG:4326")
+# values(SHSI)[values(NDVI_mask) <0] <- NA
+values(SHSI_STD)[values(SHSI_STD) < -0.1] <- -0.099
+values(SHSI_STD)[values(SHSI_STD) > 0.1] <- 0.099
+
+writeRaster(SHSI_STD, "Data/Aveiro/SHSI_Aveiro.tif")
+pal_SHSI <- colorNumeric(
+  palette  = colorRampPalette(c("#228B22",   # −0.1 → green
+                                "white",    #  0   → white
+                                "#8B4513")) #  0.1 → brown
+              (255),           # 255‑step gradient
+  domain   = c(-0.1, 0.1),
+  na.color = "transparent"
+)
+
+
+
+
+csv_path <- "Data/Aveiro/Quadrat_metadata_Laurent.csv"
+
+grid <- readxl::read_xlsx("Data/Aveiro/Aveiro_grid_info.xlsx") %>% 
+  dplyr::select(picture,longitude,latitude)
+
+df_raw <- read_csv(csv_path, show_col_types = FALSE) %>% 
+  dplyr::select(filename, Target_types) %>%
+  mutate(filename = gsub(".JPG","",filename)) %>% 
+  left_join(grid, by = c("filename" = "picture")) %>% 
+  rename(lat = "latitude",
+         lon = "longitude") %>% 
+  dplyr::filter(!is.na(lat))
+
+
+Aveiro_Intertidal <- read_sf("Data/shp/mask_land_intertidal_Aveiro.shp")
+
+# Basic checks
+stopifnot(all(c("lat","lon","Target_types") %in% names(df_raw)))
+
+# Normalize labels (in case of case/spacing variations)
+df <- df_raw %>%
+  mutate(Target_types = str_trim(str_to_title(Target_types))) %>%
+  mutate(Target_types = recode(Target_types,
+                               "Impacted" = "Impacted",
+                               "Unimpacted" = "Unimpacted",
+                               .default = Target_types))
+
+# ---- Make sf points ----
+pts <- st_as_sf(df, coords = c("lon","lat"), crs = 4326, remove = FALSE)
+
+# ---- Split into two study sites (auto) ----
+# If your CSV already has a site column, replace this block by that column.
+set.seed(42)
+km <- kmeans(st_coordinates(pts), centers = 2, nstart = 50)
+pts <- pts %>% mutate(Site = factor(km$cluster, labels = c("Site A","Site B")))
+
+# ---- Color mapping ----
+col_map <- c("Impacted" = "goldenrod3",
+             "Unimpacted" = "#458B00")
+
+# ---- Helper to expand a bbox by a margin (in degrees) ----
+expand_bbox <- function(bbox, dx = 0.002, dy = 0.002) {
+  # dx, dy in degrees (~200 m per 0.002 deg at these latitudes; adjust if needed)
+  c(xmin = bbox["xmin"] - dx,
+    xmax = bbox["xmax"] + dx,
+    ymin = bbox["ymin"] - dy,
+    ymax = bbox["ymax"] + dy)
+}
+
+# ---- BBoxes ----
+# Overall study area bbox (expanded)
+bb_all <- st_bbox(pts)
+bb_all_exp <- expand_bbox(bb_all, dx = 0.05, dy = 0.05)
+
+names(bb_all_exp) <- c("xmin","xmax","ymin","ymax")
+# Per-site bboxes (tighter, for insets)
+site_bboxes <- pts %>%
+  st_drop_geometry() %>%
+  select(Site, lon, lat) %>%
+  nest(data = c(lon, lat)) %>%
+  mutate(bbox = map(data, ~{
+    bb <- c(xmin = min(.x$lon), xmax = max(.x$lon),
+            ymin = min(.x$lat), ymax = max(.x$lat))
+    expand_bbox(bb, dx = 0.001, dy = 0.001)
+  }))
+
+bb_siteA <- site_bboxes$bbox[[which(site_bboxes$Site == "Site A")]]
+bb_siteB <- site_bboxes$bbox[[which(site_bboxes$Site == "Site B")]]
+
+names(bb_siteA) <- c("xmin","xmax","ymin","ymax")
+names(bb_siteB) <- c("xmin","xmax","ymin","ymax")
+# --- SHSI palette from your colorNumeric() (−0.1..0.1) ---
+
+# --- SHSI palette from your colorNumeric() (−0.1..0.1) ---
+pal_cols <- pal_SHSI(seq(-0.1, 0.1, length.out = 255))
+
+# --- Helper: crop a raster to a lon/lat bbox, auto-reprojecting if needed ---
+crop_r_to_bb <- function(r, bb) {
+  bb_sf  <- sf::st_as_sfc(sf::st_bbox(c(
+    xmin = bb[[1]], xmax = bb[[2]],
+    ymin = bb[[3]], ymax = bb[[4]]
+  ), crs = 4326))
+  bb_r  <- sf::st_transform(bb_sf, sf::st_crs(terra::crs(r)))
+  v     <- terra::vect(bb_r)
+  terra::mask(terra::crop(r, v, mask = T), v)
+}
+
+# --- Ensure we have site bboxes (in lon/lat) ---
+get_bb_from_pts <- function(pts_site, pad = 0.0008) {
+  b <- sf::st_bbox(pts_site)
+  c(xmin = b[[1]] - pad, xmax = b[[2]] + pad,
+    ymin = b[[3]] - pad, ymax = b[[4]] + pad)
+}
+
+if (!exists("bb_siteA") || !exists("bb_siteB")) {
+  bb_siteA <- get_bb_from_pts(pts %>% filter(Site == "Site A"))
+  bb_siteB <- get_bb_from_pts(pts %>% filter(Site == "Site B"))
+}
+
+# --- Prepare rasters per site ---
+# SHSI (already loaded as SHSI_STD)
+SHSI_A <- crop_r_to_bb(SHSI_STD, bb_siteA)
+SHSI_B <- crop_r_to_bb(SHSI_STD, bb_siteB)
+
+# RGB composite
+RGB_all <- terra::rast("Data/Aveiro/S2_RGB_Composite_Aveiro.tif")
+RGB(RGB_all) <- 1:3
+RGB_A <- crop_r_to_bb(RGB_all, bb_siteA)
+RGB_B <- crop_r_to_bb(RGB_all, bb_siteB)
+
+# --- Quick helper to force 2 ticks on axes ---
+ticks2 <- list(scale_x_continuous(n.breaks = 2),
+               scale_y_continuous(n.breaks = 2))
+
+# Optional: your custom theme if you have it
+thm <- theme_minimal(base_size = 10)+
+  theme(axis.text = element_blank())
+
+# ----------------- PLOTS -----------------
+
+pts_plot <- pts %>% 
+  vect() %>% 
+  project("EPSG:32629") %>% 
+  st_as_sf()
+
+p_SHSI_A <-
+  ggplot() +
+  geom_spatraster(data = SHSI_A) +
+  scale_fill_gradientn(colors = pal_cols,
+                       limits = c(-0.1, 0.1),
+                       oob = scales::squish,
+                       na.value = "transparent",
+                       name = "SHSI") +
+  coord_sf(xlim = c(bb_siteA["xmin"], bb_siteA["xmax"]),
+           ylim = c(bb_siteA["ymin"], bb_siteA["ymax"]),
+           expand = FALSE) +
+  # labs(title = "SHSI — Site A", x = NULL, y = NULL) +
+  ticks2 + thm +
+  theme(panel.grid.minor = element_blank())
+
+p_SHSI_B <-
+  ggplot() +
+  geom_spatraster(data = SHSI_B, show.legend = F) +
+  scale_fill_gradientn(colors = pal_cols,
+                       limits = c(-0.1, 0.1),
+                       oob = scales::squish,
+                       na.value = "transparent",
+                       name = "SHSI") +
+  coord_sf(xlim = c(bb_siteB["xmin"], bb_siteB["xmax"]),
+           ylim = c(bb_siteB["ymin"], bb_siteB["ymax"]),
+           expand = FALSE) +
+  # labs(title = "SHSI — Site B", x = NULL, y = NULL) +
+  ticks2 + thm +
+  theme(panel.grid.minor = element_blank())
+
+p_RGB_A <-
+  ggplot() +
+  geom_spatraster_rgb(data = RGB_A, interpolate = FALSE, max_col_value = 255)+
+
+  geom_sf(data = pts %>% filter(Site == "Site A"),
+             aes(color = Target_types),
+             size = 4, alpha = 0.95) +
+  scale_color_manual(values = col_map, guide = "none") +
+  coord_sf(
+    # xlim = c(bb_siteA["xmin"], bb_siteA["xmax"]),
+      # ylim = c(bb_siteA["ymin"], bb_siteA["ymax"]),
+           expand = FALSE) +
+  # labs(title = "RGB — Site A", x = NULL, y = NULL) +
+  ticks2 + thm +
+  theme(legend.position = "none", panel.grid.minor = element_blank())
+
+p_RGB_B <-
+  ggplot() +
+  geom_spatraster_rgb(data = RGB_B, interpolate = FALSE, max_col_value = 255)+
+
+  geom_sf(data = pts %>% filter(Site == "Site B"),
+             aes(color = Target_types),
+             size = 4, alpha = 0.95)  +
+  scale_color_manual(values = col_map, guide = "none") +
+  coord_sf(
+    # xlim = c(bb_siteB["xmin"], bb_siteB["xmax"]),
+    # ylim = c(bb_siteB["ymin"], bb_siteB["ymax"]),
+           expand = FALSE) +
+  # labs(title = "RGB — Site B", x = NULL, y = NULL) +
+  ticks2 + thm +
+  theme(legend.position = "none", panel.grid.minor = element_blank())
+
+# ----------------- PATCHWORK -----------------
+plot_4 <-
+  (p_SHSI_A + p_SHSI_B) /
+  (p_RGB_A  + p_RGB_B) +
+  plot_layout(guides = "collect") +
+  plot_annotation(
+    theme = theme(legend.position = "bottom",
+                  legend.direction = "horizontal",
+                  legend.key.width = unit(2.0, "cm"))
+  )
+
+plot_4
+
+ggsave("paper/Figs/High_res/plot_SHSI_Aveiro.svg",plot_4,width = 10, height = 10)
+```
+
+```{r SHSI_Aveiro}
+#| cache: false
+#| echo: false
+#| warning: false
+#| fig-cap: "Seagrass Heat Shock Index over Site A (A) and Site B (B) and Sentinel-2 RGB color composition of Site A (C) and Site B (D) of Ria de Aveiro Coastal Lagoon. "
+#| label: fig-Map_Aveiro_SHSI
+#| out-width: "95%"
+
+knitr::include_graphics("Figs/High_res/plot_SHSI_Aveiro-01.png")
+```
+
+
 
 ## HW of September 2021 in Quiberon, South Brittany
 
@@ -6018,262 +6552,6 @@ On average, *in situ* temperatures were 3 ± 3.2°C higher than those recorded b
 
 ## Annexes B - Validation of the SHSI {#sec-AnnexeB}
 
-A field campaign was conducted in the seagrass meadow of the Ria de Aveiro Coastal Lagoon (Portugal) from July 14 to 18, 2025. Two distinct study areas were selected, and within each, a grid of randomly distributed sampling stations was established, covering a total surface of 5.6 ha (@fig-Map_Aveiro). At every station, a photo-quadrat of the meadow was collected. Each quadrat image was subsequently analyzed in the laboratory by independent observers, who classified the meadow condition as either impacted by heat stress (i.e., leaves showing visible discoloration or darkening) or unimpacted (i.e., leaves appearing green and healthy). This set of visual classifications was used as the ground-truth dataset.
-
-```{r Process map aveiro}
-#| cache: false
-#| echo: false
-#| warning: false
-#| eval: false
-
-# ---- Packages ----
-library(tidyverse)
-library(sf)
-library(readr)
-library(ggspatial)       # scale bar, north arrow
-library(rnaturalearth)   # country basemap
-library(rnaturalearthdata)
-library(patchwork)       # combine main map + inserts
-library(scales)
-
-# ---- Paths & data ----
-csv_path <- "Data/Aveiro/Quadrat_metadata_Laurent.csv"
-
-grid <- readxl::read_xlsx("Data/Aveiro/Aveiro_grid_info.xlsx") %>% 
-  dplyr::select(picture,longitude,latitude)
-
-df_raw <- read_csv(csv_path, show_col_types = FALSE) %>% 
-  dplyr::select(filename, Target_types) %>%
-  mutate(filename = gsub(".JPG","",filename)) %>% 
-  left_join(grid, by = c("filename" = "picture")) %>% 
-  rename(lat = "latitude",
-         lon = "longitude") %>% 
-  dplyr::filter(!is.na(lat))
-
-
-Aveiro_Intertidal <- read_sf("Data/shp/mask_land_intertidal_Aveiro.shp")
-
-# Basic checks
-stopifnot(all(c("lat","lon","Target_types") %in% names(df_raw)))
-
-# Normalize labels (in case of case/spacing variations)
-df <- df_raw %>%
-  mutate(Target_types = str_trim(str_to_title(Target_types))) %>%
-  mutate(Target_types = recode(Target_types,
-                               "Impacted" = "Impacted",
-                               "Unimpacted" = "Unimpacted",
-                               .default = Target_types))
-
-# ---- Make sf points ----
-pts <- st_as_sf(df, coords = c("lon","lat"), crs = 4326, remove = FALSE)
-
-# ---- Split into two study sites (auto) ----
-# If your CSV already has a site column, replace this block by that column.
-set.seed(42)
-km <- kmeans(st_coordinates(pts), centers = 2, nstart = 50)
-pts <- pts %>% mutate(Site = factor(km$cluster, labels = c("Site A","Site B")))
-
-# ---- Color mapping ----
-col_map <- c("Impacted" = "goldenrod3",
-             "Unimpacted" = "#458B00")
-
-# ---- Helper to expand a bbox by a margin (in degrees) ----
-expand_bbox <- function(bbox, dx = 0.002, dy = 0.002) {
-  # dx, dy in degrees (~200 m per 0.002 deg at these latitudes; adjust if needed)
-  c(xmin = bbox["xmin"] - dx,
-    xmax = bbox["xmax"] + dx,
-    ymin = bbox["ymin"] - dy,
-    ymax = bbox["ymax"] + dy)
-}
-
-# ---- BBoxes ----
-# Overall study area bbox (expanded)
-bb_all <- st_bbox(pts)
-bb_all_exp <- expand_bbox(bb_all, dx = 0.05, dy = 0.05)
-
-names(bb_all_exp) <- c("xmin","xmax","ymin","ymax")
-# Per-site bboxes (tighter, for insets)
-site_bboxes <- pts %>%
-  st_drop_geometry() %>%
-  select(Site, lon, lat) %>%
-  nest(data = c(lon, lat)) %>%
-  mutate(bbox = map(data, ~{
-    bb <- c(xmin = min(.x$lon), xmax = max(.x$lon),
-            ymin = min(.x$lat), ymax = max(.x$lat))
-    expand_bbox(bb, dx = 0.004, dy = 0.004)
-  }))
-
-bb_siteA <- site_bboxes$bbox[[which(site_bboxes$Site == "Site A")]]
-bb_siteB <- site_bboxes$bbox[[which(site_bboxes$Site == "Site B")]]
-
-names(bb_siteA) <- c("xmin","xmax","ymin","ymax")
-names(bb_siteB) <- c("xmin","xmax","ymin","ymax")
-
-# ---- Basemap (Portugal) ----
-prt <- ne_countries(country = "Portugal", scale = 10, returnclass = "sf")%>%
-  st_cast("MULTIPOLYGON") %>%      # split into individual polygons
-  st_cast("POLYGON") %>%
-  mutate(area = st_area(.)) %>%
-  slice_max(area, n = 1) %>%       # keep the biggest one
-  st_sf() %>%                      # back to sf
-  select(-area)
-
-# ---- Inset rectangles (as sf polygons) ----
-rect_from_bb <- function(bb) {
-  m <- matrix(c(bb[[1]], bb[[3]],
-                bb[[1]], bb[[4]],
-                bb[[2]], bb[[4]],
-                bb[[2]], bb[[3]],
-                bb[[1]], bb[[3]]), ncol = 2, byrow = TRUE)
-  
-  poly <- st_polygon(list(m)) |> st_sfc(crs = 4326)
-  st_sf(geometry = poly)   # directly return sf object
-}
-
-rectA <- rect_from_bb(bb_siteA) %>% mutate(Site = "Site A")
-rectB <- rect_from_bb(bb_siteB) %>% mutate(Site = "Site B")
-rects <- rbind(rectA, rectB)
-
-# ---- Compute average coordinate ----
-center_pt <- pts %>%
-  st_drop_geometry() %>%
-  summarise(lon = mean(lon, na.rm = TRUE),
-            lat = mean(lat, na.rm = TRUE))
-
-
-# Red dot at the average location of your sampling points
-center_pt <- pts %>%
-  st_drop_geometry() %>%
-  summarise(lon = mean(lon, na.rm = TRUE),
-            lat = mean(lat, na.rm = TRUE))
-
-portugal_panel <-
-  ggplot() +
-  geom_sf(data = prt, fill = "grey95", color = "grey65", linewidth = 0.3) +
-  geom_point(data = center_pt, aes(x = lon, y = lat), color = "red", size = 3) +
-  coord_sf(expand = FALSE) +
-      scale_x_continuous(n.breaks = 3) + 
-  # labs(title = "Portugal", x = NULL, y = NULL) +
-  theme_minimal(base_size = 11) +
-  theme(panel.grid.minor = element_blank(),
-        axis.title = element_blank())
-
-# ---- Main map with red centroid ----
-(main_map <-
-  ggplot() +
-  geom_sf(data = prt, fill = NA, color = NA, linewidth = 0.3) +
-  geom_sf(data = Aveiro_Intertidal, fill = "grey95", color = "grey65", linewidth = 0.3)+
-  # centroid point
-  # geom_point(data = center_pt,
-  #            aes(x = lon, y = lat),
-  #            color = "red", size = 4) +
-  geom_sf(data = rects, fill = NA, color = "black", linewidth = 1, linetype = "dashed") +
-  coord_sf(xlim = c(bb_all_exp["xmin"], bb_all_exp["xmax"]),
-           ylim = c(bb_all_exp["ymin"], bb_all_exp["ymax"])) +
-  annotation_scale(location = "bl", text_cex = 0.7, line_width = 0.6,
-                   pad_x = unit(0.2,"cm"), pad_y = unit(0.2,"cm")) +
-  annotation_north_arrow(location = "tl", style = north_arrow_fancy_orienteering) +
-  labs(title = "Ria de Aveiro Coastal Lagoon — Study Area",
-       # subtitle = "Centroid of sampling stations",
-       x = NULL, y = NULL) +
-  theme_minimal(base_size = 11) +
-  theme(
-    legend.position = "bottom",
-    panel.grid.minor = element_blank()
-  )
-)
-# Safety: coerce bbox to numeric + add a tiny margin
-bbA <- as.numeric(bb_siteA[c("xmin","xmax","ymin","ymax")])
-
-names(bbA) <- c("xmin","xmax","ymin","ymax")
-pad <- 0.0025
-bbA[c("xmin","ymin")] <- bbA[c("xmin","ymin")] + pad
-bbA[c("xmax","ymax")] <- bbA[c("xmax","ymax")] - pad
-
-# Crop mainland polygon to inset extent (faster plotting & correct zoom)
-prt_A <- st_crop(prt, c(xmin = bbA[[1]], xmax = bbA[[2]],
-                                 ymin = bbA[[3]], ymax = bbA[[4]]))
-
-(inset_A <-
-  ggplot() +
-  geom_sf(data = prt_A, fill = NA, color = NA, linewidth = 0.25) +
-  geom_sf(data = Aveiro_Intertidal, fill = "grey95", color = "grey65", linewidth = 0.3)+
-
-  geom_point(data = pts %>% filter(Site == "Site A"),
-             aes(x = lon, y = lat, color = Target_types),
-             size = 2.4, alpha = 0.95) +
-  coord_sf(xlim = c(bbA["xmin"], bbA["xmax"]),
-           ylim = c(bbA["ymin"], bbA["ymax"]),
-           expand = FALSE)+ 
-    scale_x_continuous(n.breaks = 3) + 
-    scale_y_continuous(n.breaks = 3) +
-  scale_color_manual(values = col_map, guide = "none") +
-  annotation_scale(location = "bl", text_cex = 0.6, line_width = 0.5) +
-  labs(title = "Site B", x = NULL, y = NULL) +
-  theme_minimal(base_size = 10) +
-  theme(panel.grid.minor = element_blank())
-)
-# ---- Inset: Site B ----
-
-# Safety: coerce bbox to numeric + add a tiny margin
-bbB <- as.numeric(bb_siteB[c("xmin","xmax","ymin","ymax")])
-
-names(bbB) <- c("xmin","xmax","ymin","ymax")
-padB <- 0.0025
-bbB[c("xmin","ymin")] <- bbB[c("xmin","ymin")] + padB
-bbB[c("xmax","ymax")] <- bbB[c("xmax","ymax")] - padB
-
-# Crop mainland polygon to inset extent (faster plotting & correct zoom)
-prt_B <- st_crop(prt, c(xmin = bbB[[1]], xmax = bbB[[2]],
-                                 ymin = bbB[[3]], ymax = bbB[[4]]))
-
-(inset_B <-
-  ggplot() +
-  geom_sf(data = prt_B, fill = NA, color = NA, linewidth = 0.25) +
-  geom_sf(data = Aveiro_Intertidal, fill = "grey95", color = "grey65", linewidth = 0.3)+
-  geom_point(data = pts %>% filter(Site == "Site B"),
-             aes(x = lon, y = lat, color = Target_types),
-             size = 2.4, alpha = 0.95) +
-  coord_sf(xlim = c(bbB["xmin"], bbB["xmax"]),
-           ylim = c(bbB["ymin"], bbB["ymax"]),
-           expand = FALSE) + 
-    scale_x_continuous(n.breaks = 3) + 
-    scale_y_continuous(n.breaks = 3) +
-  scale_color_manual(values = col_map, guide = "none") +
-  annotation_scale(location = "bl", text_cex = 0.6, line_width = 0.5) +
-  labs(title = "Site A", x = NULL, y = NULL) +
-  theme_minimal(base_size = 10) +
-  theme(panel.grid.minor = element_blank())
-)
-
-
-final_plot_all <-
-  (portugal_panel | main_map | (inset_B / inset_A)) +
-  plot_layout(widths = c(0.9, 1.8, 1.2), guides = "collect") +
-  plot_annotation(
-    theme = theme(legend.position = "bottom")
-  )
-
-final_plot_all
-
-# Optional: save to file
-ggsave("Paper/Figs/High_res/Aveiro_StudyArea_WithInsets.png", final_plot_all, width = 12, height = 6, dpi = 600)
-
-ggsave("Paper/Figs/High_res/Aveiro_StudyArea_WithInsets.svg", final_plot_all, width = 12, height = 6)
-
-```
-
-```{r map_Aveiro}
-#| cache: false
-#| echo: false
-#| warning: false
-#| fig-cap: "Location of field observations in a seagrass meadow impacted by a HW that occurred on the 14th of July 2025 in Ria de Aveiro coastal lagoon, Portugal. Green points indicate the location of quadrat pictures over unimpacted seagrasses (i.e. showing a green colour on the field), and orange points indicate the location of quadrats taken over impacted seagrasses (i.e. showing a brown color on the field)."
-#| label: fig-Map_Aveiro
-#| out-width: "95%"
-
-knitr::include_graphics("Figs/High_res/Aveiro_StudyArea_WithInsets.png")
-```
-
 To complement the in situ observations, a Level-2 Sentinel-2 MSI image acquired on July 15, 2025 was downloaded from the Copernicus Open Access Hub [@copernicus_sentinel2], provided by the European Space Agency (ESA). Level-2 products correspond to atmospherically corrected surface reflectance (Sen2Cor processor; @sen2cor) and are delivered as orthorectified data at 10–20 m spatial resolution. SHSI was computed using @eq-SDI. @fig-Map_Aveiro_SHSI indicates that Site A remained largely unaffected by heat stress, except for a localized patch where SHSI values exceeded 0. Conversely, Site B exhibited widespread signs of thermal impact, with SHSI values above 0 across most of the site.
 
 ```{r SHSI Aveiro}
@@ -6532,13 +6810,12 @@ ggsave("paper/Figs/High_res/plot_SHSI_Aveiro.svg",plot_4,width = 10, height = 10
 knitr::include_graphics("Figs/High_res/plot_SHSI_Aveiro-01.png")
 ```
 
+
 Pixels of SHSI were then categorized as:
 
 Impacted when SHSI \> 0
 
 Unimpacted when SHSI ≤ 0
-
-This binary classification derived from the satellite data was compared against the ground-truth labels obtained from the photo-quadrats. A confusion matrix was computed, from which standard performance metrics (overall accuracy, sensitivity, specificity, user and producer accuracies, F1-score, and Cohen’s κ) were derived to assess the reliability of Sentinel-2–based SHSI in detecting heat-stressed seagrass patches.
 
 ```{r Validation_SHSI}
 #| cache: false
