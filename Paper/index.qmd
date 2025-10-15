@@ -3101,7 +3101,7 @@ write.csv(df_output_model, "Output/Output_model_Comparison_Hyperspectral_indices
 ```
 
 ```{r data_model_GLM}
-#| cache: true
+#| cache: false
 #| echo: false
 #| eval: true
 #| warning: false
