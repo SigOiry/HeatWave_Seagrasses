@@ -70,6 +70,14 @@ author:
       - Revision
     affiliations:
       - Centro de Investigación Mariña, Departamento de Ecoloxía e Bioloxía Animal, Facultade de Ciencias do Mar, Universidade de Vigo, Campus Universitario As Lagoas-Marcosende, 36310 Vigo, Spain
+  - name: Jim de Fouw⁵
+    orcid: 0000-0002-7082-0763
+    corresponding: false
+    roles: 
+      - Data acquisition
+      - Revision
+    affiliations:
+      - Department Coastal Systems, Royal Netherlands Institute for Sea Research and Utrecht University, P.O. Box 59, 1790 AB Den Burg, the Netherlands
   - name: Pierre Gernez¹
     orcid: 0000-0003-2055-410X
     corresponding: false
