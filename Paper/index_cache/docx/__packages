@@ -14,3 +14,7 @@ magrittr
 flextable
 Rcpp
 brms
+lattice
+caret
+officer
+cowplot

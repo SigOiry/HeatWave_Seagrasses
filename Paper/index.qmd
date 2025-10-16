@@ -103,7 +103,7 @@ keywords:
   - Coastal Ecosystems
   - Heatwaves 
 abstract:
-  "Seagrasses play a vital role in coastal ecosystems, providing habitat, stabilising sediments, and contributing to carbon sequestration. However, climate warming has increased the frequency and intensity of heatwaves, posing a significant threat to seagrass health. This study investigates the effects of marine and atmospheric heatwaves on the spectral reflectance of the intertidal seagrass *Zostera noltii*. Laboratory experiments were conducted under controlled heatwave conditions, where hyperspectral reflectance measurements were taken to assess the impacts over time. Simulated heatwave conditions caused a substantial decline in seagrass reflectance, particularly in the green and near-infrared regions, corresponding to the darkening of green leaves. Key vegetation indices, including the Normalized Difference Vegetation Index (NDVI) and Green Leaf Index (GLI), showed pronounced reductions under heatwave stress, with NDVI values decreasing by up to 34% and GLI by 57%. A novel metric, the Seagrass Heat Shock Index (SHSI), was developed to quantify the transition of seagrass leaves from green to brown, demonstrating a stronger ability to capture the effects of heatwave exposure on seagrass coloration. Multispectral satellite observations corroborated the laboratory results, revealing widespread darkening of seagrass leaves during marine and atmospheric heatwave events in South Brittany, France. Notably, darkened seagrass patches were observed in intertidal areas exposed to air temperatures exceeding 32°C for over 13.5 hours per day. These findings highlight the potential of spectral reflectance as a tool for detecting early signs of heatwave-induced stress in seagrasses, offering a valuable method for remote sensing-based habitat assessment. The present study underscores the potential of remote sensing to capture rapid environmental changes in intertidal zones, enabling for continuous monitoring of seagrass meadows under the current and future climate regimes."
+  "Seagrasses play a vital role in coastal ecosystems, providing habitat, stabilising sediments, and contributing to carbon sequestration. However, global warming has increased the frequency and intensity of heatwaves, posing a significant threat to seagrass health. This study investigates the effects of marine and atmospheric heatwaves on the spectral reflectance of the intertidal seagrass *Zostera noltii*. Laboratory experiments were conducted under controlled heatwave conditions, where hyperspectral reflectance measurements were taken to assess the impacts over time. Simulated heatwave conditions caused a substantial decline in seagrass reflectance, particularly in the green and near-infrared regions, corresponding to the darkening of green leaves. Key vegetation indices, including the Normalized Difference Vegetation Index (NDVI) and Green Leaf Index (GLI), showed pronounced reductions under heatwave stress, with NDVI values decreasing by up to 34% and GLI by 57%. A novel metric, the Seagrass Heat Shock Index (SHSI), was developed to quantify the transition of seagrass leaves from green to brown, demonstrating a stronger ability to capture the effects of heatwave exposure on seagrass coloration. Multispectral satellite observations corroborated the laboratory results, revealing widespread darkening of seagrass leaves during marine and atmospheric heatwave events in South Brittany, France. Notably, darkened seagrass patches were observed in intertidal areas exposed to air temperatures exceeding 32°C for over 13.5 hours per day. These findings highlight the potential of spectral reflectance as a tool for detecting early signs of heatwave-induced stress in seagrasses, offering a valuable method for remote sensing-based habitat assessment. The present study underscores the potential of remote sensing to capture rapid environmental changes in intertidal zones, enabling for continuous monitoring of seagrass meadows under the current and future climate regimes."
 plain-language-summary: |
   To be written
 key-points:
@@ -605,7 +605,7 @@ Because the SHSI is designed to detect changes in spectral shape rather than abs
 
 $$
 \begin{aligned}
-\mathrm{R_{i}^{*}(\lambda)} = \frac{R_{i}(\lambda) - min(R_{i})}{max(R_{i})- min(R_{i})}
+R_{i}^{*}(\lambda) = \frac{R_{i}(\lambda) - min(R_{i})}{max(R_{i})- min(R_{i})}
 \end{aligned}
 $$ {#eq-std}
 
@@ -613,7 +613,7 @@ The standardised reflectance values $R^*$ at 560 nm and 740 nm are then compared
 
 $$ 
 \begin{aligned}
-\mathrm{SHSI} &= LH(\lambda_{green}) + LH(\lambda_{RE}) \\[6pt]
+\mathrm{SHSI} &= \mathrm{LH(\lambda_{green})} + \mathrm{LH(\lambda_{RE})} \\[6pt]
 \mathrm{LH(\lambda_i)} &= R^*(\lambda_1) +
 \frac{\lambda_i - \lambda_1}{\lambda_2 - \lambda_1}
 \big[ R^*(\lambda_2) - R^*(\lambda_1) \big] - R^*(\lambda_i) \\[8pt]
@@ -806,7 +806,7 @@ ggsave("Slides/Images/Plot_explain_SHSI.png", plot_SHSI,height = 10, width = 9, 
 #| cache: false
 #| echo: false
 #| warning: false
-#| fig-cap: "Calculation of the Seagrass Heat Shock Index (SHSI) for impacted (A) and unimpacted (B) seagrass leaves. The orange line shows the reflectance interpolation between 490 nm and 865 nm, while the red dashed vertical lines at 560 nm and 740 nm indicate the two line heights that are summed to obrain the SHSI value (@eq-SDI)."
+#| fig-cap: "Calculation of the Seagrass Heat Shock Index (SHSI) for impacted (A) and unimpacted (B) seagrass leaves. The orange line shows the reflectance interpolation between 490 nm and 865 nm, while the red dashed vertical lines at 560 nm and 740 nm indicate the two line heights that are summed to obtain the SHSI value (@eq-SDI)."
 #| label: fig-SHSI
 #| out-width: "95%"
 
@@ -1073,7 +1073,7 @@ knitr::include_graphics("Figs/High_res/Aveiro_StudyArea_WithInsets.png")
 
 ### Satellite observations of Ria de Aveiro Coastal Lagoon, Portugal
 
-To complement the in situ observations, a Level-2 Sentinel-2 MSI image acquired on the 15^th^ of July 2025 was downloaded from the Copernicus Open Access Hub [@copernicus_sentinel2], provided by the European Space Agency (ESA). Level-2 products correspond to atmospherically corrected surface reflectance (Sen2Cor processor; @sen2cor) and are delivered as orthorectified data at a spatial resolution of 10-20m. SHSI was computed using @eq-SDI.
+To complement the in situ observations, a Level-2 Sentinel-2 MSI image acquired just one day after field sampling, on the 15^th^ of July 2025 was downloaded from the Copernicus Open Access Hub [@copernicus_sentinel2], provided by the European Space Agency (ESA). Level-2 products correspond to atmospherically corrected surface reflectance (Sen2Cor processor; @sen2cor) and are delivered as orthorectified data at a spatial resolution of 10-20m. SHSI was computed using @eq-SDI.
 
 Because the ground-truth dataset consists of georeferenced points classified into two categories (*i.e.*, impacted or unimpacted), the continuous SHSI values were subsequently categorised as follows:
 
@@ -3432,12 +3432,12 @@ library(patchwork)
 library(MapRs)
 library(leaflet)
 
-mask <- read_sf("Data/shp/mask_land_intertidal_Aveiro.shp") %>% 
+mask <- read_sf("Data/shp/mask_land_intertidal_Aveiro_cropped.shp") %>% 
   dplyr::filter(Type == "Intertidal")
   
 
-# img <- MapRs::Read_S2("Data/Sentinel2/S2C_MSIL2A_20250715T113341_N0511_R080_T29TNF_20250715T165315.SAFE") %>%
-#   crop(mask, mask = T) / 10000
+img <- MapRs::Read_S2("Data/Sentinel2/S2C_MSIL2A_20250715T113341_N0511_R080_T29TNF_20250715T165315.SAFE") %>%
+  crop(mask, mask = T) / 10000
 
 # SHSI <- MapRs::S2_SHSI(img,STD = F)
 SHSI_STD <- MapRs::S2_SHSI(img) %>%
@@ -3446,7 +3446,7 @@ SHSI_STD <- MapRs::S2_SHSI(img) %>%
 values(SHSI_STD)[values(SHSI_STD) < -0.1] <- -0.099
 values(SHSI_STD)[values(SHSI_STD) > 0.1] <- 0.099
 
-writeRaster(SHSI_STD, "Data/Aveiro/SHSI_Aveiro.tif")
+# writeRaster(SHSI_STD, "Data/Aveiro/SHSI_Aveiro.tif")
 pal_SHSI <- colorNumeric(
   palette  = colorRampPalette(c("#228B22",   # −0.1 → green
                                 "white",    #  0   → white
@@ -3511,7 +3511,7 @@ expand_bbox <- function(bbox, dx = 0.002, dy = 0.002) {
 # ---- BBoxes ----
 # Overall study area bbox (expanded)
 bb_all <- st_bbox(pts)
-bb_all_exp <- expand_bbox(bb_all, dx = 0.05, dy = 0.05)
+bb_all_exp <- expand_bbox(bb_all, dx = 0.1, dy = 0.1)
 
 names(bb_all_exp) <- c("xmin","xmax","ymin","ymax")
 # Per-site bboxes (tighter, for insets)
@@ -3522,7 +3522,7 @@ site_bboxes <- pts %>%
   mutate(bbox = map(data, ~{
     bb <- c(xmin = min(.x$lon), xmax = max(.x$lon),
             ymin = min(.x$lat), ymax = max(.x$lat))
-    expand_bbox(bb, dx = 0.001, dy = 0.001)
+    expand_bbox(bb, dx = 0.003, dy = 0.003)
   }))
 
 bb_siteA <- site_bboxes$bbox[[which(site_bboxes$Site == "Site A")]]
@@ -3547,7 +3547,7 @@ crop_r_to_bb <- function(r, bb) {
 }
 
 # --- Ensure we have site bboxes (in lon/lat) ---
-get_bb_from_pts <- function(pts_site, pad = 0.0008) {
+get_bb_from_pts <- function(pts_site, pad = 0.002) {
   b <- sf::st_bbox(pts_site)
   c(xmin = b[[1]] - pad, xmax = b[[2]] + pad,
     ymin = b[[3]] - pad, ymax = b[[4]] + pad)
@@ -3584,93 +3584,124 @@ pts_plot <- pts %>%
   project("EPSG:32629") %>% 
   st_as_sf()
 
+RGB_greyscale_A <- mean(RGB_A)
+names(RGB_greyscale_A) <- "greyscale"
+
 p_SHSI_A <-
   ggplot() +
+  geom_spatraster(data = RGB_greyscale_A, mapping = aes(fill = greyscale), alpha = 0.8,show.legend = F) +
+  scale_fill_gradient(low = "black", high = "white", name = "Greyscale") +
+  ggnewscale::new_scale_fill()+
   geom_spatraster(data = SHSI_A) +
   scale_fill_gradientn(colors = pal_cols,
                        limits = c(-0.1, 0.1),
                        oob = scales::squish,
                        na.value = "transparent",
                        name = "SHSI") +
-  coord_sf(xlim = c(bb_siteA["xmin"], bb_siteA["xmax"]),
-           ylim = c(bb_siteA["ymin"], bb_siteA["ymax"]),
-           expand = FALSE) +
+
+  geom_sf(data = pts %>% filter(Site == "Site A"),
+             aes(color = Target_types),
+             size = 4, alpha = 0.95) +
+  scale_color_manual(values = col_map, guide = "none") +
+  # coord_sf(xlim = c(bb_siteA["xmin"][[1]], bb_siteA["xmax"][[1]]),
+  #          ylim = c(bb_siteA["ymin"][[1]], bb_siteA["ymax"][[1]]),
+  #          expand = FALSE) +
   # labs(title = "SHSI — Site A", x = NULL, y = NULL) +
   ticks2 + thm +
   theme(panel.grid.minor = element_blank())
 
+
+RGB_greyscale_B <- mean(RGB_B)
+names(RGB_greyscale_B) <- "greyscale"
+
 p_SHSI_B <-
   ggplot() +
+  geom_spatraster(data = RGB_greyscale_B, mapping = aes(fill = greyscale), alpha = 0.8,show.legend = F) +
+  scale_fill_gradient(low = "black", high = "white", name = "Greyscale") +
+  ggnewscale::new_scale_fill()+
   geom_spatraster(data = SHSI_B, show.legend = F) +
   scale_fill_gradientn(colors = pal_cols,
                        limits = c(-0.1, 0.1),
                        oob = scales::squish,
                        na.value = "transparent",
                        name = "SHSI") +
-  coord_sf(xlim = c(bb_siteB["xmin"], bb_siteB["xmax"]),
-           ylim = c(bb_siteB["ymin"], bb_siteB["ymax"]),
-           expand = FALSE) +
-  # labs(title = "SHSI — Site B", x = NULL, y = NULL) +
-  ticks2 + thm +
-  theme(panel.grid.minor = element_blank())
-
-p_RGB_A <-
-  ggplot() +
-  geom_spatraster_rgb(data = RGB_A, interpolate = FALSE, max_col_value = 255)+
-
-  geom_sf(data = pts %>% filter(Site == "Site A"),
-             aes(color = Target_types),
-             size = 4, alpha = 0.95) +
-  scale_color_manual(values = col_map, guide = "none") +
-  coord_sf(
-    # xlim = c(bb_siteA["xmin"], bb_siteA["xmax"]),
-      # ylim = c(bb_siteA["ymin"], bb_siteA["ymax"]),
-           expand = FALSE) +
-  # labs(title = "RGB — Site A", x = NULL, y = NULL) +
-  ticks2 + thm +
-  theme(legend.position = "none", panel.grid.minor = element_blank())
-
-p_RGB_B <-
-  ggplot() +
-  geom_spatraster_rgb(data = RGB_B, interpolate = FALSE, max_col_value = 255)+
 
   geom_sf(data = pts %>% filter(Site == "Site B"),
              aes(color = Target_types),
-             size = 4, alpha = 0.95)  +
+             size = 4, alpha = 0.95) +
   scale_color_manual(values = col_map, guide = "none") +
-  coord_sf(
-    # xlim = c(bb_siteB["xmin"], bb_siteB["xmax"]),
-    # ylim = c(bb_siteB["ymin"], bb_siteB["ymax"]),
-           expand = FALSE) +
-  # labs(title = "RGB — Site B", x = NULL, y = NULL) +
+  # coord_sf(xlim = c(bb_siteB["xmin"][[1]], bb_siteB["xmax"][[1]]),
+  #          ylim = c(bb_siteB["ymin"][[1]], bb_siteB["ymax"][[1]]),
+  #          expand = FALSE) +
+  # labs(title = "SHSI — Site B", x = NULL, y = NULL) +
   ticks2 + thm +
-  theme(legend.position = "none", panel.grid.minor = element_blank())
+  theme(panel.grid.minor = element_blank())
+# 
+# p_RGB_A <-
+#   ggplot() +
+#   geom_spatraster_rgb(data = RGB_A, interpolate = FALSE, max_col_value = 255)+
+# 
+#   geom_sf(data = pts %>% filter(Site == "Site A"),
+#              aes(color = Target_types),
+#              size = 4, alpha = 0.95) +
+#   scale_color_manual(values = col_map, guide = "none") +
+#   coord_sf(
+#     # xlim = c(bb_siteA["xmin"], bb_siteA["xmax"]),
+#       # ylim = c(bb_siteA["ymin"], bb_siteA["ymax"]),
+#            expand = FALSE) +
+#   # labs(title = "RGB — Site A", x = NULL, y = NULL) +
+#   ticks2 + thm +
+#   theme(legend.position = "none", panel.grid.minor = element_blank())
+# 
+# p_RGB_B <-
+#   ggplot() +
+#   geom_spatraster_rgb(data = RGB_B, interpolate = FALSE, max_col_value = 255)+
+# 
+#   geom_sf(data = pts %>% filter(Site == "Site B"),
+#              aes(color = Target_types),
+#              size = 4, alpha = 0.95)  +
+#   scale_color_manual(values = col_map, guide = "none") +
+#   coord_sf(
+#     # xlim = c(bb_siteB["xmin"], bb_siteB["xmax"]),
+#     # ylim = c(bb_siteB["ymin"], bb_siteB["ymax"]),
+#            expand = FALSE) +
+#   # labs(title = "RGB — Site B", x = NULL, y = NULL) +
+#   ticks2 + thm +
+#   theme(legend.position = "none", panel.grid.minor = element_blank())
+# 
+# # ----------------- PATCHWORK -----------------
+# plot_4 <-
+  # (p_SHSI_A + p_SHSI_B) /
+  # (p_RGB_A  + p_RGB_B) +
+  # plot_layout(guides = "collect") +
+  # plot_annotation(
+  #   theme = theme(legend.position = "bottom",
+  #                 legend.direction = "horizontal",
+  #                 legend.key.width = unit(2.0, "cm"))
+#   )
+# 
+# plot_4
 
-# ----------------- PATCHWORK -----------------
-plot_4 <-
-  (p_SHSI_A + p_SHSI_B) /
-  (p_RGB_A  + p_RGB_B) +
+  plot_pierre <- (p_SHSI_A + p_SHSI_B) + 
   plot_layout(guides = "collect") +
   plot_annotation(
     theme = theme(legend.position = "bottom",
                   legend.direction = "horizontal",
-                  legend.key.width = unit(2.0, "cm"))
-  )
+                  legend.key.width = unit(2.0, "cm")))
 
-plot_4
 
-ggsave("paper/Figs/High_res/plot_SHSI_Aveiro.svg",plot_4,width = 10, height = 10)
+ggsave("paper/Figs/High_res/plot_SHSI_Aveiro_Pierre.svg",plot_pierre,width = 10, height = 10)
 ```
 
-```{r SHSI_Aveiro}
+```{r SHSI_Aveiro_fig}
 #| cache: false
 #| echo: false
 #| warning: false
-#| fig-cap: "Seagrass Heat Shock Index over Site A (A) and Site B (B) and Sentinel-2 RGB color composition of Site A (C) and Site B (D) of Ria de Aveiro Coastal Lagoon. "
+#| fig-cap: "Sentinel-2 color composition of the Seagrass Heat Shock Index over Site A (A) and Site B (B) of Ria de Aveiro Coastal Lagoon. Orange points represent QPs showing darkened seagrasses while green points represent QPs showing green seagrasses. "
 #| label: fig-Map_Aveiro_SHSI
 #| out-width: "95%"
 
-knitr::include_graphics("Figs/High_res/plot_SHSI_Aveiro-01.png")
+knitr::include_graphics("Figs/High_res/plot_SHSI_Aveiro-01_Pierre.png")
 ```
 
 ```{r tbldata}
@@ -6536,6 +6567,15 @@ RGB_Before <- "Data/Sentinel2/Before_RGB_comp.tif" %>%
 RGB_greyscale <- mean(RGB_Before)
 names(RGB_greyscale) <- "greyscale"
 
+pal_SHSI <- colorNumeric(
+  palette  = colorRampPalette(c("#228B22",   # −0.1 → green
+                                "white",    #  0   → white
+                                "#8B4513")) #  0.1 → brown
+              (255),           # 255‑step gradient
+  domain   = c(-4, 4),
+  na.color = "transparent"
+)
+
 for(i in 1:nlyr(Index_rast)){
   
   img <- Index_rast[[i]]
@@ -6551,13 +6591,18 @@ for(i in 1:nlyr(Index_rast)){
       scale_fill_gradient(low = "black", high = "white", name = "Greyscale") +
       ggnewscale::new_scale_fill()+
       geom_spatraster(data = img, mapping = aes(fill = layer))+
+       scale_fill_gradientn(colors = pal_cols,
+                       limits = c(-4, 4),
+                       oob = scales::squish,
+                       na.value = "transparent",
+                       name = "SHSI")+
             # geom_sf(data = bathy_line, color = "goldenrod2", linewidth = 1)+
-      scico::scale_fill_scico(palette = "batlow", 
-                     na.value = NA,
-                     name = "SHSI",
-                     breaks = c(-2,0,2),
-                     limits = c(-4,4),
-                     labels = c("-2","0","2"))+
+      # scico::scale_fill_scico(palette = "batlow", 
+      #                na.value = NA,
+      #                name = "SHSI",
+      #                breaks = c(-2,0,2),
+      #                limits = c(-4,4),
+      #                labels = c("-2","0","2"))+
       geom_label(data = letter_df_rgb, mapping = aes(x = x, y=y, label = label), alpha = 0.5, size = 6)
 
 
@@ -6567,13 +6612,18 @@ for(i in 1:nlyr(Index_rast)){
       scale_fill_gradient(low = "black", high = "white", name = "Greyscale") +
       ggnewscale::new_scale_fill()+
       geom_spatraster(data = img, mapping = aes(fill = layer),show.legend = F)+
+       scale_fill_gradientn(colors = pal_cols,
+                       limits = c(-4, 4),
+                       oob = scales::squish,
+                       na.value = "transparent",
+                       name = "SHSI")+
             # geom_sf(data = bathy_line, color = "goldenrod2", linewidth = 1)+
-      scico::scale_fill_scico(palette = "batlow", 
-                     na.value = NA,
-                     name = "SHSI",
-                     breaks = c(-2,0,2),
-                     limits = c(-4,4),
-                     labels = c("-2","0","2"))+
+      # scico::scale_fill_scico(palette = "batlow", 
+      #                na.value = NA,
+      #                name = "SHSI",
+      #                breaks = c(-2,0,2),
+      #                limits = c(-4,4),
+      #                labels = c("-2","0","2"))+
       geom_label(data = letter_df_rgb, mapping = aes(x = x, y=y, label = label), alpha = 0.5, size = 6)
 
     
@@ -6612,6 +6662,8 @@ plot_SHSI <- (Plot_RGB_Before + Plot_RGB_During + Plot_RGB_After)/
   )
 plot_SHSI
 ggsave("Paper/Figs/High_res/SHSI_S2_map.png",plot_SHSI, width = 10, height = 7.22, dpi = 400)
+ggsave("Paper/Figs/High_res/SHSI_S2_map.svg",plot_SHSI, width = 10, height = 7.22)
+
 ggsave("Paper/Figs/Low_res/SHSI_S2_map.png",plot_SHSI, width = 10, height = 7.22, dpi = 200)
 
 
